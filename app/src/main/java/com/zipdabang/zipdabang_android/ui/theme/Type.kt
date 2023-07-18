@@ -30,13 +30,21 @@ val defaultTextStyle = TextStyle(
     )
 )
 
+/*
+ FontWeight.Light (값:300)
+ FontWeight.Normal (값:400)
+ FontWeight.Medium (값:500)
+ FontWeight.Bold (값:700)
+ FontWeight.ExtraBold (값:800)
+ */
+
 data class ZipdabangTypography (
     //로고!!!
     val logo : TextStyle = defaultTextStyle.copy(
         fontFamily = cafe24,
         fontWeight = FontWeight.Light,
         fontSize = 60.sp,
-        lineHeight = 60.sp,
+        //lineHeight = 60.sp,
         letterSpacing = -1.7.sp,
     ),
     //로고 밑에 글씨!!!
@@ -44,7 +52,6 @@ data class ZipdabangTypography (
         fontFamily = cafe24,
         fontWeight = FontWeight.Light,
         fontSize = 18.sp,
-        lineHeight = 21.sp,
         letterSpacing = -1.7.sp,
     ),
     //top bar 로고!!!
@@ -52,7 +59,6 @@ data class ZipdabangTypography (
         fontFamily = Kopubworld,
         fontWeight = FontWeight.Medium,
         fontSize = 30.sp,
-        lineHeight = 35.sp,
         letterSpacing = -1.7.sp,
     ),
     //button!!!
@@ -60,24 +66,19 @@ data class ZipdabangTypography (
         fontFamily = Kopubworld,
         fontWeight = FontWeight.Medium,
         fontSize = 16.sp,
-        lineHeight = 24.sp,
         letterSpacing = -1.7.sp,
     ),
-
-
 
     val twentysix_700 : TextStyle = defaultTextStyle.copy(
         fontFamily = Kopubworld,
         fontWeight = FontWeight.Bold,
         fontSize = 26.sp,
-        lineHeight = 40.sp,
         letterSpacing = -1.7.sp,
     ),
     val twentysix_500 : TextStyle = defaultTextStyle.copy(
         fontFamily = Kopubworld,
         fontWeight = FontWeight.Medium,
         fontSize = 26.sp,
-        lineHeight = 40.sp,
         letterSpacing = -1.7.sp,
     ),
 
@@ -85,7 +86,6 @@ data class ZipdabangTypography (
         fontFamily = Kopubworld,
         fontWeight = FontWeight.Bold,
         fontSize = 22.sp,
-        lineHeight = 34.sp,
         letterSpacing = -1.7.sp,
     ),
 
@@ -93,21 +93,18 @@ data class ZipdabangTypography (
         fontFamily = Kopubworld,
         fontWeight = FontWeight.Bold,
         fontSize = 18.sp,
-        lineHeight = 28.sp,
         letterSpacing = -1.7.sp,
     ),
     val eighteen_500 : TextStyle = defaultTextStyle.copy(
         fontFamily = Kopubworld,
         fontWeight = FontWeight.Medium,
         fontSize = 18.sp,
-        lineHeight = 28.sp,
         letterSpacing = -1.7.sp,
     ),
     val eighteen_300 : TextStyle = defaultTextStyle.copy(
         fontFamily = Kopubworld,
         fontWeight = FontWeight.Light,
         fontSize = 12.sp,
-        lineHeight = 18.sp,
         letterSpacing = -1.7.sp,
     ),
 
@@ -115,21 +112,18 @@ data class ZipdabangTypography (
         fontFamily = Kopubworld,
         fontWeight = FontWeight.Bold,
         fontSize = 16.sp,
-        lineHeight = 24.sp,
         letterSpacing = -1.7.sp,
     ),
     val sixteen_500 : TextStyle = defaultTextStyle.copy(
         fontFamily = Kopubworld,
         fontWeight = FontWeight.Medium,
         fontSize = 16.sp,
-        lineHeight = 24.sp,
         letterSpacing = -1.7.sp,
     ),
     val sixteen_300 : TextStyle = defaultTextStyle.copy(
         fontFamily = Kopubworld,
         fontWeight = FontWeight.Light,
         fontSize = 16.sp,
-        lineHeight = 24.sp,
         letterSpacing = -1.7.sp,
     ),
 
@@ -137,21 +131,18 @@ data class ZipdabangTypography (
         fontFamily = Kopubworld,
         fontWeight = FontWeight.Bold,
         fontSize = 14.sp,
-        lineHeight = 22.sp,
         letterSpacing = -1.7.sp,
     ),
     val fourteen_500 : TextStyle = defaultTextStyle.copy(
         fontFamily = Kopubworld,
         fontWeight = FontWeight.Medium,
         fontSize = 14.sp,
-        lineHeight = 22.sp,
         letterSpacing = -1.7.sp,
     ),
     val fourteen_300 : TextStyle = defaultTextStyle.copy(
         fontFamily = Kopubworld,
         fontWeight = FontWeight.Light,
         fontSize = 14.sp,
-        lineHeight = 22.sp,
         letterSpacing = -1.7.sp,
     ),
 
@@ -159,7 +150,6 @@ data class ZipdabangTypography (
         fontFamily = Kopubworld,
         fontWeight = FontWeight.Medium,
         fontSize = 12.sp,
-        lineHeight = 18.sp,
         letterSpacing = -1.7.sp,
     ),
 
@@ -167,17 +157,16 @@ data class ZipdabangTypography (
         fontFamily = Kopubworld,
         fontWeight = FontWeight.Light,
         fontSize = 10.sp,
-        lineHeight = 15.sp,
         letterSpacing = -1.7.sp,
     ),
 
     val eight_300 : TextStyle = defaultTextStyle.copy(
         fontFamily = Kopubworld,
-        fontWeight = FontWeight.Medium,
+        fontWeight = FontWeight.Light,
         fontSize = 8.sp,
-        lineHeight = 12.sp,
         letterSpacing = -1.7.sp,
     ),
+
     )
 
 

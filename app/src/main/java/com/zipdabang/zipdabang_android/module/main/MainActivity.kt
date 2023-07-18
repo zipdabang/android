@@ -23,7 +23,7 @@ class MainActivity : ComponentActivity() {
                 // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize()
-                        .clip(ZipdabangandroidTheme.Shapes.smallRoundedTop),
+                        .clip(ZipdabangandroidTheme.Shapes.small),
                     color = ZipdabangandroidTheme.Colors.Strawberry,
                 ) {
                     Greeting("집다방","홈카페를 위한 모든 것이 여기에!")

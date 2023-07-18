@@ -24,6 +24,18 @@ data class ZipdabangShapes(
         bottomStart = 4.dp,
         bottomEnd = 4.dp
     ),
+    val smallRoundedStart : CornerBasedShape = RoundedCornerShape(
+        topStart = 4.dp,
+        topEnd = 0.dp,
+        bottomStart = 4.dp,
+        bottomEnd = 0.dp
+    ),
+    val smallRoundedEnd : CornerBasedShape = RoundedCornerShape(
+        topStart = 0.dp,
+        topEnd = 4.dp,
+        bottomStart = 0.dp,
+        bottomEnd = 4.dp
+    ),
     val mediumRoundedTop : CornerBasedShape = RoundedCornerShape(
         topStart = 8.dp,
         topEnd = 8.dp,
@@ -36,4 +48,5 @@ data class ZipdabangShapes(
         bottomStart = 8.dp,
         bottomEnd = 8.dp
     ),
+
 )
