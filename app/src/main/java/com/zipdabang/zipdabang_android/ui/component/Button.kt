@@ -42,7 +42,8 @@ fun PrimaryButton(
     Button(
         onClick = onClick,
         shape = ZipdabangandroidTheme.Shapes.thin,
-        modifier = Modifier,
+        modifier = Modifier
+            .fillMaxWidth(),
         colors = ButtonDefaults.buttonColors(
             containerColor = backgroundColor
         ),
@@ -72,7 +73,8 @@ fun PrimaryButtonOutLined(
     Button(
         onClick = onClick,
         shape = ZipdabangandroidTheme.Shapes.thin,
-        modifier = Modifier,
+        modifier = Modifier
+            .fillMaxWidth(),
         enabled = true,
         border = BorderStroke(1.dp, borderColor),
         colors = ButtonDefaults.buttonColors(
@@ -157,7 +159,8 @@ fun PrimaryButtonWithStatus(
         onClick = onClick,
         shape = ZipdabangandroidTheme.Shapes.thin,
         enabled = isFormFilled,
-        modifier = Modifier,
+        modifier = Modifier
+            .fillMaxWidth(),
         border = BorderStroke(1.dp, colors.Strawberry),
         colors = ButtonDefaults.buttonColors(
             containerColor = colors.Strawberry,
@@ -190,7 +193,8 @@ fun LoginButton(
     Button(
         onClick = onClick,
         shape = ZipdabangandroidTheme.Shapes.thin,
-        modifier = Modifier,
+        modifier = Modifier
+            .fillMaxWidth(),
         colors = ButtonDefaults.buttonColors(
             containerColor = backgroundColor
         ),
@@ -231,7 +235,9 @@ fun LoginButton(
 @Preview(showBackground = true)
 @Composable
 fun PrimaryButtonPreview() {
-    Column {
+    Column(
+        modifier = Modifier.padding(12.dp)
+    ) {
         PrimaryButtonWithStatus(text = "작성 완료", onClick = {}, isFormFilled = true)
         PrimaryButtonWithStatus(text = "작성 완료", onClick = {})
         LoginButton(
