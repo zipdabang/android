@@ -1,16 +1,14 @@
 package com.zipdabang.zipdabang_android.ui.component
 
-import android.widget.RadioButton
-import android.widget.RadioGroup
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
-import androidx.compose.material.icons.Icons
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -23,8 +21,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role
-import androidx.compose.ui.text.font.Font
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -141,5 +137,18 @@ fun RadioGroupHorizontalPreview() {
 @Preview
 @Composable
 fun RadioGroupVerticalPreview() {
-    RadioGroupVertical(optionList = listOf("카드", "현금", "수표"), onOptionChange = {})
+    Column(
+        modifier = Modifier.fillMaxSize()
+    ){
+        val options = listOf<String>("카드", "현금", "수표")
+        var state by remember {
+            mutableStateOf(options[0])
+        }
+
+        RadioGroupVertical(optionList = options, onOptionChange = { selectedValue -> state = selectedValue })
+        Text(text = state)
+
+
+    }
+
 }

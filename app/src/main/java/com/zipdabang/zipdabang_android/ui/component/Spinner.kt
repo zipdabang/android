@@ -36,86 +36,96 @@ fun Spinner(
         modifier = Modifier
             .fillMaxWidth()
     ) {
-        var expanded by remember {
-            mutableStateOf(false)
-        }
-        var selectedOption by remember {
-            mutableStateOf(optionList[0])
-        }
+        if (optionList.isNotEmpty()) {
+            var expanded by remember {
+                mutableStateOf(false)
+            }
+            var selectedOption by remember {
+                mutableStateOf(optionList[0])
+            }
 
-        // alpha
+            // alpha
 
-        // rotateX
+            // rotateX
 
-        ExposedDropdownMenuBox(
-            expanded = expanded,
-            onExpandedChange = { expanded = !expanded }
-        ) {
-            OutlinedTextField(
-                value = selectedOption,
-                onValueChange = {
-                    onItemChange(selectedOption)
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .menuAnchor()
-                    .background(
-                        color = if (expanded) Color(0x33262D31) else ZipdabangandroidTheme.Colors.SubBackground,
-                        shape = RoundedCornerShape(4.dp)
-                    ),
-                readOnly = true,
-                trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
-                colors =
-                if (expanded)
-                    ExposedDropdownMenuDefaults.outlinedTextFieldColors(
-                        focusedBorderColor = Color(0x33262D31),
-                        unfocusedBorderColor = ZipdabangandroidTheme.Colors.SubBackground,
-                        focusedLabelColor = ZipdabangandroidTheme.Colors.Typo,
-                        unfocusedLabelColor = ZipdabangandroidTheme.Colors.Typo
-                    )
-                else
-                    ExposedDropdownMenuDefaults.outlinedTextFieldColors(
-                        focusedBorderColor = ZipdabangandroidTheme.Colors.SubBackground,
-                        unfocusedBorderColor = ZipdabangandroidTheme.Colors.SubBackground,
-                        focusedLabelColor = ZipdabangandroidTheme.Colors.Typo,
-                        unfocusedLabelColor = ZipdabangandroidTheme.Colors.Typo
-                    ),
-                shape = ZipdabangandroidTheme.Shapes.small
-            )
-
-            ExposedDropdownMenu(
+            ExposedDropdownMenuBox(
                 expanded = expanded,
-                onDismissRequest = { expanded = false },
-                modifier = Modifier
-                    .background(ZipdabangandroidTheme.Colors.SubBackground)
+                onExpandedChange = { expanded = !expanded }
             ) {
-                optionList.forEach { option ->
-                    DropdownMenuItem(
-                        text = { Text(text = option) },
-                        onClick = {
-                            selectedOption = option
-                            expanded = false
-                            // item change에 대한 처리는 textfield onValueChange에서
-                        },
-                        contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding,
-                        modifier = Modifier
-                            .background(ZipdabangandroidTheme.Colors.SubBackground)
-                    )
+                OutlinedTextField(
+                    value = selectedOption,
+                    onValueChange = {
+
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .menuAnchor()
+                        .background(
+                            color = if (expanded) Color(0x33262D31) else ZipdabangandroidTheme.Colors.SubBackground,
+                            shape = RoundedCornerShape(4.dp)
+                        ),
+                    readOnly = true,
+                    trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
+                    colors =
+                    if (expanded)
+                        ExposedDropdownMenuDefaults.outlinedTextFieldColors(
+                            focusedBorderColor = Color(0x33262D31),
+                            unfocusedBorderColor = ZipdabangandroidTheme.Colors.SubBackground,
+                            focusedLabelColor = ZipdabangandroidTheme.Colors.Typo,
+                            unfocusedLabelColor = ZipdabangandroidTheme.Colors.Typo
+                        )
+                    else
+                        ExposedDropdownMenuDefaults.outlinedTextFieldColors(
+                            focusedBorderColor = ZipdabangandroidTheme.Colors.SubBackground,
+                            unfocusedBorderColor = ZipdabangandroidTheme.Colors.SubBackground,
+                            focusedLabelColor = ZipdabangandroidTheme.Colors.Typo,
+                            unfocusedLabelColor = ZipdabangandroidTheme.Colors.Typo
+                        ),
+                    shape = ZipdabangandroidTheme.Shapes.small
+                )
+
+                ExposedDropdownMenu(
+                    expanded = expanded,
+                    onDismissRequest = { expanded = false },
+                    modifier = Modifier
+                        .background(ZipdabangandroidTheme.Colors.SubBackground)
+                ) {
+                    optionList.forEach { option ->
+                        DropdownMenuItem(
+                            text = { Text(text = option) },
+                            onClick = {
+                                selectedOption = option
+                                expanded = false
+                                // item change에 대한 처리는 textfield onValueChange에서
+                                onItemChange(selectedOption)
+                            },
+                            contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding,
+                            modifier = Modifier
+                                .background(ZipdabangandroidTheme.Colors.SubBackground)
+                        )
+                    }
                 }
             }
         }
     }
-
 }
 
 @Preview(showBackground = true)
 @Composable
 fun SpinnerPreview() {
+
+    val names = listOf<String>("김기문", "강하현", "김예은")
+
+    var state by remember {
+        mutableStateOf(names[0])
+    }
+
     Column(
         modifier = Modifier
             .width(120.dp)
     ) {
-        Spinner(optionList = listOf("김기문", "강하현", "김예은"), onItemChange = {})
+        Spinner(optionList = names, onItemChange = { selectedOption -> state = selectedOption })
+        Text(text = state)
     }
 
 }
