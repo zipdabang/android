@@ -9,6 +9,9 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -22,7 +25,10 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.zipdabang.zipdabang_android.R
 import com.zipdabang.zipdabang_android.ui.component.CheckBoxCustom
+import com.zipdabang.zipdabang_android.ui.component.ImageWithIcon
+import com.zipdabang.zipdabang_android.ui.component.ImageWithIconAndText
 import com.zipdabang.zipdabang_android.ui.component.MainAndSubTitle
 import com.zipdabang.zipdabang_android.ui.component.RoundedButton
 import com.zipdabang.zipdabang_android.ui.component.TextFieldBasic
@@ -41,7 +47,7 @@ class MainActivity : ComponentActivity() {
                         .clip(ZipdabangandroidTheme.Shapes.smallRoundedTop),
                 ) {
                     Column(){
-                        Greeting("집다방","홈카페를 위한 모든 것이 여기에!")
+                        //Greeting("집다방","홈카페를 위한 모든 것이 여기에!")
                         var textState = remember { mutableStateOf("") }
                         TextFieldBasic(textState,
                             "ㅁㄴㅇㄹ",
@@ -72,9 +78,11 @@ class MainActivity : ComponentActivity() {
                             Column(){
                                 CheckBoxCustom(false)
                                 CheckBoxCustom(true)
-                                /*ImageWithIconAndText()
                                 Spacer(modifier = Modifier.height(10.dp))
-                                ImageWithIcon()*/
+                                var textStateThree = remember { mutableStateOf(R.drawable.ic_launcher_background) }
+                                ImageWithIcon(textStateThree)
+                                var textStateFour = remember { mutableStateOf(R.drawable.ic_launcher_background) }
+                                ImageWithIconAndText(textStateFour, Icons.Default.ShoppingCart, "파일 첨부")
                             }
                         }
                     }
