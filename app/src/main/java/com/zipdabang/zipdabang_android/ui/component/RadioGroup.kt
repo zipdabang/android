@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.selection.selectable
@@ -128,13 +129,13 @@ fun RadioGroupVertical(
 }
 
 
-@Preview
+@Preview(showBackground = true)
 @Composable
 fun RadioGroupHorizontalPreview() {
     RadioGroupHorizontal(optionList = listOf("카드", "현금", "수표"), onOptionChange = {})
 }
 
-@Preview
+@Preview(showBackground = true)
 @Composable
 fun RadioGroupVerticalPreview() {
     Column(
@@ -146,6 +147,7 @@ fun RadioGroupVerticalPreview() {
         }
 
         RadioGroupVertical(optionList = options, onOptionChange = { selectedValue -> state = selectedValue })
+        Spacer(modifier = Modifier.height(20.dp))
         Text(text = state)
 
 

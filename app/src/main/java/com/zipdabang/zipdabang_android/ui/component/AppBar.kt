@@ -33,29 +33,18 @@ import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppBarHome(
-    startIcon: ImageVector?,
     endIcon1: ImageVector?,
     endIcon2: ImageVector?,
-    onClickStartIcon: () -> Unit,
     onClickEndIcon1: () -> Unit,
     onClickEndIcon2: () -> Unit,
     centerText: String
 ) {
     TopAppBar(
-        navigationIcon = {
-            startIcon?.let {
-                IconButton(onClick = { onClickStartIcon() }) {
-                    Icon(imageVector = it, contentDescription = "", modifier = Modifier
-                        .padding(4.dp))
-                }
-
-            }
-        },
         title = {
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(start = 48.dp),
+                    .padding(start = 80.dp),
                 contentAlignment = Alignment.Center
             ) {
                 Text(
@@ -153,15 +142,54 @@ fun AppBarDefault(
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun AppBarSignUp(
+    navigationIcon: ImageVector?,
+    onClickNavIcon: () -> Unit,
+    centerText: String
+) {
+    TopAppBar(
+        navigationIcon = {
+            navigationIcon?.let {
+                IconButton(onClick = { onClickNavIcon() }) {
+                    Icon(imageVector = it, contentDescription = "", modifier = Modifier
+                        .padding(4.dp)
+                    )
+                }
+            }
+        },
+        title = {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(end = 48.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = centerText,
+                    fontSize = 30.sp,
+                    fontFamily = FontFamily(Font(R.font.cafe24ssurroundair)),
+                    color = Color(0xFFA38F85),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier
+                        .padding(top = 4.dp, bottom = 2.dp),
+                    textAlign = TextAlign.Center
+                )
+            }
+        }
+        
+    )
+}
+
 
 @Preview
 @Composable
 fun AppBarPreview() {
     AppBarHome(
-        startIcon = Icons.Default.KeyboardArrowLeft,
         endIcon1 = Icons.Default.Search,
         endIcon2 = Icons.Default.Menu,
-        onClickStartIcon = {},
         onClickEndIcon1 = {},
         onClickEndIcon2 = {},
         centerText = "집다방"
@@ -177,5 +205,15 @@ fun AppBarDefaultPreview() {
         onClickStartIcon = {},
         onClickEndIcon = {},
         centerText = "집다방"
+    )
+}
+
+@Preview
+@Composable
+fun AppBarSignUpPreview() {
+    AppBarSignUp(
+        navigationIcon = Icons.Default.KeyboardArrowLeft,
+        onClickNavIcon = { /*TODO*/ },
+        centerText = "회원가입"
     )
 }
