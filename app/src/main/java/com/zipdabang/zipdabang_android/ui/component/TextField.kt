@@ -1,6 +1,7 @@
 package com.zipdabang.zipdabang_android.ui.component
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -30,7 +31,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
 
-//2번 -> 완성
+//2번 -> 매개변수 수정
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TextFieldBasic(

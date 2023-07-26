@@ -33,7 +33,7 @@ import com.zipdabang.zipdabang_android.R
 import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
 
 
-//10번 추가 -> 완료
+//10번 추가 -> 매개변수 수정
 @Composable
 fun ImageWithIcon(
     imageUrl : MutableState<Int>,
@@ -83,6 +83,7 @@ fun ImageWithIconAndText(
     imageUrl : MutableState<Int>,
     icon : ImageVector,
     text : String,
+    //size
 ){
     //var imageUrl by remember { mutableStateOf(R.drawable.cat) }
     Box(

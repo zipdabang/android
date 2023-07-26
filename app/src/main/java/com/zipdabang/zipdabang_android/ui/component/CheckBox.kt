@@ -1,9 +1,13 @@
 package com.zipdabang.zipdabang_android.ui.component
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
@@ -14,6 +18,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -30,8 +35,10 @@ import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
 @Composable
 fun CheckBoxCustom(
     rounded : Boolean,
-) : Boolean { //return 값, isToggled?
-    var isToggled by remember { mutableStateOf(false) }
+    isToggled : Boolean,
+    onIstoggledChange : (Boolean) -> Unit,
+){
+    var isToggled by remember { mutableStateOf(isToggled) }
 
     val containerColor = if (isToggled) ZipdabangandroidTheme.Colors.Strawberry else Color.White
     val iconColor = if (isToggled) Color.White else ZipdabangandroidTheme.Colors.Strawberry
@@ -42,12 +49,15 @@ fun CheckBoxCustom(
             .clip(shapeType)
             .border(1.dp, color = ZipdabangandroidTheme.Colors.Strawberry, shape = shapeType)
             .background(Color.Transparent, shapeType)
-            .clickable { isToggled = !isToggled },
+            .fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
         IconButton(
-            onClick = { isToggled = !isToggled },
-            modifier = Modifier.size(18.dp),
+            onClick = {
+                isToggled = !isToggled
+                onIstoggledChange(isToggled)
+                      },
+            modifier = Modifier.fillMaxSize(),
             colors = IconButtonDefaults.iconButtonColors(
                 containerColor = containerColor,
                 contentColor = ZipdabangandroidTheme.Colors.Strawberry
@@ -58,23 +68,24 @@ fun CheckBoxCustom(
                 contentDescription = "check icon",
                 tint = iconColor,
                 modifier = Modifier
-                    .size(18.dp)
+                    .fillMaxSize()
                     .padding(2.dp)
             )
         }
     }
-
-    return isToggled
 }
+
 
 @Preview
 @Composable
 fun PreviewCheckBoxRounded() {
-    CheckBoxCustom(true)
+    var isToggled by remember { mutableStateOf(true) }
+    Box(modifier = Modifier.padding(16.dp)
+        .size(18.dp)){
+        CheckBoxCustom(
+            rounded =true,
+            isToggled = isToggled,
+            onIstoggledChange = {selectedToggled -> isToggled = selectedToggled })
+    }
 }
 
-@Preview
-@Composable
-fun PreviewCheckBoxNotRounded() {
-    CheckBoxCustom(false)
-}

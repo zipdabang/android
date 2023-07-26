@@ -65,7 +65,7 @@ class MainActivity : ComponentActivity() {
                             "레시피 제목 (최대 5자)",
                             ImeAction.Default,
                             5)
-                        RoundedButton(roundedImage = { /*TODO*/ }, buttonText = "생과일 음료")
+                        //RoundedButton(roundedImage = { /*TODO*/ }, buttonText = "생과일 음료")
                         MainAndSubTitle(
                             mainValue = "집다방 서비스 이용 약관",
                             mainTextStyle = ZipdabangandroidTheme.Typography.twentytwo_700,
@@ -76,8 +76,8 @@ class MainActivity : ComponentActivity() {
                         )
                         Box(modifier = Modifier.align(Alignment.CenterHorizontally)){
                             Column(){
-                                CheckBoxCustom(false)
-                                CheckBoxCustom(true)
+//                                CheckBoxCustom(false)
+//                                CheckBoxCustom(true)
                                 Spacer(modifier = Modifier.height(10.dp))
                                 var textStateThree = remember { mutableStateOf(R.drawable.ic_launcher_background) }
                                 ImageWithIcon(textStateThree)

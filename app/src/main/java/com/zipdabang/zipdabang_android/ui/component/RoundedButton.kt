@@ -23,11 +23,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
 
-//4번 -> 완성, 왜 안 보이지
+//4번 -> 매개변수 수정
 @Composable
 fun RoundedButton(
-    roundedImage : @Composable () -> Unit,
     buttonText : String,
+    //onclick
 ){
     var isToggled by remember { mutableStateOf(false) }
 
@@ -48,8 +48,8 @@ fun RoundedButton(
             horizontalArrangement = Arrangement.spacedBy(4.dp),
             verticalAlignment = Alignment.CenterVertically,
         ){
-            Box{
-                roundedImage
+            Box(){
+               //하현, 3번 component
             }
             Text(
                 text = buttonText,
@@ -61,8 +61,7 @@ fun RoundedButton(
     }
 }
 
-
-@Composable
+/*@Composable
 fun CustomBox(){
     Box(modifier = Modifier
         .size(24.dp)
@@ -72,13 +71,10 @@ fun CustomBox(){
 @Composable
 fun PreviewCustomBox(){
     CustomBox()
-}
-
+}*/
 
 @Preview
 @Composable
 fun PreviewRoundedRectangle(){
-    RoundedButton(
-        roundedImage = {CustomBox()} ,
-        buttonText = "생과일 음료" )
+    RoundedButton( buttonText = "생과일 음료" )
 }
