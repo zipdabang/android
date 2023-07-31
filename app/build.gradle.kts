@@ -1,7 +1,17 @@
+import java.util.Properties
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
 }
+
+val properties = Properties()
+val localPropertiesFile = File("local.properties")
+
+if (localPropertiesFile.exists()) {
+    localPropertiesFile.inputStream().use { properties.load(it) }
+}
+//localPropertiesFile.inputStream().use { properties.load(it) }
 
 android {
     namespace = "com.zipdabang.zipdabang_android"
@@ -18,6 +28,11 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
+
+        val kakaoNativeAppKey = properties.getProperty("kakao_native_app_key")
+        val kakaoOauthHost = properties.getProperty("kakao_oauth_host")
+        buildConfigField("String", "KAKAO_NATIVE_APP_KEY", kakaoNativeAppKey)
+        resValue("string", "kakao_oauth_host", kakaoOauthHost)
     }
 
     buildTypes {
@@ -66,4 +81,8 @@ dependencies {
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
+
+    // kakao login
+    implementation ("com.kakao.sdk:v2-all:2.15.0") // 전체 모듈 설치, 2.11.0 버전부터 지원
+    implementation ("com.kakao.sdk:v2-user:2.15.0") // 카카오 로그인
 }
