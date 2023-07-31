@@ -2,6 +2,7 @@ package com.zipdabang.zipdabang_android.ui.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentWidth
@@ -17,20 +18,20 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
 
 @Composable
-fun RectangleText(
+fun RectangleWithRadiusText(
     text :  String,
     backgroundcolor : Color,
     fontColor : Color,
     fontSize : TextUnit,
-    modifier: Modifier
 ){
 
    Surface(
        color = backgroundcolor,
-       shape = RectangleShape,
-       modifier = modifier
+       shape = ZipdabangandroidTheme.Shapes.small,
+       modifier = Modifier.fillMaxSize()
    ){
         Text(
             text = text,
@@ -53,12 +54,11 @@ fun RectangleTextPreview(){
         modifier = Modifier.padding( horizontal= 10.dp),
         contentAlignment= Alignment.TopCenter
     ) {
-        RectangleText(
+        RectangleWithRadiusText(
             text = "주문 내용을 확인하였으며, 정보제공에 동의합니다.",
             backgroundcolor = Color(0xFFD9D9D9),
             fontColor = Color(0xFF262D31),
             14.sp,
-            modifier = Modifier.padding(horizontal = 16.dp)
         )
     }
 }
