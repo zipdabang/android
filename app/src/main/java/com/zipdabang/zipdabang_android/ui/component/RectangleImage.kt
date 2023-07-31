@@ -9,6 +9,7 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.tooling.preview.Preview
 import coil.compose.AsyncImage
+import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
 
 @Composable
 fun RectangleImage(
@@ -22,6 +23,23 @@ fun RectangleImage(
         modifier = Modifier
                   .clip(RectangleShape)
                   .fillMaxSize(),
+        contentScale = ContentScale.Crop
+    )
+
+}
+
+@Composable
+fun RectangleWithRadiusImage(
+    imageUrl: Any,
+    contentDescription : String?
+) {
+
+    AsyncImage(
+        model = imageUrl,
+        contentDescription = contentDescription,
+        modifier = Modifier
+            .clip(ZipdabangandroidTheme.Shapes.small)
+            .fillMaxSize(),
         contentScale = ContentScale.Crop
     )
 

@@ -1,7 +1,9 @@
 package com.zipdabang.zipdabang_android.ui.component
 
+import android.util.Log
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Arrangement.Bottom
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -10,25 +12,20 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
-import androidx.compose.material3.Card
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.setValue
-import androidx.compose.runtime.ExperimentalComposeApi
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.BlendMode.Companion.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -37,7 +34,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
-import androidx.compose.ui.window.DialogProperties
 import com.zipdabang.zipdabang_android.R
 import com.zipdabang.zipdabang_android.ui.theme.DialogBackground
 import com.zipdabang.zipdabang_android.ui.theme.DialogGray
@@ -357,8 +353,226 @@ fun CustomDialogRecipeDelete(
     }
 }
 
+//나의 레시피 업로드 완료
+@Composable
+fun CustomDialogUploadComplete(
+    image : String,
+    setShowDialog: (Boolean) -> Unit,
+    onAccept:() -> Unit,
+) {
+
+    Dialog(onDismissRequest = { setShowDialog(false) }) {
+        Surface(
+            shape = ZipdabangandroidTheme.Shapes.small,
+            color = DialogBackground,
+            modifier = Modifier.size(width = 216.dp, height = 467.dp)
+        ) {
+
+            Column(
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_alert_close_small),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .padding(end = 8.dp)
+                        .align(Alignment.End)
+                        .clickable {
+                            setShowDialog(false)
+                        }
+                )
+
+                Spacer(modifier = Modifier.height(10.dp))
+
+                Box(modifier = Modifier.size(200.dp)){
+                    RectangleWithRadiusImage(
+                        imageUrl = image,
+                        contentDescription = "image in dialog"
+                    )
+                }
+
+                Column(
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier
+                        .padding(start = 40.dp, end = 40.dp, top = 18.dp, bottom = 8.dp)
+                )
+                {
+                    Text(
+                        text = "업로드 완료!",
+                        color = NavBlack,
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight(700)
+                    )
+                    Spacer(modifier = Modifier.height(10.dp))
+                    Text(
+                        text = "멋진 홈카페 레시피를 공유해줘서 고마워요!",
+                        textAlign = TextAlign.Center,
+                        color = NavBlack,
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight(400)
+                    )
+
+                }
+
+                Spacer(modifier = Modifier.height(10.dp))
+                Column(
+                    modifier = Modifier.padding(vertical = 8.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    TextButton(
+                        shape = ZipdabangandroidTheme.Shapes.small,
+                        colors = ButtonDefaults.buttonColors(DialogPink),
+                        onClick = { onAccept() }) {
+                        Text(
+                            text = "업로드 레시피 보러가기",
+                            color = NavBlack,
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight(500)
+                        )
+
+                    }
+                    TextButton(
+                        shape = RectangleShape,
+                        onClick = { setShowDialog(false) }) {
+                        Text(
+                            text = "나중에 보기",
+                            color = NavBlack,
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight(300)
+                        )
+
+                    }
+                }
+            }
+        }
+
+    }
+}
+
+//레시지 삭제
+@Composable
+fun CustomDialogSelectCategory(
+    categoryList: ArrayList<String>,
+    setShowDialog: (Boolean) -> Unit,
+    onSelectClick: (Int) -> Unit,
+    onCompleteClick:  () -> Unit,
+    selectedCategory: MutableState<Int>,
+) {
+
+    Dialog(onDismissRequest = { setShowDialog(false) }) {
+        Surface(
+            shape = ZipdabangandroidTheme.Shapes.small,
+            color = DialogBackground,
+            modifier = Modifier.size(width = 216.dp, height = 343.dp)
+        ) {
+
+            Column(
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+
+                Column(
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier
+                        .padding(start = 40.dp, end = 40.dp, top = 18.dp, bottom = 8.dp)
+                )
+                {
+                    Text(
+                        text = "업로드",
+                        color = NavBlack,
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight(700)
+                    )
+                    Spacer(modifier = Modifier.height(10.dp))
+                    Text(
+                        text = "레시피의 카테고리를 선택해주세요",
+                        textAlign = TextAlign.Center,
+                        color = NavBlack,
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight(400)
+                    )
+
+                }
+
+                Spacer(modifier = Modifier.height(10.dp))
+
+                NonlazyGrid(
+                    columns = 2,
+                    itemCount = categoryList.size,
+                    modifier = Modifier
+                        .padding(start = 9.dp, end = 9.dp, top = 5.dp, bottom = 5.dp)
+                ) {
+                    if (selectedCategory.value == it) {
+                        TextButton(
+                            onClick = {
+                                onSelectClick(8)
+                            },
+                            modifier = Modifier.size(width = 96.dp, height = 36.dp),
+                            shape = ZipdabangandroidTheme.Shapes.small,
+                            colors = ButtonDefaults.buttonColors(ZipdabangandroidTheme.Colors.Strawberry)
+                        )
+                        {
+                            Text(
+                                text = categoryList[it],
+                                color = NavBlack,
+                                textAlign = TextAlign.Center,
+                                fontSize = 14.sp,
+                                fontWeight = FontWeight(500)
+                            )
+                        }
+
+                    } else {
+                        TextButton(
+                            onClick = {
+                                onSelectClick(it)
+                            },
+                            modifier = Modifier.size(width = 96.dp, height = 36.dp),
+                            shape = ZipdabangandroidTheme.Shapes.small,
+                            colors = ButtonDefaults.buttonColors(DialogBackground),
+                            border = BorderStroke(1.dp, DialogGray)
+                        )
+                        {
+                            Text(
+                                text = categoryList[it],
+                                color = NavBlack,
+                                textAlign = TextAlign.Center,
+                                fontSize = 14.sp,
+                                fontWeight = FontWeight(500)
+                            )
+                        }
 
 
+                    }
+                }
+
+                val isEnabled = remember {
+                    mutableStateOf(false)
+                }
+                isEnabled.value = selectedCategory.value < 8
+
+                TextButton(
+                    enabled= isEnabled.value,
+                    shape = RectangleShape,
+                    onClick = { onCompleteClick() }
+                ) {
+                    Text(
+                        text = "선택 완료",
+                        color = NavBlack,
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight(700)
+                    )
+
+                }
+            }
+
+        }
+
+    }
+}
 
 
 @Preview
@@ -400,7 +614,7 @@ fun DialogBackgroundPreview(){
          onCameraClick = { /*TODO*/ }) {
      }
     }
-    if(!showDialog.value) {
+    if(showDialog.value) {
         CustomDialogRecipeDelete(
             setShowDialog= {
                 showDialog.value = it
@@ -408,6 +622,55 @@ fun DialogBackgroundPreview(){
             onDeleteClick = {},
             onTemporalSave ={} )
     }
+    if(showDialog.value) {
+        CustomDialogUploadComplete(
+             image ="https://pds.joongang.co.kr/svcimg/newsletter/content/202203/14/3450436a-5c23-4cc9-b8a4-2ab7c2ca8b76.jpg",
+            setShowDialog = {
+                showDialog.value = it
+            },
+            onAccept= {}
+        )
+    }
+
+    val category = remember { mutableStateOf(8) }
+
+    val categoryList = arrayListOf("커피","논카페인","티","에이드","스무디","생과일 음료","건강 음료","기타")
+
+    val isEnabled = remember { mutableStateOf(false) }
+    if(!showDialog.value){
+        CustomDialogSelectCategory(
+            categoryList = categoryList,
+            setShowDialog = {
+                showDialog.value=it
+            },
+            onSelectClick =
+          {
+            category.value = it
+          },
+            onCompleteClick = {
+                if(category.value < 8) {
+                    isEnabled.value= true
+                    showDialog.value= true
+                }
+            },
+            category
+        )
+    }
+    if(isEnabled.value){
+        CustomDialogType1(
+            title = "업로드",
+            text = "작성 완료한 레시피를 업로드 하시겠습니까",
+            declineText = "취소",
+            acceptText = "업로드",
+            setShowDialog = {
+                showDialog.value = it
+            },
+            {}
+        )
+    }
+
+
+
 
 
 
