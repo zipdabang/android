@@ -36,7 +36,7 @@ fun IconAndText(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
     ){
-        Icon( //AsyncImage를 써야하나?
+        Icon(
             painter = painterResource(id = iconImageVector),
             contentDescription = "Icon",
             tint = iconColor,
