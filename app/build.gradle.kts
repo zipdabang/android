@@ -76,6 +76,8 @@ dependencies {
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.compose.material3:material3")
     implementation("com.google.firebase:firebase-auth-ktx:22.1.0")
+    implementation("com.google.firebase:firebase-crashlytics-buildtools:2.9.7")
+    implementation("androidx.navigation:navigation-runtime-ktx:2.6.0")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
@@ -87,4 +89,20 @@ dependencies {
     // kakao login
     implementation ("com.kakao.sdk:v2-all:2.15.0") // 전체 모듈 설치, 2.11.0 버전부터 지원
     implementation ("com.kakao.sdk:v2-user:2.15.0") // 카카오 로그인
+    
+    //for Image Loading using coil
+    implementation("io.coil-kt:coil-compose:2.4.0")
+
+    //for material
+    implementation("androidx.compose.material3:material3:1.1.1")
+    implementation("androidx.compose.material3:material3-window-size-class:1.1.1")
+    implementation ("androidx.compose.material:material:1.2.0")
+
+    //for viewmodel
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.1")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.5.1")
+
+    //for navigation
+    implementation("androidx.navigation:navigation-compose:2.6.0")
+
 }

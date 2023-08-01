@@ -12,7 +12,6 @@ val BlackSesame = Color(0xFFCDC6C3)
 val Strawberry = Color(0xFFD4B2A7)
 val Cream = Color(0xFFE7D7C9)
 
-
 val Purple80 = Color(0xFFD0BCFF)
 val PurpleGrey80 = Color(0xFFCCC2DC)
 val Pink80 = Color(0xFFEFB8C8)
@@ -22,3 +21,8 @@ val PurpleGrey40 = Color(0xFF625b71)
 val Pink40 = Color(0xFF7D5260)
 
 val White = Color(0xFFFFFFFF)
+val SearchBorder = Color(0x33262D31)
+val NavBlack = Color(0XFF262D31)
+val DialogPink = Color(0xFFDFB7AB)
+val DialogBackground = Color(0xFFF7F6F6)
+val DialogGray = Color(0x80262D31)
