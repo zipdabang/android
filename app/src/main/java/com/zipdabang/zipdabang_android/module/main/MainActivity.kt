@@ -28,7 +28,6 @@ class MainActivity : ComponentActivity() {
                     color = ZipdabangandroidTheme.Colors.Strawberry,
                 ) {
                     Greeting("집다방","홈카페를 위한 모든 것이 여기에!")
-                    BottomNav()
                 }
             }
         }
