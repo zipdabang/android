@@ -96,7 +96,6 @@ fun TextFieldBasic(
             singleLine = true,
             //maxLines = 1,
             colors = TextFieldDefaults.textFieldColors(
-//                textColor = ZipdabangandroidTheme.Colors.Typo,
                 containerColor = Color(0xFFF7F6F6),
                 unfocusedIndicatorColor = //밑줄
                 if (isTextMatching(textState.value)) {
@@ -104,7 +103,6 @@ fun TextFieldBasic(
                 } else {
                     ZipdabangandroidTheme.Colors.Typo.copy(alpha = 0.5f)
                 } ,
-//                placeholderColor = ZipdabangandroidTheme.Colors.Typo.copy(alpha = 0.5f),
                 cursorColor = //쓸때 커서
                 if (isTextMatching(textState.value)) {
                     Color(0xFF6200EE)
@@ -186,7 +184,6 @@ fun TextFieldForContent(
             singleLine = singleLine,
             maxLines = maxLines,
             colors = TextFieldDefaults.textFieldColors(
-//                textColor = ZipdabangandroidTheme.Colors.Typo,
                 containerColor =  Color(0xFFF7F6F6),
                 cursorColor = ZipdabangandroidTheme.Colors.Typo,  //쓸때 커서
                 unfocusedIndicatorColor = ZipdabangandroidTheme.Colors.Typo.copy(0.2f),
