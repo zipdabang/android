@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "584039547609",
+    "project_id": "zipdabang-android",
+    "storage_bucket": "zipdabang-android.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:584039547609:android:541d0e9f8889e4e1e9f4c8",
+        "android_client_info": {
+          "package_name": "com.zipdabang.zipdabang_android"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "584039547609-m7ovq34npipkghcf09bcdl28uh6e75ma.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDpuh5Thr0kxdHwbXXEwKL6RqP4RGKLOVA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "584039547609-m7ovq34npipkghcf09bcdl28uh6e75ma.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

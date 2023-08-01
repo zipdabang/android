@@ -1,7 +1,18 @@
+import java.util.Properties
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
+    id("com.google.gms.google-services")
 }
+
+val properties = Properties()
+val localPropertiesFile = File("local.properties")
+
+if (localPropertiesFile.exists()) {
+    localPropertiesFile.inputStream().use { properties.load(it) }
+}
+//localPropertiesFile.inputStream().use { properties.load(it) }
 
 android {
     namespace = "com.zipdabang.zipdabang_android"
@@ -18,6 +29,11 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
+
+        val kakaoNativeAppKey = properties.getProperty("kakao_native_app_key")
+        val kakaoOauthHost = properties.getProperty("kakao_oauth_host")
+        buildConfigField("String", "KAKAO_NATIVE_APP_KEY", kakaoNativeAppKey)
+        resValue("string", "kakao_oauth_host", kakaoOauthHost)
     }
 
     buildTypes {
@@ -59,6 +75,7 @@ dependencies {
     implementation("androidx.compose.ui:ui-graphics")
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.compose.material3:material3")
+    implementation("com.google.firebase:firebase-auth-ktx:22.1.0")
     implementation("com.google.firebase:firebase-crashlytics-buildtools:2.9.7")
     implementation("androidx.navigation:navigation-runtime-ktx:2.6.0")
     testImplementation("junit:junit:4.13.2")
@@ -69,6 +86,10 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
 
+    // kakao login
+    implementation ("com.kakao.sdk:v2-all:2.15.0") // 전체 모듈 설치, 2.11.0 버전부터 지원
+    implementation ("com.kakao.sdk:v2-user:2.15.0") // 카카오 로그인
+    
     //for Image Loading using coil
     implementation("io.coil-kt:coil-compose:2.4.0")
 
@@ -83,7 +104,5 @@ dependencies {
 
     //for navigation
     implementation("androidx.navigation:navigation-compose:2.6.0")
-
-
 
 }
