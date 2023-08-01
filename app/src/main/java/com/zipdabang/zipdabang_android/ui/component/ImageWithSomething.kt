@@ -7,6 +7,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -17,8 +18,10 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -26,6 +29,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
@@ -33,15 +37,15 @@ import com.zipdabang.zipdabang_android.R
 import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
 
 
-//10번 추가 -> 매개변수 수정
+//10번 -> 완성
 @Composable
 fun ImageWithIcon(
-    imageUrl : MutableState<Int>,
+    imageUrl : Int,
+    onClick : () -> Unit
 ){
-    //var imageUrl by remember { mutableStateOf(R.drawable.cat) }
     Box(
         modifier = Modifier
-            .size(48.dp)
+            .fillMaxSize()
             .border(
                 BorderStroke(1.dp, ZipdabangandroidTheme.Colors.Typo.copy(0.2f)),
                 RoundedCornerShape(4.dp)
@@ -51,7 +55,7 @@ fun ImageWithIcon(
         contentAlignment = Alignment.Center,
     ) {
         AsyncImage(
-            model = imageUrl.value,
+            model = imageUrl,
             contentDescription = null,
             modifier = Modifier
                 .size(48.dp)
@@ -60,14 +64,12 @@ fun ImageWithIcon(
         )
         IconButton(
             onClick = {
-                if (imageUrl.value != null) {
-                    //사진 불러오기
-                    imageUrl.value = 0
-                }
+                onClick()
             },
         ){
             Icon(
-                painter = painterResource(id = R.drawable.imagewithicon_delete),contentDescription = "Icon",
+                painter = painterResource(id = R.drawable.my_delete_whiterounded),
+                contentDescription = "Icon",
                 tint = Color.White,
                 modifier = Modifier.size(20.dp)
                     .border(BorderStroke(0.dp, Color.Transparent), RoundedCornerShape(4.dp))
@@ -76,68 +78,95 @@ fun ImageWithIcon(
     }
 }
 
+@Preview
+@Composable
+fun PreviewImageWithIcon(){
+    //Step1 버튼을 누르면 이미지를 받아온다. 받아온 이미지를 imageUrl에 넣는다.
+    var imageUrl = R.drawable.zipdabanglogo_white
 
-//10번 -> 완료
+    //imageUrl을 imageState에 저장한다.
+    var imageState by remember { mutableStateOf(imageUrl) }
+
+
+    Box(
+        modifier = Modifier.size(100.dp)
+            .padding(16.dp)
+    ){
+        ImageWithIcon(
+            imageUrl = imageState,
+            onClick = { /* 카메라 접근 허용 후, 이미지를 받아와서 이 이미지를 imageState에 넣는다. */
+                imageState = R.drawable.ic_launcher_background
+                //imageState 변수가 변경되면 Compose는 다시 레이아웃을 계산하고 UI를 업데이트 한다.
+            }
+        )
+    }
+}
+
+
+
+
+
+
+//10번 -> 완성, icon size 설정 필요.
 @Composable
 fun ImageWithIconAndText(
-    imageUrl : MutableState<Int>,
-    icon : ImageVector,
+    imageUrl : Int,
+    addImageClick : () -> Unit, //image add할때 클릭이벤트
+    deleteImageClick : () -> Unit, //image delete할때 클릭이벤트
+    iconImageVector : Int,
+    iconModifier : Modifier,
     text : String,
-    //size
+    textStyle : TextStyle,
+    textColor : Color,
 ){
-    //var imageUrl by remember { mutableStateOf(R.drawable.cat) }
     Box(
         modifier = Modifier
-            .size(104.dp)
+            .fillMaxSize()
             .border(BorderStroke(1.dp, ZipdabangandroidTheme.Colors.Typo.copy(0.2f)))
-            .background(color = Color(0xFFF7F6F6))
-            .clickable {
-                //click했을때 일어날 일, 사진 추가하기
-            },
+            .background(color = Color(0xFFF7F6F6)),
         contentAlignment = Alignment.Center,
     ){
-        if (imageUrl.value != 0){
+        if (imageUrl != 0){
             AsyncImage(
-                model = imageUrl.value,
+                model = imageUrl,
                 contentDescription = null,
                 modifier = Modifier
-                    .size(104.dp)
+                    .fillMaxSize()
                     .border(BorderStroke(1.dp, ZipdabangandroidTheme.Colors.Typo.copy(0.2f)))
                     .background(color = Color(0xFFF7F6F6)),
                 contentScale = ContentScale.Crop,
             )
             IconButton(
                 onClick = {
-                    if (imageUrl.value != null) {
-                        //사진 불러오기
-                        imageUrl.value = 0
-                    }
+                    deleteImageClick()
                 },
                 modifier = Modifier.align(Alignment.BottomEnd)
             ) {
                 Icon(
-                    painter = painterResource(R.drawable.imagewithiconandtext_delete),
+                    painter = painterResource(R.drawable.all_delete_white),
                     contentDescription = "Icon",
                     tint = Color.White,
-                    modifier = Modifier.size(18.dp)
-                        .padding(0.dp)
+                    modifier = Modifier.size(18.dp).padding(0.dp)
                 )
             }
         } else {
             Column(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.clickable{
+                    addImageClick()
+                }
             ){
                 Icon(
-                    imageVector = icon,
+                    painter = painterResource(id = iconImageVector),
                     contentDescription = "Icon",
                     tint = ZipdabangandroidTheme.Colors.Typo.copy(0.5f),
-                    modifier = Modifier.size(30.dp)
+                    modifier = iconModifier
                 )
                 Text(
                     text = text,
-                    style = ZipdabangandroidTheme.Typography.sixteen_500,
-                    color = ZipdabangandroidTheme.Colors.Typo.copy(0.5f)
+                    style = textStyle,
+                    color = textColor,
                 )
             }
         }
@@ -145,17 +174,27 @@ fun ImageWithIconAndText(
 }
 
 
-
-@Preview
-@Composable
-fun PreviewImageWithIcon(){
-    var textState = remember { mutableStateOf(R.drawable.ic_launcher_background) }
-    ImageWithIcon(textState)
-}
-
 @Preview
 @Composable
 fun PreviewImageWithIconAndText(){
-    var textState = remember { mutableStateOf(R.drawable.ic_launcher_background) }
-    ImageWithIconAndText(textState, Icons.Default.Email, "파일 첨부")
+    var imageState by remember { mutableStateOf(0) }
+
+    Box(
+        modifier = Modifier.size(104.dp)
+    ){
+        ImageWithIconAndText(
+            imageUrl = imageState,
+            addImageClick={/* 카메라 접근해서 이미지 불러오기 */
+                                imageState = androidx.core.R.drawable.notification_bg_normal
+                          },
+            deleteImageClick={/* 이미지 삭제하기 */
+                                imageState = 0
+                             },
+            iconImageVector = R.drawable.zipdabanglogo_white,
+            iconModifier = Modifier.size(30.dp),
+            text = "파일 첨부",
+            textStyle = ZipdabangandroidTheme.Typography.sixteen_500,
+            textColor = ZipdabangandroidTheme.Colors.Typo.copy(0.5f)
+        )
+    }
 }

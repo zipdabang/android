@@ -2,6 +2,7 @@ package com.zipdabang.zipdabang_android.ui.component
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -31,7 +32,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
 
-//2번 -> 매개변수 수정
+//2번 -> 완성
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TextFieldBasic(
@@ -52,7 +53,7 @@ fun TextFieldBasic(
     }
 
     Box(
-        modifier = Modifier.padding(16.dp)
+        modifier = Modifier.fillMaxSize()
     ) {
         TextField(
             value = textState.value,
@@ -140,6 +141,16 @@ fun TextFieldBasic(
     }
 }
 
+
+@Preview
+@Composable
+fun PreviewTextFieldBasic(){
+    var textState = remember { mutableStateOf("") }
+    TextFieldBasic(textState,"ㅁㄴㅇㄹ","이름","이름", "회원정보가 잘못됐습니다","맞습니다", KeyboardType.Text, ImeAction.Next)
+}
+
+
+
 //5번 -> 완성
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -187,14 +198,6 @@ fun TextFieldForContent(
             ),
         )
     }
-}
-
-
-@Preview
-@Composable
-fun PreviewTextFieldBasic(){
-    var textState = remember { mutableStateOf("") }
-    TextFieldBasic(textState,"ㅁㄴㅇㄹ","이름","이름", "회원정보가 잘못됐습니다","맞습니다", KeyboardType.Text, ImeAction.Next)
 }
 
 

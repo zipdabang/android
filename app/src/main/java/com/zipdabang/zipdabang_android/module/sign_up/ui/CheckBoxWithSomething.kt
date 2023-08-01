@@ -37,7 +37,7 @@ fun CheckBotWithTextAndButton(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
     ){
-        var isToggled by remember { mutableStateOf(false) }
+        var isChecked by remember { mutableStateOf(false) }
         Box(
             modifier = Modifier.weight(0.1f)
                 .size(24.dp),
@@ -48,8 +48,8 @@ fun CheckBotWithTextAndButton(
             ){
                 CheckBoxCustom(
                     rounded =true,
-                    isToggled = isToggled,
-                    onIstoggledChange = {selectedToggled -> isToggled = selectedToggled })
+                    isChecked  = isChecked,
+                    isCheckedChange = {selectedToggled -> isChecked = selectedToggled })
             }
         }
         Spacer(
