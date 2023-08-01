@@ -31,6 +31,7 @@ import com.zipdabang.zipdabang_android.ui.component.MainAndSubTitle
 import com.zipdabang.zipdabang_android.ui.component.TextFieldBasic
 import com.zipdabang.zipdabang_android.ui.component.TextFieldForContent
 import com.zipdabang.zipdabang_android.module.bottom.ui.BottomNav
+import com.zipdabang.zipdabang_android.ui.component.SearchBar
 import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
 
 class MainActivity : ComponentActivity() {
@@ -45,8 +46,9 @@ class MainActivity : ComponentActivity() {
                         .clip(ZipdabangandroidTheme.Shapes.small),
                     color = ZipdabangandroidTheme.Colors.Strawberry,
                 ) {
-                    Column(){
+                    Column {
                         Greeting("집다방","홈카페를 위한 모든 것이 여기에!")
+                        SearchBar()
                     }
                 }
             }
