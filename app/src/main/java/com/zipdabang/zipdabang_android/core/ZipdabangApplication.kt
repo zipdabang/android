@@ -12,6 +12,7 @@ class ZipdabangApplication: Application() {
         KakaoSdk.init(this, BuildConfig.KAKAO_NATIVE_APP_KEY)
 
         var keyHash = Utility.getKeyHash(this)
-        Log.i("keyHash", keyHash)
+        Log.i("keyHash string", keyHash)
+
     }
 }
