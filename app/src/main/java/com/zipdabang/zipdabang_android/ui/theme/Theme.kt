@@ -37,10 +37,10 @@ private val DarkThemeColors = ZipdabangColors(
     Typo = Typo,
     MainBackground = MainBackground,
     SubBackground = SubBackground,
-    Choco = Purple80,
+    Choco = Choco,
     Latte = Latte,
     BlackSesame = BlackSesame,
-    Strawberry = Pink80,
+    Strawberry = Strawberry,
     Cream = Cream,
     isLight = false,
 )
