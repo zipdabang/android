@@ -1,3 +1,2 @@
-package com.zipdabang.zipdabang_android.common
+package com.zipdabang.zipdabang_android.module.login
 
-data class UserLoginInfo()

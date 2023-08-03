@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">집다방</string>
+    <string name="zipdabang_title">집다방</string>
+    <string name="zipdabang_subtitle">홈카페를 위한 모든 것이 여기에!</string>
 </resources>

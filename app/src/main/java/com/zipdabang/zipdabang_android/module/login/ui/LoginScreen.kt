@@ -1,26 +1,22 @@
-package com.zipdabang.zipdabang_android.module.login
+package com.zipdabang.zipdabang_android.module.login.ui
 
+import android.app.Activity.RESULT_OK
 import android.util.Log
-import androidx.compose.foundation.Indication
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.indication
-import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.IntentSenderRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -28,17 +24,21 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.google.android.gms.auth.api.identity.Identity
 import com.zipdabang.zipdabang_android.R
-import com.zipdabang.zipdabang_android.common.Resource
+import com.zipdabang.zipdabang_android.module.login.GoogleAuthClient
+import com.zipdabang.zipdabang_android.module.login.KakaoAuthClient
+import com.zipdabang.zipdabang_android.module.login.LoginState
+import com.zipdabang.zipdabang_android.module.login.LoginViewModel
 import com.zipdabang.zipdabang_android.module.splash.ui.SplashTitle
 import com.zipdabang.zipdabang_android.ui.component.LoginButton
 import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
-import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 
 @Composable
 fun LoginScreen() {
@@ -48,7 +48,42 @@ fun LoginScreen() {
     val context = LocalContext.current
     val viewModel = viewModel<LoginViewModel>()
 
-    val state = viewModel.state
+    val scope = rememberCoroutineScope()
+
+    val googleAuthClient by lazy {
+        GoogleAuthClient(
+            context = context.applicationContext,
+            oneTapClient = Identity.getSignInClient(context.applicationContext)
+        )
+    }
+
+    val kakaoAuthClient by lazy {
+        KakaoAuthClient()
+    }
+
+
+    val launcher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.StartIntentSenderForResult(),
+        onResult = { result ->
+            Log.d(TAG, "onResult ${result.resultCode}")
+            if (result.resultCode == RESULT_OK) {
+                scope.launch {
+                    Log.d(TAG, "Sign In launcher started")
+                    val signInResult = googleAuthClient.signInWithIntent(
+                        intent = result.data ?: return@launch
+                    )
+
+                    Log.d(TAG, "Sign In Result : ${signInResult}")
+
+                    // viewmodel에 전달
+
+                    signInResult?.let {
+
+                    }
+                }
+            }
+        }
+    )
 
     Surface(
         modifier = Modifier
@@ -81,7 +116,16 @@ fun LoginScreen() {
                     icon = googleIcon ,
                     text = "구글로 시작하기",
                     onClick = {
-                        /* TODO 구글 로그인 처리 */
+                        scope.launch {
+                            val signInIntentSender = googleAuthClient.signIn()
+                            Log.d(TAG, "Google Sign In entering")
+                            launcher.launch(
+                                IntentSenderRequest.Builder(
+                                    signInIntentSender ?: return@launch
+                                ).build()
+                            )
+                            Log.d(TAG, "Google Sign In entering")
+                        }
                     },
                     backgroundColor = ZipdabangandroidTheme.Colors.SubBackground
                 )
@@ -94,7 +138,13 @@ fun LoginScreen() {
                     text = "카카오로 시작하기",
                     onClick = {
                         Log.d(TAG, "클릭")
-                        viewModel.kakaoLogin(context)
+                        scope.launch {
+                            kakaoAuthClient.signIn(context)
+                        }
+                        /*viewModel.apply {
+                            resetState()
+                            kakaoLogin(context)
+                        }*/
                     },
                     backgroundColor = Color(0xFFFEE500)
                 )
@@ -120,10 +170,3 @@ fun LoginScreen() {
         }
     }
 }
-
-/*
-@Preview(showBackground = true)
-@Composable
-fun LoginScreenPreview() {
-    LoginScreen()
-}*/

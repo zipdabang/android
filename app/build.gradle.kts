@@ -4,6 +4,9 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("com.google.gms.google-services")
+    id ("com.google.dagger.hilt.android")
+    // kapt 사용 목적
+    id ("kotlin-kapt")
 }
 
 val properties = Properties()
@@ -32,8 +35,10 @@ android {
 
         val kakaoNativeAppKey = properties.getProperty("kakao_native_app_key")
         val kakaoOauthHost = properties.getProperty("kakao_oauth_host")
+        val googleWebClientId = properties.getProperty("google_web_client_id")
         buildConfigField("String", "KAKAO_NATIVE_APP_KEY", kakaoNativeAppKey)
         resValue("string", "kakao_oauth_host", kakaoOauthHost)
+        buildConfigField("String", "GOOGLE_WEB_CLIENT_ID", googleWebClientId)
     }
 
     buildTypes {
@@ -46,11 +51,11 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "17"
     }
     buildFeatures {
         compose = true
@@ -86,6 +91,14 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
 
+    // firebase
+    // for auth
+    implementation(platform("com.google.firebase:firebase-bom:32.2.0"))
+    implementation("com.google.android.gms:play-services-auth:20.6.0")
+
+    // for cloud messaging
+
+
     // kakao login
     implementation ("com.kakao.sdk:v2-all:2.15.0") // 전체 모듈 설치, 2.11.0 버전부터 지원
     implementation ("com.kakao.sdk:v2-user:2.15.0") // 카카오 로그인
@@ -105,4 +118,14 @@ dependencies {
     //for navigation
     implementation("androidx.navigation:navigation-compose:2.6.0")
 
+    // dagger-hilt for DI
+    implementation ("com.google.dagger:hilt-android:2.47")
+    kapt ("com.google.dagger:hilt-compiler:2.47")
+    kapt ("androidx.hilt:hilt-compiler:1.0.0")
+    implementation ("androidx.hilt:hilt-navigation-compose:1.0.0")
+
+}
+
+kapt {
+    correctErrorTypes = true
 }
