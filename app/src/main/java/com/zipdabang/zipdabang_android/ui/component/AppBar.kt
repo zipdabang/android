@@ -188,6 +188,50 @@ fun AppBarSignUp(
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun AppBarMy(
+    endIcon: ImageVector?,
+    onClickEndIcon: () -> Unit,
+    centerText: String
+) {
+    TopAppBar(
+        title = {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 32.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = centerText,
+                    fontSize = 30.sp,
+                    fontFamily = FontFamily(Font(R.font.cafe24ssurroundair)),
+                    color = Color(0xFFA38F85),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier
+                        .padding(top = 4.dp, bottom = 2.dp),
+                    textAlign = TextAlign.Center
+                )
+            }
+        },
+        actions = {
+            endIcon?.let {
+                IconButton(onClick = { onClickEndIcon() }) {
+                    Icon(
+                        imageVector = endIcon,
+                        contentDescription = "search",
+                        modifier = Modifier
+                            .padding(4.dp),
+                    )
+                }
+            }
+
+        }
+    )
+}
+
 
 @Preview
 @Composable
@@ -220,5 +264,15 @@ fun AppBarSignUpPreview() {
         navigationIcon = Icons.Default.KeyboardArrowLeft,
         onClickNavIcon = { /*TODO*/ },
         centerText = "회원가입"
+    )
+}
+
+@Preview
+@Composable
+fun AppBarMyPreview() {
+    AppBarMy(
+        endIcon = Icons.Default.Menu,
+        onClickEndIcon = { /*TODO*/ },
+        centerText = "집다방"
     )
 }
