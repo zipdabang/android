@@ -34,20 +34,24 @@ import com.zipdabang.zipdabang_android.module.login.GoogleAuthClient
 import com.zipdabang.zipdabang_android.module.login.KakaoAuthClient
 import com.zipdabang.zipdabang_android.module.login.LoginState
 import com.zipdabang.zipdabang_android.module.login.LoginViewModel
+import com.zipdabang.zipdabang_android.module.login.SocialLoginResult
+import com.zipdabang.zipdabang_android.module.login.UserLoginInfo
 import com.zipdabang.zipdabang_android.module.splash.ui.SplashTitle
 import com.zipdabang.zipdabang_android.ui.component.LoginButton
 import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @Composable
 fun LoginScreen() {
-
     val TAG = "LoginScreen"
 
     val context = LocalContext.current
     val viewModel = viewModel<LoginViewModel>()
-
     val scope = rememberCoroutineScope()
 
     val googleAuthClient by lazy {
@@ -61,6 +65,7 @@ fun LoginScreen() {
         KakaoAuthClient()
     }
 
+    lateinit var googleUserInfo: Deferred<UserLoginInfo>
 
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartIntentSenderForResult(),
@@ -68,17 +73,20 @@ fun LoginScreen() {
             Log.d(TAG, "onResult ${result.resultCode}")
             if (result.resultCode == RESULT_OK) {
                 scope.launch {
-                    Log.d(TAG, "Sign In launcher started")
                     val signInResult = googleAuthClient.signInWithIntent(
                         intent = result.data ?: return@launch
                     )
-
                     Log.d(TAG, "Sign In Result : ${signInResult}")
 
-                    // viewmodel에 전달
-
-                    signInResult?.let {
-
+                    signInResult?.data?.let {
+                        if (it.email != null && it.profile != null) {
+                            googleUserInfo = async {
+                                UserLoginInfo(
+                                    profile = it.profile,
+                                    email = it.email
+                                )
+                            }
+                        }
                     }
                 }
             }
@@ -124,7 +132,21 @@ fun LoginScreen() {
                                     signInIntentSender ?: return@launch
                                 ).build()
                             )
-                            Log.d(TAG, "Google Sign In entering")
+
+                            val userInfo = googleUserInfo.await()
+
+                            if (userInfo.profile != null && userInfo.email != null) {
+
+                            } else {
+                                withContext(Dispatchers.Main) {
+
+                                }
+                            }
+
+                            // back-end database access
+
+                            // main ui
+
                         }
                     },
                     backgroundColor = ZipdabangandroidTheme.Colors.SubBackground
@@ -139,7 +161,16 @@ fun LoginScreen() {
                     onClick = {
                         Log.d(TAG, "클릭")
                         scope.launch {
-                            kakaoAuthClient.signIn(context)
+                            val result = kakaoAuthClient.signIn(context)
+                            if (result.data?.profile != null && result.data.email != null) {
+                                // back-end database access
+                                val email = result.data.email
+                                val profile = result.data.profile
+
+
+                            } else {
+
+                            }
                         }
                         /*viewModel.apply {
                             resetState()
