@@ -38,43 +38,8 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             ZipdabangandroidTheme {
-                // A surface container using the 'background' color from the theme
-                Surface(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .clip(ZipdabangandroidTheme.Shapes.small),
-                    color = ZipdabangandroidTheme.Colors.Strawberry,
-                ) {
-                    Column(){
-                        Greeting("집다방","홈카페를 위한 모든 것이 여기에!")
-                    }
-                }
+                BottomNav() //여기에 scaffold 있음
             }
         }
-    }
-}
-
-@Composable
-fun Greeting(name: String, name2: String, modifier: Modifier = Modifier) {
-    Column(){
-        Text(
-            text = "$name",
-            modifier = Modifier.background(ZipdabangandroidTheme.Colors.Cream),
-            style = ZipdabangandroidTheme.Typography.logo,
-            color = ZipdabangandroidTheme.Colors.Choco,)
-        Text(
-            text = "$name2",
-            modifier = Modifier.background(ZipdabangandroidTheme.Colors.Cream),
-            style = ZipdabangandroidTheme.Typography.underLogo,
-            color = ZipdabangandroidTheme.Colors.Choco,
-        )
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    ZipdabangandroidTheme {
-        Greeting("집다방","홈카페를 위한 모든 것이 여기에!")
     }
 }

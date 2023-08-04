@@ -146,25 +146,31 @@ data class ZipdabangTypography (
         letterSpacing = -1.7.sp,
     ),
 
+    val twelve_500 : TextStyle = defaultTextStyle.copy(
+        fontFamily = Kopubworld,
+        fontWeight = FontWeight.Medium,
+        fontSize = 12.sp,
+        letterSpacing = -1.0.sp,
+    ),
     val twelve_300 : TextStyle = defaultTextStyle.copy(
         fontFamily = Kopubworld,
         fontWeight = FontWeight.Light,
         fontSize = 12.sp,
-        letterSpacing = -1.7.sp,
+        letterSpacing = -1.0.sp,
     ),
 
     val ten_300 : TextStyle = defaultTextStyle.copy(
         fontFamily = Kopubworld,
         fontWeight = FontWeight.Light,
         fontSize = 10.sp,
-        letterSpacing = -1.7.sp,
+        letterSpacing = 0.sp,
     ),
 
     val eight_300 : TextStyle = defaultTextStyle.copy(
         fontFamily = Kopubworld,
         fontWeight = FontWeight.Light,
         fontSize = 8.sp,
-        letterSpacing = -1.7.sp,
+        letterSpacing = 0.sp,
     ),
 
     )
