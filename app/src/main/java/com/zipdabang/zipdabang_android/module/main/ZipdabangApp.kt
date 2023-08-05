@@ -90,8 +90,8 @@ fun ZipdabangApp(){
                 ) {
                     Scaffold( //material3 Scaffold를 이용함
                         topBar = {
-                            AppBarHome(
-                                endIcon1 = Icons.Default.Search,
+                            AppBarHome( //AppBar 문제 논의!!!
+                                endIcon1 = Icons.Default.Search, //아이콘 바꾸기???
                                 endIcon2 = Icons.Default.Menu,
                                 onClickEndIcon1 = {},
                                 onClickEndIcon2 = { scope.launch { drawerState.open() } },
