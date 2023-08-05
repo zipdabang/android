@@ -39,88 +39,6 @@ import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
-
-@Composable
-fun DrawerScreen(
-    //activityContentScope : @Composable (state: DrawerState, scope: CoroutineScope) -> Unit
-){
-    /*val state = rememberDrawerState(initialValue = DrawerValue.Closed)
-    val scope = rememberCoroutineScope()
-
-    ModalNavigationDrawer(
-        modifier = Modifier
-            .fillMaxHeight()
-            .fillMaxWidth(0.8f),
-        scrimColor = ZipdabangandroidTheme.Colors.MainBackground,
-        gesturesEnabled = true,
-        drawerState = state,
-        drawerContent = {
-            Column(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalAlignment =  Alignment.CenterHorizontally,
-                ){
-                Text(text="집다방 개발자 정보")
-                Text(text="집다방 개발자 정보")
-            }
-        },
-    ) {
-        activityContentScope(state, scope)
-    }*/
-    val drawerState = rememberDrawerState(DrawerValue.Closed)
-    val scope = rememberCoroutineScope()
-
-    //Rtl로 drawer가 오른쪽에서 왼쪽으로 열리게끔 해준다
-    CompositionLocalProvider (
-        LocalLayoutDirection provides LayoutDirection.Rtl
-    ){
-        ModalNavigationDrawer(
-            drawerState = drawerState,
-            drawerContent = {
-                ModalDrawerSheet(
-                    modifier = Modifier
-                        .fillMaxHeight()
-                        .width(300.dp),
-                    drawerContainerColor = Color.White,
-                    drawerTonalElevation = DrawerDefaults.ModalDrawerElevation,
-                    ) {
-                    //activityContentScope(drawerState, scope)
-                    DrawerContent(
-                        infoOnClick = {Log.d("drawer", "집다방 정보")},
-                        noticeOnClick = {Log.d("drawer","공지사항")},
-                        ToSOnClick = {Log.d("drawer","서비스 이용 약관")},
-                        privacyAgreeOnClick = {Log.d("drawer","개인정보 제 3자 동의")},
-                        privacyOnClick = {Log.d("drawer","개인정보 처리방침")},
-                        FAGOnClick = {Log.d("drawer","FAG")},
-                        inquiryOnClick = {Log.d("drawer","오류신고 및 문의하기")},
-                        loginOnClick = {Log.d("drawer","로그인하기")},
-                        userOnClick = {Log.d("drawer","회원 정보")},
-                        alarmOnClick = {Log.d("drawer","알림 정보")},
-                        etcOnClick = {Log.d("drawer","기타 정보")},
-                    )
-                }
-            },
-            gesturesEnabled = drawerState.currentValue == DrawerValue.Open,
-            content = {
-                //여기다가 메인 화면, 즉 바탐네비게이션이랑 탑바가 있는 screen을 두면 될듯?
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(16.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Button(
-                        onClick = {
-                            scope.launch { drawerState.open() }
-                        }
-                    ){
-                        Text("Click to open")
-                    }
-                }
-            }
-        )
-    }
-}
-
 @Composable
 fun DrawerContent(
     infoOnClick :  () -> Unit,
@@ -406,6 +324,7 @@ fun DrawerContent(
         }
     }
 }
+
 @Preview
 @Composable
 fun PreviewDrawerContent(){
@@ -424,12 +343,5 @@ fun PreviewDrawerContent(){
     )
 }
 
-@Preview
-@Composable
-fun PreviewDrawerScreen(){
-    /*DrawerScreen{ state, scope ->
-
-    }*/
-}
 
 

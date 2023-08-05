@@ -103,6 +103,9 @@ fun AppBarDefault(
     centerText: String
 ) {
     TopAppBar(
+        colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = Color.White //예은 - topAppBar containercolor 수정
+        ),
         navigationIcon = {
             startIcon?.let {
                 IconButton(onClick = { onClickStartIcon() }) {
@@ -155,6 +158,9 @@ fun AppBarSignUp(
     centerText: String
 ) {
     TopAppBar(
+        colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = Color.White //예은 - topAppBar containercolor 수정
+        ),
         navigationIcon = {
             navigationIcon?.let {
                 IconButton(onClick = { onClickNavIcon() }) {
@@ -196,6 +202,9 @@ fun AppBarMy(
     centerText: String
 ) {
     TopAppBar(
+        colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = Color.White //예은 - topAppBar containercolor 수정
+        ),
         title = {
             Box(
                 modifier = Modifier

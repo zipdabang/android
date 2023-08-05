@@ -24,9 +24,9 @@ import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
 fun BottomNavigationBar(
     navController: NavController,
     modifier: Modifier = Modifier,
-    onItemClick: (BottomMenuContent) -> Unit
+    onItemClick: (BottomMenuContent) -> Unit,
+    onItemSelected: (BottomMenuContent) -> Unit,
 ) {
-
     val items = listOf(
         BottomMenuContent.market,
         BottomMenuContent.basket,
@@ -35,6 +35,7 @@ fun BottomNavigationBar(
         BottomMenuContent.my
     )
     val backStackEntry = navController.currentBackStackEntryAsState()
+
     BottomNavigation(
         modifier = modifier,
         backgroundColor = Color.White,
@@ -43,7 +44,12 @@ fun BottomNavigationBar(
             val selected = item.route == backStackEntry.value?.destination?.route
             BottomNavigationItem(
                 selected = selected,
-                onClick = { onItemClick(item) },
+                onClick = {
+                    onItemClick(item)
+                    if (selected) {
+                        onItemSelected(item)
+                    }
+                },
                 selectedContentColor = ZipdabangandroidTheme.Colors.Latte,
                 unselectedContentColor = NavBlack,
                 icon = {
@@ -78,9 +84,6 @@ fun BottomNavigationBar(
                         }
                     }
                 })
-
         }
-
-
     }
 }

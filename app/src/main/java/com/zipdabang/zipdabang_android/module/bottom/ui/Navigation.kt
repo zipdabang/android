@@ -13,7 +13,6 @@ fun Navigation(
     navController: NavHostController
 ){
     NavHost(navController =  navController, startDestination = "home"){
-
         composable("market"){
             MarketScreen()
         }
