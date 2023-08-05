@@ -94,7 +94,7 @@ fun ZipdabangApp(){
                                 endIcon1 = Icons.Default.Search,
                                 endIcon2 = Icons.Default.Menu,
                                 onClickEndIcon1 = {},
-                                onClickEndIcon2 = {},
+                                onClickEndIcon2 = { scope.launch { drawerState.open() } },
                                 centerText = "집다방"
                             )
                         },
