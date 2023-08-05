@@ -26,11 +26,14 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.rememberNavController
+import com.zipdabang.zipdabang_android.R
 import com.zipdabang.zipdabang_android.module.bottom.BottomMenuContent
 import com.zipdabang.zipdabang_android.module.bottom.ui.BottomNavigationBar
 import com.zipdabang.zipdabang_android.module.bottom.ui.Navigation
@@ -42,15 +45,10 @@ import kotlinx.coroutines.launch
 @Composable
 fun ZipdabangApp(){
     var isBottomNavigationSelected = remember { mutableStateOf<BottomMenuContent>(BottomMenuContent.home) }
-    var centerText = remember{ mutableStateOf<String>("집다방") }
 
     val navController = rememberNavController()
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
-
-    LaunchedEffect(isBottomNavigationSelected.value) {
-        centerText.value = getScreenTitle(isBottomNavigationSelected.value)
-    }
 
     //drawer가 오른쪽에서 왼쪽으로 나오게끔 하기 위함
     //ㄴ사실 이거 오른쪽에서 왼쪽으로 글을 읽는 나라들을 위한 건데, drawer 또한 오른쪽에서 왼쪽으로 나와서 설정함
@@ -93,20 +91,12 @@ fun ZipdabangApp(){
                     Scaffold( //material3 Scaffold를 이용함
                         topBar = {
                             AppBarHome(
-                                endIcon1 = Icons.Default.Search, //이거 아이콘 넣기
-                                endIcon2 = Icons.Default.Menu, //이거 아이콘 넣기
-                                onClickEndIcon1 = { /* search창 열리면 됨*/ },
-                                onClickEndIcon2 = { /* drawer 열림*/
-                                    scope.launch { drawerState.open() }
-                                },
-                                centerText = centerText.value,
+                                endIcon1 = Icons.Default.Search,
+                                endIcon2 = Icons.Default.Menu,
+                                onClickEndIcon1 = {},
+                                onClickEndIcon2 = {},
+                                centerText = "집다방"
                             )
-                                 // 이 함수는 화면 상태에 따라 달라지는 topappbar 제목을 다르게 하기 위해 만들었음
-                                /*AppBarContent(
-                                    selectedItem = isBottomNavigationSelected.value,
-                                    scope = scope,
-                                    drawerState = drawerState
-                                )*/
                         },
                         bottomBar = {
                             BottomNavigationBar(
@@ -130,84 +120,6 @@ fun ZipdabangApp(){
     }
 }
 
-fun getScreenTitle(screenIndex: BottomMenuContent): String {
-    return when (screenIndex) {
-        BottomMenuContent.market -> "마켓"
-        BottomMenuContent.basket -> "장바구니"
-        BottomMenuContent.home -> "집다방"
-        BottomMenuContent.recipes -> "레시피"
-        BottomMenuContent.my -> "내집다방"
-    }
-}
-
-@Composable
-fun AppBarContent(
-    selectedItem: BottomMenuContent,
-    scope: CoroutineScope,
-    drawerState: DrawerState
-){
-        when (selectedItem) {
-            BottomMenuContent.market -> {
-                AppBarHome(
-                    endIcon1 = Icons.Default.Search, //이거 아이콘 넣기
-                    endIcon2 = Icons.Default.Menu, //이거 아이콘 넣기
-                    onClickEndIcon1 = { /* search창 열리면 됨*/ },
-                    onClickEndIcon2 = { /* drawer 열림*/
-                        scope.launch { drawerState.open() }
-                    },
-                    centerText = "마켓"
-                )
-            }
-
-            BottomMenuContent.basket -> {
-                AppBarHome(
-                    endIcon1 = Icons.Default.Search, //이거 아이콘 넣기
-                    endIcon2 = Icons.Default.Menu, //이거 아이콘 넣기
-                    onClickEndIcon1 = { /* search창 열리면 됨*/ },
-                    onClickEndIcon2 = { /* drawer 열림*/
-                        scope.launch { drawerState.open() }
-                    },
-                    centerText = "장바구니"
-                )
-            }
-
-            BottomMenuContent.home -> {
-                AppBarHome(
-                    endIcon1 = Icons.Default.Search, //이거 아이콘 넣기
-                    endIcon2 = Icons.Default.Menu, //이거 아이콘 넣기
-                    onClickEndIcon1 = { /* search창 열리면 됨*/ },
-                    onClickEndIcon2 = { /* drawer 열림*/
-                        scope.launch { drawerState.open() }
-                    },
-                    centerText = "집다방"
-                )
-            }
-
-            BottomMenuContent.recipes -> {
-                AppBarHome(
-                    endIcon1 = Icons.Default.Search, //이거 아이콘 넣기
-                    endIcon2 = Icons.Default.Menu, //이거 아이콘 넣기
-                    onClickEndIcon1 = { /* search창 열리면 됨*/ },
-                    onClickEndIcon2 = { /* drawer 열림*/
-                        scope.launch { drawerState.open() }
-                    },
-                    centerText = "레시피"
-                )
-            }
-
-            BottomMenuContent.my -> {
-                AppBarHome(
-                    endIcon1 = Icons.Default.Search, //이거 아이콘 넣기
-                    endIcon2 = Icons.Default.Menu, //이거 아이콘 넣기
-                    onClickEndIcon1 = { /* search창 열리면 됨*/ },
-                    onClickEndIcon2 = { /* drawer 열림*/
-                        scope.launch { drawerState.open() }
-                    },
-                    centerText = "내집다방"
-                )
-            }
-        }
-}
 
 @Preview
 @Composable
