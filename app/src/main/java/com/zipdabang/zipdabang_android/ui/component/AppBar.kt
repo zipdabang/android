@@ -20,6 +20,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
@@ -33,8 +34,8 @@ import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppBarHome(
-    endIcon1: ImageVector?,
-    endIcon2: ImageVector?,
+    endIcon1: Int?,
+    endIcon2: Int?,
     onClickEndIcon1: () -> Unit,
     onClickEndIcon2: () -> Unit,
     centerText: String
@@ -64,10 +65,10 @@ fun AppBarHome(
             endIcon1?.let {
                 IconButton(onClick = { onClickEndIcon1() }) {
                     Icon(
-                        imageVector = endIcon1,
+                        painter = painterResource(id = endIcon1),
                         contentDescription = "search",
                         modifier = Modifier
-                            .padding(4.dp),
+                            .padding(4.dp)
                     )
                 }
             }
@@ -75,11 +76,10 @@ fun AppBarHome(
             endIcon2?.let {
                 IconButton(onClick = { onClickEndIcon2() }) {
                     Icon(
-                        imageVector = endIcon2,
+                        painter = painterResource(id = endIcon2),
                         contentDescription = "menu",
                         modifier = Modifier
                             .padding(4.dp)
-
                     )
                 }
             }
@@ -91,8 +91,8 @@ fun AppBarHome(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppBarDefault(
-    startIcon: ImageVector?,
-    endIcon: ImageVector?,
+    startIcon: Int?,
+    endIcon: Int?,
     onClickStartIcon: () -> Unit,
     onClickEndIcon: () -> Unit,
     centerText: String
@@ -101,8 +101,12 @@ fun AppBarDefault(
         navigationIcon = {
             startIcon?.let {
                 IconButton(onClick = { onClickStartIcon() }) {
-                    Icon(imageVector = it, contentDescription = "", modifier = Modifier
-                        .padding(4.dp))
+                    Icon(
+                        painter = painterResource(id = it),
+                        contentDescription = "",
+                        modifier = Modifier
+                            .padding(4.dp)
+                    )
                 }
 
             }
@@ -130,7 +134,7 @@ fun AppBarDefault(
             endIcon?.let {
                 IconButton(onClick = { onClickEndIcon() }) {
                     Icon(
-                        imageVector = endIcon,
+                        painter = painterResource(id = endIcon),
                         contentDescription = "menu",
                         modifier = Modifier
                             .padding(4.dp),
@@ -145,7 +149,7 @@ fun AppBarDefault(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppBarSignUp(
-    navigationIcon: ImageVector?,
+    navigationIcon: Int?,
     onClickNavIcon: () -> Unit,
     centerText: String
 ) {
@@ -153,7 +157,7 @@ fun AppBarSignUp(
         navigationIcon = {
             navigationIcon?.let {
                 IconButton(onClick = { onClickNavIcon() }) {
-                    Icon(imageVector = it, contentDescription = "", modifier = Modifier
+                    Icon(painter = painterResource(id = it), contentDescription = "", modifier = Modifier
                         .padding(4.dp)
                     )
                 }
@@ -183,13 +187,57 @@ fun AppBarSignUp(
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun AppBarMy(
+    endIcon: Int?,
+    onClickEndIcon: () -> Unit,
+    centerText: String
+) {
+    TopAppBar(
+        title = {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 32.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = centerText,
+                    fontSize = 30.sp,
+                    fontFamily = FontFamily(Font(R.font.cafe24ssurroundair)),
+                    color = Color(0xFFA38F85),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier
+                        .padding(top = 4.dp, bottom = 2.dp),
+                    textAlign = TextAlign.Center
+                )
+            }
+        },
+        actions = {
+            endIcon?.let {
+                IconButton(onClick = { onClickEndIcon() }) {
+                    Icon(
+                        painter = painterResource(id = endIcon),
+                        contentDescription = "search",
+                        modifier = Modifier
+                            .padding(4.dp),
+                    )
+                }
+            }
+
+        }
+    )
+}
+
 
 @Preview
 @Composable
 fun AppBarPreview() {
     AppBarHome(
-        endIcon1 = Icons.Default.Search,
-        endIcon2 = Icons.Default.Menu,
+        endIcon1 = com.kakao.sdk.friend.R.drawable.material_ic_keyboard_arrow_left_black_24dp,
+        endIcon2 = androidx.appcompat.R.drawable.abc_ic_menu_copy_mtrl_am_alpha,
         onClickEndIcon1 = {},
         onClickEndIcon2 = {},
         centerText = "집다방"
@@ -200,8 +248,8 @@ fun AppBarPreview() {
 @Composable
 fun AppBarDefaultPreview() {
     AppBarDefault(
-        startIcon = Icons.Default.KeyboardArrowLeft,
-        endIcon = Icons.Default.Menu,
+        startIcon = com.kakao.sdk.friend.R.drawable.material_ic_keyboard_arrow_left_black_24dp,
+        endIcon = androidx.appcompat.R.drawable.abc_ic_menu_copy_mtrl_am_alpha,
         onClickStartIcon = {},
         onClickEndIcon = {},
         centerText = "집다방"
@@ -212,8 +260,18 @@ fun AppBarDefaultPreview() {
 @Composable
 fun AppBarSignUpPreview() {
     AppBarSignUp(
-        navigationIcon = Icons.Default.KeyboardArrowLeft,
+        navigationIcon = com.kakao.sdk.friend.R.drawable.material_ic_keyboard_arrow_left_black_24dp,
         onClickNavIcon = { /*TODO*/ },
         centerText = "회원가입"
+    )
+}
+
+@Preview
+@Composable
+fun AppBarMyPreview() {
+    AppBarMy(
+        endIcon = com.kakao.sdk.friend.R.drawable.material_ic_keyboard_arrow_left_black_24dp,
+        onClickEndIcon = { /*TODO*/ },
+        centerText = "집다방"
     )
 }
