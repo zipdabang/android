@@ -649,6 +649,7 @@ fun DialogBackgroundPreview(){
           },
             onCompleteClick = {
                 if(category.value < 8) {
+                    Log.e("category", category.value.toString())
                     isEnabled.value= true
                     showDialog.value= true
                 }

@@ -28,6 +28,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.LayoutDirection
@@ -90,9 +91,9 @@ fun ZipdabangApp(){
                 ) {
                     Scaffold( //material3 Scaffold를 이용함
                         topBar = {
-                            AppBarHome( //AppBar 문제 논의!!!
-                                endIcon1 = Icons.Default.Search, //아이콘 바꾸기???
-                                endIcon2 = Icons.Default.Menu,
+                            AppBarHome(
+                                endIcon1 = R.drawable.ic_topbar_search,
+                                endIcon2 = R.drawable.ic_topbar_menu,
                                 onClickEndIcon1 = {},
                                 onClickEndIcon2 = { scope.launch { drawerState.open() } },
                                 centerText = "집다방"
