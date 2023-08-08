@@ -25,7 +25,6 @@ fun BottomNavigationBar(
     navController: NavController,
     modifier: Modifier = Modifier,
     onItemClick: (BottomMenuContent) -> Unit,
-    onItemSelected: (BottomMenuContent) -> Unit,
 ) {
     val items = listOf(
         BottomMenuContent.market,
@@ -46,9 +45,9 @@ fun BottomNavigationBar(
                 selected = selected,
                 onClick = {
                     onItemClick(item)
-                    if (selected) {
+                    /*if (selected) {
                         onItemSelected(item)
-                    }
+                    }*/
                 },
                 selectedContentColor = ZipdabangandroidTheme.Colors.Latte,
                 unselectedContentColor = NavBlack,
