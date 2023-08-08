@@ -1,5 +1,6 @@
 package com.zipdabang.zipdabang_android.module.bottom.ui
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material.BottomNavigation
@@ -34,6 +35,8 @@ fun BottomNavigationBar(
         BottomMenuContent.my
     )
     val backStackEntry = navController.currentBackStackEntryAsState()
+    Log.e("entry",backStackEntry.value?.destination?.route.toString())
+
 
     BottomNavigation(
         modifier = modifier,
@@ -46,44 +49,45 @@ fun BottomNavigationBar(
                 selected = selected,
                 onClick = {
                     onItemClick(item)
-                    if (selected) {
-                        onItemSelected(item)
-                    }
-                },
-                selectedContentColor = ZipdabangandroidTheme.Colors.Latte,
-                unselectedContentColor = NavBlack,
-                icon = {
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Center
-                    ) {
                         if (selected) {
-                            Icon(
-                                painter = painterResource(id = item.activeIcon),
-                                contentDescription = null
-                            )
-
-                            Text(
-                                text = item.title,
-                                textAlign = TextAlign.Center,
-                                fontSize = 10.sp
-                            )
-
-
-                        } else {
-                            Icon(
-                                painter = painterResource(id = item.inactiveIcon),
-                                contentDescription = null
-                            )
-
-                            Text(
-                                text = item.title,
-                                textAlign = TextAlign.Center,
-                                fontSize = 10.sp
-                            )
+                            onItemSelected(item)
                         }
-                    }
-                })
+                    },
+                    selectedContentColor = ZipdabangandroidTheme.Colors.Latte,
+                    unselectedContentColor = NavBlack,
+                    icon = {
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Center
+                        ) {
+                            if (selected) {
+                                Icon(
+                                    painter = painterResource(id = item.activeIcon),
+                                    contentDescription = null
+                                )
+
+                                Text(
+                                    text = item.title,
+                                    textAlign = TextAlign.Center,
+                                    fontSize = 10.sp
+                                )
+
+
+                            } else {
+                                Icon(
+                                    painter = painterResource(id = item.inactiveIcon),
+                                    contentDescription = null
+                                )
+
+                                Text(
+                                    text = item.title,
+                                    textAlign = TextAlign.Center,
+                                    fontSize = 10.sp
+                                )
+                            }
+                        }
+                    })
+            }
         }
-    }
+
 }
