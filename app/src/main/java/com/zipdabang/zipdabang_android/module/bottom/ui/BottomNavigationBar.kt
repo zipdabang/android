@@ -19,7 +19,6 @@ import com.zipdabang.zipdabang_android.module.bottom.BottomMenuContent
 import com.zipdabang.zipdabang_android.ui.theme.NavBlack
 import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
 
-
 @Composable
 fun BottomNavigationBar(
     navController: NavController,
@@ -42,6 +41,7 @@ fun BottomNavigationBar(
     ) {
         items.forEach { item ->
             val selected = item.route == backStackEntry.value?.destination?.route
+
             BottomNavigationItem(
                 selected = selected,
                 onClick = {
