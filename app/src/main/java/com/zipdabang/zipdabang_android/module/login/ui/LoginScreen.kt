@@ -26,29 +26,31 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.lifecycleScope
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavHostController
 import com.google.android.gms.auth.api.identity.Identity
 import com.zipdabang.zipdabang_android.R
 import com.zipdabang.zipdabang_android.module.login.GoogleAuthClient
 import com.zipdabang.zipdabang_android.module.login.KakaoAuthClient
-import com.zipdabang.zipdabang_android.module.login.LoginState
-import com.zipdabang.zipdabang_android.module.login.LoginViewModel
-import com.zipdabang.zipdabang_android.module.login.SocialLoginResult
 import com.zipdabang.zipdabang_android.module.login.UserLoginInfo
+import com.zipdabang.zipdabang_android.module.login.data.AuthBody
 import com.zipdabang.zipdabang_android.module.splash.ui.SplashTitle
 import com.zipdabang.zipdabang_android.ui.component.LoginButton
 import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 @Composable
-fun LoginScreen() {
+fun LoginScreen(
+    viewModel: LoginViewModel = hiltViewModel()
+) {
     val TAG = "LoginScreen"
+
+    val state = viewModel.state.value
 
     val context = LocalContext.current
     val viewModel = viewModel<LoginViewModel>()
@@ -166,8 +168,7 @@ fun LoginScreen() {
                                 // back-end database access
                                 val email = result.data.email
                                 val profile = result.data.profile
-
-
+                                viewModel.getKakaoAuthResult(AuthBody(email, profile))
                             } else {
 
                             }
