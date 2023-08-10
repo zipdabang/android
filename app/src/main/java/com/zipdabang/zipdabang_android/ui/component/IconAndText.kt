@@ -21,7 +21,6 @@ import com.zipdabang.zipdabang_android.R
 import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
 
 //18번 -> 완성, icon size 설정 필요.
-//icon을 불러올때 asyncImage 써야하나?
 @Composable
 fun IconAndText(
     iconImageVector: Int,
@@ -36,7 +35,7 @@ fun IconAndText(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
     ){
-        Icon( //AsyncImage를 써야하나?
+        Icon(
             painter = painterResource(id = iconImageVector),
             contentDescription = "Icon",
             tint = iconColor,

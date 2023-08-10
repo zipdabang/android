@@ -68,7 +68,7 @@ fun ImageWithIcon(
             },
         ){
             Icon(
-                painter = painterResource(id = R.drawable.my_delete_whiterounded),
+                painter = painterResource(id = R.drawable.ic_my_delete_whiterounded),
                 contentDescription = "Icon",
                 tint = Color.White,
                 modifier = Modifier.size(20.dp)
@@ -143,7 +143,7 @@ fun ImageWithIconAndText(
                 modifier = Modifier.align(Alignment.BottomEnd)
             ) {
                 Icon(
-                    painter = painterResource(R.drawable.all_delete_white),
+                    painter = painterResource(R.drawable.ic_all_delete_white),
                     contentDescription = "Icon",
                     tint = Color.White,
                     modifier = Modifier.size(18.dp).padding(0.dp)

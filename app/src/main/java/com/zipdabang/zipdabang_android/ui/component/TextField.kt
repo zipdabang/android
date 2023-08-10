@@ -36,7 +36,8 @@ import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TextFieldBasic(
-    textState : MutableState<String>,
+    value : String,
+    onValueChanged : (String) -> Unit,
     expectedText : String,
     labelText : String,
     placeholderText : String,
@@ -45,7 +46,6 @@ fun TextFieldBasic(
     keyboardType : KeyboardType,
     imeAction : ImeAction, //default,none이면 엔터키, next면 다음 텍스트필드로 넘어감, done면 완료키
 ) {
-    //var textState by remember { mutableStateOf("") }
     var isFocused by remember { mutableStateOf(false) }
 
     fun isTextMatching(text: String): Boolean {
@@ -56,22 +56,22 @@ fun TextFieldBasic(
         modifier = Modifier.fillMaxSize()
     ) {
         TextField(
-            value = textState.value,
-            onValueChange = { textState.value = it },
+            value = value,
+            onValueChange = { onValueChanged(it) },
             textStyle = ZipdabangandroidTheme.Typography.sixteen_300,
             modifier = Modifier
                 .fillMaxWidth()
                 .onFocusChanged { isFocused = it.isFocused },
             label = {
-                if (textState.value.isEmpty() && !isFocused) {
+                if (value.isEmpty() && !isFocused) {
                     Text(
                         text = labelText,
                         style = ZipdabangandroidTheme.Typography.sixteen_300,
                         color = ZipdabangandroidTheme.Colors.Typo.copy(alpha = 0.5f)
                     )
-                } else if(textState.value.isEmpty() && isFocused){
+                } else if(value.isEmpty() && isFocused){
 
-                } else if (isTextMatching(textState.value)) {
+                } else if (isTextMatching(value)) {
                     Text(
                         text = rightMessage,
                         style = ZipdabangandroidTheme.Typography.twelve_300,
@@ -92,34 +92,32 @@ fun TextFieldBasic(
                     color = ZipdabangandroidTheme.Colors.Typo.copy(alpha = 0.5f)
                 )
             },
-            isError = !isTextMatching(textState.value) && textState.value.isNotEmpty(),
+            isError = !isTextMatching(value) && value.isNotEmpty(),
             singleLine = true,
-            //maxLines = 1,
             colors = TextFieldDefaults.textFieldColors(
-//                textColor = ZipdabangandroidTheme.Colors.Typo,
                 containerColor = Color(0xFFF7F6F6),
                 unfocusedIndicatorColor = //밑줄
-                if (isTextMatching(textState.value)) {
+                if (isTextMatching(value)) {
                     Color(0xFF6200EE)
                 } else {
                     ZipdabangandroidTheme.Colors.Typo.copy(alpha = 0.5f)
                 } ,
-//                placeholderColor = ZipdabangandroidTheme.Colors.Typo.copy(alpha = 0.5f),
                 cursorColor = //쓸때 커서
-                if (isTextMatching(textState.value)) {
+                if (isTextMatching(value)) {
                     Color(0xFF6200EE)
                 } else {
                     ZipdabangandroidTheme.Colors.Typo
                 } ,
                 focusedLabelColor = ZipdabangandroidTheme.Colors.Typo, //쓸때 위에
                 focusedIndicatorColor = //쓸때 밑줄
-                if (isTextMatching(textState.value)) {
+                if (isTextMatching(value)) {
                     Color(0xFF6200EE)
-                } else if (textState.value.isEmpty()){
+                } else if (value.isEmpty()){
                     ZipdabangandroidTheme.Colors.Typo.copy(alpha = 0.5f)
                 } else {
                     Color(0xFFB00020) },
                 errorCursorColor = Color(0xFFB00020), //에러 커서
+                errorContainerColor = Color(0xFFF7F6F6),
                 errorLabelColor = Color(0xFFB00020),  //에러 위에
                 errorIndicatorColor = Color(0xFFB00020), //에러 밑줄
             ),
@@ -129,24 +127,40 @@ fun TextFieldBasic(
             ),
             //visualTransformation = PasswordVisualTransformation(),
             trailingIcon = {
-                if(isTextMatching(textState.value)){
+                if(isTextMatching(value)){
                     Icon(
                         imageVector = Icons.Filled.Done,
                         contentDescription = "check icon",
                         tint =  Color(0xFF6200EE),
                         modifier = Modifier
-                            .size(22.dp))
-                } },
+                            .size(22.dp)
+                    )
+                }
+            },
         )
     }
 }
 
-
 @Preview
 @Composable
 fun PreviewTextFieldBasic(){
-    var textState = remember { mutableStateOf("") }
-    TextFieldBasic(textState,"ㅁㄴㅇㄹ","이름","이름", "회원정보가 잘못됐습니다","맞습니다", KeyboardType.Text, ImeAction.Next)
+    var textState by remember { mutableStateOf("") }
+
+    Box(
+        modifier = Modifier.padding(16.dp)
+    ){
+        TextFieldBasic(
+            textState,
+            onValueChanged = { textState = it },
+            "ㅁㄴㅇㄹ",
+            "이름",
+            "이름",
+            "회원정보가 잘못됐습니다",
+            "맞습니다",
+            KeyboardType.Text,
+            ImeAction.Next
+        )
+    }
 }
 
 
@@ -155,38 +169,34 @@ fun PreviewTextFieldBasic(){
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TextFieldForContent(
-    textState : MutableState<String>,
+    value : String,
+    onValueChanged : (String, Int) -> Unit,
     singleLine: Boolean,
     maxLines : Int,
-    height : Dp,
     placeholderText: String,
     imeAction: ImeAction, //default,none이면 엔터키, next면 다음 텍스트필드로 넘어감, done면 완료키
     maxLength : Int, //최대 글자수
 ){
     Box(
-        modifier = Modifier.padding(16.dp)
+        modifier = Modifier.fillMaxSize()
     ){
         OutlinedTextField(
-            value = textState.value,
-            onValueChange = {newText ->
-                if(newText.length <= maxLength){
-                    textState.value = newText
-                }
+            value = value,
+            onValueChange = {
+                onValueChanged(it ,maxLength)
             },
-            //{textState.value = it },
             textStyle = ZipdabangandroidTheme.Typography.sixteen_500,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(height),
+            modifier = Modifier.fillMaxSize(),
             placeholder = {
-                Text(text = placeholderText,
+                Text(
+                    text = placeholderText,
                     style = ZipdabangandroidTheme.Typography.sixteen_500,
                     color = ZipdabangandroidTheme.Colors.Typo.copy(0.5f)
-                ) },
+                )
+            },
             singleLine = singleLine,
             maxLines = maxLines,
             colors = TextFieldDefaults.textFieldColors(
-//                textColor = ZipdabangandroidTheme.Colors.Typo,
                 containerColor =  Color(0xFFF7F6F6),
                 cursorColor = ZipdabangandroidTheme.Colors.Typo,  //쓸때 커서
                 unfocusedIndicatorColor = ZipdabangandroidTheme.Colors.Typo.copy(0.2f),
@@ -200,10 +210,26 @@ fun TextFieldForContent(
     }
 }
 
-
 @Preview
 @Composable
 fun PreviewTextFieldForContent(){
-    var textState = remember { mutableStateOf("") }
-    TextFieldForContent(textState, false,7, 100.dp,"레시피 제목 (최대 20자)", ImeAction.Default,5)
+    var textState by remember { mutableStateOf("") }
+
+    Box(
+        modifier = Modifier.padding(16.dp)
+    ){
+        TextFieldForContent(
+            textState,
+            onValueChanged = { newText, maxLength ->
+                if(newText.length <= maxLength){
+                    textState = newText
+                }
+            },
+            false,
+            7,
+            "레시피 제목 (최대 20자)",
+            ImeAction.Default,
+            80
+        )
+    }
 }
