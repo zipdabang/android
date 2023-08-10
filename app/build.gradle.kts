@@ -108,5 +108,4 @@ dependencies {
     implementation("androidx.navigation:navigation-compose:2.6.0")
 
     implementation("androidx.navigation:navigation-runtime:2.6.0")
-
 }
