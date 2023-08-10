@@ -28,12 +28,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavHostController
 import com.google.android.gms.auth.api.identity.Identity
 import com.zipdabang.zipdabang_android.R
-import com.zipdabang.zipdabang_android.module.login.GoogleAuthClient
-import com.zipdabang.zipdabang_android.module.login.KakaoAuthClient
-import com.zipdabang.zipdabang_android.module.login.UserLoginInfo
+import com.zipdabang.zipdabang_android.module.login.platform_client.GoogleAuthClient
+import com.zipdabang.zipdabang_android.module.login.platform_client.KakaoAuthClient
 import com.zipdabang.zipdabang_android.module.login.data.AuthBody
 import com.zipdabang.zipdabang_android.module.splash.ui.SplashTitle
 import com.zipdabang.zipdabang_android.ui.component.LoginButton

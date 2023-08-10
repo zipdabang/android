@@ -6,7 +6,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.zipdabang.zipdabang_android.common.Resource
-import com.zipdabang.zipdabang_android.module.login.LoginState
 import com.zipdabang.zipdabang_android.module.login.data.AuthBody
 import com.zipdabang.zipdabang_android.module.login.use_case.GetGoogleAuthResultUseCase
 import com.zipdabang.zipdabang_android.module.login.use_case.GetKakaoAuthResultUseCase

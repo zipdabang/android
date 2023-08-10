@@ -1,4 +1,4 @@
-package com.zipdabang.zipdabang_android.module.login
+package com.zipdabang.zipdabang_android.module.login.ui
 
 // Google & Kakao Sign In Return Type
 data class SocialLoginResult(

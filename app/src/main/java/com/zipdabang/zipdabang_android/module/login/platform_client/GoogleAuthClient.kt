@@ -1,9 +1,8 @@
-package com.zipdabang.zipdabang_android.module.login
+package com.zipdabang.zipdabang_android.module.login.platform_client
 
 import android.content.Context
 import android.content.Intent
 import android.content.IntentSender
-import android.service.autofill.UserData
 import android.util.Log
 import com.google.android.gms.auth.api.identity.BeginSignInRequest
 import com.google.android.gms.auth.api.identity.BeginSignInRequest.GoogleIdTokenRequestOptions
@@ -12,6 +11,8 @@ import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.zipdabang.zipdabang_android.BuildConfig
+import com.zipdabang.zipdabang_android.module.login.ui.SocialLoginResult
+import com.zipdabang.zipdabang_android.module.login.ui.UserLoginInfo
 import kotlinx.coroutines.tasks.await
 import java.util.concurrent.CancellationException
 

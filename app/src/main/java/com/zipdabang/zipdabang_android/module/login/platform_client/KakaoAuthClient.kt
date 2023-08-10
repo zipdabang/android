@@ -1,4 +1,4 @@
-package com.zipdabang.zipdabang_android.module.login
+package com.zipdabang.zipdabang_android.module.login.platform_client
 
 import android.content.Context
 import android.util.Log
@@ -6,6 +6,8 @@ import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.common.model.ClientError
 import com.kakao.sdk.common.model.ClientErrorCause
 import com.kakao.sdk.user.UserApiClient
+import com.zipdabang.zipdabang_android.module.login.ui.SocialLoginResult
+import com.zipdabang.zipdabang_android.module.login.ui.UserLoginInfo
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
