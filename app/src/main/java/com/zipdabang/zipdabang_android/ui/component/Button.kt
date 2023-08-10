@@ -24,6 +24,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -185,7 +186,7 @@ fun PrimaryButtonWithStatus(
 
 @Composable
 fun LoginButton(
-    imageVector: ImageVector,
+    icon: Int,
     text: String,
     onClick: () -> Unit,
     backgroundColor: Color
@@ -211,8 +212,8 @@ fun LoginButton(
             contentAlignment = Alignment.CenterStart
         ) {
 
-            Icon(
-                imageVector = imageVector,
+            Image(
+                painter = painterResource(id = icon),
                 contentDescription = "login_icon",
                 modifier = Modifier
             )
@@ -241,13 +242,13 @@ fun PrimaryButtonPreview() {
         PrimaryButtonWithStatus(text = "작성 완료", onClick = {}, isFormFilled = true)
         PrimaryButtonWithStatus(text = "작성 완료", onClick = {})
         LoginButton(
-            imageVector = Icons.Default.AccountCircle,
+            icon = R.drawable.login_kakao,
             text = "카카오로 시작하기",
             onClick = {},
             backgroundColor = Color.Yellow
         )
         LoginButton(
-            imageVector = Icons.Default.AccountCircle,
+            icon = R.drawable.login_google,
             text = "구글로 시작하기",
             onClick = {},
             backgroundColor = Color.White
