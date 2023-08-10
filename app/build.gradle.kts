@@ -36,6 +36,7 @@ android {
         buildConfigField("String", "KAKAO_NATIVE_APP_KEY", kakaoNativeAppKey)
         resValue("string", "kakao_oauth_host", kakaoOauthHost)
         buildConfigField("String", "GOOGLE_WEB_CLIENT_ID", googleWebClientId)
+
     }
 
     buildTypes {
