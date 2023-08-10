@@ -12,13 +12,13 @@ import retrofit2.HttpException
 import java.io.IOException
 import javax.inject.Inject
 
-class GetKakaoAuthResultUseCase @Inject constructor(
+class GetAuthResultUseCase @Inject constructor(
     private val repository: AuthRepository
 ) {
-    operator fun invoke(body: AuthBody): Flow<Resource<Auth>> = flow {
+    operator fun invoke(body: AuthBody, platform: String): Flow<Resource<Auth>> = flow {
         try {
             emit(Resource.Loading())
-            val authResult = repository.getAuthResult(body, "kakao").toAuth()
+            val authResult = repository.getAuthResult(body = body, platform = platform).toAuth()
             emit(
                 Resource.Success(
                     data = authResult,
@@ -34,6 +34,8 @@ class GetKakaoAuthResultUseCase @Inject constructor(
 
     }
 }
+
+/*
 
 class GetGoogleAuthResultUseCase @Inject constructor(
     private val repository: AuthRepository
@@ -56,4 +58,4 @@ class GetGoogleAuthResultUseCase @Inject constructor(
         }
 
     }
-}
+}*/

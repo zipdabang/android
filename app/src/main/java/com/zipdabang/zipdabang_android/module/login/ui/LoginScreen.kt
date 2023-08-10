@@ -30,6 +30,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.android.gms.auth.api.identity.Identity
 import com.zipdabang.zipdabang_android.R
+import com.zipdabang.zipdabang_android.common.Constants
 import com.zipdabang.zipdabang_android.module.login.platform_client.GoogleAuthClient
 import com.zipdabang.zipdabang_android.module.login.platform_client.KakaoAuthClient
 import com.zipdabang.zipdabang_android.module.login.data.AuthBody
@@ -65,8 +66,6 @@ fun LoginScreen(
         KakaoAuthClient()
     }
 
-    lateinit var googleUserInfo: Deferred<UserLoginInfo>
-
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartIntentSenderForResult(),
         onResult = { result ->
@@ -80,12 +79,15 @@ fun LoginScreen(
 
                     signInResult?.data?.let {
                         if (it.email != null && it.profile != null) {
-                            googleUserInfo = async {
+                            val googleUserInfo =
                                 UserLoginInfo(
                                     profile = it.profile,
                                     email = it.email
                                 )
-                            }
+
+                            val profile = googleUserInfo.profile
+                            val email = googleUserInfo.email
+                            viewModel.getAuthResult(AuthBody(email!!, profile!!), Constants.PLATFORM_GOOGLE)
                         }
                     }
                 }
@@ -133,15 +135,7 @@ fun LoginScreen(
                                 ).build()
                             )
 
-                            val userInfo = googleUserInfo.await()
 
-                            if (userInfo.profile != null && userInfo.email != null) {
-
-                            } else {
-                                withContext(Dispatchers.Main) {
-
-                                }
-                            }
 
                             // back-end database access
 
@@ -166,7 +160,7 @@ fun LoginScreen(
                                 // back-end database access
                                 val email = result.data.email
                                 val profile = result.data.profile
-                                viewModel.getKakaoAuthResult(AuthBody(email, profile))
+                                viewModel.getAuthResult(AuthBody(email, profile), Constants.PLATFORM_KAKAO)
                             } else {
 
                             }
