@@ -3,6 +3,7 @@ package com.zipdabang.zipdabang_android.module.main
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import com.zipdabang.zipdabang_android.module.login.ui.LoginScreen
 import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -12,7 +13,8 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             ZipdabangandroidTheme {
-                ZipdabangApp()
+                /*ZipdabangApp()*/
+                LoginScreen()
 
             }
         }
