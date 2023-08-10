@@ -8,12 +8,17 @@ import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.zipdabang.zipdabang_android.module.bottom.BottomMenuContent
@@ -25,7 +30,7 @@ fun BottomNavigationBar(
     navController: NavController,
     modifier: Modifier = Modifier,
     onItemClick: (BottomMenuContent) -> Unit,
-    onItemSelected: (BottomMenuContent) -> Unit,
+    backStackEntry : State<NavBackStackEntry?>
 ) {
     val items = listOf(
         BottomMenuContent.market,
@@ -34,8 +39,18 @@ fun BottomNavigationBar(
         BottomMenuContent.recipes,
         BottomMenuContent.my
     )
-    val backStackEntry = navController.currentBackStackEntryAsState()
-    Log.e("entry",backStackEntry.value?.destination?.route.toString())
+//    val backStackEntry = navController.currentBackStackEntryAsState()
+//    Log.e("entry",backStackEntry.value?.destination?.route.toString())
+
+    //추가해줌
+    val selectedItem : MutableState<BottomMenuContent>?= remember{
+        mutableStateOf<BottomMenuContent>(BottomMenuContent.home)
+    }
+    items.forEach{
+            item -> if(item.route == backStackEntry.value?.destination?.route){
+                selectedItem?.value = item
+            }
+    }
 
 
     BottomNavigation(
@@ -43,19 +58,20 @@ fun BottomNavigationBar(
         backgroundColor = Color.White,
     ) {
         items.forEach { item ->
-            val selected = item.route == backStackEntry.value?.destination?.route
+            //val selected = item.route == backStackEntry.value?.destination?.route
+            val selected = selectedItem?.value == item
 
             BottomNavigationItem(
                 selected = selected,
                 onClick = {
                     onItemClick(item)
-                        if (selected) {
+                        /*if (selected) {
                             onItemSelected(item)
-                        }
+                        }*/
                     },
-                    selectedContentColor = ZipdabangandroidTheme.Colors.Latte,
-                    unselectedContentColor = NavBlack,
-                    icon = {
+                selectedContentColor = ZipdabangandroidTheme.Colors.Latte,
+                unselectedContentColor = NavBlack,
+                icon = {
                         Column(
                             horizontalAlignment = Alignment.CenterHorizontally,
                             verticalArrangement = Arrangement.Center

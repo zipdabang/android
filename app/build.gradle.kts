@@ -32,8 +32,10 @@ android {
 
         val kakaoNativeAppKey = properties.getProperty("kakao_native_app_key")
         val kakaoOauthHost = properties.getProperty("kakao_oauth_host")
+        val googleWebClientId = properties.getProperty("google_web_client_id")
         buildConfigField("String", "KAKAO_NATIVE_APP_KEY", kakaoNativeAppKey)
         resValue("string", "kakao_oauth_host", kakaoOauthHost)
+        buildConfigField("String", "GOOGLE_WEB_CLIENT_ID", googleWebClientId)
     }
 
     buildTypes {
@@ -105,6 +107,6 @@ dependencies {
     //for navigation
     implementation("androidx.navigation:navigation-compose:2.6.0")
 
-
+    implementation("androidx.navigation:navigation-runtime:2.6.0")
 
 }

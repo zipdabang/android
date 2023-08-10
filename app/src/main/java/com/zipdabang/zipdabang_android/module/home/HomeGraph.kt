@@ -34,6 +34,6 @@ fun NavGraphBuilder.HomeGraph(navController: NavHostController){
 
 object HomeGraph{
     const val Home = "home"
-    const val DetailRecipe = "detail_recipe"
-    const val DetailGoods = "detail_goods"
+    const val DetailRecipe = "home_recipe"
+    const val DetailGoods = "home_goods"
 }

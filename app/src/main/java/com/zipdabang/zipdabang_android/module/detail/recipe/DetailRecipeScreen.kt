@@ -1,28 +1,25 @@
-package com.zipdabang.zipdabang_android.module.basket.ui
+package com.zipdabang.zipdabang_android.module.detail.recipe
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Text
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
 import com.zipdabang.zipdabang_android.R
 import com.zipdabang.zipdabang_android.ui.component.AppBarHome
 import com.zipdabang.zipdabang_android.ui.component.ModalDrawer
 import kotlinx.coroutines.launch
 
 @Composable
-fun BasketScreen(){
+fun DetailRecipeScreen(){
     //drawer에 필요한 drawerState랑 scope
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
-
 
     ModalDrawer(
         scaffold = {
@@ -40,16 +37,10 @@ fun BasketScreen(){
                 containerColor = Color.White,
                 contentColor = Color.Black,
                 content = {
-                    Text(text="basket", modifier = Modifier.padding(it))
+                    Text("detailRecipes", modifier = Modifier.padding(it))
                 }
             )
         },
         drawerState = drawerState
     )
-}
-
-@Preview
-@Composable
-fun PreviewBasketScreen(){
-    BasketScreen()
 }

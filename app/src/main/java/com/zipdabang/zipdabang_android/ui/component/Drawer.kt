@@ -21,6 +21,7 @@ import androidx.compose.material3.DrawerState
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.ModalNavigationDrawer
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
@@ -34,7 +35,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
+import androidx.navigation.compose.rememberNavController
 import com.zipdabang.zipdabang_android.R
+import com.zipdabang.zipdabang_android.module.bottom.ui.BottomNavigationBar
+import com.zipdabang.zipdabang_android.module.bottom.ui.Navigation
 import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -343,5 +347,55 @@ fun PreviewDrawerContent(){
     )
 }
 
+
+@Composable
+fun ModalDrawer(
+    scaffold: @Composable () -> Unit,
+    drawerState: DrawerState,
+){
+    //drawer가 오른쪽에서 왼쪽으로 나오게끔 하기 위함
+    //ㄴ사실 이거 오른쪽에서 왼쪽으로 글을 읽는 나라들을 위한 건데, drawer 또한 오른쪽에서 왼쪽으로 나와서 설정함
+    CompositionLocalProvider (
+        LocalLayoutDirection provides LayoutDirection.Rtl
+    ){
+        //material3에서의 drawer를 이용하기 위함 -> ModalNavigationDrawer랑 ModalDrawerSheet를 이용함
+        ModalNavigationDrawer(
+            drawerState = drawerState,
+            drawerContent = {
+                ModalDrawerSheet(
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .width(300.dp),
+                    drawerContainerColor = Color.White,
+                    drawerTonalElevation = DrawerDefaults.ModalDrawerElevation,
+                ) {
+                    //activityContentScope(drawerState, scope)
+                    DrawerContent(
+                        infoOnClick = { Log.d("drawer", "집다방 정보")},
+                        noticeOnClick = { Log.d("drawer","공지사항")},
+                        ToSOnClick = { Log.d("drawer","서비스 이용 약관")},
+                        privacyAgreeOnClick = { Log.d("drawer","개인정보 제 3자 동의")},
+                        privacyOnClick = { Log.d("drawer","개인정보 처리방침")},
+                        FAGOnClick = { Log.d("drawer","FAG")},
+                        inquiryOnClick = { Log.d("drawer","오류신고 및 문의하기")},
+                        loginOnClick = { Log.d("drawer","로그인하기")},
+                        userOnClick = { Log.d("drawer","회원 정보")},
+                        alarmOnClick = { Log.d("drawer","알림 정보")},
+                        etcOnClick = { Log.d("drawer","기타 정보")},
+                    )
+                }
+            },
+            gesturesEnabled = drawerState.currentValue == DrawerValue.Open,
+            content = {
+                // Scaffold에 있는 내용까지 오른쪽에서 왼쪽으로 읽히는 방향으로 바뀌면 안돼서, 다시 설정 바꿈
+                CompositionLocalProvider (
+                    LocalLayoutDirection provides LayoutDirection.Ltr
+                ) {
+                    scaffold()
+                }
+            }
+        )
+    }
+}
 
 
