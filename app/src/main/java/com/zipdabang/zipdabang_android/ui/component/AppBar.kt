@@ -73,7 +73,8 @@ fun AppBarHome(
                         painter = painterResource(id = endIcon1),
                         contentDescription = "search",
                         modifier = Modifier
-                            .padding(4.dp)
+                            .padding(4.dp),
+                        tint = ZipdabangandroidTheme.Colors.Choco
                     )
                 }
             }
@@ -84,7 +85,8 @@ fun AppBarHome(
                         painter = painterResource(id = endIcon2),
                         contentDescription = "menu",
                         modifier = Modifier
-                            .padding(4.dp)
+                            .padding(4.dp),
+                        tint = ZipdabangandroidTheme.Colors.Choco
                     )
                 }
             }
@@ -113,7 +115,8 @@ fun AppBarDefault(
                         painter = painterResource(id = it),
                         contentDescription = "",
                         modifier = Modifier
-                            .padding(4.dp)
+                            .padding(4.dp),
+                        tint = ZipdabangandroidTheme.Colors.Choco
                     )
                 }
 
@@ -146,6 +149,7 @@ fun AppBarDefault(
                         contentDescription = "menu",
                         modifier = Modifier
                             .padding(4.dp),
+                        tint = ZipdabangandroidTheme.Colors.Choco
                     )
                 }
             }
@@ -169,7 +173,8 @@ fun AppBarSignUp(
             navigationIcon?.let {
                 IconButton(onClick = { onClickNavIcon() }) {
                     Icon(painter = painterResource(id = it), contentDescription = "", modifier = Modifier
-                        .padding(4.dp)
+                        .padding(4.dp),
+                        tint = ZipdabangandroidTheme.Colors.Choco
                     )
                 }
             }
@@ -237,6 +242,7 @@ fun AppBarMy(
                         contentDescription = "search",
                         modifier = Modifier
                             .padding(4.dp),
+                        tint = ZipdabangandroidTheme.Colors.Choco
                     )
                 }
             }
