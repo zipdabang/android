@@ -5,7 +5,10 @@ import android.util.Log
 import com.kakao.sdk.common.KakaoSdk
 import com.kakao.sdk.common.util.Utility
 import com.zipdabang.zipdabang_android.BuildConfig
+import com.zipdabang.zipdabang_android.common.ResponseCode
+import dagger.hilt.android.HiltAndroidApp
 
+@HiltAndroidApp
 class ZipdabangApplication: Application() {
     override fun onCreate() {
         super.onCreate()
