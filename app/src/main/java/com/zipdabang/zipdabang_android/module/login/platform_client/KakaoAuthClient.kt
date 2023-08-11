@@ -94,7 +94,7 @@ class KakaoAuthClient() {
                         "\n프로필사진: ${user.kakaoAccount?.profile?.thumbnailImageUrl}")
                 val email = user.kakaoAccount?.email
                 val profile = user.kakaoAccount?.profile?.thumbnailImageUrl
-                continuation.resume(UserLoginInfo(email, profile))
+                continuation.resume(UserLoginInfo(profile, email))
             }
         }
     }

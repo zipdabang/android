@@ -3,6 +3,8 @@ package com.zipdabang.zipdabang_android.module.main
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.navigation.compose.rememberNavController
+import com.zipdabang.zipdabang_android.core.navigation.RootNavGraph
 import com.zipdabang.zipdabang_android.module.login.ui.LoginScreen
 import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -14,7 +16,8 @@ class MainActivity : ComponentActivity() {
         setContent {
             ZipdabangandroidTheme {
                 /*ZipdabangApp()*/
-                LoginScreen()
+                val navController = rememberNavController()
+                RootNavGraph(navController = navController)
 
             }
         }
