@@ -16,6 +16,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -28,9 +29,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavHostController
 import com.google.android.gms.auth.api.identity.Identity
 import com.zipdabang.zipdabang_android.R
 import com.zipdabang.zipdabang_android.common.Constants
+import com.zipdabang.zipdabang_android.core.navigation.AuthSharedViewModel
 import com.zipdabang.zipdabang_android.module.login.platform_client.GoogleAuthClient
 import com.zipdabang.zipdabang_android.module.login.platform_client.KakaoAuthClient
 import com.zipdabang.zipdabang_android.module.login.data.AuthBody
@@ -45,14 +48,12 @@ import kotlinx.coroutines.withContext
 
 @Composable
 fun LoginScreen(
-    viewModel: LoginViewModel = hiltViewModel()
+    viewModel: LoginViewModel = hiltViewModel(),
+    onSuccess: () -> Unit
 ) {
     val TAG = "LoginScreen"
 
-    val state = viewModel.state.value
-
     val context = LocalContext.current
-    val viewModel = viewModel<LoginViewModel>()
     val scope = rememberCoroutineScope()
 
     val googleAuthClient by lazy {
@@ -87,7 +88,17 @@ fun LoginScreen(
 
                             val profile = googleUserInfo.profile
                             val email = googleUserInfo.email
-                            viewModel.getAuthResult(AuthBody(email!!, profile!!), Constants.PLATFORM_GOOGLE)
+                            viewModel.getAuthResult(
+                                body = AuthBody(email!!, profile!!),
+                                platform = Constants.PLATFORM_GOOGLE,
+                                email = email,
+                                onSuccess = onSuccess
+                            )
+                            /*if (!state.isLoading && state.token != "" && state.error == "") {
+                                onSuccess(email)
+                            }*/
+
+//                            onSuccess(email)
                         }
                     }
                 }
@@ -160,7 +171,14 @@ fun LoginScreen(
                                 // back-end database access
                                 val email = result.data.email
                                 val profile = result.data.profile
-                                viewModel.getAuthResult(AuthBody(email, profile), Constants.PLATFORM_KAKAO)
+                                Log.d(TAG, "email: $email, profile: $profile")
+                                viewModel.getAuthResult(
+                                    body = AuthBody(email, profile),
+                                    platform = Constants.PLATFORM_KAKAO,
+                                    email = email,
+                                    onSuccess = onSuccess
+                                )
+
                             } else {
 
                             }
@@ -192,5 +210,12 @@ fun LoginScreen(
                 )
             }
         }
+    }
+}
+
+fun onAuthCompleted(state: AuthState, email: String, onSuccess: (String) -> Unit) {
+    Log.d("LoginScreen", "$state, $email")
+    if (!state.isLoading && state.token != null && state.error == null) {
+        onSuccess(email)
     }
 }
