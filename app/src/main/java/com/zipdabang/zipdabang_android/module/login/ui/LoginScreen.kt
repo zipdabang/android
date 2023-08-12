@@ -49,7 +49,7 @@ import kotlinx.coroutines.withContext
 @Composable
 fun LoginScreen(
     viewModel: LoginViewModel = hiltViewModel(),
-    onSuccess: (String) -> Unit
+    onSuccess: () -> Unit
 ) {
     val TAG = "LoginScreen"
 

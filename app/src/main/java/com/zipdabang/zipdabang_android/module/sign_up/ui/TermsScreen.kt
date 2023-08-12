@@ -22,7 +22,5 @@ fun TermsScreen(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        val email = authSharedViewModel.email.collectAsState()
-        Text(text = "email: $email")
     }
 }

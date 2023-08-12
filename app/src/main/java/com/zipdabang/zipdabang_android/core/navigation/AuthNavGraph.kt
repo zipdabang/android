@@ -21,9 +21,7 @@ fun NavGraphBuilder.authNavGraph(navController: NavHostController) {
             val authSharedViewModel = navBackStackEntry
                 .authSharedViewModel<AuthSharedViewModel>(navController = navController)
             LoginScreen(
-                onSuccess = { email ->
-                    authSharedViewModel.updateEmail(email)
-                    Log.i(Constants.AUTH_NAV_GRAPH, authSharedViewModel.email.value)
+                onSuccess = {
                     navController.navigate(AuthScreen.Terms.route) {
                         launchSingleTop = true
                     }

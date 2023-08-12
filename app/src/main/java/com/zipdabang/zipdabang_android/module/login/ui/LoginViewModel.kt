@@ -24,15 +24,6 @@ class LoginViewModel @Inject constructor (
         const val TAG = "LoginViewModel"
     }
 
-    // can ignore the warning as applicationContext survives across the activity lifecycle
-    /*private val _state = mutableStateOf(LoginState())
-    val state: State<LoginState> = _state
-
-
-    suspend fun resetState() {
-        _state.value = LoginState()
-    }*/
-
     private val _state = mutableStateOf(AuthState())
     val state: State<AuthState> = _state
 
@@ -40,7 +31,7 @@ class LoginViewModel @Inject constructor (
         body: AuthBody,
         platform: String,
         email: String,
-        onSuccess: (String) -> Unit
+        onSuccess: () -> Unit
     ) {
         getAuthResultUseCase(body, platform).onEach { result ->
             // 별 일이 없으면, 첫 번째로는 Resource.Loading이 발행되고, 두 번째로는 Resource.success가 발행.
@@ -54,7 +45,7 @@ class LoginViewModel @Inject constructor (
                         error = null
                     )
                     Log.d(TAG, "success ${state}")
-                    onSuccess(email)
+                    onSuccess()
                 }
                 is Resource.Error -> {
                     // 오류 발생 시 처라

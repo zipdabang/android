@@ -18,7 +18,6 @@ class MainActivity : ComponentActivity() {
                 /*ZipdabangApp()*/
                 val navController = rememberNavController()
                 RootNavGraph(navController = navController)
-
             }
         }
     }
