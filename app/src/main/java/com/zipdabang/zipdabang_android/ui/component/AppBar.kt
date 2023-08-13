@@ -119,7 +119,6 @@ fun AppBarDefault(
                         tint = ZipdabangandroidTheme.Colors.Choco
                     )
                 }
-
             }
         },
         title = {
