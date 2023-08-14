@@ -1,7 +1,6 @@
-package com.zipdabang.zipdabang_android.core.navigation
+package com.zipdabang.zipdabang_android.module.sign_up.ui
 
 import android.util.Log
-import androidx.compose.runtime.MutableState
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -10,7 +9,9 @@ import kotlinx.coroutines.flow.asStateFlow
 import javax.inject.Inject
 
 @HiltViewModel
-class AuthSharedViewModel @Inject constructor(savedStateHandle: SavedStateHandle): ViewModel() {
+class AuthSharedViewModel @Inject constructor(
+    savedStateHandle: SavedStateHandle
+): ViewModel() {
 
     companion object {
         const val TAG = "AuthSharedViewModel"

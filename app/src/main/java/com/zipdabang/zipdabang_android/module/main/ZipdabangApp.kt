@@ -55,11 +55,9 @@ fun ZipdabangApp(){
 
     val backStackEntry = navController.currentBackStackEntryAsState()
     val currentRoute = backStackEntry.value?.destination?.route
-    //val backStack = backStackEntry.value?.backStack ?: emptyList()
     Log.e("entry", currentRoute.toString())
-    //Log.e("entryList", "$backStack")
 
-    Scaffold( //material3 Scaffold를 이용함
+    Scaffold(
         bottomBar = {
             BottomNavigationBar(
                 navController = navController,
@@ -69,7 +67,7 @@ fun ZipdabangApp(){
                 backStackEntry = backStackEntry
                 //onItemSelected = { isSelected -> isBottomNavigationSelected.value = isSelected }
                 )},
-        snackbarHost={ /*밑에 알람 뜨는거 여기서 커스텀 가능함*/},
+        snackbarHost={ /*밑에 알람 뜨는거 여기서 커스텀 가능함*/ },
         containerColor = Color.White,
         contentColor = Color.Black,
         content = {

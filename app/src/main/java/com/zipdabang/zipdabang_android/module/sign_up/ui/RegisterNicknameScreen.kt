@@ -9,7 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 
 @Composable
-fun TermsScreen(
+fun RegisterNicknameScreen(
     navController: NavHostController,
     authSharedViewModel: AuthSharedViewModel
 ) {

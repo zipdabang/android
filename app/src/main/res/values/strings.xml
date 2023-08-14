@@ -18,4 +18,10 @@
     <string name="drawer_appPhone">010-9855-0007</string>
     <string name="drawer_appVersion">집다방 앱 버전</string>
     <string name="drawer_appDetail">집다방은 어쩌구 저쩌구 어쩌구 저쩌구 어쩌구 저쩌구 어쩌구 저쩌구 어쩌구 저쩌구 어쩌구 저쩌구 어쩌구 저쩌구 어쩌구 저쩌구 어쩌구 저쩌구 어쩌구 저쩌구 어쩌구 저쩌구</string>
+
+    <string name="signup_phonenumber_notcertificate">인증 번호 불일치</string>
+    <string name="signup_phonenumber_certificate">인증 완료</string>
+    <string name="signup_nickname_duplicate">중복되는 닉네임 입니다.</string>
+    <string name="signup_nickname_notformed">양식에 맞지 않는 닉네임 입니다.</string>
+    <string name="signup_nickname_formed">사용하실 수 있는 닉네임 입니다.</string>
 </resources>

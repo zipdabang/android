@@ -16,7 +16,6 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -28,23 +27,16 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavHostController
 import com.google.android.gms.auth.api.identity.Identity
 import com.zipdabang.zipdabang_android.R
 import com.zipdabang.zipdabang_android.common.Constants
-import com.zipdabang.zipdabang_android.core.navigation.AuthSharedViewModel
 import com.zipdabang.zipdabang_android.module.login.platform_client.GoogleAuthClient
 import com.zipdabang.zipdabang_android.module.login.platform_client.KakaoAuthClient
 import com.zipdabang.zipdabang_android.module.login.data.AuthBody
 import com.zipdabang.zipdabang_android.module.splash.ui.SplashTitle
 import com.zipdabang.zipdabang_android.ui.component.LoginButton
 import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
-import kotlinx.coroutines.Deferred
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 @Composable
 fun LoginScreen(
