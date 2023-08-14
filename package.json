@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "isolated-vm": "^4.6.0"
+  }
+}

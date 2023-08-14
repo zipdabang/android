@@ -25,6 +25,11 @@ fun NavGraphBuilder.authNavGraph(navController: NavHostController) {
                     navController.navigate(AuthScreen.Terms.route) {
                         launchSingleTop = true
                     }
+                },
+                onLoginLater = {
+                    navController.navigate(MAIN_ROUTE){
+                        launchSingleTop = true
+                    }
                 }
             )
         }
