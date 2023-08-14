@@ -45,6 +45,18 @@ class ProtoRepositoryImpl @Inject constructor(
             )
         }
     }
+
+    override suspend fun resetToken() {
+        protoDataStore.updateData { token ->
+            token.copy(
+                accessToken = null,
+                refreshToken = null,
+                platformStatus = CurrentPlatform.NONE,
+                platformToken = null,
+                fcmToken = null
+            )
+        }
+    }
 }
 
 // https://velog.io/@i_meant_to_be/Proto-With-Hilt-Jetpack-Compose

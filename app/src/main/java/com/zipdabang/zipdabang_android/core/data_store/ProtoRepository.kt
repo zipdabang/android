@@ -13,4 +13,6 @@ interface ProtoRepository {
     suspend fun updateRefreshToken(refreshToken: String)
 
     suspend fun updateFcmToken(fcmToken: String)
+
+    suspend fun resetToken()
 }

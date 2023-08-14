@@ -42,4 +42,10 @@ class ProtoDataViewModel @Inject constructor(
             protoRepository.updateFcmToken(fcmToken)
         }
     }
+
+    fun resetToken() {
+        viewModelScope.launch {
+            protoRepository.resetToken()
+        }
+    }
 }
