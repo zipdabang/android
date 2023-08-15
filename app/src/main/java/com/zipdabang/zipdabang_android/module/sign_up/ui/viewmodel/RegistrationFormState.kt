@@ -1,18 +1,18 @@
-package com.zipdabang.zipdabang_android.module.sign_up.ui
+package com.zipdabang.zipdabang_android.module.sign_up.ui.viewmodel
 
 import com.zipdabang.zipdabang_android.R
 
 data class RegistrationFormState(
-    val terms: Boolean? = true,
+    val terms: Boolean = true,
 
 
     val name: String? = "",
     val birthday: Int? = null,
     val gender: Boolean? = null,
     val phoneNumber: Int? = null,
-    val phoneNumberLabel: Int = R.string.signup_phonenumber_notcertificate,
+    val phoneNumberLabel: String = R.string.signup_phonenumber_notcertificate.toString(),
+    val zipCode: Int? = null,
     val address: String? = "",
-    val zipCode: String? = "",
     val detailAddress: String? = "",
 
 

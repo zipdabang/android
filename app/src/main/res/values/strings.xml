@@ -19,6 +19,8 @@
     <string name="drawer_appVersion">집다방 앱 버전</string>
     <string name="drawer_appDetail">집다방은 어쩌구 저쩌구 어쩌구 저쩌구 어쩌구 저쩌구 어쩌구 저쩌구 어쩌구 저쩌구 어쩌구 저쩌구 어쩌구 저쩌구 어쩌구 저쩌구 어쩌구 저쩌구 어쩌구 저쩌구 어쩌구 저쩌구</string>
 
+    <string name="signup_birthday_lengthfail"></string>
+    <string name="signup_birthday_notformed">생년월일 형식에 맞지 않습니다.</string>
     <string name="signup_phonenumber_notcertificate">인증 번호 불일치</string>
     <string name="signup_phonenumber_certificate">인증 완료</string>
     <string name="signup_nickname_duplicate">중복되는 닉네임 입니다.</string>

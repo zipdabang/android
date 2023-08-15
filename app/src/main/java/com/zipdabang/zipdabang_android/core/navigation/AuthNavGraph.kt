@@ -10,7 +10,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.zipdabang.zipdabang_android.module.login.ui.LoginScreen
-import com.zipdabang.zipdabang_android.module.sign_up.ui.AuthSharedViewModel
+import com.zipdabang.zipdabang_android.module.sign_up.ui.viewmodel.AuthSharedViewModel
 import com.zipdabang.zipdabang_android.module.sign_up.ui.RegisterNicknameScreen
 import com.zipdabang.zipdabang_android.module.sign_up.ui.RegisterPreferencesScreen
 import com.zipdabang.zipdabang_android.module.sign_up.ui.RegisterUserInfoScreen
