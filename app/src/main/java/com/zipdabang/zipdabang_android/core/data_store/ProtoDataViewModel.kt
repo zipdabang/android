@@ -1,5 +1,6 @@
 package com.zipdabang.zipdabang_android.core.data_store
 
+import android.util.Log
 import androidx.compose.runtime.collectAsState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -14,14 +15,18 @@ class ProtoDataViewModel @Inject constructor(
     private val protoRepository: ProtoRepository
 ): ViewModel() {
 
-    // 사용할 곳(UI)에서 collectAsState 적용
-    fun getToken(): Flow<Token> {
-        return protoRepository.tokens
+    companion object {
+        const val TAG = "ProtoDataViewModel"
     }
+
+    // 사용할 곳(UI)에서 collectAsState 적용
+    val tokens = protoRepository.tokens
+
 
     fun updatePlatformToken(platform: CurrentPlatform, platformToken: String) {
         viewModelScope.launch {
             protoRepository.updatePlatformToken(platform, platformToken)
+            Log.d(TAG, "${protoRepository.tokens}")
         }
     }
 

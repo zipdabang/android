@@ -15,6 +15,7 @@ class ProtoRepositoryImpl @Inject constructor(
 
     override suspend fun updatePlatformToken(platform: CurrentPlatform, platformToken: String) {
         protoDataStore.updateData { token ->
+            // preferences.toBuilder().setShowCompleted(completed).build()
             token.copy(
                 platformStatus = platform,
                 platformToken = platformToken

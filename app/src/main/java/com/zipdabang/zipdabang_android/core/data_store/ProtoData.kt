@@ -15,5 +15,5 @@ data class Token(
 
 // 선택의 폭을 제한
 enum class CurrentPlatform {
-    NONE, KAKAO, GOOGLE
+    NONE, KAKAO, GOOGLE, TEMP
 }
