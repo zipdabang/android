@@ -16,6 +16,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -28,8 +29,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavHostController
 import com.google.android.gms.auth.api.identity.Identity
 import com.zipdabang.zipdabang_android.R
+import com.zipdabang.zipdabang_android.common.Constants
+import com.zipdabang.zipdabang_android.core.navigation.AuthSharedViewModel
 import com.zipdabang.zipdabang_android.module.login.platform_client.GoogleAuthClient
 import com.zipdabang.zipdabang_android.module.login.platform_client.KakaoAuthClient
 import com.zipdabang.zipdabang_android.module.login.data.AuthBody
@@ -44,14 +48,13 @@ import kotlinx.coroutines.withContext
 
 @Composable
 fun LoginScreen(
-    viewModel: LoginViewModel = hiltViewModel()
+    viewModel: LoginViewModel = hiltViewModel(),
+    onSuccess: () -> Unit,
+    onLoginLater: ()-> Unit
 ) {
     val TAG = "LoginScreen"
 
-    val state = viewModel.state.value
-
     val context = LocalContext.current
-    val viewModel = viewModel<LoginViewModel>()
     val scope = rememberCoroutineScope()
 
     val googleAuthClient by lazy {
@@ -64,8 +67,6 @@ fun LoginScreen(
     val kakaoAuthClient by lazy {
         KakaoAuthClient()
     }
-
-    lateinit var googleUserInfo: Deferred<UserLoginInfo>
 
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartIntentSenderForResult(),
@@ -80,12 +81,25 @@ fun LoginScreen(
 
                     signInResult?.data?.let {
                         if (it.email != null && it.profile != null) {
-                            googleUserInfo = async {
+                            val googleUserInfo =
                                 UserLoginInfo(
                                     profile = it.profile,
                                     email = it.email
                                 )
-                            }
+
+                            val profile = googleUserInfo.profile
+                            val email = googleUserInfo.email
+                            viewModel.getAuthResult(
+                                body = AuthBody(email!!, profile!!),
+                                platform = Constants.PLATFORM_GOOGLE,
+                                email = email,
+                                onSuccess = onSuccess
+                            )
+                            /*if (!state.isLoading && state.token != "" && state.error == "") {
+                                onSuccess(email)
+                            }*/
+
+//                            onSuccess(email)
                         }
                     }
                 }
@@ -133,15 +147,7 @@ fun LoginScreen(
                                 ).build()
                             )
 
-                            val userInfo = googleUserInfo.await()
 
-                            if (userInfo.profile != null && userInfo.email != null) {
-
-                            } else {
-                                withContext(Dispatchers.Main) {
-
-                                }
-                            }
 
                             // back-end database access
 
@@ -166,7 +172,14 @@ fun LoginScreen(
                                 // back-end database access
                                 val email = result.data.email
                                 val profile = result.data.profile
-                                viewModel.getKakaoAuthResult(AuthBody(email, profile))
+                                Log.d(TAG, "email: $email, profile: $profile")
+                                viewModel.getAuthResult(
+                                    body = AuthBody(email, profile),
+                                    platform = Constants.PLATFORM_KAKAO,
+                                    email = email,
+                                    onSuccess = onSuccess
+                                )
+
                             } else {
 
                             }
@@ -182,7 +195,7 @@ fun LoginScreen(
 
             Button(
                 modifier = Modifier,
-                onClick = { /*TODO*/ },
+                onClick = { onLoginLater() },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color.Transparent,
                     contentColor = ZipdabangandroidTheme.Colors.Typo
@@ -198,5 +211,12 @@ fun LoginScreen(
                 )
             }
         }
+    }
+}
+
+fun onAuthCompleted(state: AuthState, email: String, onSuccess: (String) -> Unit) {
+    Log.d("LoginScreen", "$state, $email")
+    if (!state.isLoading && state.token != null && state.error == null) {
+        onSuccess(email)
     }
 }
