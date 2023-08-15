@@ -49,7 +49,8 @@ import kotlinx.coroutines.withContext
 @Composable
 fun LoginScreen(
     viewModel: LoginViewModel = hiltViewModel(),
-    onSuccess: () -> Unit
+    onSuccess: () -> Unit,
+    onLoginLater: ()-> Unit
 ) {
     val TAG = "LoginScreen"
 
@@ -194,7 +195,7 @@ fun LoginScreen(
 
             Button(
                 modifier = Modifier,
-                onClick = { /*TODO*/ },
+                onClick = { onLoginLater() },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color.Transparent,
                     contentColor = ZipdabangandroidTheme.Colors.Typo
