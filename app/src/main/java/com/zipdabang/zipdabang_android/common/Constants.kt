@@ -5,7 +5,11 @@ object Constants {
     const val PLATFORM_KAKAO = "kakao"
     const val PLATFORM_GOOGLE = "google"
 
-    //------------------------------------------------------------------------------------------
+    //----------------------------------------------------------------------------------------------
     const val AUTH_NAV_GRAPH = "AuthNavGraph"
+
+    //----------------------------------------------------------------------------------------------
+    const val TOKEN_JSON = "tokens.json"
+    const val DATA_STORE_FILE_NAME = "prefs.pb"
 }
 
