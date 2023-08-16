@@ -41,6 +41,7 @@ import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
 
 @Composable
 fun RecipeCard(
+    recipeId: Int,
     title: String,
     user: String,
     thumbnail: String,
@@ -67,7 +68,7 @@ fun RecipeCard(
                 interactionSource = remember { MutableInteractionSource() },
                 indication = rememberRipple()
             ) {
-
+              onItemClick(recipeId)
             },
     ) {
         Column(
@@ -184,6 +185,7 @@ fun RecipeCardPreview() {
     }
 
     RecipeCard(
+        recipeId = 1,
         title = "혈관폭발 초코스무디",
         user = "집다방",
         thumbnail = "https://github.com/kmkim2689/jetpack-compose-practice/assets/101035437/209e1adb-56bd-478a-8a3e-08973f03a190",
