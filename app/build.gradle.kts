@@ -127,6 +127,10 @@ dependencies {
 
     implementation("androidx.navigation:navigation-runtime:2.6.0")
 
+    //for pager
+    implementation ("com.google.accompanist:accompanist-pager:0.24.2-alpha")
+    implementation ("com.google.accompanist:accompanist-pager-indicators:0.24.2-alpha")
+
 }
 
 kapt {
