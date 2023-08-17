@@ -7,4 +7,8 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="zipdabang_choco">#867768</color>
+    <color name="zipdabang_latte">#A38F85</color>
+    <color name="zipdabang_strawberry">#D4B2A7</color>
+    <color name="zipdabang_cream">#E7D7C9</color>
 </resources>
