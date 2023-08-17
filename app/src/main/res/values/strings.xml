@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">집다방</string>
+
     <string name="zipdabang_title">집다방</string>
     <string name="zipdabang_subtitle">홈카페를 위한 모든 것이 여기에!</string>
     <string name="drawer_info">집다방 정보</string>
@@ -19,6 +20,7 @@
     <string name="drawer_appVersion">집다방 앱 버전</string>
     <string name="drawer_appDetail">집다방은 어쩌구 저쩌구 어쩌구 저쩌구 어쩌구 저쩌구 어쩌구 저쩌구 어쩌구 저쩌구 어쩌구 저쩌구 어쩌구 저쩌구 어쩌구 저쩌구 어쩌구 저쩌구 어쩌구 저쩌구 어쩌구 저쩌구</string>
 
+    <string name="signup">회원가입</string>
     <string name="signup_birthday_lengthfail"></string>
     <string name="signup_birthday_notformed">생년월일 형식에 맞지 않습니다.</string>
     <string name="signup_phonenumber_notcertificate">인증 번호 불일치</string>

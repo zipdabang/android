@@ -13,7 +13,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AuthSharedViewModel @Inject constructor(
-    savedStateHandle: SavedStateHandle
+    //savedStateHandle: SavedStateHandle
 ): ViewModel() {
 
     companion object {
@@ -38,7 +38,6 @@ class AuthSharedViewModel @Inject constructor(
             is RegistrationFormEvent.TermsChanged ->{
                 state = state.copy(terms = event.checked)
             }
-
             is RegistrationFormEvent.NameChanged -> {
                 state = state.copy(name = event.name)
             }
@@ -60,7 +59,6 @@ class AuthSharedViewModel @Inject constructor(
             is RegistrationFormEvent.DetailaddressChanged ->{
                 state = state.copy(detailAddress = event.detailaddress)
             }
-
             is RegistrationFormEvent.NicknameChanged ->{
                 state = state.copy(nickname = event.nickname)
             }

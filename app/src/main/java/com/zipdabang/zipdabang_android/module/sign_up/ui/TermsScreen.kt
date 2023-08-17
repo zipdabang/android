@@ -7,7 +7,10 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavHostController
+import com.zipdabang.zipdabang_android.R
 import com.zipdabang.zipdabang_android.module.sign_up.ui.viewmodel.AuthSharedViewModel
 import com.zipdabang.zipdabang_android.ui.component.AppBarSignUp
 
@@ -28,25 +31,26 @@ fun TermsScreen(
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
-            /*AppBarSignUp(
-                navigationIcon = ,
-                onClickNavIcon = { *//*TODO*//* },
-                centerText =
-            )*/
+            AppBarSignUp(
+                navigationIcon = R.drawable.ic_topbar_backbtn,
+                onClickNavIcon = {  },
+                centerText = stringResource(id = R.string.signup)
+            )
         }
     ) {
         Text(
             text = "dkkd",
             modifier = Modifier.padding(it))
     }
+    
+}
 
+@Preview
+@Composable
+fun PreviewTermsScreen(){
 
-
-
-
-
-
-
-
-
+    /*TermsScreen(
+        navController = ,
+        authSharedViewModel = AuthSharedViewModel()
+    )*/
 }
