@@ -38,7 +38,6 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.rememberNavController
 import com.zipdabang.zipdabang_android.R
 import com.zipdabang.zipdabang_android.module.bottom.ui.BottomNavigationBar
-import com.zipdabang.zipdabang_android.module.bottom.ui.Navigation
 import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch

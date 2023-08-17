@@ -19,7 +19,6 @@ import androidx.navigation.NavHostController
 import com.zipdabang.zipdabang_android.R
 import com.zipdabang.zipdabang_android.module.bottom.BottomMenuContent
 import com.zipdabang.zipdabang_android.module.bottom.ui.BottomNavigationBar
-import com.zipdabang.zipdabang_android.module.bottom.ui.Navigation
 import com.zipdabang.zipdabang_android.ui.component.AppBarDefault
 import com.zipdabang.zipdabang_android.ui.component.AppBarHome
 import com.zipdabang.zipdabang_android.ui.component.AppBarMy
