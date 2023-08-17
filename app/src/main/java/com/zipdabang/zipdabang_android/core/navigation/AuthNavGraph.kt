@@ -32,22 +32,56 @@ fun NavGraphBuilder.authNavGraph(navController: NavHostController) {
 
         composable(route = AuthScreen.Terms.route) { navBackStackEntry ->
             val authSharedViewModel = navBackStackEntry.authSharedViewModel<AuthSharedViewModel>(navController = navController)
-            TermsScreen(navController = navController, authSharedViewModel = authSharedViewModel)
+            TermsScreen(
+                navController = navController,
+                authSharedViewModel = authSharedViewModel,
+                onClickNext = {
+                    navController.navigate(AuthScreen.RegisterUserInfo.route)
+                }
+            )
         }
 
         composable(route =AuthScreen.RegisterUserInfo.route) {navBackStackEntry ->
             val authSharedViewModel = navBackStackEntry.authSharedViewModel<AuthSharedViewModel>(navController = navController)
-            RegisterUserInfoScreen(navController = navController, authSharedViewModel = authSharedViewModel)
+            RegisterUserInfoScreen(
+                navController = navController,
+                authSharedViewModel = authSharedViewModel,
+                onClickBack = {
+                    navController.navigate(AuthScreen.Terms.route)
+                },
+                onClickNext = {
+                    navController.navigate(AuthScreen.RegisterNickname.route)
+                }
+            )
         }
 
         composable(route =AuthScreen.RegisterNickname.route) {navBackStackEntry ->
             val authSharedViewModel = navBackStackEntry.authSharedViewModel<AuthSharedViewModel>(navController = navController)
-            RegisterNicknameScreen(navController = navController, authSharedViewModel = authSharedViewModel)
+            RegisterNicknameScreen(
+                navController = navController,
+                authSharedViewModel = authSharedViewModel,
+                onClickBack = {
+                    navController.navigate(AuthScreen.RegisterUserInfo.route)
+                },
+                onClickNext = {
+                    navController.navigate(AuthScreen.RegisterPreferences.route)
+                }
+            )
         }
 
         composable(route =AuthScreen.RegisterPreferences.route) {navBackStackEntry ->
             val authSharedViewModel = navBackStackEntry.authSharedViewModel<AuthSharedViewModel>(navController = navController)
-            RegisterPreferencesScreen(navController = navController, authSharedViewModel = authSharedViewModel)
+            RegisterPreferencesScreen(
+                navController = navController,
+                authSharedViewModel = authSharedViewModel,
+                onClickBack = {
+                    navController.navigate(AuthScreen.RegisterPreferences.route)
+                },
+                onClickNext = {
+                    //홈으로 넘어가기
+                    navController.navigate(AuthScreen.RegisterPreferences.route)
+                }
+            )
         }
     }
 }

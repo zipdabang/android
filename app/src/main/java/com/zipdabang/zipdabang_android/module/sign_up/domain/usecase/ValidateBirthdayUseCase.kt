@@ -10,7 +10,7 @@ class ValidateBirthdayUseCase {
         if(birthday.toString().length < 6){
             return ValidationResult(
                 successful = false,
-                errorMessage = R.string.signup_birthday_lengthfail.toString()
+                errorMessage = R.string.signup_userinfo_birthday_lengthfail.toString()
             )
         }
 
@@ -20,7 +20,7 @@ class ValidateBirthdayUseCase {
         if(!birthdayPattern.matches(birthday.toString())){
             return ValidationResult(
                 successful = false,
-                errorMessage = R.string.signup_birthday_notformed.toString()
+                errorMessage = R.string.signup_userinfo_birthday_notformed.toString()
             )
         }
 

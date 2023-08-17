@@ -10,7 +10,7 @@ data class RegistrationFormState(
     val birthday: Int? = null,
     val gender: Boolean? = null,
     val phoneNumber: Int? = null,
-    val phoneNumberLabel: String = R.string.signup_phonenumber_notcertificate.toString(),
+    val phoneNumberLabel: String = R.string.signup_userinfo_phonenumber_notcertificate.toString(),
     val zipCode: Int? = null,
     val address: String? = "",
     val detailAddress: String? = "",
@@ -20,5 +20,5 @@ data class RegistrationFormState(
     val nicknameLabel: String = "",
 
 
-    val preferences: List<Boolean> = emptyList<Boolean>(),
+    val preferences: List<Int> = emptyList(),
 )
