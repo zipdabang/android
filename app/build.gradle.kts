@@ -7,6 +7,8 @@ plugins {
     id ("com.google.dagger.hilt.android")
     // kapt 사용 목적
     id ("kotlin-kapt")
+    // serialization for using datastore
+    id ("org.jetbrains.kotlin.plugin.serialization")
 }
 
 val properties = Properties()
@@ -127,6 +129,12 @@ dependencies {
 
     implementation("androidx.navigation:navigation-runtime:2.6.0")
 
+    // preferences datastore
+    implementation ("androidx.datastore:datastore:1.0.0")
+    // if lists should be saved in proto datastore
+    implementation ("org.jetbrains.kotlinx:kotlinx-collections-immutable:0.3.5")
+
+    implementation ("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.2")
 }
 
 kapt {
