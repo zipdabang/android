@@ -80,7 +80,7 @@ fun TermsScreen(
 
                 Spacer(
                     modifier = Modifier
-                        .weight(0.8f)
+                        .weight(0.6f)
                         .fillMaxWidth()
                 )
 

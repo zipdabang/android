@@ -38,7 +38,7 @@ import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
 fun TextFieldBasic(
     value : String,
     onValueChanged : (String) -> Unit,
-    expectedText : String,
+    expectedValue : String,
     labelText : String,
     placeholderText : String,
     errorMessage : String,
@@ -46,10 +46,10 @@ fun TextFieldBasic(
     keyboardType : KeyboardType,
     imeAction : ImeAction, //default,none이면 엔터키, next면 다음 텍스트필드로 넘어감, done면 완료키
 ) {
-    var isFocused by remember { mutableStateOf(false) }
+    //var isFocused by remember { mutableStateOf(false) }
 
     fun isTextMatching(text: String): Boolean {
-        return text == expectedText
+        return text == expectedValue
     }
 
     Box(
@@ -60,9 +60,9 @@ fun TextFieldBasic(
             onValueChange = { onValueChanged(it) },
             textStyle = ZipdabangandroidTheme.Typography.sixteen_300,
             modifier = Modifier
-                .fillMaxWidth()
-                .onFocusChanged { isFocused = it.isFocused },
-            label = {
+                .fillMaxWidth(),
+                //.onFocusChanged { isFocused = it.isFocused },
+            /*label = {
                 if (value.isEmpty() && !isFocused) {
                     Text(
                         text = labelText,
@@ -84,7 +84,7 @@ fun TextFieldBasic(
                         color = Color(0xFFB00020)
                     )
                 }
-            },
+            },*/
             placeholder = {
                 Text(
                     text = placeholderText,
