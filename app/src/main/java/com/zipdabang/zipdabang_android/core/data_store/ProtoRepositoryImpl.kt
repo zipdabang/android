@@ -13,12 +13,11 @@ class ProtoRepositoryImpl @Inject constructor(
 
     override val tokens: Flow<Token> = protoDataStore.data
 
-    override suspend fun updatePlatformToken(platform: CurrentPlatform, platformToken: String) {
+    override suspend fun updatePlatform(platform: CurrentPlatform) {
         protoDataStore.updateData { token ->
             // preferences.toBuilder().setShowCompleted(completed).build()
             token.copy(
-                platformStatus = platform,
-                platformToken = platformToken
+                platformStatus = platform
             )
         }
     }
@@ -53,7 +52,6 @@ class ProtoRepositoryImpl @Inject constructor(
                 accessToken = null,
                 refreshToken = null,
                 platformStatus = CurrentPlatform.NONE,
-                platformToken = null,
                 fcmToken = null
             )
         }
