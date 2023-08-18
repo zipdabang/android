@@ -8,8 +8,8 @@ import kotlinx.serialization.Serializable
 data class Token(
     var accessToken: String?,
     var refreshToken: String?,
-    var platformStatus: CurrentPlatform,
     var platformToken: String?,
+    var platformStatus: CurrentPlatform,
     var fcmToken: String?
 )
 

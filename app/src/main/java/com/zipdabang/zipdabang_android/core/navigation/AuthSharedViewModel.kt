@@ -19,10 +19,17 @@ class AuthSharedViewModel @Inject constructor(savedStateHandle: SavedStateHandle
     private val _email = MutableStateFlow("")
     val email = _email.asStateFlow()
 
+    private val _profile = MutableStateFlow("")
+    val profile = _profile.asStateFlow()
+
     // 다른 회원정보들 dto로 만들어서 담기?
 
     fun updateEmail(email: String) {
         _email.value = email
+    }
+
+    fun updateProfile(profile: String) {
+        _profile.value = profile
     }
 
     override fun onCleared() {

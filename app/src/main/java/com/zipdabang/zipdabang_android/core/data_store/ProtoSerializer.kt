@@ -12,8 +12,8 @@ object ProtoSerializer: Serializer<Token> {
         get() = Token(
             accessToken = null,
             refreshToken = null,
-            platformStatus = CurrentPlatform.NONE,
             platformToken = null,
+            platformStatus = CurrentPlatform.NONE,
             fcmToken = null
         )
 
