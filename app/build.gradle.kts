@@ -130,6 +130,10 @@ dependencies {
 
     implementation("androidx.navigation:navigation-runtime:2.6.0")
 
+    //for pager
+    implementation ("com.google.accompanist:accompanist-pager:0.24.2-alpha")
+    implementation ("com.google.accompanist:accompanist-pager-indicators:0.24.2-alpha")
+
     // preferences datastore
     implementation ("androidx.datastore:datastore:1.0.0")
     // if lists should be saved in proto datastore
