@@ -1,5 +1,6 @@
 package com.zipdabang.zipdabang_android.ui.component
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -38,7 +39,7 @@ import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
 fun TextFieldBasic(
     value : String,
     onValueChanged : (String) -> Unit,
-    expectedText : String,
+    expectedValue : String,
     labelText : String,
     placeholderText : String,
     errorMessage : String,
@@ -46,10 +47,10 @@ fun TextFieldBasic(
     keyboardType : KeyboardType,
     imeAction : ImeAction, //default,none이면 엔터키, next면 다음 텍스트필드로 넘어감, done면 완료키
 ) {
-    var isFocused by remember { mutableStateOf(false) }
+    //var isFocused by remember { mutableStateOf(false) }
 
     fun isTextMatching(text: String): Boolean {
-        return text == expectedText
+        return text == expectedValue
     }
 
     Box(
@@ -61,8 +62,9 @@ fun TextFieldBasic(
             textStyle = ZipdabangandroidTheme.Typography.sixteen_300,
             modifier = Modifier
                 .fillMaxWidth()
-                .onFocusChanged { isFocused = it.isFocused },
-            label = {
+                .background(Color(0xFFF7F6F6)),
+                //.onFocusChanged { isFocused = it.isFocused },
+            /*label = {
                 if (value.isEmpty() && !isFocused) {
                     Text(
                         text = labelText,
@@ -84,7 +86,7 @@ fun TextFieldBasic(
                         color = Color(0xFFB00020)
                     )
                 }
-            },
+            },*/
             placeholder = {
                 Text(
                     text = placeholderText,
@@ -94,8 +96,7 @@ fun TextFieldBasic(
             },
             isError = !isTextMatching(value) && value.isNotEmpty(),
             singleLine = true,
-            colors = TextFieldDefaults.textFieldColors(
-                containerColor = Color(0xFFF7F6F6),
+            colors = TextFieldDefaults.colors(
                 unfocusedIndicatorColor = //밑줄
                 if (isTextMatching(value)) {
                     Color(0xFF6200EE)
@@ -186,7 +187,8 @@ fun TextFieldForContent(
                 onValueChanged(it ,maxLength)
             },
             textStyle = ZipdabangandroidTheme.Typography.sixteen_500,
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier.fillMaxSize()
+                .background(Color(0xFFF7F6F6)),
             placeholder = {
                 Text(
                     text = placeholderText,
@@ -196,8 +198,7 @@ fun TextFieldForContent(
             },
             singleLine = singleLine,
             maxLines = maxLines,
-            colors = TextFieldDefaults.textFieldColors(
-                containerColor =  Color(0xFFF7F6F6),
+            colors = TextFieldDefaults.colors(
                 cursorColor = ZipdabangandroidTheme.Colors.Typo,  //쓸때 커서
                 unfocusedIndicatorColor = ZipdabangandroidTheme.Colors.Typo.copy(0.2f),
                 focusedIndicatorColor = ZipdabangandroidTheme.Colors.Typo.copy(0.2f),
