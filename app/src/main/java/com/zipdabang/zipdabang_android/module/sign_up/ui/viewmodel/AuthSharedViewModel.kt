@@ -8,6 +8,8 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import javax.inject.Inject
 
@@ -20,11 +22,21 @@ class AuthSharedViewModel @Inject constructor(
         const val TAG = "AuthSharedViewModel"
     }
 
-    /*private val _email = MutableStateFlow("")
-    val email = _email.asStateFlow()*/
-    /*fun updateEmail(email: String) {
+    private val _email = MutableStateFlow("")
+    val email = _email.asStateFlow()
+
+    private val _profile = MutableStateFlow("")
+    val profile = _profile.asStateFlow()
+
+    // 다른 회원정보들 dto로 만들어서 담기?
+
+    fun updateEmail(email: String) {
         _email.value = email
-    }*/
+    }
+
+    fun updateProfile(profile: String) {
+        _profile.value = profile
+    }
 
 
     var state by mutableStateOf(RegistrationFormState())

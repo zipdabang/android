@@ -1,5 +1,6 @@
 package com.zipdabang.zipdabang_android.ui.component
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -60,7 +61,8 @@ fun TextFieldBasic(
             onValueChange = { onValueChanged(it) },
             textStyle = ZipdabangandroidTheme.Typography.sixteen_300,
             modifier = Modifier
-                .fillMaxWidth(),
+                .fillMaxWidth()
+                .background(Color(0xFFF7F6F6)),
                 //.onFocusChanged { isFocused = it.isFocused },
             /*label = {
                 if (value.isEmpty() && !isFocused) {
@@ -94,8 +96,7 @@ fun TextFieldBasic(
             },
             isError = !isTextMatching(value) && value.isNotEmpty(),
             singleLine = true,
-            colors = TextFieldDefaults.textFieldColors(
-                containerColor = Color(0xFFF7F6F6),
+            colors = TextFieldDefaults.colors(
                 unfocusedIndicatorColor = //밑줄
                 if (isTextMatching(value)) {
                     Color(0xFF6200EE)
@@ -186,7 +187,8 @@ fun TextFieldForContent(
                 onValueChanged(it ,maxLength)
             },
             textStyle = ZipdabangandroidTheme.Typography.sixteen_500,
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier.fillMaxSize()
+                .background(Color(0xFFF7F6F6)),
             placeholder = {
                 Text(
                     text = placeholderText,
@@ -196,8 +198,7 @@ fun TextFieldForContent(
             },
             singleLine = singleLine,
             maxLines = maxLines,
-            colors = TextFieldDefaults.textFieldColors(
-                containerColor =  Color(0xFFF7F6F6),
+            colors = TextFieldDefaults.colors(
                 cursorColor = ZipdabangandroidTheme.Colors.Typo,  //쓸때 커서
                 unfocusedIndicatorColor = ZipdabangandroidTheme.Colors.Typo.copy(0.2f),
                 focusedIndicatorColor = ZipdabangandroidTheme.Colors.Typo.copy(0.2f),

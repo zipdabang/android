@@ -20,6 +20,7 @@
     <string name="drawer_appVersion">집다방 앱 버전</string>
     <string name="drawer_appDetail">집다방은 어쩌구 저쩌구 어쩌구 저쩌구 어쩌구 저쩌구 어쩌구 저쩌구 어쩌구 저쩌구 어쩌구 저쩌구 어쩌구 저쩌구 어쩌구 저쩌구 어쩌구 저쩌구 어쩌구 저쩌구 어쩌구 저쩌구</string>
 
+
     <string name="signup">회원가입</string>
     <string name="signup_btn_termsagree">약관 동의</string>
     <string name="signup_btn_choicecomplete">선택 완료</string>
@@ -48,4 +49,10 @@
     <string name="signup_userinfo_nickname_formed">사용하실 수 있는 닉네임 입니다.</string>
     <string name="signup_preferences_maintitle">좋아하는 카페 음료 목록을 골라주세요</string>
     <string name="signup_preferences_subtitle">선택 된 홈카페 취향은 홈 화면에 반영됩니다.</string>
+
+    <!--  for fcm  -->
+    <string name="default_notification_channel_id" translatable="false">fcm_default_channel</string>
+    <string name="default_notification_channel_name" translatable="true">Zipdabang</string>
+    <string name="msg_subscribe_failed">Failed to subscribe to weather topic</string>
+    <string name="fcm_message">FCM Message</string>
 </resources>

@@ -7,6 +7,8 @@ plugins {
     id ("com.google.dagger.hilt.android")
     // kapt 사용 목적
     id ("kotlin-kapt")
+    // serialization for using datastore
+    id ("org.jetbrains.kotlin.plugin.serialization")
 }
 
 val properties = Properties()
@@ -83,6 +85,7 @@ dependencies {
     implementation("com.google.firebase:firebase-auth-ktx:22.1.0")
     implementation("com.google.firebase:firebase-crashlytics-buildtools:2.9.7")
     implementation("androidx.navigation:navigation-runtime-ktx:2.6.0")
+    implementation("com.google.firebase:firebase-messaging-ktx:23.2.1")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
@@ -127,6 +130,16 @@ dependencies {
 
     implementation("androidx.navigation:navigation-runtime:2.6.0")
 
+    //for pager
+    implementation ("com.google.accompanist:accompanist-pager:0.24.2-alpha")
+    implementation ("com.google.accompanist:accompanist-pager-indicators:0.24.2-alpha")
+
+    // preferences datastore
+    implementation ("androidx.datastore:datastore:1.0.0")
+    // if lists should be saved in proto datastore
+    implementation ("org.jetbrains.kotlinx:kotlinx-collections-immutable:0.3.5")
+
+    implementation ("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.2")
 }
 
 kapt {

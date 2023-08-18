@@ -18,12 +18,35 @@ import com.zipdabang.zipdabang_android.module.sign_up.ui.TermsScreen
 
 fun NavGraphBuilder.authNavGraph(navController: NavHostController) {
     navigation(startDestination = AuthScreen.SignIn.route, route = AUTH_ROUTE) {
-        composable(route = AuthScreen.SignIn.route) { /*navBackStackEntry ->
+        composable(route = AuthScreen.SignIn.route) { navBackStackEntry ->
             val authSharedViewModel = navBackStackEntry
-                .authSharedViewModel<AuthSharedViewModel>(navController = navController)*/
+                .authSharedViewModel<AuthSharedViewModel>(navController = navController)
             LoginScreen(
-                onSuccess = {
+                onSuccess = { email, profile ->
+                    authSharedViewModel.apply {
+                        updateEmail(email)
+                        updateProfile(profile)
+                    }
+                    navController.navigate(MAIN_ROUTE) {
+                        popUpTo(AuthScreen.SignIn.route) {
+                            inclusive = true
+                        }
+                        launchSingleTop = true
+                    }
+                },
+
+                onRegister = { email, profile ->
+                    authSharedViewModel.apply {
+                        updateEmail(email)
+                        updateProfile(profile)
+                    }
                     navController.navigate(AuthScreen.Terms.route) {
+                        launchSingleTop = true
+                    }
+                },
+
+                onLoginLater = {
+                    navController.navigate(MAIN_ROUTE){
                         launchSingleTop = true
                     }
                 }

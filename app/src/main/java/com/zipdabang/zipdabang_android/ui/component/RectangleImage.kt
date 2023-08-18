@@ -22,8 +22,9 @@ fun RectangleImage(
         contentDescription = contentDescription,
         modifier = Modifier
                   .clip(RectangleShape)
-                  .fillMaxSize(),
-        contentScale = ContentScale.Crop
+                  .fillMaxSize()
+                ,
+        contentScale = ContentScale.FillBounds
     )
 
 }
@@ -40,7 +41,7 @@ fun RectangleWithRadiusImage(
         modifier = Modifier
             .clip(ZipdabangandroidTheme.Shapes.small)
             .fillMaxSize(),
-        contentScale = ContentScale.Crop
+        contentScale = ContentScale.FillBounds
     )
 
 }

@@ -12,34 +12,34 @@ sealed class BottomMenuContent(
 ){
     object market : BottomMenuContent(
         "마켓",
-        "market",
+        "market/home",
         R.drawable.ic_nav_inactive_market,
         R.drawable.ic_nav_active_market
     )
 
     object basket : BottomMenuContent(
         "장바구니",
-        "basket",
+        "basket/home",
         R.drawable.ic_nav_inactive_basket,
         R.drawable.ic_nav_active_basket
     )
 
     object home : BottomMenuContent(
         "홈",
-        "home",
+        "home/home",
         R.drawable.ic_nav_inactive_home,
         R.drawable.ic_nav_active_home
     )
 
     object recipes : BottomMenuContent(
         "레시피",
-        "recipes",
+        "recipes/home",
         R.drawable.ic_nav_inactive_recipes,
         R.drawable.ic_nav_active_recipes
     )
     object my : BottomMenuContent(
         "내집다방",
-        "my",
+        "my/home",
         R.drawable.ic_nav_inactive_my,
         R.drawable.ic_nav_active_my
     )

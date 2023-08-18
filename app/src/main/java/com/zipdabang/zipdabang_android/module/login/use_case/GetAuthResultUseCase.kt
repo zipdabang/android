@@ -34,28 +34,3 @@ class GetAuthResultUseCase @Inject constructor(
 
     }
 }
-
-/*
-
-class GetGoogleAuthResultUseCase @Inject constructor(
-    private val repository: AuthRepository
-) {
-    operator fun invoke(body: AuthBody): Flow<Resource<Auth>> = flow {
-        try {
-            emit(Resource.Loading())
-            val authResult = repository.getAuthResult(body, "google").toAuth()
-            emit(
-                Resource.Success(
-                    data = authResult,
-                    code = authResult.code,
-                    message = ResponseCode.getMessageByCode(authResult.code)
-                )
-            )
-        } catch (e: HttpException) {
-            emit(Resource.Error(e.localizedMessage ?: "unexpected error"))
-        } catch (e: IOException) {
-            emit(Resource.Error("couldn't reach server, check internet connection"))
-        }
-
-    }
-}*/
