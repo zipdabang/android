@@ -1,11 +1,11 @@
-package com.zipdabang.zipdabang_android.module.sign_up.data.remote.dto
+package com.zipdabang.zipdabang_android.module.sign_up.data.remote
 
 import retrofit2.http.GET
 import retrofit2.http.POST
 
 interface SignUpApi {
-    @GET()
-    suspend fun getTerms() //:
+    @GET("members/terms")
+    suspend fun getTerms() : TermsDto
     @POST()
     suspend fun postPhoneSms() //:
     @POST()
@@ -13,8 +13,8 @@ interface SignUpApi {
     //주소 api
     @POST()
     suspend fun postNickname() //:
-    @GET
-    suspend fun getPreferences() //:
+    @GET("/categories")
+    suspend fun getBeverages() : BeveragesDto
     @POST()
     suspend fun postUserInfo() //:
 

@@ -19,6 +19,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.zipdabang.zipdabang_android.R
@@ -32,17 +33,17 @@ import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
 @Composable
 fun RegisterUserInfoScreen(
     navController: NavHostController,
-    authSharedViewModel: AuthSharedViewModel,
+    authSharedViewModel: AuthSharedViewModel = hiltViewModel(),
     onClickBack: ()->Unit,
     onClickNext: ()->Unit,
 ) {
     Scaffold(
-        modifier = Modifier.fillMaxSize()
-            .background(Color.White),
+        modifier = Modifier
+            .fillMaxSize(),
         topBar = {
             AppBarSignUp(
                 navigationIcon = R.drawable.ic_topbar_backbtn,
-                onClickNavIcon = { onClickBack },
+                onClickNavIcon = { onClickBack() },
                 centerText = stringResource(id = R.string.signup)
             )
         }
@@ -50,8 +51,8 @@ fun RegisterUserInfoScreen(
         Surface(
             modifier = Modifier
                 .padding(it)
-                .fillMaxSize()
-                .background(Color.White)
+                .fillMaxSize(),
+            color = Color.White
         ) {
             Column(
                 modifier = Modifier
@@ -86,12 +87,13 @@ fun RegisterUserInfoScreen(
 
                 }
                 Box(
-                    modifier = Modifier.weight(1.2f)
+                    contentAlignment = Alignment.BottomCenter,
+                    modifier = Modifier.padding(0.dp,0.dp,0.dp, 12.dp)
                 ){
                     PrimaryButtonOutLined(
                         borderColor = ZipdabangandroidTheme.Colors.Strawberry,
                         text= stringResource(id = R.string.signup_btn_inputdone),
-                        onClick={ onClickNext }
+                        onClick={ onClickNext() }
                     )
                 }
             }
@@ -106,7 +108,6 @@ fun PreviewRegisterUserInfoScreen(){
     val navController = rememberNavController()
     RegisterUserInfoScreen(
         navController = navController,
-        authSharedViewModel = AuthSharedViewModel(),
         onClickBack = {
             navController.navigate(AuthScreen.Terms.route)
         },

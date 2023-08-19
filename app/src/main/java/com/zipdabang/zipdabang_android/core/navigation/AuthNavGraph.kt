@@ -98,11 +98,12 @@ fun NavGraphBuilder.authNavGraph(navController: NavHostController) {
                 navController = navController,
                 authSharedViewModel = authSharedViewModel,
                 onClickBack = {
-                    navController.navigate(AuthScreen.RegisterPreferences.route)
+                    navController.navigate(AuthScreen.RegisterNickname.route)
                 },
                 onClickNext = {
-                    //홈으로 넘어가기
                     navController.navigate(AuthScreen.RegisterPreferences.route)
+                    //홈으로 넘어가기
+                    //navController.navigate(HomeScreen.Home.route)
                 }
             )
         }

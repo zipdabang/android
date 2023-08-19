@@ -30,10 +30,14 @@ import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
 
 @Composable
 fun CheckBoxWithText(
-    isChecked : Boolean,
+    isCheckBox: Boolean,
+    isChecked : Boolean?,
     isCheckedChange : (Boolean) -> Unit,
     mainValue : String,
     mainTextStyle : TextStyle,
+    isDetailValue : Boolean,
+    detailValue : String?,
+    detailTextStyle: TextStyle?,
 ){
     Row(
         modifier = Modifier.fillMaxWidth(),
@@ -45,14 +49,19 @@ fun CheckBoxWithText(
                 .size(24.dp),
             contentAlignment = Alignment.Center
         ){
-            Box(
-                modifier = Modifier.size(18.dp)
-            ){
-                CheckBoxCustom(
-                    rounded =true,
-                    isChecked  = isChecked,
-                    isCheckedChange = {isCheckedChange}
-                )
+            if(isCheckBox == false){
+            }else{
+                Box(
+                    modifier = Modifier.size(18.dp)
+                ){
+                    if (isChecked != null) {
+                        CheckBoxCustom(
+                            rounded =true,
+                            isChecked  = isChecked,
+                            isCheckedChange = {isCheckedChange}
+                        )
+                    }
+                }
             }
         }
         Spacer(
@@ -64,7 +73,33 @@ fun CheckBoxWithText(
             style = mainTextStyle,
             color = ZipdabangandroidTheme.Colors.Typo
         )
+    }
+    if(isDetailValue == false){
 
+    }else{
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
+        ){
+            Box(
+                modifier = Modifier.weight(0.1f)
+                    .size(24.dp),
+            )
+            Spacer(
+                modifier = Modifier.weight(0.01f)
+            )
+            if (detailValue != null) {
+                if (detailTextStyle != null) {
+                    Text(
+                        text = detailValue,
+                        style = detailTextStyle,
+                        color = ZipdabangandroidTheme.Colors.Typo,
+                        modifier = Modifier.weight(0.9f),
+                    )
+                }
+            }
+        }
     }
 }
 
@@ -74,6 +109,7 @@ fun CheckBoxWithTextAndButton(
     isChecked : Boolean,
     isCheckedChange : (Boolean) -> Unit,
     mainValue : String,
+    mainTextStyle: TextStyle,
     onClick : ()->Unit,
 ){
     Row(
@@ -104,7 +140,7 @@ fun CheckBoxWithTextAndButton(
         Text(
             text = mainValue,
             modifier = Modifier.weight(0.7f),
-            style = ZipdabangandroidTheme.Typography.fourteen_500,
+            style = mainTextStyle,
             color = ZipdabangandroidTheme.Colors.Typo
         )
 
@@ -116,7 +152,7 @@ fun CheckBoxWithTextAndButton(
                     color = ZipdabangandroidTheme.Colors.Typo
                 ),
                 paragraphStyle = ParagraphStyle(
-                    textAlign = TextAlign.Center
+                    textAlign = TextAlign.End
                 )
             ),
             onClick={ onClick },
@@ -137,15 +173,20 @@ fun PreviewCheckBoxWithTextAndButton(){
         modifier = Modifier.padding(16.dp)
     ){
         CheckBoxWithText(
+            isCheckBox= false,
             isChecked = isCheckedSecond,
             isCheckedChange = {selectedChecked -> isCheckedSecond = selectedChecked },
             mainValue = "[필수] 필수 제공 항목",
-            mainTextStyle = ZipdabangandroidTheme.Typography.fourteen_700
+            mainTextStyle = ZipdabangandroidTheme.Typography.fourteen_700,
+            isDetailValue = true,
+            detailValue = "어쩌구저쩌구",
+            detailTextStyle = ZipdabangandroidTheme.Typography.twelve_300,
         )
         CheckBoxWithTextAndButton(
             isChecked = isChecked,
             isCheckedChange = {selectedChecked -> isChecked = selectedChecked },
             mainValue = "[필수] 필수 제공 항목",
+            mainTextStyle = ZipdabangandroidTheme.Typography.fourteen_500,
             onClick = { }
         )
 

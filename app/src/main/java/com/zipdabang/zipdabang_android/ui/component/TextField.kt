@@ -40,7 +40,6 @@ fun TextFieldBasic(
     value : String,
     onValueChanged : (String) -> Unit,
     expectedValue : String,
-    labelText : String,
     placeholderText : String,
     errorMessage : String,
     rightMessage : String,
@@ -64,16 +63,8 @@ fun TextFieldBasic(
                 .fillMaxWidth()
                 .background(Color(0xFFF7F6F6)),
                 //.onFocusChanged { isFocused = it.isFocused },
-            /*label = {
-                if (value.isEmpty() && !isFocused) {
-                    Text(
-                        text = labelText,
-                        style = ZipdabangandroidTheme.Typography.sixteen_300,
-                        color = ZipdabangandroidTheme.Colors.Typo.copy(alpha = 0.5f)
-                    )
-                } else if(value.isEmpty() && isFocused){
-
-                } else if (isTextMatching(value)) {
+            label = {
+                if (isTextMatching(value)) {
                     Text(
                         text = rightMessage,
                         style = ZipdabangandroidTheme.Typography.twelve_300,
@@ -86,7 +77,7 @@ fun TextFieldBasic(
                         color = Color(0xFFB00020)
                     )
                 }
-            },*/
+            },
             placeholder = {
                 Text(
                     text = placeholderText,
@@ -97,6 +88,7 @@ fun TextFieldBasic(
             isError = !isTextMatching(value) && value.isNotEmpty(),
             singleLine = true,
             colors = TextFieldDefaults.colors(
+                unfocusedContainerColor = Color(0xFFF7F6F6),
                 unfocusedIndicatorColor = //밑줄
                 if (isTextMatching(value)) {
                     Color(0xFF6200EE)
@@ -109,6 +101,7 @@ fun TextFieldBasic(
                 } else {
                     ZipdabangandroidTheme.Colors.Typo
                 } ,
+                focusedContainerColor = Color(0xFFF7F6F6),
                 focusedLabelColor = ZipdabangandroidTheme.Colors.Typo, //쓸때 위에
                 focusedIndicatorColor = //쓸때 밑줄
                 if (isTextMatching(value)) {
@@ -154,7 +147,6 @@ fun PreviewTextFieldBasic(){
             textState,
             onValueChanged = { textState = it },
             "ㅁㄴㅇㄹ",
-            "이름",
             "이름",
             "회원정보가 잘못됐습니다",
             "맞습니다",

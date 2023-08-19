@@ -3,6 +3,8 @@
 
     <string name="zipdabang_title">집다방</string>
     <string name="zipdabang_subtitle">홈카페를 위한 모든 것이 여기에!</string>
+
+
     <string name="drawer_info">집다방 정보</string>
     <string name="drawer_notice">공지사항</string>
     <string name="drawer_ToS">서비스 이용 약관</string>
@@ -28,6 +30,7 @@
     <string name="signup_terms_maintitle">집다방 서비스 이용 약관</string>
     <string name="signup_terms_subtitle">서비스 이용 약관을 확인해주세요.</string>
     <string name="signup_terms_allagree">전체 동의하기</string>
+    <string name="signup_terms_allagreedetail">집다방 서비스 내 이용자 식별 및 회원관리 서비스\n제공을 위해 개인정보를 수집합니다.\n정보는 서비스 탈퇴시 지체없이 파기됩니다.</string>
     <string name="signup_terms_zipdabangserviceagree">집다방 서비스 동의</string>
     <string name="signup_terms_required_requiredprovideditems">[필수] 필수 제공 항목</string>
     <string name="signup_terms_required_serviceagree">[필수] 서비스 이용약관</string>
@@ -44,6 +47,8 @@
     <string name="signup_userinfo_maintitle_nickname">닉네임</string>
     <string name="signup_userinfo_maintitle_zipdabangback">에서 사용할</string>
     <string name="signup_userinfo_maintitle_nicknameback">을 입력해주세요!</string>
+    <string name="signup_userinfo_nickname_deplicatecheck">중복 확인</string>
+    <string name="signup_userinfo_nickname_placeholder">2-6자 한글, 영어, 숫자</string>
     <string name="signup_userinfo_nickname_duplicate">중복되는 닉네임 입니다.</string>
     <string name="signup_userinfo_nickname_notformed">양식에 맞지 않는 닉네임 입니다.</string>
     <string name="signup_userinfo_nickname_formed">사용하실 수 있는 닉네임 입니다.</string>

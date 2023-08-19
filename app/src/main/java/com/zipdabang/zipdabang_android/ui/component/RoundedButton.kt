@@ -26,11 +26,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.zipdabang.zipdabang_android.R
 import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
 
 //4번 -> 완성, 얘는 size 설정 안해줘도 됨.
 @Composable
 fun RoundedButton(
+    imageUrl : Any,
     buttonText : String,
     isClicked : Boolean,
     isClickedChange : (Boolean) -> Unit,
@@ -56,8 +58,13 @@ fun RoundedButton(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.wrapContentSize()
         ){
-            Box(){
-               //하현, 3번 component
+            Box(
+                modifier = Modifier.size(24.dp),
+            ){
+                CircleImage(
+                    imageUrl = imageUrl ,
+                    contentDescription = "음료 카테고리 사진"
+                )
             }
             Text(
                 text = buttonText,
@@ -77,6 +84,7 @@ fun PreviewRoundedRectangle(){
 
     Box(modifier = Modifier.padding(4.dp)){
         RoundedButton(
+            imageUrl = R.drawable.ic_launcher_foreground,
             buttonText = "생과일 음료" ,
             isClicked = isClicked,
             isClickedChange = { selectedClicked -> isClicked = selectedClicked}) //isClicked 값이 바뀌면서 재렌더링한다.
