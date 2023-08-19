@@ -70,7 +70,7 @@ fun RoundedButton(
                 text = buttonText,
                 color = textColor,
                 style = ZipdabangandroidTheme.Typography.eighteen_300,
-                modifier = Modifier.padding(0.dp, 0.dp, 2.dp, 0.dp)
+                modifier = Modifier.padding(0.dp, 0.dp, 4.dp, 0.dp)
             )
         }
     }
