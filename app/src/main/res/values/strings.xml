@@ -54,6 +54,8 @@
     <string name="signup_userinfo_nickname_formed">사용하실 수 있는 닉네임 입니다.</string>
     <string name="signup_preferences_maintitle">좋아하는 카페 음료 목록을 골라주세요</string>
     <string name="signup_preferences_subtitle">선택 된 홈카페 취향은 홈 화면에 반영됩니다.</string>
+    <string name="signup_preferences_inputlater">나중에 입력하기</string>
+    <string name="signup_preferences_gotohome">(홈으로 바로 이동)</string>
 
     <!--  for fcm  -->
     <string name="default_notification_channel_id" translatable="false">fcm_default_channel</string>

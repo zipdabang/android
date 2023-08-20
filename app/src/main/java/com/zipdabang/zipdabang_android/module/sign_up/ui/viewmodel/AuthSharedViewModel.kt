@@ -38,28 +38,41 @@ class AuthSharedViewModel @Inject constructor(
     }
 
 
-    /*var state by mutableStateOf(RegistrationFormState())
+    //termsAgree - 전체동의하기
+    private val _stateTermsAllagree = MutableStateFlow(true)
+    val stateTermsAllagree = _stateTermsAllagree.asStateFlow()
+    //termsAgree - 전체동의하기 이외
+    private val _stateTermsListAgree = MutableStateFlow(listOf(true, true, true, true, true))
+    val stateTermsListAgree = _stateTermsListAgree.asStateFlow()
+    fun updateTermsAllagree(isChecked: Boolean){
+        _stateTermsAllagree.value = isChecked
+        _stateTermsListAgree.value = _stateTermsListAgree.value.map { _ -> isChecked }
+        Log.e("termsAgree", "stateTermsAllagree: $isChecked")
+        Log.e("termsAgree", "stateTermsListAgree: ${_stateTermsListAgree.value}")
+    }
+    fun updateTermsListAgree(id : Int, isChecked : Boolean) {
+        _stateTermsListAgree.value = _stateTermsListAgree.value.mapIndexed{ index, value ->
+            if(index == id) {
+                isChecked
+            } else {
+                value
+            }
+        }
+        Log.e("termsAgree", "stateTermsListAgree: ${_stateTermsListAgree.value}")
+    }
 
-    private val validationEventChannel = Channel<ValidationEvent>()
-    val validationEvents = validationEventChannel.receiveAsFlow()*/
 
-
-
-
+    /*API*/
     //terms - GET api
     private val _stateTerms = mutableStateOf(TermsListState())
     val stateTerms : State<TermsListState> = _stateTerms
     //preferences - GET api
     private val _statePreferences = mutableStateOf(BeveragesListState())
     val statePreferences : State<BeveragesListState> = _statePreferences
-
-
     init{
         getTerms()
         getBeverages()
     }
-
-
     private fun getTerms(){
         getTermsUseCase().onEach {result ->
             Log.e("signup-terms","${result.code}")
@@ -79,7 +92,6 @@ class AuthSharedViewModel @Inject constructor(
             }
         }.launchIn(viewModelScope)
     }
-
     private fun getBeverages(){
         getBeveragesUseCase().onEach {result ->
             Log.e("signup-preferences","${result.code}")
@@ -100,62 +112,6 @@ class AuthSharedViewModel @Inject constructor(
         }.launchIn(viewModelScope)
     }
 
-
-    /*fun onEvent(event : RegistrationFormEvent){
-        when(event){
-            is RegistrationFormEvent.TermsChanged ->{
-                state = state.copy(terms = event.checked)
-            }
-            is RegistrationFormEvent.NameChanged -> {
-                state = state.copy(name = event.name)
-            }
-            is RegistrationFormEvent.BirthdayChanged ->{
-                state = state.copy(birthday = event.birthday)
-            }
-            is RegistrationFormEvent.GenderChanged ->{
-                state = state.copy(gender = event.gender)
-            }
-            is RegistrationFormEvent.PhonenumberChanged ->{
-                state = state.copy(phoneNumber = event.phonenumber)
-            }
-            is RegistrationFormEvent.ZipcodeChanged ->{
-                state = state.copy(zipCode = event.zipcode)
-            }
-            is RegistrationFormEvent.AddressChanged ->{
-                state = state.copy(address = event.address)
-            }
-            is RegistrationFormEvent.DetailaddressChanged ->{
-                state = state.copy(detailAddress = event.detailaddress)
-            }
-            is RegistrationFormEvent.NicknameChanged ->{
-                state = state.copy(nickname = event.nickname)
-            }
-
-            is RegistrationFormEvent.SubmitTerms ->{
-
-            }
-            is RegistrationFormEvent.SubmitUserInfo ->{
-
-            }
-            is RegistrationFormEvent.SubmitPreferences ->{
-
-            }
-        }
-    }
-
-
-    private fun submitUserInfo(){
-
-    }
-
-    private fun submitNickname(){
-
-    }
-
-
-    sealed class ValidationEvent {
-        object Success : ValidationEvent()
-    }*/
 
     override fun onCleared() {
         super.onCleared()

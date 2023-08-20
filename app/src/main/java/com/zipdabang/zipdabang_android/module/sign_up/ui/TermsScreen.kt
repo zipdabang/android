@@ -1,5 +1,7 @@
 package com.zipdabang.zipdabang_android.module.sign_up.ui
 
+import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -42,13 +44,19 @@ import com.zipdabang.zipdabang_android.ui.component.MainAndSubTitle
 import com.zipdabang.zipdabang_android.ui.component.PrimaryButtonOutLined
 import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
 
+@SuppressLint("StateFlowValueCalledInComposition")
 @Composable
 fun TermsScreen(
     navController: NavHostController,
     authSharedViewModel: AuthSharedViewModel= hiltViewModel(),
     onClickNext: ()->Unit,
 ) {
-    val state = authSharedViewModel.stateTerms.value
+    val stateTerms = authSharedViewModel.stateTerms.value
+    val stateTermsAllagree = authSharedViewModel.stateTermsAllagree.value
+    val stateTermsListAgree = authSharedViewModel.stateTermsListAgree.value
+    Log.e("termsAgree","${stateTermsListAgree}")
+    Log.e("termsAgree","${stateTermsAllagree}")
+
 
     Scaffold(
         modifier = Modifier
@@ -82,15 +90,16 @@ fun TermsScreen(
                     subTextColor =  ZipdabangandroidTheme.Colors.Typo
                 )
 
-                var isCheckedAllagree by remember { mutableStateOf(true) }
-                var isCheckedRequiredAgree by remember { mutableStateOf(true) }
 
                 Spacer(modifier = Modifier.height(40.dp))
 
                 CheckBoxWithText(
                     isCheckBox = true,
-                    isChecked = isCheckedAllagree,
-                    isCheckedChange = {selectedChecked -> isCheckedAllagree = selectedChecked },
+                    isChecked = stateTermsAllagree,
+                    isCheckedChange = {selectedChecked ->
+                        Log.e("termsAgree","${stateTermsAllagree}")
+                        authSharedViewModel.updateTermsAllagree(selectedChecked)
+                    },
                     mainValue = stringResource(id = R.string.signup_terms_allagree),
                     mainTextStyle = ZipdabangandroidTheme.Typography.sixteen_700,
                     isDetailValue = true,
@@ -122,39 +131,43 @@ fun TermsScreen(
                     modifier = Modifier.padding(0.dp,12.dp,0.dp,0.dp),
                     verticalArrangement = Arrangement.spacedBy(10.dp)
                 ){
-                        items(state.size){term ->
-                            if(state.termsList.get(term).isMoreToSee){
+                        items(stateTerms.size){term ->
+                            if(stateTerms.termsList.get(term).isMoreToSee){
                                 CheckBoxWithTextAndButton(
-                                    isChecked = true,
-                                    isCheckedChange = { selectedChecked -> isCheckedRequiredAgree = selectedChecked },
-                                    mainValue = state.termsList.get(term).termsTitle,
+                                    isChecked = stateTermsListAgree[term],
+                                    isCheckedChange = { selectedChecked ->
+                                        authSharedViewModel.updateTermsListAgree(term, selectedChecked)
+                                                      },
+                                    mainValue = stateTerms.termsList.get(term).termsTitle,
                                     mainTextStyle = ZipdabangandroidTheme.Typography.fourteen_500,
                                     onClick= {}
                                 )
-                            } else{
+                            } else {
                                 CheckBoxWithText(
                                     isCheckBox = true,
-                                    isChecked = isCheckedRequiredAgree,
-                                    isCheckedChange = {selectedChecked -> isCheckedRequiredAgree = selectedChecked },
-                                    mainValue = state.termsList.get(term).termsTitle,
+                                    isChecked = stateTermsListAgree[term],
+                                    isCheckedChange = {selectedChecked ->
+                                        authSharedViewModel.updateTermsListAgree(term, selectedChecked)
+                                                      },
+                                    mainValue = stateTerms.termsList.get(term).termsTitle,
                                     mainTextStyle = ZipdabangandroidTheme.Typography.fourteen_500,
                                     isDetailValue = true,
-                                    detailValue = state.termsList.get(term).termsBody,
+                                    detailValue = stateTerms.termsList.get(term).termsBody,
                                     detailTextStyle = ZipdabangandroidTheme.Typography.twelve_300,
                                 )
                             }
                         }
                     }
-                if(state.error.isNotBlank()){
+                if(stateTerms.error.isNotBlank()){
                     Text(
-                        text = state.error,
+                        text = stateTerms.error,
                         color = Color.Red,
                         textAlign = TextAlign.Center,
                         modifier = Modifier
                             .fillMaxWidth()
                     )
                 }
-                if(state.isLoading) {
+                if(stateTerms.isLoading) {
                     CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
                 }
             }
@@ -165,7 +178,9 @@ fun TermsScreen(
                 PrimaryButtonOutLined(
                     borderColor = ZipdabangandroidTheme.Colors.Strawberry,
                     text= stringResource(id = R.string.signup_btn_termsagree),
-                    onClick={ onClickNext() }
+                    onClick={
+                        onClickNext()
+                    }
                 )
             }
         }

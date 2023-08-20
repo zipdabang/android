@@ -58,7 +58,7 @@ fun CheckBoxWithText(
                         CheckBoxCustom(
                             rounded =true,
                             isChecked  = isChecked,
-                            isCheckedChange = {isCheckedChange}
+                            isCheckedChange = {isCheckedChange(it)}
                         )
                     }
                 }
@@ -130,7 +130,7 @@ fun CheckBoxWithTextAndButton(
                 CheckBoxCustom(
                     rounded = true,
                     isChecked  = isChecked,
-                    isCheckedChange = { isCheckedChange }
+                    isCheckedChange = { isCheckedChange(it) }
                 )
             }
         }

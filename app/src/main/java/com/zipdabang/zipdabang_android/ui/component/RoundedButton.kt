@@ -44,6 +44,7 @@ fun RoundedButton(
     val borderColor = if (localIsClicked) ZipdabangandroidTheme.Colors.Strawberry else ZipdabangandroidTheme.Colors.Typo.copy(alpha = 0.5f)
 
     Button(
+        modifier = Modifier.padding(4.dp,0.dp,4.dp,0.dp),
         onClick = {localIsClicked = !localIsClicked
             isClickedChange(localIsClicked)},
         shape = ZipdabangandroidTheme.Shapes.large,
