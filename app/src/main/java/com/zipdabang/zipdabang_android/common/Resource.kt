@@ -18,3 +18,12 @@ sealed class LoginResource<T>(val data: T? = null, val message: String? = null) 
 
     class LoginLoading<T>(isLoading: Boolean): LoginResource<T>(null)
 }
+
+sealed class MarketResource<T>(val data: T? = null, val message: String? = null) {
+    class MarketSuccess<T>(data: T): MarketResource<T>(data = data)
+
+    class MarketError<T>(message: String)
+        : MarketResource<T>(message = message)
+
+    class MarketLoading<T>(isLoading: Boolean): MarketResource<T>(null)
+}
