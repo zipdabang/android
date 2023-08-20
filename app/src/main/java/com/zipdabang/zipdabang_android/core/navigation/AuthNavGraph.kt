@@ -1,6 +1,5 @@
 package com.zipdabang.zipdabang_android.core.navigation
 
-import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -10,10 +9,12 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
-import com.zipdabang.zipdabang_android.common.Constants
 import com.zipdabang.zipdabang_android.module.login.ui.LoginScreen
+import com.zipdabang.zipdabang_android.module.sign_up.ui.viewmodel.AuthSharedViewModel
+import com.zipdabang.zipdabang_android.module.sign_up.ui.RegisterNicknameScreen
+import com.zipdabang.zipdabang_android.module.sign_up.ui.RegisterPreferencesScreen
+import com.zipdabang.zipdabang_android.module.sign_up.ui.RegisterUserInfoScreen
 import com.zipdabang.zipdabang_android.module.sign_up.ui.TermsScreen
-import dagger.hilt.android.lifecycle.HiltViewModel
 
 fun NavGraphBuilder.authNavGraph(navController: NavHostController) {
     navigation(startDestination = AuthScreen.SignIn.route, route = AUTH_ROUTE) {
@@ -21,11 +22,29 @@ fun NavGraphBuilder.authNavGraph(navController: NavHostController) {
             val authSharedViewModel = navBackStackEntry
                 .authSharedViewModel<AuthSharedViewModel>(navController = navController)
             LoginScreen(
-                onSuccess = {
+                onSuccess = { email, profile ->
+                    authSharedViewModel.apply {
+                        updateEmail(email)
+                        updateProfile(profile)
+                    }
+                    navController.navigate(MAIN_ROUTE) {
+                        popUpTo(AuthScreen.SignIn.route) {
+                            inclusive = true
+                        }
+                        launchSingleTop = true
+                    }
+                },
+
+                onRegister = { email, profile ->
+                    authSharedViewModel.apply {
+                        updateEmail(email)
+                        updateProfile(profile)
+                    }
                     navController.navigate(AuthScreen.Terms.route) {
                         launchSingleTop = true
                     }
                 },
+
                 onLoginLater = {
                     navController.navigate(MAIN_ROUTE){
                         launchSingleTop = true
@@ -35,9 +54,57 @@ fun NavGraphBuilder.authNavGraph(navController: NavHostController) {
         }
 
         composable(route = AuthScreen.Terms.route) { navBackStackEntry ->
-            val authSharedViewModel = navBackStackEntry
-                .authSharedViewModel<AuthSharedViewModel>(navController = navController)
-            TermsScreen(navController = navController, authSharedViewModel = authSharedViewModel)
+            val authSharedViewModel = navBackStackEntry.authSharedViewModel<AuthSharedViewModel>(navController = navController)
+            TermsScreen(
+                navController = navController,
+                authSharedViewModel = authSharedViewModel,
+                onClickNext = {
+                    navController.navigate(AuthScreen.RegisterUserInfo.route)
+                }
+            )
+        }
+
+        composable(route =AuthScreen.RegisterUserInfo.route) {navBackStackEntry ->
+            val authSharedViewModel = navBackStackEntry.authSharedViewModel<AuthSharedViewModel>(navController = navController)
+            RegisterUserInfoScreen(
+                navController = navController,
+                authSharedViewModel = authSharedViewModel,
+                onClickBack = {
+                    navController.navigate(AuthScreen.Terms.route)
+                },
+                onClickNext = {
+                    navController.navigate(AuthScreen.RegisterNickname.route)
+                }
+            )
+        }
+
+        composable(route =AuthScreen.RegisterNickname.route) {navBackStackEntry ->
+            val authSharedViewModel = navBackStackEntry.authSharedViewModel<AuthSharedViewModel>(navController = navController)
+            RegisterNicknameScreen(
+                navController = navController,
+                authSharedViewModel = authSharedViewModel,
+                onClickBack = {
+                    navController.navigate(AuthScreen.RegisterUserInfo.route)
+                },
+                onClickNext = {
+                    navController.navigate(AuthScreen.RegisterPreferences.route)
+                }
+            )
+        }
+
+        composable(route =AuthScreen.RegisterPreferences.route) {navBackStackEntry ->
+            val authSharedViewModel = navBackStackEntry.authSharedViewModel<AuthSharedViewModel>(navController = navController)
+            RegisterPreferencesScreen(
+                navController = navController,
+                authSharedViewModel = authSharedViewModel,
+                onClickBack = {
+                    navController.navigate(AuthScreen.RegisterPreferences.route)
+                },
+                onClickNext = {
+                    //홈으로 넘어가기
+                    navController.navigate(AuthScreen.RegisterPreferences.route)
+                }
+            )
         }
     }
 }

@@ -6,7 +6,7 @@ interface ProtoRepository {
 
     val tokens: Flow<Token>
 
-    suspend fun updatePlatformToken(platform: CurrentPlatform, platformToken: String)
+    suspend fun updatePlatform(platform: CurrentPlatform)
 
     suspend fun updateAccessToken(accessToken: String)
 

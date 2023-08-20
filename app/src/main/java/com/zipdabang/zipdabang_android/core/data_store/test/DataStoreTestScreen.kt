@@ -21,9 +21,9 @@ fun DataStoreTestScreen(
     val tokens = viewModel.tokens.collectAsState(initial = Token(
         null,
         null,
+        null,
         CurrentPlatform.NONE,
         null,
-        null
     )
     )
 
@@ -52,7 +52,7 @@ fun DataStoreTestScreen(
         }
 
         Button(onClick = {
-            viewModel.updatePlatformToken(CurrentPlatform.KAKAO, "new_kakao_token")
+            viewModel.updatePlatform(CurrentPlatform.KAKAO)
             Log.d(TAG, "${tokens.value}")
         }) {
             Text(text = "PLATFORM TOKEN")

@@ -22,10 +22,9 @@ class ProtoDataViewModel @Inject constructor(
     // 사용할 곳(UI)에서 collectAsState 적용
     val tokens = protoRepository.tokens
 
-
-    fun updatePlatformToken(platform: CurrentPlatform, platformToken: String) {
+    fun updatePlatform(platform: CurrentPlatform) {
         viewModelScope.launch {
-            protoRepository.updatePlatformToken(platform, platformToken)
+            protoRepository.updatePlatform(platform)
             Log.d(TAG, "${protoRepository.tokens}")
         }
     }

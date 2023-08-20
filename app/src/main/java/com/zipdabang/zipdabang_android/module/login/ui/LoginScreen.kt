@@ -16,7 +16,6 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -28,28 +27,24 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavHostController
 import com.google.android.gms.auth.api.identity.Identity
 import com.zipdabang.zipdabang_android.R
 import com.zipdabang.zipdabang_android.common.Constants
-import com.zipdabang.zipdabang_android.core.navigation.AuthSharedViewModel
+import com.zipdabang.zipdabang_android.core.data_store.ProtoDataViewModel
 import com.zipdabang.zipdabang_android.module.login.platform_client.GoogleAuthClient
 import com.zipdabang.zipdabang_android.module.login.platform_client.KakaoAuthClient
 import com.zipdabang.zipdabang_android.module.login.data.AuthBody
 import com.zipdabang.zipdabang_android.module.splash.ui.SplashTitle
 import com.zipdabang.zipdabang_android.ui.component.LoginButton
 import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
-import kotlinx.coroutines.Deferred
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 @Composable
 fun LoginScreen(
     viewModel: LoginViewModel = hiltViewModel(),
-    onSuccess: () -> Unit,
+    tokenStoreViewModel: ProtoDataViewModel = hiltViewModel(),
+    onSuccess: (String, String) -> Unit,
+    onRegister: (String, String) -> Unit,
     onLoginLater: ()-> Unit
 ) {
     val TAG = "LoginScreen"
@@ -77,7 +72,7 @@ fun LoginScreen(
                     val signInResult = googleAuthClient.signInWithIntent(
                         intent = result.data ?: return@launch
                     )
-                    Log.d(TAG, "Sign In Result : ${signInResult}")
+                    Log.d(TAG, "Sign In Result : $signInResult")
 
                     signInResult?.data?.let {
                         if (it.email != null && it.profile != null) {
@@ -90,16 +85,14 @@ fun LoginScreen(
                             val profile = googleUserInfo.profile
                             val email = googleUserInfo.email
                             viewModel.getAuthResult(
-                                body = AuthBody(email!!, profile!!),
+                                body = AuthBody(email!!),
                                 platform = Constants.PLATFORM_GOOGLE,
                                 email = email,
-                                onSuccess = onSuccess
+                                profile = profile!!,
+                                tokenStoreViewModel = tokenStoreViewModel,
+                                onSuccess = onSuccess,
+                                onRegister = onRegister
                             )
-                            /*if (!state.isLoading && state.token != "" && state.error == "") {
-                                onSuccess(email)
-                            }*/
-
-//                            onSuccess(email)
                         }
                     }
                 }
@@ -147,8 +140,6 @@ fun LoginScreen(
                                 ).build()
                             )
 
-
-
                             // back-end database access
 
                             // main ui
@@ -174,12 +165,14 @@ fun LoginScreen(
                                 val profile = result.data.profile
                                 Log.d(TAG, "email: $email, profile: $profile")
                                 viewModel.getAuthResult(
-                                    body = AuthBody(email, profile),
+                                    body = AuthBody(email),
                                     platform = Constants.PLATFORM_KAKAO,
+                                    tokenStoreViewModel = tokenStoreViewModel,
                                     email = email,
-                                    onSuccess = onSuccess
+                                    profile = profile,
+                                    onSuccess = onSuccess,
+                                    onRegister = onRegister
                                 )
-
                             } else {
 
                             }
@@ -214,9 +207,10 @@ fun LoginScreen(
     }
 }
 
+/*
 fun onAuthCompleted(state: AuthState, email: String, onSuccess: (String) -> Unit) {
     Log.d("LoginScreen", "$state, $email")
     if (!state.isLoading && state.token != null && state.error == null) {
         onSuccess(email)
     }
-}
+}*/
