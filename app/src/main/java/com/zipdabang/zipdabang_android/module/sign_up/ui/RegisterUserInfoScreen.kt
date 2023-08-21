@@ -28,6 +28,7 @@ import com.zipdabang.zipdabang_android.module.sign_up.ui.viewmodel.AuthSharedVie
 import com.zipdabang.zipdabang_android.ui.component.AppBarSignUp
 import com.zipdabang.zipdabang_android.ui.component.MainAndSubTitle
 import com.zipdabang.zipdabang_android.ui.component.PrimaryButtonOutLined
+import com.zipdabang.zipdabang_android.ui.component.PrimaryButtonWithStatus
 import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
 
 @Composable
@@ -90,10 +91,10 @@ fun RegisterUserInfoScreen(
                     contentAlignment = Alignment.BottomCenter,
                     modifier = Modifier.padding(0.dp,0.dp,0.dp, 12.dp)
                 ){
-                    PrimaryButtonOutLined(
-                        borderColor = ZipdabangandroidTheme.Colors.Strawberry,
+                    PrimaryButtonWithStatus(
                         text= stringResource(id = R.string.signup_btn_inputdone),
-                        onClick={ onClickNext() }
+                        onClick={ onClickNext() },
+                        isFormFilled = true //stateTermsValidate
                     )
                 }
             }

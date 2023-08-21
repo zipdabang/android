@@ -1,5 +1,6 @@
 package com.zipdabang.zipdabang_android.module.sign_up.ui
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -15,6 +16,7 @@ import androidx.compose.material.Text
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -37,6 +39,7 @@ import com.zipdabang.zipdabang_android.module.sign_up.ui.viewmodel.AuthSharedVie
 import com.zipdabang.zipdabang_android.ui.component.AppBarSignUp
 import com.zipdabang.zipdabang_android.ui.component.MainAndSubTitle
 import com.zipdabang.zipdabang_android.ui.component.PrimaryButtonOutLined
+import com.zipdabang.zipdabang_android.ui.component.PrimaryButtonWithStatus
 import com.zipdabang.zipdabang_android.ui.component.RoundedButton
 import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
 
@@ -48,6 +51,9 @@ fun RegisterPreferencesScreen(
     onClickNext: ()->Unit,
 ) {
     val state = authSharedViewModel.statePreferences.value
+    val stateBeverageList by authSharedViewModel.stateBeverageList.collectAsState()
+    val statePreferencesValidate by authSharedViewModel.statePreferencesValidate.collectAsState()
+    Log.e("preferences-screen", "${stateBeverageList}")
 
     Scaffold(
         modifier = Modifier
@@ -94,7 +100,7 @@ fun RegisterPreferencesScreen(
                             subTextColor =  ZipdabangandroidTheme.Colors.Typo
                         )
 
-                        var isClicked by remember { mutableStateOf(true) }
+                        val beverageSize = state.size
                         val chunkedBeverageList = state.beverageList.chunked(3)
                         Column(
                             modifier = Modifier
@@ -103,6 +109,7 @@ fun RegisterPreferencesScreen(
                             verticalArrangement = Arrangement.Center,
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
+                            var index = 0
                             for (chunk in chunkedBeverageList) {
                                 Row(
                                     modifier = Modifier
@@ -115,11 +122,12 @@ fun RegisterPreferencesScreen(
                                         RoundedButton(
                                             imageUrl = preference.imageUrl,
                                             buttonText = preference.categoryName,
-                                            isClicked = isClicked,
+                                            isClicked = stateBeverageList[index],
                                             isClickedChange = { selectedClicked ->
-                                                isClicked = selectedClicked
+                                                authSharedViewModel.updateBeverageList(preference.id-1 , selectedClicked)
                                             }
                                         )
+                                        index ++
                                     }
                                 }
                             }
@@ -167,10 +175,10 @@ fun RegisterPreferencesScreen(
                 contentAlignment = Alignment.BottomCenter,
                 modifier = Modifier.padding(16.dp,0.dp,16.dp, 12.dp)
             ){
-                PrimaryButtonOutLined(
-                    borderColor = ZipdabangandroidTheme.Colors.Strawberry,
+                PrimaryButtonWithStatus(
                     text= stringResource(id = R.string.signup_btn_choicecomplete),
-                    onClick={ onClickNext() }
+                    onClick={ onClickNext() },
+                    isFormFilled = statePreferencesValidate
                 )
             }
         }

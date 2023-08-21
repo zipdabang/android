@@ -14,19 +14,25 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Text
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -36,15 +42,16 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.zipdabang.zipdabang_android.R
 import com.zipdabang.zipdabang_android.core.navigation.AuthScreen
+import com.zipdabang.zipdabang_android.module.sign_up.data.remote.Terms
 import com.zipdabang.zipdabang_android.module.sign_up.domain.repository.SignUpRepository
 import com.zipdabang.zipdabang_android.module.sign_up.domain.usecase.GetTermsUseCase
 import com.zipdabang.zipdabang_android.module.sign_up.ui.viewmodel.AuthSharedViewModel
 import com.zipdabang.zipdabang_android.ui.component.AppBarSignUp
 import com.zipdabang.zipdabang_android.ui.component.MainAndSubTitle
 import com.zipdabang.zipdabang_android.ui.component.PrimaryButtonOutLined
+import com.zipdabang.zipdabang_android.ui.component.PrimaryButtonWithStatus
 import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
 
-@SuppressLint("StateFlowValueCalledInComposition")
 @Composable
 fun TermsScreen(
     navController: NavHostController,
@@ -52,11 +59,9 @@ fun TermsScreen(
     onClickNext: ()->Unit,
 ) {
     val stateTerms = authSharedViewModel.stateTerms.value
-    val stateTermsAllagree = authSharedViewModel.stateTermsAllagree.value
-    val stateTermsListAgree = authSharedViewModel.stateTermsListAgree.value
-    Log.e("termsAgree","${stateTermsListAgree}")
-    Log.e("termsAgree","${stateTermsAllagree}")
-
+    val stateTermsAllagree by authSharedViewModel.stateTermsAllagree.collectAsState()
+    val stateTermsListAgree by authSharedViewModel.stateTermsListAgree.collectAsState()
+    val stateTermsValidate by authSharedViewModel.stateTermsValidate.collectAsState()
 
     Scaffold(
         modifier = Modifier
@@ -90,14 +95,12 @@ fun TermsScreen(
                     subTextColor =  ZipdabangandroidTheme.Colors.Typo
                 )
 
-
                 Spacer(modifier = Modifier.height(40.dp))
 
                 CheckBoxWithText(
                     isCheckBox = true,
                     isChecked = stateTermsAllagree,
                     isCheckedChange = {selectedChecked ->
-                        Log.e("termsAgree","${stateTermsAllagree}")
                         authSharedViewModel.updateTermsAllagree(selectedChecked)
                     },
                     mainValue = stringResource(id = R.string.signup_terms_allagree),
@@ -114,7 +117,6 @@ fun TermsScreen(
                      color = Color(0xFFCDC6C3)
                  )
 
-
                 CheckBoxWithText(
                     isCheckBox = false,
                     isChecked = null,
@@ -126,38 +128,38 @@ fun TermsScreen(
                     detailTextStyle = null
                 )
 
-
                 LazyColumn(
                     modifier = Modifier.padding(0.dp,12.dp,0.dp,0.dp),
-                    verticalArrangement = Arrangement.spacedBy(10.dp)
+                    verticalArrangement = Arrangement.spacedBy(10.dp),
                 ){
-                        items(stateTerms.size){term ->
-                            if(stateTerms.termsList.get(term).isMoreToSee){
-                                CheckBoxWithTextAndButton(
-                                    isChecked = stateTermsListAgree[term],
-                                    isCheckedChange = { selectedChecked ->
-                                        authSharedViewModel.updateTermsListAgree(term, selectedChecked)
-                                                      },
-                                    mainValue = stateTerms.termsList.get(term).termsTitle,
-                                    mainTextStyle = ZipdabangandroidTheme.Typography.fourteen_500,
-                                    onClick= {}
-                                )
-                            } else {
-                                CheckBoxWithText(
-                                    isCheckBox = true,
-                                    isChecked = stateTermsListAgree[term],
-                                    isCheckedChange = {selectedChecked ->
-                                        authSharedViewModel.updateTermsListAgree(term, selectedChecked)
-                                                      },
-                                    mainValue = stateTerms.termsList.get(term).termsTitle,
-                                    mainTextStyle = ZipdabangandroidTheme.Typography.fourteen_500,
-                                    isDetailValue = true,
-                                    detailValue = stateTerms.termsList.get(term).termsBody,
-                                    detailTextStyle = ZipdabangandroidTheme.Typography.twelve_300,
-                                )
-                            }
+                    itemsIndexed(stateTerms.termsList) { index, termInfo ->
+                        val termInfo = stateTerms.termsList[index]
+
+                        if(termInfo.isMoreToSee){
+                            CheckBoxWithTextAndButton(
+                                isChecked = stateTermsListAgree[index],
+                                isCheckedChange = { selectedChecked ->
+                                    authSharedViewModel.updateTermsListAgree(index, selectedChecked)
+                                },
+                                mainValue = termInfo.termsTitle,
+                                mainTextStyle = ZipdabangandroidTheme.Typography.fourteen_500,
+                                onClick = {}
+                            )
+                        } else{
+                            CheckBoxWithText(
+                                isCheckBox = true,
+                                isChecked = stateTermsListAgree[index],
+                                isCheckedChange = {selectedChecked ->
+                                    authSharedViewModel.updateTermsListAgree(index, selectedChecked)
+                                },
+                                mainValue = termInfo.termsTitle,
+                                mainTextStyle = ZipdabangandroidTheme.Typography.fourteen_500,
+                                isDetailValue = true,
+                                detailValue = termInfo.termsBody,
+                                detailTextStyle = ZipdabangandroidTheme.Typography.twelve_300,)
                         }
                     }
+                }
                 if(stateTerms.error.isNotBlank()){
                     Text(
                         text = stateTerms.error,
@@ -171,22 +173,22 @@ fun TermsScreen(
                     CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
                 }
             }
+            //하단 버튼
             Box(
                 contentAlignment = Alignment.BottomCenter,
                 modifier = Modifier.padding(16.dp,0.dp,16.dp, 12.dp)
             ){
-                PrimaryButtonOutLined(
-                    borderColor = ZipdabangandroidTheme.Colors.Strawberry,
+                PrimaryButtonWithStatus(
                     text= stringResource(id = R.string.signup_btn_termsagree),
-                    onClick={
-                        onClickNext()
-                    }
+                    onClick={ onClickNext() },
+                    isFormFilled = stateTermsValidate
                 )
             }
         }
     }
     
 }
+
 
 @Preview
 @Composable
@@ -196,6 +198,6 @@ fun PreviewTermsScreen(){
         navController = navController,
         onClickNext = {
             navController.navigate(AuthScreen.RegisterUserInfo.route)
-        }
+        },
     )
 }

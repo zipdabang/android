@@ -70,7 +70,7 @@ fun NavGraphBuilder.authNavGraph(navController: NavHostController) {
                 navController = navController,
                 authSharedViewModel = authSharedViewModel,
                 onClickBack = {
-                    navController.navigate(AuthScreen.Terms.route)
+                    navController.popBackStack(AuthScreen.Terms.route, inclusive = false)
                 },
                 onClickNext = {
                     navController.navigate(AuthScreen.RegisterNickname.route)
@@ -84,7 +84,7 @@ fun NavGraphBuilder.authNavGraph(navController: NavHostController) {
                 navController = navController,
                 authSharedViewModel = authSharedViewModel,
                 onClickBack = {
-                    navController.navigate(AuthScreen.RegisterUserInfo.route)
+                    navController.popBackStack(AuthScreen.Terms.route, inclusive = false)
                 },
                 onClickNext = {
                     navController.navigate(AuthScreen.RegisterPreferences.route)
@@ -98,12 +98,11 @@ fun NavGraphBuilder.authNavGraph(navController: NavHostController) {
                 navController = navController,
                 authSharedViewModel = authSharedViewModel,
                 onClickBack = {
-                    navController.navigate(AuthScreen.RegisterNickname.route)
+                    navController.popBackStack(AuthScreen.RegisterUserInfo.route, inclusive = false)
                 },
                 onClickNext = {
                     navController.navigate(AuthScreen.RegisterPreferences.route)
                     //홈으로 넘어가기
-                    //navController.navigate(HomeScreen.Home.route)
                 }
             )
         }

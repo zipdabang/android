@@ -1,5 +1,6 @@
 package com.zipdabang.zipdabang_android.module.sign_up.ui
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -39,6 +40,13 @@ fun CheckBoxWithText(
     detailValue : String?,
     detailTextStyle: TextStyle?,
 ){
+    var isCheckedLocal by remember { mutableStateOf(isChecked) }
+    Log.e("component-checkbox", "${isCheckedLocal}")
+
+    if (isChecked != isCheckedLocal) {
+        isCheckedLocal = isChecked
+    }
+
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -50,15 +58,19 @@ fun CheckBoxWithText(
             contentAlignment = Alignment.Center
         ){
             if(isCheckBox == false){
+
             }else{
                 Box(
                     modifier = Modifier.size(18.dp)
                 ){
-                    if (isChecked != null) {
+                    if (isCheckedLocal != null) {
                         CheckBoxCustom(
                             rounded =true,
-                            isChecked  = isChecked,
-                            isCheckedChange = {isCheckedChange(it)}
+                            isChecked  = isCheckedLocal!!,
+                            isCheckedChange = {
+                                isCheckedLocal = it
+                                isCheckedChange(it)
+                            }
                         )
                     }
                 }
@@ -112,6 +124,13 @@ fun CheckBoxWithTextAndButton(
     mainTextStyle: TextStyle,
     onClick : ()->Unit,
 ){
+    var isCheckedLocal by remember { mutableStateOf(isChecked) }
+    Log.e("component-checkbox", "${isCheckedLocal}")
+
+    if (isChecked != isCheckedLocal) {
+        isCheckedLocal = isChecked
+    }
+
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -129,8 +148,11 @@ fun CheckBoxWithTextAndButton(
             ){
                 CheckBoxCustom(
                     rounded = true,
-                    isChecked  = isChecked,
-                    isCheckedChange = { isCheckedChange(it) }
+                    isChecked  = isCheckedLocal,
+                    isCheckedChange = {
+                        isCheckedLocal = it
+                        isCheckedChange(it)
+                    }
                 )
             }
         }
@@ -155,7 +177,7 @@ fun CheckBoxWithTextAndButton(
                     textAlign = TextAlign.End
                 )
             ),
-            onClick={ onClick },
+            onClick={ onClick() },
             style = ZipdabangandroidTheme.Typography.fourteen_300,
         )
 
