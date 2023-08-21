@@ -52,7 +52,7 @@ fun RoundedButton(
             containerColor = containerColor,
         ),
         border = BorderStroke(1.dp, borderColor),
-        contentPadding = PaddingValues(4.dp, 0.dp, 4.dp, 0.dp),
+        contentPadding = PaddingValues(8.dp, 0.dp, 8.dp, 0.dp),
     ){
         Row(
             horizontalArrangement = Arrangement.spacedBy(4.dp),

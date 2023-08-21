@@ -53,7 +53,7 @@ fun RegisterPreferencesScreen(
     val state = authSharedViewModel.statePreferences.value
     val stateBeverageList by authSharedViewModel.stateBeverageList.collectAsState()
     val statePreferencesValidate by authSharedViewModel.statePreferencesValidate.collectAsState()
-    Log.e("preferences-screen", "${stateBeverageList}")
+    //Log.e("preferences-screen", "${stateBeverageList}")
 
     Scaffold(
         modifier = Modifier
@@ -100,7 +100,6 @@ fun RegisterPreferencesScreen(
                             subTextColor =  ZipdabangandroidTheme.Colors.Typo
                         )
 
-                        val beverageSize = state.size
                         val chunkedBeverageList = state.beverageList.chunked(3)
                         Column(
                             modifier = Modifier
@@ -150,7 +149,8 @@ fun RegisterPreferencesScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .weight(1f)
-                        .background(ZipdabangandroidTheme.Colors.SubBackground),
+                        .background(ZipdabangandroidTheme.Colors.SubBackground)
+                        .padding(0.dp, 40.dp, 0.dp, 0.dp),
                     contentAlignment = Alignment.Center
                 ){
                     ClickableText(
@@ -159,6 +159,8 @@ fun RegisterPreferencesScreen(
                             spanStyle = SpanStyle(
                                 color = ZipdabangandroidTheme.Colors.Typo
                             ),
+                        ) + AnnotatedString(
+                                text = " ",
                         ) + AnnotatedString(
                             text=stringResource(id = R.string.signup_preferences_gotohome),
                             spanStyle = SpanStyle(

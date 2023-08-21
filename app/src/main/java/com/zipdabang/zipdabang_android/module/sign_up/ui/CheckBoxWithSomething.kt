@@ -43,6 +43,7 @@ fun CheckBoxWithText(
     var isCheckedLocal by remember { mutableStateOf(isChecked) }
     Log.e("component-checkbox", "${isCheckedLocal}")
 
+    /*이거 때문에 몇시간 날림 허허*/
     if (isChecked != isCheckedLocal) {
         isCheckedLocal = isChecked
     }

@@ -39,6 +39,9 @@
     <string name="signup_terms_choice_marketing">[선택] 마케팅 활용 및 광고성 정보 수신 동의</string>
     <string name="signup_userinfo_maintitle">회원정보 입력</string>
     <string name="signup_userinfo_subtitle">정보는 다른 사람에게 공개되지 않습니다.</string>
+    <string name="signup_userinfo_basicinfo">기본 정보</string>
+    <string name="signup_userinfo_validation">본인 인증</string>
+    <string name="signup_userinfo_detailinfo">상세 정보</string>
     <string name="signup_userinfo_birthday_lengthfail"></string>
     <string name="signup_userinfo_birthday_notformed">생년월일 형식에 맞지 않습니다.</string>
     <string name="signup_userinfo_phonenumber_notcertificate">인증 번호 불일치</string>

@@ -35,7 +35,6 @@ import com.zipdabang.zipdabang_android.module.sign_up.ui.viewmodel.AuthSharedVie
 import com.zipdabang.zipdabang_android.ui.component.AppBarSignUp
 import com.zipdabang.zipdabang_android.ui.component.PrimaryButtonOutLined
 import com.zipdabang.zipdabang_android.ui.component.PrimaryButtonWithStatus
-import com.zipdabang.zipdabang_android.ui.component.TextFieldBasic
 import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
 
 @Composable
@@ -111,7 +110,7 @@ fun RegisterNicknameScreen(
                     Box(
                         modifier = Modifier.weight(6.8f),
                     ){
-                        TextFieldBasic(
+                        /*TextFieldBasic(
                             value = textState,
                             onValueChanged = { textState = it },
                             expectedValue = "asdf",
@@ -119,8 +118,10 @@ fun RegisterNicknameScreen(
                             errorMessage = "중복되는 닉네임 입니다",
                             rightMessage = "사용하실 수 있는 닉네임 입니다",
                             keyboardType = KeyboardType.Text,
-                            imeAction = ImeAction.Done
-                        )
+                            imeAction = ImeAction.Done,
+                            tryCount = 0,
+                            labelValue = "닉네임"
+                        )*/
                     }
                     Box(
                         modifier = Modifier.weight(3.2f)

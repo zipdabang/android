@@ -61,42 +61,59 @@ fun RegisterUserInfoScreen(
                     .background(Color.White)
                     .fillMaxWidth()
             ) {
-                Box(
-                    modifier = Modifier
-                        .wrapContentHeight()
-                        .fillMaxWidth()
-                ) {
-                    MainAndSubTitle(
-                        mainValue = stringResource(id = R.string.signup_userinfo_maintitle),
-                        mainTextStyle = ZipdabangandroidTheme.Typography.twentytwo_700,
-                        mainTextColor = ZipdabangandroidTheme.Colors.Typo,
-                        subValue = stringResource(id = R.string.signup_userinfo_subtitle),
-                        subTextStyle = ZipdabangandroidTheme.Typography.sixteen_300,
-                        subTextColor = ZipdabangandroidTheme.Colors.Typo,
-                    )
-                }
-                Spacer(
-                    modifier = Modifier
-                        .weight(1f)
-                        .fillMaxWidth()
+                MainAndSubTitle(
+                    mainValue = stringResource(id = R.string.signup_userinfo_maintitle),
+                    mainTextStyle = ZipdabangandroidTheme.Typography.twentytwo_700,
+                    mainTextColor = ZipdabangandroidTheme.Colors.Typo,
+                    subValue = stringResource(id = R.string.signup_userinfo_subtitle),
+                    subTextStyle = ZipdabangandroidTheme.Typography.sixteen_300,
+                    subTextColor = ZipdabangandroidTheme.Colors.Typo
                 )
-                Column(
-                    modifier = Modifier
-                        .weight(9f)
-                        .fillMaxWidth()
-                ){
 
-                }
+                //기본 정보
                 Box(
-                    contentAlignment = Alignment.BottomCenter,
-                    modifier = Modifier.padding(0.dp,0.dp,0.dp, 12.dp)
+                    modifier = Modifier.fillMaxWidth()
+                        .wrapContentHeight()
                 ){
-                    PrimaryButtonWithStatus(
-                        text= stringResource(id = R.string.signup_btn_inputdone),
-                        onClick={ onClickNext() },
-                        isFormFilled = true //stateTermsValidate
+                    Text(
+                        text= stringResource(id = R.string.signup_userinfo_basicinfo),
+                        style = ZipdabangandroidTheme.Typography.sixteen_300_cafe24,
+                        color = ZipdabangandroidTheme.Colors.Choco
                     )
                 }
+                //본인 인증
+                Box(
+                    modifier = Modifier.fillMaxWidth()
+                        .wrapContentHeight()
+                ){
+                    Text(
+                        text= stringResource(id = R.string.signup_userinfo_validation),
+                        style = ZipdabangandroidTheme.Typography.sixteen_300_cafe24,
+                        color = ZipdabangandroidTheme.Colors.Choco
+                    )
+                }
+                //상세 정보
+                Box(
+                    modifier = Modifier.fillMaxWidth()
+                        .wrapContentHeight()
+                ){
+                    Text(
+                        text= stringResource(id = R.string.signup_userinfo_detailinfo),
+                        style = ZipdabangandroidTheme.Typography.sixteen_300_cafe24,
+                        color = ZipdabangandroidTheme.Colors.Choco
+                    )
+                }
+            }
+
+            Box(
+                contentAlignment = Alignment.BottomCenter,
+                modifier = Modifier.padding(16.dp,0.dp,16.dp, 12.dp)
+            ){
+                PrimaryButtonWithStatus(
+                    text= stringResource(id = R.string.signup_btn_inputdone),
+                    onClick={ onClickNext() },
+                    isFormFilled = true //stateTermsValidate
+                )
             }
         }
     }

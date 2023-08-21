@@ -84,7 +84,7 @@ fun NavGraphBuilder.authNavGraph(navController: NavHostController) {
                 navController = navController,
                 authSharedViewModel = authSharedViewModel,
                 onClickBack = {
-                    navController.popBackStack(AuthScreen.Terms.route, inclusive = false)
+                    navController.popBackStack(AuthScreen.RegisterUserInfo.route, inclusive = false)
                 },
                 onClickNext = {
                     navController.navigate(AuthScreen.RegisterPreferences.route)
@@ -98,7 +98,7 @@ fun NavGraphBuilder.authNavGraph(navController: NavHostController) {
                 navController = navController,
                 authSharedViewModel = authSharedViewModel,
                 onClickBack = {
-                    navController.popBackStack(AuthScreen.RegisterUserInfo.route, inclusive = false)
+                    navController.popBackStack(AuthScreen.RegisterNickname.route, inclusive = false)
                 },
                 onClickNext = {
                     navController.navigate(AuthScreen.RegisterPreferences.route)

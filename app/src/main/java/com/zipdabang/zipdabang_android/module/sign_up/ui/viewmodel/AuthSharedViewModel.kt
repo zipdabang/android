@@ -93,7 +93,7 @@ class AuthSharedViewModel @Inject constructor(
            set(id, isChecked)
        }
         validatePreferences()
-        Log.e("preferences-viewmodel", "${stateBeverageList.value}")
+        //Log.e("preferences-viewmodel", "${stateBeverageList.value}")
     }
     fun updatePreferencesValidation(isValid: Boolean) {
         _statePreferencesValidate.value = isValid
