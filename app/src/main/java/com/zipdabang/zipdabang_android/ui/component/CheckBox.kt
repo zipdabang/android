@@ -40,6 +40,11 @@ fun CheckBoxCustom(
 ){
     var localIsChecked by remember { mutableStateOf(isChecked) }
 
+    /*이거 때문에 몇시간 날림 허허*/
+    if (isChecked != localIsChecked) {
+        localIsChecked = isChecked
+    }
+
     val containerColor = if (localIsChecked) ZipdabangandroidTheme.Colors.Strawberry else Color.White
     val iconColor = if (localIsChecked) Color.White else ZipdabangandroidTheme.Colors.Strawberry
     val shapeType = if (rounded) CircleShape else RoundedCornerShape(1.dp)
@@ -55,7 +60,8 @@ fun CheckBoxCustom(
         IconButton(
             onClick = {
                 localIsChecked = !localIsChecked
-                isCheckedChange(localIsChecked)},
+                isCheckedChange(localIsChecked)
+            },
             modifier = Modifier.fillMaxSize(),
             colors = IconButtonDefaults.iconButtonColors(
                 containerColor = containerColor,

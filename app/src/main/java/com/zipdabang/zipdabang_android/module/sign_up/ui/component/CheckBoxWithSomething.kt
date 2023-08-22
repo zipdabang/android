@@ -1,5 +1,6 @@
-package com.zipdabang.zipdabang_android.module.sign_up.ui
+package com.zipdabang.zipdabang_android.module.sign_up.ui.component
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -30,11 +31,23 @@ import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
 
 @Composable
 fun CheckBoxWithText(
-    isChecked : Boolean,
+    isCheckBox: Boolean,
+    isChecked : Boolean?,
     isCheckedChange : (Boolean) -> Unit,
     mainValue : String,
     mainTextStyle : TextStyle,
+    isDetailValue : Boolean,
+    detailValue : String?,
+    detailTextStyle: TextStyle?,
 ){
+    var isCheckedLocal by remember { mutableStateOf(isChecked) }
+    Log.e("component-checkbox", "${isCheckedLocal}")
+
+    /*이거 때문에 몇시간 날림 허허*/
+    if (isChecked != isCheckedLocal) {
+        isCheckedLocal = isChecked
+    }
+
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -45,14 +58,23 @@ fun CheckBoxWithText(
                 .size(24.dp),
             contentAlignment = Alignment.Center
         ){
-            Box(
-                modifier = Modifier.size(18.dp)
-            ){
-                CheckBoxCustom(
-                    rounded =true,
-                    isChecked  = isChecked,
-                    isCheckedChange = {isCheckedChange}
-                )
+            if(isCheckBox == false){
+
+            }else{
+                Box(
+                    modifier = Modifier.size(18.dp)
+                ){
+                    if (isCheckedLocal != null) {
+                        CheckBoxCustom(
+                            rounded =true,
+                            isChecked  = isCheckedLocal!!,
+                            isCheckedChange = {
+                                isCheckedLocal = it
+                                isCheckedChange(it)
+                            }
+                        )
+                    }
+                }
             }
         }
         Spacer(
@@ -64,7 +86,33 @@ fun CheckBoxWithText(
             style = mainTextStyle,
             color = ZipdabangandroidTheme.Colors.Typo
         )
+    }
+    if(isDetailValue == false){
 
+    }else{
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
+        ){
+            Box(
+                modifier = Modifier.weight(0.1f)
+                    .size(24.dp),
+            )
+            Spacer(
+                modifier = Modifier.weight(0.01f)
+            )
+            if (detailValue != null) {
+                if (detailTextStyle != null) {
+                    Text(
+                        text = detailValue,
+                        style = detailTextStyle,
+                        color = ZipdabangandroidTheme.Colors.Typo,
+                        modifier = Modifier.weight(0.9f),
+                    )
+                }
+            }
+        }
     }
 }
 
@@ -74,8 +122,16 @@ fun CheckBoxWithTextAndButton(
     isChecked : Boolean,
     isCheckedChange : (Boolean) -> Unit,
     mainValue : String,
+    mainTextStyle: TextStyle,
     onClick : ()->Unit,
 ){
+    var isCheckedLocal by remember { mutableStateOf(isChecked) }
+    Log.e("component-checkbox", "${isCheckedLocal}")
+
+    if (isChecked != isCheckedLocal) {
+        isCheckedLocal = isChecked
+    }
+
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -93,8 +149,11 @@ fun CheckBoxWithTextAndButton(
             ){
                 CheckBoxCustom(
                     rounded = true,
-                    isChecked  = isChecked,
-                    isCheckedChange = { isCheckedChange }
+                    isChecked  = isCheckedLocal,
+                    isCheckedChange = {
+                        isCheckedLocal = it
+                        isCheckedChange(it)
+                    }
                 )
             }
         }
@@ -104,7 +163,7 @@ fun CheckBoxWithTextAndButton(
         Text(
             text = mainValue,
             modifier = Modifier.weight(0.7f),
-            style = ZipdabangandroidTheme.Typography.fourteen_500,
+            style = mainTextStyle,
             color = ZipdabangandroidTheme.Colors.Typo
         )
 
@@ -116,10 +175,10 @@ fun CheckBoxWithTextAndButton(
                     color = ZipdabangandroidTheme.Colors.Typo
                 ),
                 paragraphStyle = ParagraphStyle(
-                    textAlign = TextAlign.Center
+                    textAlign = TextAlign.End
                 )
             ),
-            onClick={ onClick },
+            onClick={ onClick() },
             style = ZipdabangandroidTheme.Typography.fourteen_300,
         )
 
@@ -137,15 +196,20 @@ fun PreviewCheckBoxWithTextAndButton(){
         modifier = Modifier.padding(16.dp)
     ){
         CheckBoxWithText(
+            isCheckBox= false,
             isChecked = isCheckedSecond,
             isCheckedChange = {selectedChecked -> isCheckedSecond = selectedChecked },
             mainValue = "[필수] 필수 제공 항목",
-            mainTextStyle = ZipdabangandroidTheme.Typography.fourteen_700
+            mainTextStyle = ZipdabangandroidTheme.Typography.fourteen_700,
+            isDetailValue = true,
+            detailValue = "어쩌구저쩌구",
+            detailTextStyle = ZipdabangandroidTheme.Typography.twelve_300,
         )
         CheckBoxWithTextAndButton(
             isChecked = isChecked,
             isCheckedChange = {selectedChecked -> isChecked = selectedChecked },
             mainValue = "[필수] 필수 제공 항목",
+            mainTextStyle = ZipdabangandroidTheme.Typography.fourteen_500,
             onClick = { }
         )
 

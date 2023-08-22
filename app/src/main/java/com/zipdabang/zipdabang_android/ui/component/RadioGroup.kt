@@ -2,6 +2,7 @@ package com.zipdabang.zipdabang_android.ui.component
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -61,19 +62,19 @@ fun RadioGroupHorizontal(
                         role = Role.RadioButton
                     )
                     .padding(8.dp),
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
             ) {
                 Icon(
                     painter = painterResource(
                         id = if (selectedOption == option) R.drawable.ic_radio_checked else R.drawable.ic_radio_unchecked
                     ),
                     contentDescription = "radio",
-                    tint = ZipdabangandroidTheme.Colors.Strawberry
+                    tint = ZipdabangandroidTheme.Colors.Strawberry,
                 )
 
-                Spacer(modifier = Modifier.width(12.dp))
+                Spacer(modifier = Modifier.width(10.dp))
 
-                Text(text = option, textAlign = TextAlign.Center)
+                Text(text = option, textAlign = TextAlign.Center, style=ZipdabangandroidTheme.Typography.fourteen_300)
                 
             }
         }
@@ -93,7 +94,6 @@ fun RadioGroupVertical(
         modifier = Modifier
             .selectableGroup()
             .fillMaxWidth()
-
     ) {
         optionList.forEach { option ->
             Row(
@@ -122,9 +122,9 @@ fun RadioGroupVertical(
                     tint = ZipdabangandroidTheme.Colors.Strawberry
                 )
 
-                Spacer(modifier = Modifier.width(8.dp))
+                Spacer(modifier = Modifier.width(4.dp))
 
-                Text(text = option, textAlign = TextAlign.Center)
+                Text(text = option, textAlign = TextAlign.Center ,style=ZipdabangandroidTheme.Typography.fourteen_300)
 
             }
 
@@ -160,8 +160,7 @@ fun RadioGroupVerticalPreview() {
         RadioGroupVertical(optionList = options, onOptionChange = { selectedValue -> state = selectedValue })
         Spacer(modifier = Modifier.height(20.dp))
         Text(text = state)
-
-
     }
 
 }
+

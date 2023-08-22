@@ -1,6 +1,5 @@
 package com.zipdabang.zipdabang_android.module.sign_up.ui
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -9,6 +8,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.Text
@@ -35,24 +35,20 @@ import com.zipdabang.zipdabang_android.core.navigation.AuthScreen
 import com.zipdabang.zipdabang_android.module.sign_up.ui.viewmodel.AuthSharedViewModel
 import com.zipdabang.zipdabang_android.ui.component.AppBarSignUp
 import com.zipdabang.zipdabang_android.ui.component.MainAndSubTitle
-import com.zipdabang.zipdabang_android.ui.component.PrimaryButtonOutLined
 import com.zipdabang.zipdabang_android.ui.component.PrimaryButtonWithStatus
-import com.zipdabang.zipdabang_android.ui.component.RadioGroupHorizontal
 import com.zipdabang.zipdabang_android.ui.component.TextFieldBasic
 import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
 
 @Composable
-fun RegisterUserInfoScreen(
+fun RegisterUserAddressScreen(
     navController: NavHostController,
     authSharedViewModel: AuthSharedViewModel = hiltViewModel(),
     onClickBack: ()->Unit,
     onClickNext: ()->Unit,
 ) {
-    val stateNameValue by authSharedViewModel.stateNameValue.collectAsState()
-    val stateBirthdayValue by authSharedViewModel.stateBirthdayValue.collectAsState()
-    val stateGenderList by authSharedViewModel.stateGenderList.collectAsState()
-    val statePhonenumberValue by authSharedViewModel.statePhonenumberValue.collectAsState()
-    val stateCertificatenumberValue by authSharedViewModel.stateCertificatenumberValue.collectAsState()
+    val stateZipcodeValue by authSharedViewModel.stateZipcodeValue.collectAsState()
+    val stateAddressValue by authSharedViewModel.stateAddressValue.collectAsState()
+    val stateDetailaddressValue by authSharedViewModel.stateDetailaddressValue.collectAsState()
 
     Scaffold(
         modifier = Modifier
@@ -87,25 +83,54 @@ fun RegisterUserInfoScreen(
                     subTextColor = ZipdabangandroidTheme.Colors.Typo
                 )
 
-                //기본 정보
+                //상세 정보
                 Column(
                     modifier = Modifier
                         .fillMaxWidth(),
                     verticalArrangement = Arrangement.spacedBy(10.dp)
                 ){
                     Text(
-                        text= stringResource(id = R.string.signup_userinfo_basicinfo),
+                        text= stringResource(id = R.string.signup_userinfo_detailinfo),
                         style = ZipdabangandroidTheme.Typography.sixteen_300_cafe24,
                         color = ZipdabangandroidTheme.Colors.Choco
                     )
-
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.Center,
                         verticalAlignment = Alignment.CenterVertically
                     ){
                         Icon(
-                            painter = painterResource(id = R.drawable.ic_signup_name),
+                            painter = painterResource(id = R.drawable.ic_signup_zipcode),
+                            contentDescription = "Icon",
+                            tint = ZipdabangandroidTheme.Colors.Choco,
+                            modifier = Modifier
+                                .size(12.dp)
+                                .weight(1.2f),
+                        )
+                        Box(
+                            modifier = Modifier.weight(8.8f)
+                        ){
+                            TextFieldBasic(
+                                value = stateZipcodeValue,
+                                onValueChanged = {
+                                    authSharedViewModel.updateZipcode(it)
+                                },
+                                labelValue = stringResource(id = R.string.signup_userinfo_zipcode),
+                                placeHolderValue = "",
+                                onError = { return@TextFieldBasic false } ,
+                                errorMessage = "아직 배송 지원 불가 지역입니다",
+                                keyboardType = KeyboardType.Number,
+                                imeAction = ImeAction.Done,
+                            )
+                        }
+                    }
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.CenterVertically
+                    ){
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_signup_address),
                             contentDescription = "Icon",
                             tint = ZipdabangandroidTheme.Colors.Choco,
                             modifier = Modifier
@@ -116,114 +141,16 @@ fun RegisterUserInfoScreen(
                             modifier = Modifier.weight(8.8f)
                         ){
                             TextFieldBasic(
-                                value = stateNameValue,
+                                value = stateAddressValue,
                                 onValueChanged = {
-                                    authSharedViewModel.updateName(it)
+                                    authSharedViewModel.updateAddress(it)
                                 },
-                                labelValue = stringResource(id = R.string.signup_userinfo_name),
-                                placeHolderValue ="",
+                                labelValue = stringResource(id = R.string.signup_userinfo_address),
+                                placeHolderValue = "",
                                 onError = { return@TextFieldBasic false } ,
                                 errorMessage = "",
                                 keyboardType = KeyboardType.Text,
                                 imeAction = ImeAction.Next,
-                            )
-                        }
-                    }
-
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.Center,
-                        verticalAlignment = Alignment.CenterVertically
-                    ){
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_signup_birthdaycake),
-                            contentDescription = "Icon",
-                            tint = ZipdabangandroidTheme.Colors.Choco,
-                            modifier = Modifier
-                                .size(16.dp)
-                                .weight(1.2f),
-                        )
-                        Box(
-                            modifier = Modifier.weight(5.4f)
-                        ){
-                            TextFieldBasic(
-                                value = stateBirthdayValue,
-                                onValueChanged = {
-                                    authSharedViewModel.updateBirthday(it)
-                                },
-                                labelValue = stringResource(id = R.string.signup_userinfo_birthday),
-                                placeHolderValue = stringResource(id = R.string.signup_userinfo_birthday_placeholder),
-                                onError = { return@TextFieldBasic false } ,
-                                errorMessage = "형식에 맞게 입력해주세요",
-                                keyboardType = KeyboardType.Number,
-                                imeAction = ImeAction.Next,
-                            )
-                        }
-
-
-                        Box(
-                            modifier = Modifier.weight(3.4f)
-                        ){
-                            RadioGroupHorizontal(
-                                optionList = stateGenderList,
-                                onOptionChange = {
-                                   authSharedViewModel.updateGender(it)
-                                }
-                            )
-                        }
-                    }
-                }
-
-                //본인 인증
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    verticalArrangement = Arrangement.spacedBy(10.dp)
-                ){
-                    Text(
-                        text= stringResource(id = R.string.signup_userinfo_validation),
-                        style = ZipdabangandroidTheme.Typography.sixteen_300_cafe24,
-                        color = ZipdabangandroidTheme.Colors.Choco
-                    )
-
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.Center,
-                        verticalAlignment = Alignment.CenterVertically
-                    ){
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_signup_phone),
-                            contentDescription = "Icon",
-                            tint = ZipdabangandroidTheme.Colors.Choco,
-                            modifier = Modifier
-                                .size(16.dp)
-                                .weight(1.2f),
-                        )
-                        Box(
-                            modifier = Modifier.weight(5.4f)
-                        ){
-                            TextFieldBasic(
-                                value = statePhonenumberValue,
-                                onValueChanged = {
-                                    authSharedViewModel.updatePhonenumber(it)
-                                },
-                                labelValue = stringResource(id = R.string.signup_userinfo_phonenumber),
-                                placeHolderValue = stringResource(id = R.string.signup_userinfo_phonenumber_placeholder),
-                                onError = { return@TextFieldBasic false } ,
-                                errorMessage = "전화번호를 정확히 입력해주세요",
-                                keyboardType = KeyboardType.Number,
-                                imeAction = ImeAction.Done,
-                            )
-                        }
-                        Box(modifier = Modifier
-                            .weight(3.4f)
-                            .padding(8.dp, 0.dp, 0.dp, 0.dp)){
-                            PrimaryButtonOutLined(
-                                borderColor =ZipdabangandroidTheme.Colors.BlackSesame,
-                                text = stringResource(id = R.string.signup_userinfo_certificatecall),
-                                onClick = {
-
-                                }
                             )
                         }
                     }
@@ -236,35 +163,23 @@ fun RegisterUserInfoScreen(
                             modifier = Modifier.weight(1.2f)
                         )
                         Box(
-                            modifier = Modifier.weight(5.4f)
+                            modifier = Modifier.weight(8.8f)
                         ){
                             TextFieldBasic(
-                                value = stateCertificatenumberValue,
+                                value = stateDetailaddressValue,
                                 onValueChanged = {
-                                    authSharedViewModel.updateCertificatenumber(it)
+                                    authSharedViewModel.updateDetailaddres(it)
                                 },
-                                labelValue = stringResource(id = R.string.signup_userinfo_certificatenumber),
-                                placeHolderValue = "",
+                                labelValue = stringResource(id = R.string.signup_userinfo_detailaddress),
+                                placeHolderValue = stringResource(id = R.string.signup_userinfo_detailaddress_placeholder),
                                 onError = { return@TextFieldBasic false } ,
-                                errorMessage = "인증 번호 불일치",
-                                keyboardType = KeyboardType.Number,
+                                errorMessage = "",
+                                keyboardType = KeyboardType.Text,
                                 imeAction = ImeAction.Done,
-                            )
-                        }
-                        Box(modifier = Modifier
-                            .weight(3.4f)
-                            .padding(8.dp, 0.dp, 0.dp, 0.dp)){
-                            PrimaryButtonOutLined(
-                                borderColor =ZipdabangandroidTheme.Colors.BlackSesame,
-                                text = stringResource(id = R.string.signup_userinfo_ok),
-                                onClick = {
-
-                                }
                             )
                         }
                     }
                 }
-
             }
 
             Box(
@@ -284,12 +199,12 @@ fun RegisterUserInfoScreen(
 
 @Preview
 @Composable
-fun PreviewRegisterUserInfoScreen(){
+fun PreviewRegisterUserAddressScreen(){
     val navController = rememberNavController()
-    RegisterUserInfoScreen(
+    RegisterUserAddressScreen(
         navController = navController,
         onClickBack = {
-            navController.navigate(AuthScreen.Terms.route)
+            navController.navigate(AuthScreen.RegisterUserInfo.route)
         },
         onClickNext = {
             navController.navigate(AuthScreen.RegisterNickname.route)

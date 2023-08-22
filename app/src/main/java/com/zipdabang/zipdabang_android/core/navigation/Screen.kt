@@ -15,6 +15,7 @@ sealed class AuthScreen(val route: String) {
     object SignIn: AuthScreen(route = "auth/sign_in")
     object Terms: AuthScreen(route = "auth/sign_up/terms")
     object RegisterUserInfo: AuthScreen(route = "auth/sign_up/user_info")
+    object RegisterUserAddress: AuthScreen(route = "auth/sign_up/user_address")
     object RegisterNickname: AuthScreen(route = "auth/sign_up/nickname")
     object RegisterPreferences: AuthScreen(route = "auth/sign_up/preferences")
 }
