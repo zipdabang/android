@@ -144,7 +144,7 @@ fun RegisterUserInfoScreen(
                                 .weight(1.2f),
                         )
                         Box(
-                            modifier = Modifier.weight(4.8f)
+                            modifier = Modifier.weight(5.4f)
                         ){
                             TextFieldBasic(
                                 value = stateBirthdayValue,
@@ -160,7 +160,6 @@ fun RegisterUserInfoScreen(
                             )
                         }
 
-                        //Spacer(modifier = Modifier.weight(0.2f))
 
                         Box(
                             modifier = Modifier.weight(3.4f)

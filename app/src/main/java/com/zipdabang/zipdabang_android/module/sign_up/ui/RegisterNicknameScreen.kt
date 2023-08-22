@@ -54,17 +54,17 @@ fun RegisterNicknameScreen(
     val stateIsCorrect by authSharedViewModel.stateIsCorrect.collectAsState()
     val stateErrorMessage by authSharedViewModel.stateErrorMessage.collectAsState()
     val stateCorrectMessage by authSharedViewModel.stateCorrectMessage.collectAsState()
+    val stateNicknameValidate by authSharedViewModel.stateNicknameValidate.collectAsState()
     Log.e("nickname-screen", "${stateIsError}")
     Log.e("nickname-screen", "${stateIsCorrect}")
     Log.e("nickname-screen", "${stateErrorMessage}")
     Log.e("nickname-screen", "${stateCorrectMessage}")
 
-    /*LaunchedEffect(
-        stateNicknameValue
+    LaunchedEffect(
+        stateIsCorrect
     ){
-        authSharedViewModel.updateIsCorrect()
-        authSharedViewModel.updateIsError()
-    }*/
+        authSharedViewModel.updateNicknameValidation(stateIsCorrect)
+    }
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -177,7 +177,7 @@ fun RegisterNicknameScreen(
                 PrimaryButtonWithStatus(
                     text= stringResource(id = R.string.signup_btn_inputdone),
                     onClick={ onClickNext() },
-                    isFormFilled = true //stateTermsValidate
+                    isFormFilled = stateNicknameValidate
                 )
             }
         }

@@ -188,8 +188,11 @@ class AuthSharedViewModel @Inject constructor(
         }
         return _stateIsCorrect.value
     }
+    fun updateNicknameValidation(isValid : Boolean){
+        _stateNicknameValidate.value = isValid
+    }
     fun validateNickname() : Boolean{
-        return false
+        return _stateIsCorrect.value
     }
 
 
