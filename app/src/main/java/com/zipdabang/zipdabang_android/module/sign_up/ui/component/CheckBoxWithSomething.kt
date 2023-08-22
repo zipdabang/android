@@ -1,4 +1,4 @@
-package com.zipdabang.zipdabang_android.module.sign_up.ui
+package com.zipdabang.zipdabang_android.module.sign_up.ui.component
 
 import android.util.Log
 import androidx.compose.foundation.layout.Arrangement

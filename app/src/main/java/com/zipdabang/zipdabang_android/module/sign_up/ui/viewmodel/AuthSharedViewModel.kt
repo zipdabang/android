@@ -27,6 +27,7 @@ class AuthSharedViewModel @Inject constructor(
         const val TAG = "AuthSharedViewModel"
     }
 
+    /*LoginScreen*/
     private val _email = MutableStateFlow("")
     val email = _email.asStateFlow()
     private val _profile = MutableStateFlow("")
@@ -56,8 +57,8 @@ class AuthSharedViewModel @Inject constructor(
             _stateTermsListAgree.value = List(_stateTermsListAgree.value.size) { true }
         }
         validateTerms()
-        Log.e("termsAgree-viewmodel", "stateTermsAllagree: ${stateTermsAllagree.value}")
-        Log.e("termsAgree-viewmodel", "stateTermsListAgree: ${stateTermsListAgree.value}")
+        //Log.e("termsAgree-viewmodel", "stateTermsAllagree: ${stateTermsAllagree.value}")
+        //Log.e("termsAgree-viewmodel", "stateTermsListAgree: ${stateTermsListAgree.value}")
     }
     fun updateTermsListAgree(id : Int, isChecked : Boolean) {
         _stateTermsListAgree.value = _stateTermsListAgree.value.toMutableList().apply {
@@ -78,6 +79,103 @@ class AuthSharedViewModel @Inject constructor(
         updateTermsValidation(requiredTermsAgree) // _stateTermsValidate 값 업데이트
         return requiredTermsAgree // 모든 요소가 true인지 검사
     }
+
+
+    /*UserInfoScreen*/
+    //userinfo - name
+    private val _stateNameValue = MutableStateFlow("")
+    val stateNameValue = _stateNameValue.asStateFlow()
+    //userinfo - birthday
+    private val _stateBirthdayValue = MutableStateFlow("")
+    val stateBirthdayValue = _stateBirthdayValue.asStateFlow()
+    //userinfo - Phonenumber
+    private val _statePhonenumberValue = MutableStateFlow("")
+    val statePhonenumberValue = _statePhonenumberValue.asStateFlow()
+    //userinfo - Certificatenumber
+    private val _stateCertificatenumberValue = MutableStateFlow("")
+    val stateCertificatenumberValue = _stateCertificatenumberValue.asStateFlow()
+    //userinfo - Zipcode
+    private val _stateZipcodeValue = MutableStateFlow("")
+    val stateZipcodeValue = _stateZipcodeValue.asStateFlow()
+    //userinfo - Address
+    private val _stateAddressValue = MutableStateFlow("")
+    val stateAddressValue = _stateAddressValue.asStateFlow()
+    //userinfo - Detailaddress
+    private val _stateDetailaddressValue = MutableStateFlow("")
+    val stateDetailaddressValue = _stateDetailaddressValue.asStateFlow()
+    fun updateName(name : String){
+        _stateNameValue.value = name
+        Log.e("nickname-viewmodel","${stateNicknameValue.value}")
+    }
+    fun updateBirthday(birthday : String){
+        _stateBirthdayValue.value = birthday
+    }
+    fun updatePhonenumber(phonenumber : String){
+        _statePhonenumberValue.value = phonenumber
+    }
+    fun updateCertificatenumber(certificatenumber : String){
+        _stateCertificatenumberValue.value = certificatenumber
+    }
+    fun updateZipcode(zipcode : String){
+        _stateZipcodeValue.value = zipcode
+    }
+    fun updateAddress(address : String){
+        _stateAddressValue.value = address
+    }
+    fun updateDetailaddres(detailaddress : String){
+        _stateDetailaddressValue.value = detailaddress
+    }
+
+
+    /*NickNameScreen*/
+    //nickname - text value
+    private val _stateNicknameValue = MutableStateFlow("")
+    val stateNicknameValue = _stateNicknameValue.asStateFlow()
+    //nickname - api 시도한 횟수(tryCount)
+    private val _stateTrycount = MutableStateFlow(0)
+    val stateTrycount = _stateTrycount.asStateFlow()
+    //nickname - api 시도하고 error상태인지
+    private val _stateIsError = MutableStateFlow(false)
+    val stateIsError = _stateIsError.asStateFlow()
+    //nickname - errormessage
+    private val _stateErrorMessage = MutableStateFlow("닉네임이 중복됩니다.")
+    val stateErrorMessage = _stateErrorMessage.asStateFlow()
+    //nickname - api 시도하고 correct상태인지
+    private val _stateIsCorrect = MutableStateFlow(false)
+    val stateIsCorrect = _stateIsCorrect.asStateFlow()
+    //nickname - correctmessage
+    private val _stateCorrectMessage = MutableStateFlow("닉네임 사용 가능합니다.")
+    val stateCorrectMessage = _stateCorrectMessage.asStateFlow()
+    fun updateNickname(nickname : String){
+        _stateNicknameValue.value = nickname
+        updateIsError()
+        updateIsCorrect()
+        Log.e("nickname-viewmodel","${stateNicknameValue.value}")
+    }
+    fun updateTrycount(){
+        _stateTrycount.value ++
+        //여기서 post보내면 됨
+        updateIsError()
+        updateIsCorrect()
+    }
+    fun updateIsError() : Boolean{
+        //api 건들면 여기도 수정해야함
+        if(_stateNicknameValue.value == "asdf"){
+            _stateIsError.value = true
+        } else{
+            _stateIsError.value = false
+        }
+        return _stateIsError.value
+    }
+    fun updateIsCorrect() : Boolean{
+        if(_stateNicknameValue.value == "ㅁㄴㅇㄹ") {
+            _stateIsCorrect.value = true
+        } else{
+            _stateIsCorrect.value = false
+        }
+        return _stateIsCorrect.value
+    }
+
 
 
 

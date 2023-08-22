@@ -1,5 +1,6 @@
 package com.zipdabang.zipdabang_android.module.sign_up.ui
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -14,6 +15,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -35,6 +37,7 @@ import com.zipdabang.zipdabang_android.module.sign_up.ui.viewmodel.AuthSharedVie
 import com.zipdabang.zipdabang_android.ui.component.AppBarSignUp
 import com.zipdabang.zipdabang_android.ui.component.PrimaryButtonOutLined
 import com.zipdabang.zipdabang_android.ui.component.PrimaryButtonWithStatus
+import com.zipdabang.zipdabang_android.ui.component.TextFieldErrorAndCorrect
 import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
 
 @Composable
@@ -44,6 +47,12 @@ fun RegisterNicknameScreen(
     onClickBack: ()->Unit,
     onClickNext: ()->Unit,
 ) {
+    val stateNicknameValue by authSharedViewModel.stateNicknameValue.collectAsState()
+    val stateTrycount by authSharedViewModel.stateTrycount.collectAsState()
+    val stateErrorMessage by authSharedViewModel.stateErrorMessage.collectAsState()
+    val stateCorrectMessage by authSharedViewModel.stateCorrectMessage.collectAsState()
+    //Log.e("nickname-screen", "${stateNicknameValue}")
+
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
@@ -72,12 +81,12 @@ fun RegisterNicknameScreen(
                         .fillMaxWidth()
                 ) {
                     Text(
-                        text = stringResource(id = R.string.signup_userinfo_maintitle_zipdabang),
+                        text = stringResource(id = R.string.signup_nickname_maintitle_zipdabang),
                         color = ZipdabangandroidTheme.Colors.Typo,
                         style= ZipdabangandroidTheme.Typography.twentysix_700
                     )
                     Text(
-                        text = stringResource(id = R.string.signup_userinfo_maintitle_zipdabangback),
+                        text = stringResource(id = R.string.signup_nickname_maintitle_zipdabangback),
                         color = ZipdabangandroidTheme.Colors.Typo,
                         style= ZipdabangandroidTheme.Typography.twentysix_500
                     )
@@ -88,50 +97,59 @@ fun RegisterNicknameScreen(
                         .fillMaxWidth()
                 ) {
                     Text(
-                        text = stringResource(id = R.string.signup_userinfo_maintitle_nickname),
+                        text = stringResource(id = R.string.signup_nickname_maintitle_nickname),
                         color = ZipdabangandroidTheme.Colors.Typo,
                         style= ZipdabangandroidTheme.Typography.twentysix_700
                     )
                     Text(
-                        text = stringResource(id = R.string.signup_userinfo_maintitle_nicknameback),
+                        text = stringResource(id = R.string.signup_nickname_maintitle_nicknameback),
                         color = ZipdabangandroidTheme.Colors.Typo,
                         style= ZipdabangandroidTheme.Typography.twentysix_500
                     )
                 }
 
-
-                var textState by remember { mutableStateOf("") }
                 Row(
-                    modifier = Modifier.padding(0.dp, 20.dp, 0.dp, 0.dp)
+                    modifier = Modifier
+                        .padding(0.dp, 20.dp, 0.dp, 0.dp)
                         .fillMaxWidth()
                         .wrapContentHeight(),
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalAlignment = Alignment.CenterVertically
                 ){
                     Box(
                         modifier = Modifier.weight(6.8f),
                     ){
-                        /*TextFieldBasic(
-                            value = textState,
-                            onValueChanged = { textState = it },
-                            expectedValue = "asdf",
-                            placeholderText = stringResource(id = R.string.signup_userinfo_nickname_placeholder),
-                            errorMessage = "중복되는 닉네임 입니다",
-                            rightMessage = "사용하실 수 있는 닉네임 입니다",
+                        TextFieldErrorAndCorrect(
+                            value = stateNicknameValue,
+                            onValueChanged = {
+                                authSharedViewModel.updateNickname(it)
+                            },
+                            tryCount = stateTrycount,
+                            labelValue = stringResource(id = R.string.signup_nickname),
+                            placeHolderValue = stringResource(id = R.string.signup_nickname_placeholder),
+                            onError = {
+                                authSharedViewModel.updateIsError()
+                            },
+                            onCorrect = {
+                               authSharedViewModel.updateIsCorrect()
+                            },
+                            errorMessage = stateErrorMessage,
+                            correctMessage = stateCorrectMessage,
                             keyboardType = KeyboardType.Text,
-                            imeAction = ImeAction.Done,
-                            tryCount = 0,
-                            labelValue = "닉네임"
-                        )*/
+                            imeAction = ImeAction.Done
+                        )
                     }
                     Box(
-                        modifier = Modifier.weight(3.2f)
-                            .padding(0.dp, 4.dp, 0.dp, 0.dp)
+                        modifier = Modifier
+                            .weight(3.2f)
                             .wrapContentSize(),
                     ){
                         PrimaryButtonOutLined(
                             borderColor = ZipdabangandroidTheme.Colors.BlackSesame,
-                            text= stringResource(id = R.string.signup_userinfo_nickname_deplicatecheck),
-                            onClick={ }
+                            text= stringResource(id = R.string.signup_nickname_deplicatecheck),
+                            onClick= {
+                                authSharedViewModel.updateTrycount()
+                            }
                         )
                     }
                 }

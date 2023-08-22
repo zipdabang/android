@@ -45,8 +45,10 @@ fun RoundedButton(
 
     Button(
         modifier = Modifier.padding(4.dp,0.dp,4.dp,0.dp),
-        onClick = {localIsClicked = !localIsClicked
-            isClickedChange(localIsClicked)},
+        onClick = {
+            localIsClicked = !localIsClicked
+            isClickedChange(localIsClicked)
+        },
         shape = ZipdabangandroidTheme.Shapes.large,
         colors = ButtonDefaults.buttonColors(
             containerColor = containerColor,

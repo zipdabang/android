@@ -13,6 +13,7 @@ import com.zipdabang.zipdabang_android.module.login.ui.LoginScreen
 import com.zipdabang.zipdabang_android.module.sign_up.ui.viewmodel.AuthSharedViewModel
 import com.zipdabang.zipdabang_android.module.sign_up.ui.RegisterNicknameScreen
 import com.zipdabang.zipdabang_android.module.sign_up.ui.RegisterPreferencesScreen
+import com.zipdabang.zipdabang_android.module.sign_up.ui.RegisterUserAddressScreen
 import com.zipdabang.zipdabang_android.module.sign_up.ui.RegisterUserInfoScreen
 import com.zipdabang.zipdabang_android.module.sign_up.ui.TermsScreen
 
@@ -73,6 +74,20 @@ fun NavGraphBuilder.authNavGraph(navController: NavHostController) {
                     navController.popBackStack(AuthScreen.Terms.route, inclusive = false)
                 },
                 onClickNext = {
+                    navController.navigate(AuthScreen.RegisterUserAddress.route)
+                }
+            )
+        }
+
+        composable(route =AuthScreen.RegisterUserAddress.route) {navBackStackEntry ->
+            val authSharedViewModel = navBackStackEntry.authSharedViewModel<AuthSharedViewModel>(navController = navController)
+            RegisterUserAddressScreen(
+                navController = navController,
+                authSharedViewModel = authSharedViewModel,
+                onClickBack = {
+                    navController.popBackStack(AuthScreen.RegisterUserInfo.route, inclusive = false)
+                },
+                onClickNext = {
                     navController.navigate(AuthScreen.RegisterNickname.route)
                 }
             )
@@ -84,7 +99,7 @@ fun NavGraphBuilder.authNavGraph(navController: NavHostController) {
                 navController = navController,
                 authSharedViewModel = authSharedViewModel,
                 onClickBack = {
-                    navController.popBackStack(AuthScreen.RegisterUserInfo.route, inclusive = false)
+                    navController.popBackStack(AuthScreen.RegisterUserAddress.route, inclusive = false)
                 },
                 onClickNext = {
                     navController.navigate(AuthScreen.RegisterPreferences.route)
