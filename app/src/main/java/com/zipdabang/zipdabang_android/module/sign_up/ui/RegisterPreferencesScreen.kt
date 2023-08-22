@@ -135,8 +135,7 @@ fun RegisterPreferencesScreen(
                                     text = state.error,
                                     color = Color.Red,
                                     textAlign = TextAlign.Center,
-                                    modifier = Modifier
-                                        .fillMaxWidth()
+                                    modifier = Modifier.fillMaxWidth()
                                 )
                             }
                             if (state.isLoading) {

@@ -15,6 +15,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -49,9 +50,21 @@ fun RegisterNicknameScreen(
 ) {
     val stateNicknameValue by authSharedViewModel.stateNicknameValue.collectAsState()
     val stateTrycount by authSharedViewModel.stateTrycount.collectAsState()
+    val stateIsError by authSharedViewModel.stateIsError.collectAsState()
+    val stateIsCorrect by authSharedViewModel.stateIsCorrect.collectAsState()
     val stateErrorMessage by authSharedViewModel.stateErrorMessage.collectAsState()
     val stateCorrectMessage by authSharedViewModel.stateCorrectMessage.collectAsState()
-    //Log.e("nickname-screen", "${stateNicknameValue}")
+    Log.e("nickname-screen", "${stateIsError}")
+    Log.e("nickname-screen", "${stateIsCorrect}")
+    Log.e("nickname-screen", "${stateErrorMessage}")
+    Log.e("nickname-screen", "${stateCorrectMessage}")
+
+    /*LaunchedEffect(
+        stateNicknameValue
+    ){
+        authSharedViewModel.updateIsCorrect()
+        authSharedViewModel.updateIsError()
+    }*/
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -127,11 +140,13 @@ fun RegisterNicknameScreen(
                             tryCount = stateTrycount,
                             labelValue = stringResource(id = R.string.signup_nickname),
                             placeHolderValue = stringResource(id = R.string.signup_nickname_placeholder),
+                            isError = stateIsError,
+                            isCorrect = stateIsCorrect,
                             onError = {
                                 authSharedViewModel.updateIsError()
                             },
                             onCorrect = {
-                               authSharedViewModel.updateIsCorrect()
+                                authSharedViewModel.updateIsCorrect()
                             },
                             errorMessage = stateErrorMessage,
                             correctMessage = stateCorrectMessage,

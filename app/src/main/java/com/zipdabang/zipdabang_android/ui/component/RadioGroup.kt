@@ -1,5 +1,7 @@
 package com.zipdabang.zipdabang_android.ui.component
 
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -20,6 +22,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.composed
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.style.TextAlign
@@ -46,6 +49,10 @@ fun RadioGroupHorizontal(
             Row(
                 modifier = Modifier
                     .selectable(
+                        interactionSource = remember {
+                            MutableInteractionSource()
+                        },
+                        indication = null,
                         selected = (selectedOption == option),
                         onClick = {
                             selectedOption = option
@@ -87,11 +94,16 @@ fun RadioGroupVertical(
         modifier = Modifier
             .selectableGroup()
             .fillMaxWidth()
+
     ) {
         optionList.forEach { option ->
             Row(
                 modifier = Modifier
                     .selectable(
+                        interactionSource = remember {
+                            MutableInteractionSource()
+                        },
+                        indication = null,
                         selected = (selectedOption == option),
                         onClick = {
                             selectedOption = option
@@ -150,4 +162,6 @@ fun RadioGroupVerticalPreview() {
         Spacer(modifier = Modifier.height(20.dp))
         Text(text = state)
     }
+
 }
+

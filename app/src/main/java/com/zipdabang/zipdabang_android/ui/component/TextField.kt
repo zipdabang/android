@@ -45,6 +45,8 @@ fun TextFieldErrorAndCorrect(
     labelValue : String,
     placeHolderValue : String,
 
+    isError : Boolean,
+    isCorrect : Boolean,
     onError : () -> Boolean,
     onCorrect : () -> Boolean,
     errorMessage : String,
@@ -54,11 +56,11 @@ fun TextFieldErrorAndCorrect(
     imeAction : ImeAction, //default,none이면 엔터키, next면 다음 텍스트필드로 넘어감, done면 완료키
 ) {
     //var isFocused by remember { mutableStateOf(false) }
-    var isError by remember { mutableStateOf(false) }
-    var isCorrect by remember { mutableStateOf(false) }
+    var isErrorLocal by remember { mutableStateOf(isError) }
+    var isCorrectLocal by remember { mutableStateOf(isCorrect) }
 
-    if(onError()) isError = true else isError = false
-    if(onCorrect()) isCorrect = true else isCorrect = false
+    if(onError()) isErrorLocal = true else isErrorLocal = false
+    if(onCorrect()) isCorrectLocal = true else isCorrectLocal = false
 
         TextField(
             value = value,
@@ -157,6 +159,8 @@ fun PreviewTextFieldErrorAndCorrect(){
             tryCount = tryCount,
             labelValue = "닉네임",
             placeHolderValue = "2-6자 한글, 영어, 숫자",
+            isError = false,
+            isCorrect = true,
             onError = {textState == "asdf"},
             onCorrect = {textState == "ㅁㄴㅇㄹ"},
             errorMessage = "닉네임에 맞지 않습니다.",
@@ -170,6 +174,7 @@ fun PreviewTextFieldErrorAndCorrect(){
 
 
 //textfield -> local에서 error check만 하면 될때
+@SuppressLint("SuspiciousIndentation")
 @Composable
 fun TextFieldBasic(
     value : String,

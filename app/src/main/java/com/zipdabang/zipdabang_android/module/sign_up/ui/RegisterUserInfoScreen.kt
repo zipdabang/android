@@ -1,5 +1,6 @@
 package com.zipdabang.zipdabang_android.module.sign_up.ui
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -8,10 +9,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material.Text
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
@@ -19,9 +18,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -54,13 +50,9 @@ fun RegisterUserInfoScreen(
 ) {
     val stateNameValue by authSharedViewModel.stateNameValue.collectAsState()
     val stateBirthdayValue by authSharedViewModel.stateBirthdayValue.collectAsState()
-    val stateGenderValue by authSharedViewModel.stateGenderValue.collectAsState()
+    val stateGenderList by authSharedViewModel.stateGenderList.collectAsState()
     val statePhonenumberValue by authSharedViewModel.statePhonenumberValue.collectAsState()
     val stateCertificatenumberValue by authSharedViewModel.stateCertificatenumberValue.collectAsState()
-    val stateZipcodeValue by authSharedViewModel.stateZipcodeValue.collectAsState()
-    val stateAddressValue by authSharedViewModel.stateAddressValue.collectAsState()
-    val stateDetailaddressValue by authSharedViewModel.stateDetailaddressValue.collectAsState()
-
 
     Scaffold(
         modifier = Modifier
@@ -115,7 +107,7 @@ fun RegisterUserInfoScreen(
                         Icon(
                             painter = painterResource(id = R.drawable.ic_signup_name),
                             contentDescription = "Icon",
-                            tint = ZipdabangandroidTheme.Colors.Typo,
+                            tint = ZipdabangandroidTheme.Colors.Choco,
                             modifier = Modifier
                                 .size(16.dp)
                                 .weight(1.2f),
@@ -146,7 +138,7 @@ fun RegisterUserInfoScreen(
                         Icon(
                             painter = painterResource(id = R.drawable.ic_signup_birthdaycake),
                             contentDescription = "Icon",
-                            tint = ZipdabangandroidTheme.Colors.Typo,
+                            tint = ZipdabangandroidTheme.Colors.Choco,
                             modifier = Modifier
                                 .size(16.dp)
                                 .weight(1.2f),
@@ -168,17 +160,15 @@ fun RegisterUserInfoScreen(
                             )
                         }
 
-                        Spacer(modifier = Modifier.weight(0.2f))
+                        //Spacer(modifier = Modifier.weight(0.2f))
 
-                        val optionList = listOf("남", "여")
-                        var state by remember{ mutableStateOf(optionList[0]) }
                         Box(
-                            modifier = Modifier.weight(3.2f)
+                            modifier = Modifier.weight(3.4f)
                         ){
                             RadioGroupHorizontal(
-                                optionList = optionList,
+                                optionList = stateGenderList,
                                 onOptionChange = {
-                                   //state = it
+                                   authSharedViewModel.updateGender(it)
                                 }
                             )
                         }
@@ -205,7 +195,7 @@ fun RegisterUserInfoScreen(
                         Icon(
                             painter = painterResource(id = R.drawable.ic_signup_phone),
                             contentDescription = "Icon",
-                            tint = ZipdabangandroidTheme.Colors.Typo,
+                            tint = ZipdabangandroidTheme.Colors.Choco,
                             modifier = Modifier
                                 .size(16.dp)
                                 .weight(1.2f),
@@ -226,7 +216,8 @@ fun RegisterUserInfoScreen(
                                 imeAction = ImeAction.Done,
                             )
                         }
-                        Box(modifier = Modifier.weight(3.4f)
+                        Box(modifier = Modifier
+                            .weight(3.4f)
                             .padding(8.dp, 0.dp, 0.dp, 0.dp)){
                             PrimaryButtonOutLined(
                                 borderColor =ZipdabangandroidTheme.Colors.BlackSesame,

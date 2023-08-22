@@ -9,6 +9,8 @@ enum class ResponseCode(val responseResult: ResponseResult, val code: Int, val m
             return values().find { it.code == code }!!.message
         }
     }
+
+
 }
 
 enum class ResponseResult {

@@ -46,14 +46,9 @@ fun RegisterUserAddressScreen(
     onClickBack: ()->Unit,
     onClickNext: ()->Unit,
 ) {
-    val stateNameValue by authSharedViewModel.stateNameValue.collectAsState()
-    val stateBirthdayValue by authSharedViewModel.stateBirthdayValue.collectAsState()
-    val statePhonenumberValue by authSharedViewModel.statePhonenumberValue.collectAsState()
-    val stateCertificatenumberValue by authSharedViewModel.stateCertificatenumberValue.collectAsState()
     val stateZipcodeValue by authSharedViewModel.stateZipcodeValue.collectAsState()
     val stateAddressValue by authSharedViewModel.stateAddressValue.collectAsState()
     val stateDetailaddressValue by authSharedViewModel.stateDetailaddressValue.collectAsState()
-
 
     Scaffold(
         modifier = Modifier
@@ -107,7 +102,7 @@ fun RegisterUserAddressScreen(
                         Icon(
                             painter = painterResource(id = R.drawable.ic_signup_zipcode),
                             contentDescription = "Icon",
-                            tint = ZipdabangandroidTheme.Colors.Typo,
+                            tint = ZipdabangandroidTheme.Colors.Choco,
                             modifier = Modifier
                                 .size(12.dp)
                                 .weight(1.2f),
@@ -137,7 +132,7 @@ fun RegisterUserAddressScreen(
                         Icon(
                             painter = painterResource(id = R.drawable.ic_signup_address),
                             contentDescription = "Icon",
-                            tint = ZipdabangandroidTheme.Colors.Typo,
+                            tint = ZipdabangandroidTheme.Colors.Choco,
                             modifier = Modifier
                                 .size(16.dp)
                                 .weight(1.2f),

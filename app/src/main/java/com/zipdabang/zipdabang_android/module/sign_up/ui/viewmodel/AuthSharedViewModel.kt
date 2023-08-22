@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.zipdabang.zipdabang_android.common.Resource
 import com.zipdabang.zipdabang_android.module.sign_up.data.remote.BeverageCategory
 import com.zipdabang.zipdabang_android.module.sign_up.domain.usecase.GetBeveragesUseCase
+import com.zipdabang.zipdabang_android.module.sign_up.domain.usecase.GetNicknameUseCase
 import com.zipdabang.zipdabang_android.module.sign_up.domain.usecase.GetTermsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -20,6 +21,7 @@ import javax.inject.Inject
 class AuthSharedViewModel @Inject constructor(
     private val getTermsUseCase: GetTermsUseCase,
     private val getBeveragesUseCase: GetBeveragesUseCase,
+    private val getNicknameUseCase: GetNicknameUseCase,
     //savedStateHandle: SavedStateHandle
 ): ViewModel() {
 
@@ -89,7 +91,9 @@ class AuthSharedViewModel @Inject constructor(
     private val _stateBirthdayValue = MutableStateFlow("")
     val stateBirthdayValue = _stateBirthdayValue.asStateFlow()
     //userinfo - gender
-    private val _stateGenderValue = MutableStateFlow("남")
+    private val _stateGenderList = MutableStateFlow(listOf("남", "여"))
+    val stateGenderList = _stateGenderList.asStateFlow()
+    private val _stateGenderValue = MutableStateFlow(_stateGenderList.value[0])
     val stateGenderValue = _stateGenderValue.asStateFlow()
     //userinfo - Phonenumber
     private val _statePhonenumberValue = MutableStateFlow("")
@@ -117,7 +121,8 @@ class AuthSharedViewModel @Inject constructor(
         _statePhonenumberValue.value = phonenumber
     }
     fun updateGender(gender : String){
-
+        _stateGenderValue.value = gender
+        Log.e("userinfo-viewmodel","${stateGenderValue.value}")
     }
     fun updateCertificatenumber(certificatenumber : String){
         _stateCertificatenumberValue.value = certificatenumber
@@ -144,44 +149,48 @@ class AuthSharedViewModel @Inject constructor(
     private val _stateIsError = MutableStateFlow(false)
     val stateIsError = _stateIsError.asStateFlow()
     //nickname - errormessage
-    private val _stateErrorMessage = MutableStateFlow("닉네임이 중복됩니다.")
+    private val _stateErrorMessage = MutableStateFlow("")
     val stateErrorMessage = _stateErrorMessage.asStateFlow()
     //nickname - api 시도하고 correct상태인지
     private val _stateIsCorrect = MutableStateFlow(false)
     val stateIsCorrect = _stateIsCorrect.asStateFlow()
     //nickname - correctmessage
-    private val _stateCorrectMessage = MutableStateFlow("닉네임 사용 가능합니다.")
+    private val _stateCorrectMessage = MutableStateFlow("")
     val stateCorrectMessage = _stateCorrectMessage.asStateFlow()
+    //nickname - validate
+    private val _stateNicknameValidate = MutableStateFlow(false)
+    val stateNicknameValidate = _stateNicknameValidate.asStateFlow()
     fun updateNickname(nickname : String){
         _stateNicknameValue.value = nickname
-        updateIsError()
-        updateIsCorrect()
+        if(_stateIsCorrect.value == true || _stateIsError.value == true){
+            _stateIsError.value = false
+            _stateIsCorrect.value = false
+            _stateErrorMessage.value = ""
+            _stateCorrectMessage.value = ""
+        }
         Log.e("nickname-viewmodel","${stateNicknameValue.value}")
     }
     fun updateTrycount(){
         _stateTrycount.value ++
-        //여기서 post보내면 됨
-        updateIsError()
-        updateIsCorrect()
+        getNickname()
     }
     fun updateIsError() : Boolean{
-        //api 건들면 여기도 수정해야함
-        if(_stateNicknameValue.value == "asdf"){
+        if(_stateErrorMessage.value != ""){
             _stateIsError.value = true
-        } else{
-            _stateIsError.value = false
+            _stateIsCorrect.value = false
         }
         return _stateIsError.value
     }
     fun updateIsCorrect() : Boolean{
-        if(_stateNicknameValue.value == "ㅁㄴㅇㄹ") {
+        if(_stateCorrectMessage.value != ""){
             _stateIsCorrect.value = true
-        } else{
-            _stateIsCorrect.value = false
+            _stateIsError.value = false
         }
         return _stateIsCorrect.value
     }
-
+    fun validateNickname() : Boolean{
+        return false
+    }
 
 
 
@@ -259,6 +268,35 @@ class AuthSharedViewModel @Inject constructor(
                 }
                 is Resource.Loading ->{
                     _statePreferences.value = BeveragesListState(isLoading = true)
+                }
+            }
+        }.launchIn(viewModelScope)
+    }
+    private fun getNickname() {
+        getNicknameUseCase(_stateNicknameValue.value).onEach{ result ->
+            when(result){
+                is Resource.Success ->{
+                    if(result.data?.code ?: 0 == 2011){ //닉네임 가능
+                        _stateCorrectMessage.value = result.data?.message ?: ""
+                        _stateIsCorrect.value = true
+                        Log.e("nickname-viewmodel", "${result.data?.message}")
+                    } else if(result.data?.code ?: 0 == 2010){ //닉네임 중복
+                        _stateErrorMessage.value = result.data?.message ?: ""
+                        _stateIsError.value = true
+                        Log.e("nickname-viewmodel", "${result.data?.message}")
+                    } else { //4019 : 형식 //4020 : 욕
+                        //엥 뭐지
+                    }
+                    updateIsError()
+                    updateIsCorrect()
+                    Log.e("nickname-viewmodel", "errormessage : ${_stateErrorMessage.value}")
+                    Log.e("nickname-viewmodel", "correctmessage : ${_stateCorrectMessage.value}")
+                }
+                is Resource.Error ->{
+                    Log.e("nickname-viewmodel", "에러")
+                }
+                is Resource.Loading->{
+                    Log.e("nickname-viewmodel", "로딩중")
                 }
             }
         }.launchIn(viewModelScope)
