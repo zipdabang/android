@@ -1,7 +1,7 @@
 package com.zipdabang.zipdabang_android.module.market.ui
 
-import com.zipdabang.zipdabang_android.module.market.data.Product
-import com.zipdabang.zipdabang_android.module.market.data.ProductCategory
+import com.zipdabang.zipdabang_android.module.market.data.marketMain.Product
+import com.zipdabang.zipdabang_android.module.market.data.marketMain.ProductCategory
 
 data class MainMarketState(
     val isLoading : Boolean = false,

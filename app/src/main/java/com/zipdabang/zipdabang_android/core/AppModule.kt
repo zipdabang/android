@@ -6,7 +6,10 @@ import androidx.datastore.core.DataStoreFactory
 import androidx.datastore.core.handlers.ReplaceFileCorruptionHandler
 import androidx.datastore.dataStore
 import androidx.datastore.dataStoreFile
+import androidx.room.Room
+import androidx.room.RoomDatabase
 import com.zipdabang.zipdabang_android.common.Constants
+import com.zipdabang.zipdabang_android.common.Constants.PAGING3_DATABASE
 import com.zipdabang.zipdabang_android.core.data_store.ProtoRepository
 import com.zipdabang.zipdabang_android.core.data_store.ProtoRepositoryImpl
 import com.zipdabang.zipdabang_android.core.data_store.ProtoSerializer
@@ -40,5 +43,17 @@ object AppModule {
         protoDataStore: DataStore<Token>
     ): ProtoRepository {
         return ProtoRepositoryImpl(applicationContext, protoDataStore)
+    }
+
+    @Provides
+    @Singleton
+    fun provideDatabase(
+        @ApplicationContext context: Context
+    ) : Paging3Database {
+        return Room.databaseBuilder(
+            context,
+            Paging3Database::class.java,
+            PAGING3_DATABASE
+        ).build()
     }
 }

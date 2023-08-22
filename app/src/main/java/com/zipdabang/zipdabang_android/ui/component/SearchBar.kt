@@ -3,6 +3,7 @@ package com.zipdabang.zipdabang_android.ui.component
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -36,16 +37,18 @@ import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
 
 @Composable
 fun SearchBar(
-    searchViewModel: SearchViewModel = SearchViewModel()
+    searchViewModel: SearchViewModel = SearchViewModel(),
+    hintText : String
 ){
     var text by remember { mutableStateOf("") }
     OutlinedTextField(
         value = text,
         onValueChange =  { text= it},
         modifier = Modifier
-            .wrapContentHeight(),
+            .wrapContentHeight()
+            .fillMaxWidth(),
         placeholder = {
-            Text(text = "찾아보기")
+            Text(text = hintText)
         },
         trailingIcon = {
             Icon(
@@ -88,5 +91,5 @@ inline fun Modifier.noRippleClickable(crossinline onClick: ()->Unit): Modifier =
 @Preview(showBackground = true)
 @Composable
 fun SearchPreview(){
-    SearchBar()
+    SearchBar(hintText="찾는 상품을 검색해보세요")
 }

@@ -24,8 +24,10 @@ sealed class HomeScreen(val route : String){
     object Guide : HomeScreen(route = "home/guide")
 }
 
-sealed class MarektScreen(val route : String){
-    object Home : HomeScreen(route = "market/home")
+sealed class MarketScreen(val route : String){
+    object Home : MarketScreen(route = "market/home")
+
+    object Category : MarketScreen(route = "market/category/{categoryId}")
 }
 sealed class BasketScreen(val route : String){
     object Home : BasketScreen(route = "basket/home")

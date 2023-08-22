@@ -37,7 +37,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import com.zipdabang.zipdabang_android.R
+import com.zipdabang.zipdabang_android.core.navigation.MarketScreen
 import com.zipdabang.zipdabang_android.module.item.goods.ui.GoodsCard
 import com.zipdabang.zipdabang_android.module.item.goods.ui.MarketCategory
 import com.zipdabang.zipdabang_android.ui.component.AppBarHome
@@ -48,7 +50,8 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun MarketScreen(
-    viewMdoel: RecentMarketViewMdoel = hiltViewModel()
+    viewMdoel: RecentMarketViewMdoel = hiltViewModel(),
+    navController: NavController
 ){
     //drawer에 필요한 drawerState랑 scope
     val drawerState = rememberDrawerState(DrawerValue.Closed)
@@ -79,12 +82,12 @@ fun MarketScreen(
                             modifier = Modifier.padding(start = 8.dp,end = 8.dp, top= 20.dp, bottom = 10.dp),
                             horizontalArrangement = Arrangement.SpaceEvenly
                         ){
-                            MarketCategory(category = state.categoryList[0].name, imageUrl = state.categoryList[0].categoryImageUrl, onClick = { TODO() })
-                            MarketCategory(category = state.categoryList[1].name, imageUrl = state.categoryList[1].categoryImageUrl, onClick = { TODO() })
-                            MarketCategory(category = state.categoryList[2].name, imageUrl = state.categoryList[2].categoryImageUrl, onClick = { TODO() })
-                            MarketCategory(category = state.categoryList[3].name, imageUrl = state.categoryList[3].categoryImageUrl, onClick = { TODO() })
-                            MarketCategory(category = state.categoryList[4].name, imageUrl = state.categoryList[4].categoryImageUrl, onClick = { TODO() })
-                            MarketCategory(category = state.categoryList[5].name, imageUrl = state.categoryList[5].categoryImageUrl, onClick = { TODO() })
+                            MarketCategory(category = state.categoryList[0].name, imageUrl = state.categoryList[0].categoryImageUrl, onClick = { navController.navigate(MarketScreen.Category.route + 1) })
+                            MarketCategory(category = state.categoryList[1].name, imageUrl = state.categoryList[1].categoryImageUrl, onClick = { navController.navigate(MarketScreen.Category.route + 2) })
+                            MarketCategory(category = state.categoryList[2].name, imageUrl = state.categoryList[2].categoryImageUrl, onClick = { navController.navigate(MarketScreen.Category.route + 3) })
+                            MarketCategory(category = state.categoryList[3].name, imageUrl = state.categoryList[3].categoryImageUrl, onClick = { navController.navigate(MarketScreen.Category.route + 4) })
+                            MarketCategory(category = state.categoryList[4].name, imageUrl = state.categoryList[4].categoryImageUrl, onClick = { navController.navigate(MarketScreen.Category.route + 5) })
+                            MarketCategory(category = state.categoryList[5].name, imageUrl = state.categoryList[5].categoryImageUrl, onClick = {navController.navigate(MarketScreen.Category.route +  0 ) })
                         }
 
                         Canvas(

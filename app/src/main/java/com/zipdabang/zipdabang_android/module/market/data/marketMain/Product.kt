@@ -1,4 +1,4 @@
-package com.zipdabang.zipdabang_android.module.market.data
+package com.zipdabang.zipdabang_android.module.market.data.marketMain
 
 data class Product(
     val isInBasket: Boolean,
