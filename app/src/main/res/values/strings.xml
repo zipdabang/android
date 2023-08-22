@@ -37,6 +37,9 @@
     <string name="signup_userinfo_basicinfo">기본 정보</string>
     <string name="signup_userinfo_validation">본인 인증</string>
     <string name="signup_userinfo_detailinfo">상세 정보</string>
+    <string name="signup_userinfo_certificatecall">인증 요청</string>
+    <string name="signup_userinfo_ok">확인</string>
+    <string name="signup_userinfo_addresssearch">주소 검색</string>
     <string name="signup_userinfo_name">이름</string>
     <string name="signup_userinfo_birthday">생년월일</string>
     <string name="signup_userinfo_birthday_placeholder">생년월일 6자리</string>

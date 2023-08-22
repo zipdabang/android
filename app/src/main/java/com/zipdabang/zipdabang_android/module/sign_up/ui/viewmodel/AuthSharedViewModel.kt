@@ -88,6 +88,9 @@ class AuthSharedViewModel @Inject constructor(
     //userinfo - birthday
     private val _stateBirthdayValue = MutableStateFlow("")
     val stateBirthdayValue = _stateBirthdayValue.asStateFlow()
+    //userinfo - gender
+    private val _stateGenderValue = MutableStateFlow("남")
+    val stateGenderValue = _stateGenderValue.asStateFlow()
     //userinfo - Phonenumber
     private val _statePhonenumberValue = MutableStateFlow("")
     val statePhonenumberValue = _statePhonenumberValue.asStateFlow()
@@ -112,6 +115,9 @@ class AuthSharedViewModel @Inject constructor(
     }
     fun updatePhonenumber(phonenumber : String){
         _statePhonenumberValue.value = phonenumber
+    }
+    fun updateGender(gender : String){
+
     }
     fun updateCertificatenumber(certificatenumber : String){
         _stateCertificatenumberValue.value = certificatenumber

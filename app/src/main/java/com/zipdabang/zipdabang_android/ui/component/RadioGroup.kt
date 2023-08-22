@@ -149,8 +149,5 @@ fun RadioGroupVerticalPreview() {
         RadioGroupVertical(optionList = options, onOptionChange = { selectedValue -> state = selectedValue })
         Spacer(modifier = Modifier.height(20.dp))
         Text(text = state)
-
-
     }
-
 }

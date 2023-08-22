@@ -19,6 +19,9 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -38,6 +41,7 @@ import com.zipdabang.zipdabang_android.ui.component.AppBarSignUp
 import com.zipdabang.zipdabang_android.ui.component.MainAndSubTitle
 import com.zipdabang.zipdabang_android.ui.component.PrimaryButtonOutLined
 import com.zipdabang.zipdabang_android.ui.component.PrimaryButtonWithStatus
+import com.zipdabang.zipdabang_android.ui.component.RadioGroupHorizontal
 import com.zipdabang.zipdabang_android.ui.component.TextFieldBasic
 import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
 
@@ -50,6 +54,7 @@ fun RegisterUserInfoScreen(
 ) {
     val stateNameValue by authSharedViewModel.stateNameValue.collectAsState()
     val stateBirthdayValue by authSharedViewModel.stateBirthdayValue.collectAsState()
+    val stateGenderValue by authSharedViewModel.stateGenderValue.collectAsState()
     val statePhonenumberValue by authSharedViewModel.statePhonenumberValue.collectAsState()
     val stateCertificatenumberValue by authSharedViewModel.stateCertificatenumberValue.collectAsState()
     val stateZipcodeValue by authSharedViewModel.stateZipcodeValue.collectAsState()
@@ -134,8 +139,7 @@ fun RegisterUserInfoScreen(
                     }
 
                     Row(
-                        modifier = Modifier
-                            .fillMaxWidth(),
+                        modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.Center,
                         verticalAlignment = Alignment.CenterVertically
                     ){
@@ -148,7 +152,7 @@ fun RegisterUserInfoScreen(
                                 .weight(1.2f),
                         )
                         Box(
-                            modifier = Modifier.weight(8.8f)
+                            modifier = Modifier.weight(4.8f)
                         ){
                             TextFieldBasic(
                                 value = stateBirthdayValue,
@@ -161,6 +165,21 @@ fun RegisterUserInfoScreen(
                                 errorMessage = "형식에 맞게 입력해주세요",
                                 keyboardType = KeyboardType.Number,
                                 imeAction = ImeAction.Next,
+                            )
+                        }
+
+                        Spacer(modifier = Modifier.weight(0.2f))
+
+                        val optionList = listOf("남", "여")
+                        var state by remember{ mutableStateOf(optionList[0]) }
+                        Box(
+                            modifier = Modifier.weight(3.2f)
+                        ){
+                            RadioGroupHorizontal(
+                                optionList = optionList,
+                                onOptionChange = {
+                                   //state = it
+                                }
                             )
                         }
                     }
@@ -192,7 +211,7 @@ fun RegisterUserInfoScreen(
                                 .weight(1.2f),
                         )
                         Box(
-                            modifier = Modifier.weight(8.8f)
+                            modifier = Modifier.weight(5.4f)
                         ){
                             TextFieldBasic(
                                 value = statePhonenumberValue,
@@ -207,6 +226,16 @@ fun RegisterUserInfoScreen(
                                 imeAction = ImeAction.Done,
                             )
                         }
+                        Box(modifier = Modifier.weight(3.4f)
+                            .padding(8.dp, 0.dp, 0.dp, 0.dp)){
+                            PrimaryButtonOutLined(
+                                borderColor =ZipdabangandroidTheme.Colors.BlackSesame,
+                                text = stringResource(id = R.string.signup_userinfo_certificatecall),
+                                onClick = {
+
+                                }
+                            )
+                        }
                     }
                     Row(
                         modifier = Modifier.fillMaxWidth(),
@@ -217,7 +246,7 @@ fun RegisterUserInfoScreen(
                             modifier = Modifier.weight(1.2f)
                         )
                         Box(
-                            modifier = Modifier.weight(8.8f)
+                            modifier = Modifier.weight(5.4f)
                         ){
                             TextFieldBasic(
                                 value = stateCertificatenumberValue,
@@ -230,6 +259,17 @@ fun RegisterUserInfoScreen(
                                 errorMessage = "인증 번호 불일치",
                                 keyboardType = KeyboardType.Number,
                                 imeAction = ImeAction.Done,
+                            )
+                        }
+                        Box(modifier = Modifier
+                            .weight(3.4f)
+                            .padding(8.dp, 0.dp, 0.dp, 0.dp)){
+                            PrimaryButtonOutLined(
+                                borderColor =ZipdabangandroidTheme.Colors.BlackSesame,
+                                text = stringResource(id = R.string.signup_userinfo_ok),
+                                onClick = {
+
+                                }
                             )
                         }
                     }
