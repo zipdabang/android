@@ -55,4 +55,7 @@
     <string name="default_notification_channel_name" translatable="true">Zipdabang</string>
     <string name="msg_subscribe_failed">Failed to subscribe to weather topic</string>
     <string name="fcm_message">FCM Message</string>
+    <!-- for market -->
+    <string name="market_recent">내가 최근 봤던 아이템</string>
+
 </resources>
