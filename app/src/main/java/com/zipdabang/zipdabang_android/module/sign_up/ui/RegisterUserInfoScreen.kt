@@ -25,6 +25,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -236,7 +237,7 @@ fun RegisterUserInfoScreen(
                             modifier = Modifier.weight(1.2f)
                         )
                         Box(
-                            modifier = Modifier.weight(5.4f)
+                            modifier = Modifier.weight(4.2f)
                         ){
                             TextFieldBasic(
                                 value = stateCertificatenumberValue,
@@ -251,6 +252,13 @@ fun RegisterUserInfoScreen(
                                 imeAction = ImeAction.Done,
                             )
                         }
+                        Text(
+                            modifier = Modifier.weight(1.6f),
+                            text = "00:00",
+                            color = Color(0xFFB00020),
+                            style = ZipdabangandroidTheme.Typography.fourteen_300,
+                            textAlign = TextAlign.Center
+                        )
                         Box(modifier = Modifier
                             .weight(3.4f)
                             .padding(8.dp, 0.dp, 0.dp, 0.dp)){

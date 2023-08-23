@@ -15,6 +15,7 @@ import com.zipdabang.zipdabang_android.module.sign_up.ui.RegisterNicknameScreen
 import com.zipdabang.zipdabang_android.module.sign_up.ui.RegisterPreferencesScreen
 import com.zipdabang.zipdabang_android.module.sign_up.ui.RegisterUserAddressScreen
 import com.zipdabang.zipdabang_android.module.sign_up.ui.RegisterUserInfoScreen
+import com.zipdabang.zipdabang_android.module.sign_up.ui.TermDetailScreen
 import com.zipdabang.zipdabang_android.module.sign_up.ui.TermsScreen
 
 fun NavGraphBuilder.authNavGraph(navController: NavHostController) {
@@ -61,7 +62,23 @@ fun NavGraphBuilder.authNavGraph(navController: NavHostController) {
                 authSharedViewModel = authSharedViewModel,
                 onClickNext = {
                     navController.navigate(AuthScreen.RegisterUserInfo.route)
+                },
+                onClickDetailNext = { termIndex ->
+                    navController.navigate(AuthScreen.TermDetail.route + "/$termIndex")
                 }
+            )
+        }
+
+        composable(route = AuthScreen.TermDetail.route + "/{termIndex}") { navBackStackEntry ->
+            val termIndex = navBackStackEntry.arguments?.getString("termIndex")?.toIntOrNull() ?: 0
+            val authSharedViewModel = navBackStackEntry.authSharedViewModel<AuthSharedViewModel>(navController = navController)
+            TermDetailScreen(
+                navController = navController,
+                authSharedViewModel = authSharedViewModel,
+                onClickBack = {
+                    navController.popBackStack(AuthScreen.Terms.route, inclusive = false)
+                },
+                termIndex = termIndex
             )
         }
 
