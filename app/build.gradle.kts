@@ -140,6 +140,8 @@ dependencies {
     implementation ("org.jetbrains.kotlinx:kotlinx-collections-immutable:0.3.5")
 
     implementation ("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.2")
+
+    implementation("com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:0.8.0")
 }
 
 kapt {

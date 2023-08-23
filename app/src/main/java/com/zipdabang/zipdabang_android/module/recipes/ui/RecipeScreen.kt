@@ -1,13 +1,10 @@
 package com.zipdabang.zipdabang_android.module.recipes.ui
 
-import androidx.compose.foundation.layout.Column
+import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Text
-import androidx.compose.material.TextButton
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
@@ -18,8 +15,9 @@ import com.zipdabang.zipdabang_android.ui.component.AppBarHome
 import com.zipdabang.zipdabang_android.ui.component.ModalDrawer
 import kotlinx.coroutines.launch
 
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun RecipesScreen(
+fun RecipeScreen(
     onGoToDetail: ()-> Unit
 ){
     //drawer에 필요한 drawerState랑 scope
@@ -41,17 +39,12 @@ fun RecipesScreen(
                 },
                 containerColor = Color.White,
                 contentColor = Color.Black,
-                content = {
-                    Column {
-                        Text(text = "recipes", modifier = Modifier.padding(it))
-                        TextButton(onClick = { onGoToDetail() }) {
-                            Text("Detail")
-                        }
+//                floatingActionButton =
+            ) {
+                val scrollState = rememberScrollState()
+                RecipeMenuScreen(scrollState = scrollState)
 
-
-                    }
-                }
-            )
+            }
         },
         drawerState = drawerState
     )
