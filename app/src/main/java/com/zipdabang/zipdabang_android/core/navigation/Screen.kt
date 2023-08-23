@@ -14,6 +14,7 @@ const val SHARED_ROUTE = "main/shared"
 sealed class AuthScreen(val route: String) {
     object SignIn: AuthScreen(route = "auth/sign_in")
     object Terms: AuthScreen(route = "auth/sign_up/terms")
+    object TermDetail : AuthScreen(route = "auth/sign_up/term_detail")
     object RegisterUserInfo: AuthScreen(route = "auth/sign_up/user_info")
     object RegisterUserAddress: AuthScreen(route = "auth/sign_up/user_address")
     object RegisterNickname: AuthScreen(route = "auth/sign_up/nickname")

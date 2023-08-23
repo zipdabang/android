@@ -9,6 +9,7 @@ import com.zipdabang.zipdabang_android.common.Resource
 import com.zipdabang.zipdabang_android.module.sign_up.data.remote.BeverageCategory
 import com.zipdabang.zipdabang_android.module.sign_up.domain.usecase.GetBeveragesUseCase
 import com.zipdabang.zipdabang_android.module.sign_up.domain.usecase.GetNicknameUseCase
+import com.zipdabang.zipdabang_android.module.sign_up.domain.usecase.GetPhoneSmsUseCase
 import com.zipdabang.zipdabang_android.module.sign_up.domain.usecase.GetTermsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -22,6 +23,7 @@ class AuthSharedViewModel @Inject constructor(
     private val getTermsUseCase: GetTermsUseCase,
     private val getBeveragesUseCase: GetBeveragesUseCase,
     private val getNicknameUseCase: GetNicknameUseCase,
+    private val getPhoneSmsUseCase: GetPhoneSmsUseCase,
     //savedStateHandle: SavedStateHandle
 ): ViewModel() {
 
@@ -304,7 +306,9 @@ class AuthSharedViewModel @Inject constructor(
             }
         }.launchIn(viewModelScope)
     }
+    private fun getPhoneSms(){
 
+    }
 
 
 

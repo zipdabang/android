@@ -46,6 +46,7 @@ fun TermsScreen(
     navController: NavHostController,
     authSharedViewModel: AuthSharedViewModel= hiltViewModel(),
     onClickNext: ()->Unit,
+    onClickDetailNext : (Int) -> Unit,
 ) {
     val stateTerms = authSharedViewModel.stateTerms.value
     val stateTermsAllagree by authSharedViewModel.stateTermsAllagree.collectAsState()
@@ -132,7 +133,9 @@ fun TermsScreen(
                                 },
                                 mainValue = termInfo.termsTitle,
                                 mainTextStyle = ZipdabangandroidTheme.Typography.fourteen_500,
-                                onClick = {}
+                                onClick = {
+                                    onClickDetailNext(index)
+                                }
                             )
                         } else{
                             CheckBoxWithText(
@@ -188,5 +191,6 @@ fun PreviewTermsScreen(){
         onClickNext = {
             navController.navigate(AuthScreen.RegisterUserInfo.route)
         },
+        onClickDetailNext = { }
     )
 }

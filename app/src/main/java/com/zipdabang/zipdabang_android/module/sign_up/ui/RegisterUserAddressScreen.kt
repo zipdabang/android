@@ -35,6 +35,7 @@ import com.zipdabang.zipdabang_android.core.navigation.AuthScreen
 import com.zipdabang.zipdabang_android.module.sign_up.ui.viewmodel.AuthSharedViewModel
 import com.zipdabang.zipdabang_android.ui.component.AppBarSignUp
 import com.zipdabang.zipdabang_android.ui.component.MainAndSubTitle
+import com.zipdabang.zipdabang_android.ui.component.PrimaryButtonOutLined
 import com.zipdabang.zipdabang_android.ui.component.PrimaryButtonWithStatus
 import com.zipdabang.zipdabang_android.ui.component.TextFieldBasic
 import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
@@ -108,7 +109,7 @@ fun RegisterUserAddressScreen(
                                 .weight(1.2f),
                         )
                         Box(
-                            modifier = Modifier.weight(8.8f)
+                            modifier = Modifier.weight(5.4f)
                         ){
                             TextFieldBasic(
                                 value = stateZipcodeValue,
@@ -121,6 +122,17 @@ fun RegisterUserAddressScreen(
                                 errorMessage = "아직 배송 지원 불가 지역입니다",
                                 keyboardType = KeyboardType.Number,
                                 imeAction = ImeAction.Done,
+                            )
+                        }
+                        Box(modifier = Modifier
+                            .weight(3.4f)
+                            .padding(8.dp, 0.dp, 0.dp, 0.dp)){
+                            PrimaryButtonOutLined(
+                                borderColor =ZipdabangandroidTheme.Colors.BlackSesame,
+                                text = stringResource(id = R.string.signup_userinfo_addresssearch),
+                                onClick = {
+
+                                }
                             )
                         }
                     }
