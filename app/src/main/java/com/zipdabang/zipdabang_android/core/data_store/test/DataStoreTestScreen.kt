@@ -9,15 +9,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.zipdabang.zipdabang_android.core.data_store.CurrentPlatform
 import com.zipdabang.zipdabang_android.core.data_store.ProtoDataViewModel
 import com.zipdabang.zipdabang_android.core.data_store.Token
 
 @Composable
-fun DataStoreTestScreen(
-    viewModel: ProtoDataViewModel = hiltViewModel()
-) {
+fun DataStoreTestScreen() {
+
+    val viewModel = hiltViewModel<ProtoDataViewModel>()
+
     val tokens = viewModel.tokens.collectAsState(initial = Token(
         null,
         null,
@@ -45,6 +47,13 @@ fun DataStoreTestScreen(
         }
 
         Button(onClick = {
+            viewModel.updateRefreshToken("new_refresh_token")
+            Log.d(TAG, "${tokens.value}")
+        }) {
+            Text(text = "REFRESH TOKEN")
+        }
+
+        Button(onClick = {
             viewModel.updateFcmToken("new_fcm_token")
             Log.d(TAG, "${tokens.value}")
         }) {
@@ -53,6 +62,13 @@ fun DataStoreTestScreen(
 
         Button(onClick = {
             viewModel.updatePlatform(CurrentPlatform.KAKAO)
+            Log.d(TAG, "${tokens.value}")
+        }) {
+            Text(text = "PLATFORM To Kakao")
+        }
+
+        Button(onClick = {
+            viewModel.updatePlatformToken("platform_token")
             Log.d(TAG, "${tokens.value}")
         }) {
             Text(text = "PLATFORM TOKEN")
