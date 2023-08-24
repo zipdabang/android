@@ -11,6 +11,7 @@ import com.zipdabang.zipdabang_android.common.ResponseCode
 import com.zipdabang.zipdabang_android.module.recipes.common.OwnerType
 import com.zipdabang.zipdabang_android.module.recipes.data.preview.RecipeResult
 import com.zipdabang.zipdabang_android.module.recipes.domain.RecipePreview
+import com.zipdabang.zipdabang_android.module.recipes.use_case.GetRecipeCategoryUseCase
 import com.zipdabang.zipdabang_android.module.recipes.use_case.GetRecipePreviewUseCase
 import com.zipdabang.zipdabang_android.module.recipes.use_case.ToggleLikeUseCase
 import com.zipdabang.zipdabang_android.module.recipes.use_case.ToggleScrapUseCase
@@ -21,6 +22,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class RecipeMainViewModel @Inject constructor(
+    private val getRecipeCategoryUseCase: GetRecipeCategoryUseCase,
     private val getRecipePreviewUseCase: GetRecipePreviewUseCase,
     private val toggleLikeUseCase: ToggleLikeUseCase,
     private val toggleScrapUseCase: ToggleScrapUseCase
@@ -31,6 +33,8 @@ class RecipeMainViewModel @Inject constructor(
     }
 
     // mutableStateOf<List<RecipeResult>>(mutableListOf())
+    private val _categoryList = mutableStateOf(RecipeCategoryState())
+    val categoryList: State<RecipeCategoryState> = _categoryList
 
     private val _everyRecipeState = mutableStateOf(RecipePreviewState())
     val everyRecipeState: State<RecipePreviewState> = _everyRecipeState
@@ -57,6 +61,56 @@ class RecipeMainViewModel @Inject constructor(
         OwnerType.INFLUENCER.type to _influencerRecipeState,
         OwnerType.USER.type to _userRecipeState
     )
+
+    fun getRecipeCategoryList(accessToken: String) {
+        getRecipeCategoryUseCase(accessToken).onEach { result ->
+            when (result) {
+                is Resource.Success -> {
+                    result.data?.let {
+                        when (it.code) {
+                            ResponseCode.RESPONSE_DEFAULT.code -> {
+                                _categoryList.value = RecipeCategoryState(
+                                    isLoading = false,
+                                    recipeCategories = it.categoryList
+                                )
+                            }
+
+                            ResponseCode.SERVER_ERROR.code -> {
+                                _categoryList.value = RecipeCategoryState(
+                                    isLoading = false,
+                                    errorMessage = ResponseCode.SERVER_ERROR.message
+                                )
+                                _errorMessage.value = it.message
+                            }
+
+                            else -> {
+                                _categoryList.value = RecipeCategoryState(
+                                    isLoading = false,
+                                    errorMessage = "알 수 없는 오류가 발생하였습니다."
+                                )
+                                _errorMessage.value = "알 수 없는 오류가 발생하였습니다."
+                            }
+                        }
+                    }
+                }
+                is Resource.Error -> {
+                    _categoryList.value = RecipeCategoryState(
+                        isLoading = false,
+                        errorMessage = result.message
+                    )
+                    result.message?.let {
+                        _errorMessage.value = it
+                    }
+                }
+                is Resource.Loading -> {
+                    _categoryList.value = RecipeCategoryState(
+                        isLoading = true
+                    )
+                }
+            }
+
+        }.launchIn(viewModelScope)
+    }
 
     fun getRecipesByOwnerType(accessToken: String, ownerType: String) {
         getRecipePreviewUseCase(
@@ -211,7 +265,7 @@ class RecipeMainViewModel @Inject constructor(
                     }
                 }
             }
-        }
+        }.launchIn(viewModelScope)
     }
 
     fun toggleScrap(accessToken: String, recipeId: Int) {

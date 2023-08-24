@@ -1,17 +1,12 @@
 package com.zipdabang.zipdabang_android.module.market.ui
 
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import androidx.paging.ExperimentalPagingApi
-import com.zipdabang.zipdabang_android.core.data_store.ProtoRepository
-import com.zipdabang.zipdabang_android.core.data_store.Token
+import com.zipdabang.zipdabang_android.core.data_store.proto.ProtoRepository
+import com.zipdabang.zipdabang_android.core.data_store.proto.Token
 import com.zipdabang.zipdabang_android.module.market.data.marketCategory.PagingRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 

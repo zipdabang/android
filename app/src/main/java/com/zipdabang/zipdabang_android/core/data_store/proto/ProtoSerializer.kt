@@ -1,6 +1,10 @@
-package com.zipdabang.zipdabang_android.core.data_store
+package com.zipdabang.zipdabang_android.core.data_store.proto
 
+import android.content.Context
+import androidx.datastore.core.DataStore
 import androidx.datastore.core.Serializer
+import androidx.datastore.dataStore
+import com.zipdabang.zipdabang_android.common.Constants.DATA_STORE_FILE_NAME
 import kotlinx.serialization.json.Json
 import org.apache.commons.lang3.SerializationException
 import java.io.InputStream
@@ -39,3 +43,8 @@ object ProtoSerializer: Serializer<Token> {
         )
     }
 }
+
+val Context.tokenDataStore: DataStore<Token> by dataStore(
+    fileName = DATA_STORE_FILE_NAME,
+    serializer = ProtoSerializer
+)

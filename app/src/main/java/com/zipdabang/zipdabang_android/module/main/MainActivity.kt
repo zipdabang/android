@@ -4,23 +4,22 @@ import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
-import android.widget.Toast
 import android.Manifest
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.runtime.LaunchedEffect
 import androidx.core.content.ContextCompat
+import androidx.datastore.core.DataStore
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.rememberNavController
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.messaging.ktx.messaging
-import com.zipdabang.zipdabang_android.core.data_store.ProtoDataViewModel
-import com.zipdabang.zipdabang_android.core.data_store.test.DataStoreTestScreen
+import com.zipdabang.zipdabang_android.core.data_store.proto.ProtoDataViewModel
+import com.zipdabang.zipdabang_android.core.data_store.proto.Token
 import com.zipdabang.zipdabang_android.core.navigation.RootNavGraph
-import com.zipdabang.zipdabang_android.module.login.ui.LoginScreen
 import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -30,11 +29,14 @@ class MainActivity : ComponentActivity() {
         private const val NOTIFICATION_REQUEST_CODE = 1234
     }
 
+    @Inject
+    lateinit var tokenDataStore: DataStore<Token>
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             ZipdabangandroidTheme {
-                /*ZipdabangApp()*/
+                ZipdabangApp()
                 val navController = rememberNavController()
                 RootNavGraph(navController = navController)
 
@@ -42,7 +44,6 @@ class MainActivity : ComponentActivity() {
 
             val tokenDataViewModel = hiltViewModel<ProtoDataViewModel>()
             registerDerivedToken(tokenDataViewModel)
-
         }
     }
 
