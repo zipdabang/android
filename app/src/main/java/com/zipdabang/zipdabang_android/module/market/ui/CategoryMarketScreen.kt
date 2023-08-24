@@ -13,6 +13,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.Text
@@ -49,10 +51,10 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalPagingApi::class)
 @Composable
 fun CategoryMarketScreen(
-//    viewModel: MarketCategoryViewModel = hiltViewModel(),
+    viewModel: MarketCategoryViewModel = hiltViewModel(),
     categoryId : Int?
 ) {
-
+    //val getAllItems = viewModel.
     val title = when(categoryId){
          0 -> "전체"
          1 -> "음료"
@@ -106,8 +108,16 @@ fun CategoryMarketScreen(
                             }
                         }
 
-                        items( 100){
-                            Text("100")
+                        item {
+                            LazyVerticalGrid(
+                                columns = GridCells.Fixed(2),
+                                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                verticalArrangement = Arrangement.spacedBy(8.dp)){
+                             //   items(
+
+                            //    )
+
+                            }
                         }
 
                     }

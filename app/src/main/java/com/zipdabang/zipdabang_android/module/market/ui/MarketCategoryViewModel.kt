@@ -23,13 +23,17 @@ class MarketCategoryViewModel @Inject constructor(
 ): ViewModel() {
 
     var token: String? = null
-    var categoryId: Int = 0
+    private val categoryId: Int = 0
+
     private val accessToken: Flow<Token>
         get() {
             return protoRepository.tokens
         }
 
-    private fun getMarketCategoryItems() {
+
+
+   /* val getMarketCategoryItems :  Flow<PagingData<Category_Product>>  =
+        {
         viewModelScope.launch {
             accessToken
                 .map { it.accessToken }
@@ -40,6 +44,6 @@ class MarketCategoryViewModel @Inject constructor(
                 repository.getAllItems(categoryId, token!!)
             }
         }
-    }
+    } */
 
 }
