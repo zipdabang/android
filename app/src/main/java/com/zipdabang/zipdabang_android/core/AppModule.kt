@@ -63,34 +63,33 @@ object AppModule {
             Paging3Database::class.java,
             PAGING3_DATABASE
         ).build()
-
-    }
-        @Provides
-        @Singleton // have a singleton...
-        fun provideHttpClient(): OkHttpClient {
-            return OkHttpClient.Builder()
-                .readTimeout(15, TimeUnit.SECONDS)
-                .connectTimeout(15, TimeUnit.SECONDS)
-                .build()
-        }
-
-        @OptIn(ExperimentalSerializationApi::class)
-        @Provides
-        @Singleton
-        fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {
-            val contentType = "application/json".toMediaType()
-            val json = Json {
-                // specifies whether encounters of unknown properties in the input JSON should be ignored,
-                // instead of exception(SerializationException)
-                ignoreUnknownKeys = true
-            }
-            return Retrofit.Builder()
-                .baseUrl(BASE_URL)
-                .client(okHttpClient)
-                // which library to use for "de"serialization(JSON -> Object)
-                // kotlinx-serialization dependency
-                .addConverterFactory(json.asConverterFactory(contentType))
-                .build()
-        }
     }
 
+    @Provides
+    @Singleton // have a singleton...
+    fun provideHttpClient(): OkHttpClient {
+        return OkHttpClient.Builder()
+            .readTimeout(15, TimeUnit.SECONDS)
+            .connectTimeout(15, TimeUnit.SECONDS)
+            .build()
+    }
+
+    @OptIn(ExperimentalSerializationApi::class)
+    @Provides
+    @Singleton
+    fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {
+        val contentType = "application/json".toMediaType()
+        val json = Json {
+            // specifies whether encounters of unknown properties in the input JSON should be ignored,
+            // instead of exception(SerializationException)
+            ignoreUnknownKeys = true
+        }
+        return Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .client(okHttpClient)
+            // which library to use for "de"serialization(JSON -> Object)
+            // kotlinx-serialization dependency
+            .addConverterFactory(json.asConverterFactory(contentType))
+            .build()
+    }
+}
