@@ -12,5 +12,8 @@ object Constants {
     //----------------------------------------------------------------------------------------------
     const val TOKEN_JSON = "tokens.json"
     const val DATA_STORE_FILE_NAME = "prefs.pb"
+
+    const val PAGING3_DATABASE = "paging3_table"
+    const val REMOTE_KEY_DATABASE = "remote_key_table"
 }
 

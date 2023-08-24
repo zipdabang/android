@@ -9,6 +9,7 @@ plugins {
     id ("kotlin-kapt")
     // serialization for using datastore
     id ("org.jetbrains.kotlin.plugin.serialization")
+    id ("kotlinx-serialization")
 }
 
 val properties = Properties()
@@ -138,8 +139,14 @@ dependencies {
     implementation ("androidx.datastore:datastore:1.0.0")
     // if lists should be saved in proto datastore
     implementation ("org.jetbrains.kotlinx:kotlinx-collections-immutable:0.3.5")
-
     implementation ("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.2")
+
+   //Room components
+    implementation ("androidx.room:room-runtime:2.5.2")
+    kapt ("androidx.room:room-compiler:2.5.2")
+    implementation ("androidx.room:room-ktx:2.5.2")
+    implementation ("androidx.room:room-paging:2.5.2")
+
 
     implementation("com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:0.8.0")
 }

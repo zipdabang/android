@@ -6,7 +6,10 @@ import androidx.datastore.core.DataStoreFactory
 import androidx.datastore.core.handlers.ReplaceFileCorruptionHandler
 import androidx.datastore.dataStore
 import androidx.datastore.dataStoreFile
-import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
+import androidx.room.Room
+import androidx.room.RoomDatabase
+import com.zipdabang.zipdabang_android.common.Constants
+import com.zipdabang.zipdabang_android.common.Constants.PAGING3_DATABASE
 import com.zipdabang.zipdabang_android.common.Constants
 import com.zipdabang.zipdabang_android.common.Constants.BASE_URL
 import com.zipdabang.zipdabang_android.core.data_store.ProtoRepository
@@ -51,6 +54,17 @@ object AppModule {
     }
 
     @Provides
+
+    @Singleton
+    fun provideDatabase(
+        @ApplicationContext context: Context
+    ) : Paging3Database {
+        return Room.databaseBuilder(
+            context,
+            Paging3Database::class.java,
+            PAGING3_DATABASE
+        ).build()
+
     @Singleton // have a singleton...
     fun provideHttpClient(): OkHttpClient {
         return OkHttpClient.Builder()
