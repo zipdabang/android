@@ -29,6 +29,13 @@ class ProtoDataViewModel @Inject constructor(
         }
     }
 
+    fun updatePlatformToken(platformToken: String) {
+        viewModelScope.launch {
+            protoRepository.updatePlatformToken(platformToken)
+            Log.d(TAG, "${protoRepository.tokens}")
+        }
+    }
+
     fun updateAccessToken(accessToken: String) {
         viewModelScope.launch {
             protoRepository.updateAccessToken(accessToken)

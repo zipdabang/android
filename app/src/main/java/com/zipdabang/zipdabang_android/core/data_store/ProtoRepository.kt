@@ -8,6 +8,8 @@ interface ProtoRepository {
 
     suspend fun updatePlatform(platform: CurrentPlatform)
 
+    suspend fun updatePlatformToken(platformToken: String)
+
     suspend fun updateAccessToken(accessToken: String)
 
     suspend fun updateRefreshToken(refreshToken: String)

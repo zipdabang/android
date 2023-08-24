@@ -6,7 +6,6 @@ object Constants {
     const val PLATFORM_GOOGLE = "google"
     const val PLATFORM_TEMP = "temp"
     const val PLATFORM_NONE = "none"
-
     //----------------------------------------------------------------------------------------------
     const val AUTH_NAV_GRAPH = "AuthNavGraph"
 

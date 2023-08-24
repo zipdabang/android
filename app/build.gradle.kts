@@ -147,6 +147,8 @@ dependencies {
     implementation ("androidx.room:room-ktx:2.5.2")
     implementation ("androidx.room:room-paging:2.5.2")
 
+
+    implementation("com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:0.8.0")
 }
 
 kapt {

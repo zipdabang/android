@@ -1,6 +1,8 @@
 package com.zipdabang.zipdabang_android.ui.component
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -33,29 +35,33 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
 
-//2번 -> 완성
-@OptIn(ExperimentalMaterial3Api::class)
+//textfield -> api를 통해 error와 correct check가 필요할때
+@SuppressLint("SuspiciousIndentation")
 @Composable
-fun TextFieldBasic(
+fun TextFieldErrorAndCorrect(
     value : String,
     onValueChanged : (String) -> Unit,
-    expectedValue : String,
-    labelText : String,
-    placeholderText : String,
+    tryCount : Int,
+    labelValue : String,
+    placeHolderValue : String,
+
+    isError : Boolean,
+    isCorrect : Boolean,
+    onError : () -> Boolean,
+    onCorrect : () -> Boolean,
     errorMessage : String,
-    rightMessage : String,
+    correctMessage : String,
+
     keyboardType : KeyboardType,
     imeAction : ImeAction, //default,none이면 엔터키, next면 다음 텍스트필드로 넘어감, done면 완료키
 ) {
     //var isFocused by remember { mutableStateOf(false) }
+    var isErrorLocal by remember { mutableStateOf(isError) }
+    var isCorrectLocal by remember { mutableStateOf(isCorrect) }
 
-    fun isTextMatching(text: String): Boolean {
-        return text == expectedValue
-    }
+    if(onError()) isErrorLocal = true else isErrorLocal = false
+    if(onCorrect()) isCorrectLocal = true else isCorrectLocal = false
 
-    Box(
-        modifier = Modifier.fillMaxSize()
-    ) {
         TextField(
             value = value,
             onValueChange = { onValueChanged(it) },
@@ -64,63 +70,60 @@ fun TextFieldBasic(
                 .fillMaxWidth()
                 .background(Color(0xFFF7F6F6)),
                 //.onFocusChanged { isFocused = it.isFocused },
-            /*label = {
-                if (value.isEmpty() && !isFocused) {
+            label = {
+                if (isCorrect && tryCount>0) {
                     Text(
-                        text = labelText,
-                        style = ZipdabangandroidTheme.Typography.sixteen_300,
-                        color = ZipdabangandroidTheme.Colors.Typo.copy(alpha = 0.5f)
-                    )
-                } else if(value.isEmpty() && isFocused){
-
-                } else if (isTextMatching(value)) {
-                    Text(
-                        text = rightMessage,
+                        text = correctMessage,
                         style = ZipdabangandroidTheme.Typography.twelve_300,
                         color = Color(0xFF6200EE)
                     )
-                } else {
+                } else if (isError && tryCount>0){
                     Text(
                         text = errorMessage,
                         style = ZipdabangandroidTheme.Typography.twelve_300,
                         color = Color(0xFFB00020)
                     )
+                } else {
+                    Text(
+                        text = labelValue,
+                        style = ZipdabangandroidTheme.Typography.twelve_300,
+                        color = ZipdabangandroidTheme.Colors.Typo
+                    )
                 }
-            },*/
+            },
             placeholder = {
                 Text(
-                    text = placeholderText,
+                    text = placeHolderValue,
                     style = ZipdabangandroidTheme.Typography.sixteen_300,
                     color = ZipdabangandroidTheme.Colors.Typo.copy(alpha = 0.5f)
                 )
             },
-            isError = !isTextMatching(value) && value.isNotEmpty(),
+            isError = isError && (tryCount > 0),
             singleLine = true,
             colors = TextFieldDefaults.colors(
+                unfocusedContainerColor = Color(0xFFF7F6F6), //상자
                 unfocusedIndicatorColor = //밑줄
-                if (isTextMatching(value)) {
-                    Color(0xFF6200EE)
-                } else {
-                    ZipdabangandroidTheme.Colors.Typo.copy(alpha = 0.5f)
-                } ,
-                cursorColor = //쓸때 커서
-                if (isTextMatching(value)) {
-                    Color(0xFF6200EE)
-                } else {
-                    ZipdabangandroidTheme.Colors.Typo
-                } ,
+                    if (isCorrect && (tryCount > 0)) Color(0xFF6200EE)
+                    else ZipdabangandroidTheme.Colors.Typo.copy(alpha = 0.5f),
+
+                focusedContainerColor = Color(0xFFF7F6F6), //쓸때 상자
                 focusedLabelColor = ZipdabangandroidTheme.Colors.Typo, //쓸때 위에
+                cursorColor = //쓸때 커서
+                    if (isCorrect && (tryCount > 0)) Color(0xFF6200EE)
+                    else ZipdabangandroidTheme.Colors.Typo,
                 focusedIndicatorColor = //쓸때 밑줄
-                if (isTextMatching(value)) {
-                    Color(0xFF6200EE)
-                } else if (value.isEmpty()){
-                    ZipdabangandroidTheme.Colors.Typo.copy(alpha = 0.5f)
-                } else {
-                    Color(0xFFB00020) },
+                    if (isCorrect && (tryCount > 0)) {
+                        Color(0xFF6200EE)
+                    } else if (isError && (tryCount > 0)) {
+                        Color(0xFFB00020)
+                    } else{
+                        ZipdabangandroidTheme.Colors.Typo.copy(alpha = 0.5f)
+                    },
+
                 errorCursorColor = Color(0xFFB00020), //에러 커서
-                errorContainerColor = Color(0xFFF7F6F6),
                 errorLabelColor = Color(0xFFB00020),  //에러 위에
                 errorIndicatorColor = Color(0xFFB00020), //에러 밑줄
+                errorContainerColor = Color(0xFFF7F6F6), //에러 상자
             ),
             keyboardOptions = KeyboardOptions(
                 keyboardType = keyboardType, //email,text 등이 있다.
@@ -128,7 +131,7 @@ fun TextFieldBasic(
             ),
             //visualTransformation = PasswordVisualTransformation(),
             trailingIcon = {
-                if(isTextMatching(value)){
+                if(isCorrect && (tryCount > 0)){
                     Icon(
                         imageVector = Icons.Filled.Done,
                         contentDescription = "check icon",
@@ -139,7 +142,109 @@ fun TextFieldBasic(
                 }
             },
         )
+}
+
+@Preview
+@Composable
+fun PreviewTextFieldErrorAndCorrect(){
+    var textState by remember { mutableStateOf("") }
+    var tryCount by remember { mutableStateOf(1) }
+
+    Box(
+        modifier = Modifier.padding(16.dp)
+    ){
+        TextFieldErrorAndCorrect(
+            value = textState,
+            onValueChanged = {textState = it},
+            tryCount = tryCount,
+            labelValue = "닉네임",
+            placeHolderValue = "2-6자 한글, 영어, 숫자",
+            isError = false,
+            isCorrect = true,
+            onError = {textState == "asdf"},
+            onCorrect = {textState == "ㅁㄴㅇㄹ"},
+            errorMessage = "닉네임에 맞지 않습니다.",
+            correctMessage = "닉네임에 맞습니다.",
+            keyboardType = KeyboardType.Text,
+            imeAction = ImeAction.Done
+        )
+
     }
+}
+
+
+//textfield -> local에서 error check만 하면 될때
+@SuppressLint("SuspiciousIndentation")
+@Composable
+fun TextFieldBasic(
+    value : String,
+    onValueChanged : (String) -> Unit,
+    labelValue : String,
+    placeHolderValue: String,
+
+    onError : () -> Boolean,
+    errorMessage : String,
+
+    keyboardType : KeyboardType,
+    imeAction : ImeAction, //default,none이면 엔터키, next면 다음 텍스트필드로 넘어감, done면 완료키
+) {
+    var isError by remember { mutableStateOf(false) }
+
+    if(onError()) isError = true else isError = false
+
+        TextField(
+            value = value,
+            onValueChange = { onValueChanged(it) },
+            textStyle = ZipdabangandroidTheme.Typography.sixteen_300,
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(Color(0xFFF7F6F6)),
+            //.onFocusChanged { isFocused = it.isFocused },
+            label = {
+                if (isError){
+                    Text(
+                        text = errorMessage,
+                        style = ZipdabangandroidTheme.Typography.twelve_300,
+                        color = Color(0xFFB00020)
+                    )
+                } else {
+                    Text(
+                        text = labelValue,
+                        style = ZipdabangandroidTheme.Typography.twelve_300,
+                        color = ZipdabangandroidTheme.Colors.Typo
+                    )
+                }
+            },
+            placeholder = {
+                Text(
+                    text = placeHolderValue,
+                    style = ZipdabangandroidTheme.Typography.sixteen_300,
+                    color = ZipdabangandroidTheme.Colors.Typo.copy(alpha = 0.5f)
+                )
+            },
+            isError = isError,
+            singleLine = true,
+            colors = TextFieldDefaults.colors(
+                unfocusedContainerColor = Color(0xFFF7F6F6), //상자
+                unfocusedIndicatorColor = ZipdabangandroidTheme.Colors.Typo.copy(alpha = 0.5f), //밑줄
+
+                focusedContainerColor = Color(0xFFF7F6F6), //쓸때 상자
+                focusedLabelColor = ZipdabangandroidTheme.Colors.Typo, //쓸때 위에
+                cursorColor = ZipdabangandroidTheme.Colors.Typo, //쓸때 커서
+                focusedIndicatorColor = //쓸때 밑줄
+                if (isError) Color(0xFFB00020)
+                else ZipdabangandroidTheme.Colors.Typo.copy(alpha = 0.5f),
+
+                errorCursorColor = Color(0xFFB00020), //에러 커서
+                errorLabelColor = Color(0xFFB00020),  //에러 위에
+                errorIndicatorColor = Color(0xFFB00020), //에러 밑줄
+                errorContainerColor = Color(0xFFF7F6F6), //에러 상자
+            ),
+            keyboardOptions = KeyboardOptions(
+                keyboardType = keyboardType, //email,text 등이 있다.
+                imeAction = imeAction, //done,default은 완료 키가 나온다. none이 엔터 키가 나온다.
+            ),
+        )
 }
 
 @Preview
@@ -151,47 +256,43 @@ fun PreviewTextFieldBasic(){
         modifier = Modifier.padding(16.dp)
     ){
         TextFieldBasic(
-            textState,
-            onValueChanged = { textState = it },
-            "ㅁㄴㅇㄹ",
-            "이름",
-            "이름",
-            "회원정보가 잘못됐습니다",
-            "맞습니다",
-            KeyboardType.Text,
-            ImeAction.Next
+            value = textState,
+            onValueChanged = {textState = it},
+            labelValue = "생년월일",
+            placeHolderValue = "6자리 입력부탁",
+            onError = { textState == "010327" },
+            errorMessage = "생년월일 형식이 아닙니다.",
+            keyboardType = KeyboardType.Number,
+            imeAction = ImeAction.Done
         )
     }
 }
 
 
 
-//5번 -> 완성
-@OptIn(ExperimentalMaterial3Api::class)
+//textfield -> 글쓰기 같은 곳에 쓰임
 @Composable
 fun TextFieldForContent(
     value : String,
     onValueChanged : (String, Int) -> Unit,
     singleLine: Boolean,
     maxLines : Int,
-    placeholderText: String,
+    placeholderValue: String,
     imeAction: ImeAction, //default,none이면 엔터키, next면 다음 텍스트필드로 넘어감, done면 완료키
     maxLength : Int, //최대 글자수
 ){
-    Box(
-        modifier = Modifier.fillMaxSize()
-    ){
         OutlinedTextField(
             value = value,
             onValueChange = {
-                onValueChanged(it ,maxLength)
+                onValueChanged(it, maxLength)
             },
             textStyle = ZipdabangandroidTheme.Typography.sixteen_500,
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier
+                .fillMaxSize()
                 .background(Color(0xFFF7F6F6)),
             placeholder = {
                 Text(
-                    text = placeholderText,
+                    text = placeholderValue,
                     style = ZipdabangandroidTheme.Typography.sixteen_500,
                     color = ZipdabangandroidTheme.Colors.Typo.copy(0.5f)
                 )
@@ -208,7 +309,7 @@ fun TextFieldForContent(
                 imeAction = imeAction,
             ),
         )
-    }
+
 }
 
 @Preview
