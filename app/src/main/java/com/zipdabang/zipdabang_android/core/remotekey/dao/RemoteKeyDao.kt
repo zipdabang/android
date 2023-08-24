@@ -1,10 +1,10 @@
-package com.zipdabang.zipdabang_android.core.dao
+package com.zipdabang.zipdabang_android.core.remotekey.dao
 
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.zipdabang.zipdabang_android.module.market.data.marketCategory.RemoteKeys
+import com.zipdabang.zipdabang_android.core.remotekey.RemoteKeys
 
 @Dao
 interface RemoteKeyDao{

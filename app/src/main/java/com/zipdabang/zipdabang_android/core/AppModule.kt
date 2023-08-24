@@ -54,7 +54,6 @@ object AppModule {
     }
 
     @Provides
-
     @Singleton
     fun provideDatabase(
         @ApplicationContext context: Context
@@ -65,6 +64,8 @@ object AppModule {
             PAGING3_DATABASE
         ).build()
 
+    }
+        @Provides
         @Singleton // have a singleton...
         fun provideHttpClient(): OkHttpClient {
             return OkHttpClient.Builder()
@@ -92,4 +93,4 @@ object AppModule {
                 .build()
         }
     }
-}
+

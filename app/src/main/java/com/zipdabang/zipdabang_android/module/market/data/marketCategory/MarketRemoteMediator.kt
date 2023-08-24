@@ -1,12 +1,12 @@
 package com.zipdabang.zipdabang_android.module.market.data.marketCategory
 
-import androidx.compose.runtime.MutableState
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadType
 import androidx.paging.PagingState
 import androidx.paging.RemoteMediator
 import androidx.room.withTransaction
 import com.zipdabang.zipdabang_android.core.Paging3Database
+import com.zipdabang.zipdabang_android.core.remotekey.RemoteKeys
 import com.zipdabang.zipdabang_android.module.market.data.MarketApi
 import java.lang.Exception
 import javax.inject.Inject
