@@ -6,12 +6,14 @@ object Constants {
     const val PLATFORM_GOOGLE = "google"
     const val PLATFORM_TEMP = "temp"
     const val PLATFORM_NONE = "none"
-
     //----------------------------------------------------------------------------------------------
     const val AUTH_NAV_GRAPH = "AuthNavGraph"
 
     //----------------------------------------------------------------------------------------------
     const val TOKEN_JSON = "tokens.json"
     const val DATA_STORE_FILE_NAME = "prefs.pb"
+
+    const val PAGING3_DATABASE = "paging3_table"
+    const val REMOTE_KEY_DATABASE = "remote_key_table"
 }
 

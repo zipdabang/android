@@ -13,6 +13,8 @@ data class Token(
     var fcmToken: String?
 )
 
+
+
 // 선택의 폭을 제한
 enum class CurrentPlatform {
     NONE, KAKAO, GOOGLE, TEMP

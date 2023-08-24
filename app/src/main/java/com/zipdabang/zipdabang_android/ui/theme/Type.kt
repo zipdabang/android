@@ -61,6 +61,13 @@ data class ZipdabangTypography (
         fontSize = 30.sp,
         letterSpacing = -1.7.sp,
     ),
+    //signupInfo
+    val sixteen_300_cafe24 : TextStyle = defaultTextStyle.copy(
+        fontFamily = cafe24,
+        fontWeight = FontWeight.Light,
+        fontSize = 16.sp,
+        letterSpacing = -1.7.sp,
+    ),
     //button!!!
     val button : TextStyle = defaultTextStyle.copy(
         fontFamily = Kopubworld,

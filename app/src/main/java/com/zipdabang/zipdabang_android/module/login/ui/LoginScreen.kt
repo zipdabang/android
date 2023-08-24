@@ -102,7 +102,8 @@ fun LoginScreen(
 
     Surface(
         modifier = Modifier
-            .fillMaxSize()
+            .fillMaxSize(),
+        color = Color.White //예은 - 배경 화이트로 추가
     ) {
         Column(
             modifier = Modifier

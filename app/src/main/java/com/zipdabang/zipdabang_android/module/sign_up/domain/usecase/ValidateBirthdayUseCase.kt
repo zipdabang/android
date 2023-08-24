@@ -10,7 +10,7 @@ class ValidateBirthdayUseCase {
         if(birthday.toString().length < 6){
             return ValidationResult(
                 successful = false,
-                errorMessage = R.string.signup_userinfo_birthday_lengthfail.toString()
+                errorMessage = R.string.signup_userinfo_birthday.toString()
             )
         }
 

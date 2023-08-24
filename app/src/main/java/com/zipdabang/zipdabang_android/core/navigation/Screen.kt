@@ -14,7 +14,9 @@ const val SHARED_ROUTE = "main/shared"
 sealed class AuthScreen(val route: String) {
     object SignIn: AuthScreen(route = "auth/sign_in")
     object Terms: AuthScreen(route = "auth/sign_up/terms")
+    object TermDetail : AuthScreen(route = "auth/sign_up/term_detail")
     object RegisterUserInfo: AuthScreen(route = "auth/sign_up/user_info")
+    object RegisterUserAddress: AuthScreen(route = "auth/sign_up/user_address")
     object RegisterNickname: AuthScreen(route = "auth/sign_up/nickname")
     object RegisterPreferences: AuthScreen(route = "auth/sign_up/preferences")
 }
@@ -24,8 +26,10 @@ sealed class HomeScreen(val route : String){
     object Guide : HomeScreen(route = "home/guide")
 }
 
-sealed class MarektScreen(val route : String){
-    object Home : HomeScreen(route = "market/home")
+sealed class MarketScreen(val route : String){
+    object Home : MarketScreen(route = "market/home")
+
+    object Category : MarketScreen(route = "market/category/{categoryId}")
 }
 sealed class BasketScreen(val route : String){
     object Home : BasketScreen(route = "basket/home")

@@ -22,6 +22,14 @@ class ProtoRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun updatePlatformToken(platformToken: String) {
+        protoDataStore.updateData { token ->
+            token.copy(
+                platformToken = platformToken
+            )
+        }
+    }
+
     override suspend fun updateAccessToken(accessToken: String) {
         protoDataStore.updateData { token ->
             token.copy(

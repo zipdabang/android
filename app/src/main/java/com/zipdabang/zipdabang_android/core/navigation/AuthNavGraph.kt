@@ -13,7 +13,9 @@ import com.zipdabang.zipdabang_android.module.login.ui.LoginScreen
 import com.zipdabang.zipdabang_android.module.sign_up.ui.viewmodel.AuthSharedViewModel
 import com.zipdabang.zipdabang_android.module.sign_up.ui.RegisterNicknameScreen
 import com.zipdabang.zipdabang_android.module.sign_up.ui.RegisterPreferencesScreen
+import com.zipdabang.zipdabang_android.module.sign_up.ui.RegisterUserAddressScreen
 import com.zipdabang.zipdabang_android.module.sign_up.ui.RegisterUserInfoScreen
+import com.zipdabang.zipdabang_android.module.sign_up.ui.TermDetailScreen
 import com.zipdabang.zipdabang_android.module.sign_up.ui.TermsScreen
 
 fun NavGraphBuilder.authNavGraph(navController: NavHostController) {
@@ -60,7 +62,23 @@ fun NavGraphBuilder.authNavGraph(navController: NavHostController) {
                 authSharedViewModel = authSharedViewModel,
                 onClickNext = {
                     navController.navigate(AuthScreen.RegisterUserInfo.route)
+                },
+                onClickDetailNext = { termIndex ->
+                    navController.navigate(AuthScreen.TermDetail.route + "/$termIndex")
                 }
+            )
+        }
+
+        composable(route = AuthScreen.TermDetail.route + "/{termIndex}") { navBackStackEntry ->
+            val termIndex = navBackStackEntry.arguments?.getString("termIndex")?.toIntOrNull() ?: 0
+            val authSharedViewModel = navBackStackEntry.authSharedViewModel<AuthSharedViewModel>(navController = navController)
+            TermDetailScreen(
+                navController = navController,
+                authSharedViewModel = authSharedViewModel,
+                onClickBack = {
+                    navController.popBackStack(AuthScreen.Terms.route, inclusive = false)
+                },
+                termIndex = termIndex
             )
         }
 
@@ -70,7 +88,21 @@ fun NavGraphBuilder.authNavGraph(navController: NavHostController) {
                 navController = navController,
                 authSharedViewModel = authSharedViewModel,
                 onClickBack = {
-                    navController.navigate(AuthScreen.Terms.route)
+                    navController.popBackStack(AuthScreen.Terms.route, inclusive = false)
+                },
+                onClickNext = {
+                    navController.navigate(AuthScreen.RegisterUserAddress.route)
+                }
+            )
+        }
+
+        composable(route =AuthScreen.RegisterUserAddress.route) {navBackStackEntry ->
+            val authSharedViewModel = navBackStackEntry.authSharedViewModel<AuthSharedViewModel>(navController = navController)
+            RegisterUserAddressScreen(
+                navController = navController,
+                authSharedViewModel = authSharedViewModel,
+                onClickBack = {
+                    navController.popBackStack(AuthScreen.RegisterUserInfo.route, inclusive = false)
                 },
                 onClickNext = {
                     navController.navigate(AuthScreen.RegisterNickname.route)
@@ -84,7 +116,7 @@ fun NavGraphBuilder.authNavGraph(navController: NavHostController) {
                 navController = navController,
                 authSharedViewModel = authSharedViewModel,
                 onClickBack = {
-                    navController.navigate(AuthScreen.RegisterUserInfo.route)
+                    navController.popBackStack(AuthScreen.RegisterUserAddress.route, inclusive = false)
                 },
                 onClickNext = {
                     navController.navigate(AuthScreen.RegisterPreferences.route)
@@ -98,11 +130,11 @@ fun NavGraphBuilder.authNavGraph(navController: NavHostController) {
                 navController = navController,
                 authSharedViewModel = authSharedViewModel,
                 onClickBack = {
-                    navController.navigate(AuthScreen.RegisterPreferences.route)
+                    navController.popBackStack(AuthScreen.RegisterNickname.route, inclusive = false)
                 },
                 onClickNext = {
-                    //홈으로 넘어가기
                     navController.navigate(AuthScreen.RegisterPreferences.route)
+                    //홈으로 넘어가기
                 }
             )
         }
