@@ -8,7 +8,7 @@ import androidx.room.withTransaction
 import com.zipdabang.zipdabang_android.common.Constants.TOKEN_NULL
 import com.zipdabang.zipdabang_android.core.Paging3Database
 import com.zipdabang.zipdabang_android.core.data_store.proto.Token
-import com.zipdabang.zipdabang_android.module.market.data.marketCategory.RemoteKeys
+import com.zipdabang.zipdabang_android.core.remotekey.RemoteKeys
 import com.zipdabang.zipdabang_android.module.recipes.common.RecipeListSort
 import com.zipdabang.zipdabang_android.module.recipes.data.RecipeApi
 import com.zipdabang.zipdabang_android.module.recipes.data.common.RecipeItem

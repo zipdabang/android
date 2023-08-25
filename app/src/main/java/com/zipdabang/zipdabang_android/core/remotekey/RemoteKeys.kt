@@ -1,4 +1,4 @@
-package com.zipdabang.zipdabang_android.module.market.data.marketCategory
+package com.zipdabang.zipdabang_android.core.remotekey
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
