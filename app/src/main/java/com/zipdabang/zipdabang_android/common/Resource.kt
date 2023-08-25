@@ -27,3 +27,12 @@ sealed class MarketResource<T>(val data: T? = null, val message: String? = null)
 
     class MarketLoading<T>(isLoading: Boolean): MarketResource<T>(null)
 }
+
+sealed class HomeResource<T>(val data: T? = null, val message: String? = null) {
+    class HomeSuccess<T>(data: T): HomeResource<T>(data = data)
+
+    class HomeError<T>(message: String)
+        : HomeResource<T>(message = message)
+
+    class HomeLoading<T>(isLoading: Boolean): HomeResource<T>(null)
+}
