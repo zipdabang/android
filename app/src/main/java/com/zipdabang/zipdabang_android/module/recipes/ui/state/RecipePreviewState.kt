@@ -1,6 +1,6 @@
-package com.zipdabang.zipdabang_android.module.recipes.ui
+package com.zipdabang.zipdabang_android.module.recipes.ui.state
 
-import com.zipdabang.zipdabang_android.module.recipes.data.preview.RecipeItem
+import com.zipdabang.zipdabang_android.module.recipes.data.common.RecipeItem
 
 data class RecipePreviewState(
     val isLoading: Boolean = false,

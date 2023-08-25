@@ -30,7 +30,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.android.gms.auth.api.identity.Identity
 import com.zipdabang.zipdabang_android.R
 import com.zipdabang.zipdabang_android.common.Constants
-import com.zipdabang.zipdabang_android.core.data_store.ProtoDataViewModel
+import com.zipdabang.zipdabang_android.core.data_store.proto.ProtoDataViewModel
 import com.zipdabang.zipdabang_android.module.login.platform_client.GoogleAuthClient
 import com.zipdabang.zipdabang_android.module.login.platform_client.KakaoAuthClient
 import com.zipdabang.zipdabang_android.module.login.data.AuthBody

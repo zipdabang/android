@@ -1,4 +1,4 @@
-package com.zipdabang.zipdabang_android.core.data_store
+package com.zipdabang.zipdabang_android.core.data_store.proto
 
 import kotlinx.serialization.Serializable
 
@@ -13,9 +13,8 @@ data class Token(
     var fcmToken: String?
 )
 
-
-
 // 선택의 폭을 제한
 enum class CurrentPlatform {
     NONE, KAKAO, GOOGLE, TEMP
 }
+

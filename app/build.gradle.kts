@@ -137,6 +137,7 @@ dependencies {
 
     // preferences datastore
     implementation ("androidx.datastore:datastore:1.0.0")
+    implementation ("androidx.datastore:datastore-preferences:1.0.0")
     // if lists should be saved in proto datastore
     implementation ("org.jetbrains.kotlinx:kotlinx-collections-immutable:0.3.5")
     implementation ("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.2")

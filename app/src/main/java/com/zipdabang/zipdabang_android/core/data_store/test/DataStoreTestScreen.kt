@@ -6,19 +6,46 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.platform.LocalContext
+import androidx.datastore.core.DataStore
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.zipdabang.zipdabang_android.core.data_store.CurrentPlatform
-import com.zipdabang.zipdabang_android.core.data_store.ProtoDataViewModel
-import com.zipdabang.zipdabang_android.core.data_store.Token
+import com.zipdabang.zipdabang_android.common.Constants.TOKEN_NULL
+import com.zipdabang.zipdabang_android.core.data_store.proto.CurrentPlatform
+import com.zipdabang.zipdabang_android.core.data_store.proto.ProtoDataViewModel
+import com.zipdabang.zipdabang_android.core.data_store.proto.Token
+import com.zipdabang.zipdabang_android.core.data_store.proto.tokenDataStore
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @Composable
-fun DataStoreTestScreen() {
+fun DataStoreTestScreen(
+    dataStore: DataStore<Token>
+) {
 
     val viewModel = hiltViewModel<ProtoDataViewModel>()
+    val scope = rememberCoroutineScope()
+    val context = LocalContext.current
+
+    var accessToken by remember {
+        mutableStateOf(TOKEN_NULL)
+    }
+
+    LaunchedEffect(key1 = dataStore.data) {
+        dataStore.data.map { tokens ->
+            tokens.accessToken ?: TOKEN_NULL
+        }.collect { accessToken = it }
+    }
 
     val tokens = viewModel.tokens.collectAsState(initial = Token(
         null,
@@ -35,15 +62,15 @@ fun DataStoreTestScreen() {
     ) {
 
         val TAG = "DataStoreTestScreen"
-        val scope = rememberCoroutineScope()
+
 
         Text(text = "value ${tokens.value}")
 
         Button(onClick = {
             viewModel.updateAccessToken("new_access_token")
-            Log.d(TAG, "${tokens.value}")
+            Log.d(TAG, "")
         }) {
-            Text(text = "ACCESS TOKEN")
+            Text(text = "ACCESS TOKEN ${accessToken}")
         }
 
         Button(onClick = {
