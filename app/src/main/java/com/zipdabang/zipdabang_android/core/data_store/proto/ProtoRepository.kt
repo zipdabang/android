@@ -16,5 +16,7 @@ interface ProtoRepository {
 
     suspend fun updateFcmToken(fcmToken: String)
 
+    suspend fun updateDeviceNumber(deviceNumber: String)
+
     suspend fun resetToken()
 }

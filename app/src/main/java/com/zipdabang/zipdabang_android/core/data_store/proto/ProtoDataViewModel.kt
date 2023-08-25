@@ -51,6 +51,12 @@ class ProtoDataViewModel @Inject constructor(
         }
     }
 
+    fun updateDeviceNumber(deviceNumber: String) {
+        viewModelScope.launch {
+            protoRepository.updateDeviceNumber(deviceNumber)
+        }
+    }
+
     fun resetToken() {
         viewModelScope.launch {
             protoRepository.resetToken()
