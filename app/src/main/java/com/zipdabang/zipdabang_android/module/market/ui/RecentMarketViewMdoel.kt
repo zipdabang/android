@@ -51,6 +51,7 @@ class RecentMarketViewMdoel @Inject constructor(
                         is MarketResource.MarketSuccess ->{
                             if(result.data?.isSuccess == true){
                                 _state.value = MainMarketState(
+                                    isLoading = false,
                                     categoryList = result.data.result.productCategoryList,
                                     recentProductList = result.data.result.productList)
                             }else{
@@ -67,6 +68,7 @@ class RecentMarketViewMdoel @Inject constructor(
                         is MarketResource.MarketLoading -> {
                             _state.value = MainMarketState(isLoading = true)
                         }
+
 
                     }
 

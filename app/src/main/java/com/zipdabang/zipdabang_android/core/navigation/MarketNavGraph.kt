@@ -12,6 +12,7 @@ import com.zipdabang.zipdabang_android.module.home.ui.GuideScreen
 import com.zipdabang.zipdabang_android.module.home.ui.HomeScreen
 import com.zipdabang.zipdabang_android.module.market.ui.CategoryMarketScreen
 import com.zipdabang.zipdabang_android.module.market.ui.MarketScreen
+import com.zipdabang.zipdabang_android.module.market.ui.MarketScreenn
 
 
 @OptIn(ExperimentalPagingApi::class)
@@ -26,7 +27,8 @@ fun NavGraphBuilder.MarketNavGraph(navController: NavController){
             arguments = listOf(navArgument("categoryId"){
                 type = NavType.IntType
             })){
-            CategoryMarketScreen(categoryId = it.arguments?.getInt("categoryId"))
+            it.arguments?.getInt("categoryId")
+                ?.let { it1 -> CategoryMarketScreen(categoryId = it1) }
         }
 
     }
