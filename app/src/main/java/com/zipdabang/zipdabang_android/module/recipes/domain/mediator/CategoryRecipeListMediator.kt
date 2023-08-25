@@ -1,4 +1,4 @@
-package com.zipdabang.zipdabang_android.module.recipes.mediator
+package com.zipdabang.zipdabang_android.module.recipes.domain.mediator
 
 import android.content.Context
 import androidx.datastore.core.DataStore
@@ -12,16 +12,20 @@ import com.zipdabang.zipdabang_android.module.market.data.marketCategory.RemoteK
 import com.zipdabang.zipdabang_android.module.recipes.common.RecipeListSort
 import com.zipdabang.zipdabang_android.module.recipes.data.RecipeApi
 import com.zipdabang.zipdabang_android.module.recipes.data.common.RecipeItem
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
-class CategoryRecipeListMediator @Inject constructor(
+class CategoryRecipeListMediator(
     private val recipeApi: RecipeApi,
     private val database: Paging3Database,
     private val datastore: DataStore<Token>,
-    private val categoryId: Int
+    private val categoryId: Int,
+    private val orderBy: String
 ): RecipeMediator<RecipeItem>(recipeApi, database) {
 
     private val recipeListDao = database.recipeListDao()
@@ -40,7 +44,7 @@ class CategoryRecipeListMediator @Inject constructor(
         val response = recipeApi.getRecipeListByCategory(
             accessToken = accessToken,
             categoryId = categoryId,
-            order = RecipeListSort.LATEST.type,
+            order = orderBy,
             pageIndex = currentPage
         ).result.recipeList
 

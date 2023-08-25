@@ -1,16 +1,16 @@
-package com.zipdabang.zipdabang_android.module.recipes.ui
+package com.zipdabang.zipdabang_android.module.recipes.ui.viewmodel
 
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.zipdabang.zipdabang_android.common.Resource
 import com.zipdabang.zipdabang_android.common.ResponseCode
 import com.zipdabang.zipdabang_android.module.recipes.common.OwnerType
-import com.zipdabang.zipdabang_android.module.recipes.data.preview.RecipeResult
-import com.zipdabang.zipdabang_android.module.recipes.domain.RecipePreview
+import com.zipdabang.zipdabang_android.module.recipes.ui.state.PreferenceToggleState
+import com.zipdabang.zipdabang_android.module.recipes.ui.state.RecipeCategoryState
+import com.zipdabang.zipdabang_android.module.recipes.ui.state.RecipePreviewState
 import com.zipdabang.zipdabang_android.module.recipes.use_case.GetRecipeCategoryUseCase
 import com.zipdabang.zipdabang_android.module.recipes.use_case.GetRecipePreviewUseCase
 import com.zipdabang.zipdabang_android.module.recipes.use_case.ToggleLikeUseCase
@@ -25,7 +25,8 @@ class RecipeMainViewModel @Inject constructor(
     private val getRecipeCategoryUseCase: GetRecipeCategoryUseCase,
     private val getRecipePreviewUseCase: GetRecipePreviewUseCase,
     private val toggleLikeUseCase: ToggleLikeUseCase,
-    private val toggleScrapUseCase: ToggleScrapUseCase
+    private val toggleScrapUseCase: ToggleScrapUseCase,
+    private val savedState: SavedStateHandle
 ): ViewModel() {
 
     companion object {

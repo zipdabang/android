@@ -1,4 +1,4 @@
-package com.zipdabang.zipdabang_android.module.recipes.mediator
+package com.zipdabang.zipdabang_android.module.recipes.domain.mediator
 
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadState.Loading.endOfPaginationReached

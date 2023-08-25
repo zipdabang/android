@@ -1,4 +1,4 @@
-package com.zipdabang.zipdabang_android.module.recipes.ui
+package com.zipdabang.zipdabang_android.module.recipes.ui.state
 
 import com.zipdabang.zipdabang_android.module.recipes.data.category.BeverageCategory
 

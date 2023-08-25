@@ -1,14 +1,20 @@
 package com.zipdabang.zipdabang_android.module.recipes.di
 
+import androidx.datastore.core.DataStore
+import com.zipdabang.zipdabang_android.core.Paging3Database
+import com.zipdabang.zipdabang_android.core.data_store.proto.Token
 import com.zipdabang.zipdabang_android.module.recipes.data.RecipeApi
 import com.zipdabang.zipdabang_android.module.recipes.data.category.RecipeCategoryRepositoryImpl
 import com.zipdabang.zipdabang_android.module.recipes.data.preference.PreferenceToggleRepositoryImpl
-import com.zipdabang.zipdabang_android.module.recipes.data.preview.RecipeListRepositoryImpl
+import com.zipdabang.zipdabang_android.module.recipes.data.common.RecipeListRepositoryImpl
 import com.zipdabang.zipdabang_android.module.recipes.domain.PreferenceToggleRepository
 import com.zipdabang.zipdabang_android.module.recipes.domain.RecipeCategoryRepository
 import com.zipdabang.zipdabang_android.module.recipes.domain.RecipeListRepository
+import com.zipdabang.zipdabang_android.module.recipes.domain.mediator.CategoryRecipeListMediator
+import dagger.Binds
 import dagger.Module
 import dagger.Provides
+import dagger.assisted.AssistedFactory
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import retrofit2.Retrofit
@@ -29,8 +35,12 @@ object RecipeModule {
     }
 
     @Provides
-    fun provideRecipeListRepository(recipeApi: RecipeApi): RecipeListRepository {
-        return RecipeListRepositoryImpl(recipeApi)
+    fun provideRecipeListRepository(
+        recipeApi: RecipeApi,
+        database: Paging3Database,
+        dataStore: DataStore<Token>
+    ): RecipeListRepository {
+        return RecipeListRepositoryImpl(recipeApi, database, dataStore)
     }
 
     @Provides

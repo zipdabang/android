@@ -19,5 +19,8 @@ object Constants {
     //----------------------------------------------------------------------------------------------
     const val RECIPE_ITEM_TABLE = "recipe_item_table"
 
+
+    const val ITEMS_PER_PAGE = 10
+
 }
 
