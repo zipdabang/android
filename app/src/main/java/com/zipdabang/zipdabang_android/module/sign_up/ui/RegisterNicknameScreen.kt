@@ -1,5 +1,6 @@
 package com.zipdabang.zipdabang_android.module.sign_up.ui
 
+import android.provider.ContactsContract.CommonDataKinds.Nickname
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -35,6 +36,7 @@ import androidx.navigation.compose.rememberNavController
 import com.zipdabang.zipdabang_android.R
 import com.zipdabang.zipdabang_android.core.navigation.AuthScreen
 import com.zipdabang.zipdabang_android.module.sign_up.ui.viewmodel.AuthSharedViewModel
+import com.zipdabang.zipdabang_android.module.sign_up.ui.viewmodel.NicknameFormEvent
 import com.zipdabang.zipdabang_android.ui.component.AppBarSignUp
 import com.zipdabang.zipdabang_android.ui.component.PrimaryButtonOutLined
 import com.zipdabang.zipdabang_android.ui.component.PrimaryButtonWithStatus
@@ -55,16 +57,19 @@ fun RegisterNicknameScreen(
     val stateErrorMessage by authSharedViewModel.stateErrorMessage.collectAsState()
     val stateCorrectMessage by authSharedViewModel.stateCorrectMessage.collectAsState()
     val stateNicknameValidate by authSharedViewModel.stateNicknameValidate.collectAsState()
-    Log.e("nickname-screen", "${stateIsError}")
+    /*Log.e("nickname-screen", "${stateIsError}")
     Log.e("nickname-screen", "${stateIsCorrect}")
     Log.e("nickname-screen", "${stateErrorMessage}")
-    Log.e("nickname-screen", "${stateCorrectMessage}")
+    Log.e("nickname-screen", "${stateCorrectMessage}")*/
 
-    LaunchedEffect(
+    val stateNicknameForm = authSharedViewModel.stateNicknameForm
+    Log.e("nickname-screen","${stateNicknameForm}")
+
+   /* LaunchedEffect(
         stateIsCorrect
     ){
         authSharedViewModel.updateNicknameValidation(stateIsCorrect)
-    }
+    }*/
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -133,23 +138,17 @@ fun RegisterNicknameScreen(
                         modifier = Modifier.weight(6.8f),
                     ){
                         TextFieldErrorAndCorrect(
-                            value = stateNicknameValue,
+                            value = stateNicknameForm.nickname,
                             onValueChanged = {
-                                authSharedViewModel.updateNickname(it)
+                                authSharedViewModel.onNicknameEvent(NicknameFormEvent.NicknameChanged(it))
                             },
-                            tryCount = stateTrycount,
+                            isTried = stateNicknameForm.isTried,
                             labelValue = stringResource(id = R.string.signup_nickname),
                             placeHolderValue = stringResource(id = R.string.signup_nickname_placeholder),
-                            isError = stateIsError,
-                            isCorrect = stateIsCorrect,
-                            onError = {
-                                authSharedViewModel.updateIsError()
-                            },
-                            onCorrect = {
-                                authSharedViewModel.updateIsCorrect()
-                            },
-                            errorMessage = stateErrorMessage,
-                            correctMessage = stateCorrectMessage,
+                            isError = stateNicknameForm.isError,
+                            isCorrect = stateNicknameForm.isError,
+                            errorMessage = stateNicknameForm.errorMessage,
+                            correctMessage = stateNicknameForm.successMessage,
                             keyboardType = KeyboardType.Text,
                             imeAction = ImeAction.Done
                         )
@@ -163,7 +162,7 @@ fun RegisterNicknameScreen(
                             borderColor = ZipdabangandroidTheme.Colors.BlackSesame,
                             text= stringResource(id = R.string.signup_nickname_deplicatecheck),
                             onClick= {
-                                authSharedViewModel.updateTrycount()
+                                authSharedViewModel.btnNicknameClicked()
                             }
                         )
                     }
@@ -177,7 +176,7 @@ fun RegisterNicknameScreen(
                 PrimaryButtonWithStatus(
                     text= stringResource(id = R.string.signup_btn_inputdone),
                     onClick={ onClickNext() },
-                    isFormFilled = stateNicknameValidate
+                    isFormFilled = stateNicknameForm.btnEnabled
                 )
             }
         }

@@ -41,14 +41,12 @@ import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
 fun TextFieldErrorAndCorrect(
     value : String,
     onValueChanged : (String) -> Unit,
-    tryCount : Int,
+    isTried : Boolean,
     labelValue : String,
     placeHolderValue : String,
 
     isError : Boolean,
     isCorrect : Boolean,
-    onError : () -> Boolean,
-    onCorrect : () -> Boolean,
     errorMessage : String,
     correctMessage : String,
 
@@ -56,14 +54,10 @@ fun TextFieldErrorAndCorrect(
     imeAction : ImeAction, //default,none이면 엔터키, next면 다음 텍스트필드로 넘어감, done면 완료키
 ) {
     //var isFocused by remember { mutableStateOf(false) }
-    var isErrorLocal by remember { mutableStateOf(isError) }
-    var isCorrectLocal by remember { mutableStateOf(isCorrect) }
-
-    if(onError()) isErrorLocal = true else isErrorLocal = false
-    if(onCorrect()) isCorrectLocal = true else isCorrectLocal = false
+    var valueLocal by remember { mutableStateOf(value) }
 
         TextField(
-            value = value,
+            value = valueLocal,
             onValueChange = { onValueChanged(it) },
             textStyle = ZipdabangandroidTheme.Typography.sixteen_300,
             modifier = Modifier
@@ -71,13 +65,13 @@ fun TextFieldErrorAndCorrect(
                 .background(Color(0xFFF7F6F6)),
                 //.onFocusChanged { isFocused = it.isFocused },
             label = {
-                if (isCorrect && tryCount>0) {
+                if (isCorrect && isTried) {
                     Text(
                         text = correctMessage,
                         style = ZipdabangandroidTheme.Typography.twelve_300,
                         color = Color(0xFF6200EE)
                     )
-                } else if (isError && tryCount>0){
+                } else if (isError && isTried){
                     Text(
                         text = errorMessage,
                         style = ZipdabangandroidTheme.Typography.twelve_300,
@@ -98,23 +92,23 @@ fun TextFieldErrorAndCorrect(
                     color = ZipdabangandroidTheme.Colors.Typo.copy(alpha = 0.5f)
                 )
             },
-            isError = isError && (tryCount > 0),
+            isError = isError && isTried,
             singleLine = true,
             colors = TextFieldDefaults.colors(
                 unfocusedContainerColor = Color(0xFFF7F6F6), //상자
                 unfocusedIndicatorColor = //밑줄
-                    if (isCorrect && (tryCount > 0)) Color(0xFF6200EE)
+                    if (isCorrect && isTried) Color(0xFF6200EE)
                     else ZipdabangandroidTheme.Colors.Typo.copy(alpha = 0.5f),
 
                 focusedContainerColor = Color(0xFFF7F6F6), //쓸때 상자
                 focusedLabelColor = ZipdabangandroidTheme.Colors.Typo, //쓸때 위에
                 cursorColor = //쓸때 커서
-                    if (isCorrect && (tryCount > 0)) Color(0xFF6200EE)
+                    if (isCorrect && isTried) Color(0xFF6200EE)
                     else ZipdabangandroidTheme.Colors.Typo,
                 focusedIndicatorColor = //쓸때 밑줄
-                    if (isCorrect && (tryCount > 0)) {
+                    if (isCorrect && isTried) {
                         Color(0xFF6200EE)
-                    } else if (isError && (tryCount > 0)) {
+                    } else if (isError && isTried) {
                         Color(0xFFB00020)
                     } else{
                         ZipdabangandroidTheme.Colors.Typo.copy(alpha = 0.5f)
@@ -131,7 +125,7 @@ fun TextFieldErrorAndCorrect(
             ),
             //visualTransformation = PasswordVisualTransformation(),
             trailingIcon = {
-                if(isCorrect && (tryCount > 0)){
+                if(isCorrect && isTried){
                     Icon(
                         imageVector = Icons.Filled.Done,
                         contentDescription = "check icon",
@@ -148,21 +142,18 @@ fun TextFieldErrorAndCorrect(
 @Composable
 fun PreviewTextFieldErrorAndCorrect(){
     var textState by remember { mutableStateOf("") }
-    var tryCount by remember { mutableStateOf(1) }
 
     Box(
         modifier = Modifier.padding(16.dp)
     ){
         TextFieldErrorAndCorrect(
             value = textState,
-            onValueChanged = {textState = it},
-            tryCount = tryCount,
+            onValueChanged = { textState = it },
+            isTried = false,
             labelValue = "닉네임",
             placeHolderValue = "2-6자 한글, 영어, 숫자",
             isError = false,
             isCorrect = true,
-            onError = {textState == "asdf"},
-            onCorrect = {textState == "ㅁㄴㅇㄹ"},
             errorMessage = "닉네임에 맞지 않습니다.",
             correctMessage = "닉네임에 맞습니다.",
             keyboardType = KeyboardType.Text,
@@ -182,18 +173,16 @@ fun TextFieldBasic(
     labelValue : String,
     placeHolderValue: String,
 
-    onError : () -> Boolean,
+    isError : Boolean,
     errorMessage : String,
 
     keyboardType : KeyboardType,
     imeAction : ImeAction, //default,none이면 엔터키, next면 다음 텍스트필드로 넘어감, done면 완료키
 ) {
-    var isError by remember { mutableStateOf(false) }
-
-    if(onError()) isError = true else isError = false
+    val valueLocal by remember { mutableStateOf(value) }
 
         TextField(
-            value = value,
+            value = valueLocal,
             onValueChange = { onValueChanged(it) },
             textStyle = ZipdabangandroidTheme.Typography.sixteen_300,
             modifier = Modifier
@@ -260,7 +249,7 @@ fun PreviewTextFieldBasic(){
             onValueChanged = {textState = it},
             labelValue = "생년월일",
             placeHolderValue = "6자리 입력부탁",
-            onError = { textState == "010327" },
+            isError = false,
             errorMessage = "생년월일 형식이 아닙니다.",
             keyboardType = KeyboardType.Number,
             imeAction = ImeAction.Done

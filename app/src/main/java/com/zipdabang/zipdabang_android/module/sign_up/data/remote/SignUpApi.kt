@@ -7,7 +7,7 @@ import retrofit2.http.Query
 
 interface SignUpApi {
     @GET("members/terms")
-    suspend fun getTerms() : TermsDto
+    suspend fun getTerms() : TermsResponse
     @POST("members/phone/sms")
     suspend fun postPhoneSms(
         @Body phoneRequest : PhoneRequest
@@ -20,7 +20,7 @@ interface SignUpApi {
         @Query("nickname") nickname : String
     ) : NicknameResponse
     @GET("/categories")
-    suspend fun getBeverages() : BeveragesDto
+    suspend fun getBeverages() : BeveragesResponse
     @POST()
     suspend fun postUserInfo() //:
 

@@ -171,7 +171,7 @@ fun RegisterPreferencesScreen(
                     )
                 }
             }
-
+            //하단 버튼
             Box(
                 contentAlignment = Alignment.BottomCenter,
                 modifier = Modifier.padding(16.dp,0.dp,16.dp, 12.dp)

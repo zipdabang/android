@@ -1,5 +1,6 @@
 package com.zipdabang.zipdabang_android.module.sign_up.ui
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -19,11 +20,13 @@ import androidx.compose.material3.Divider
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -36,6 +39,7 @@ import com.zipdabang.zipdabang_android.core.navigation.AuthScreen
 import com.zipdabang.zipdabang_android.module.sign_up.ui.component.CheckBoxWithText
 import com.zipdabang.zipdabang_android.module.sign_up.ui.component.CheckBoxWithTextAndButton
 import com.zipdabang.zipdabang_android.module.sign_up.ui.viewmodel.AuthSharedViewModel
+import com.zipdabang.zipdabang_android.module.sign_up.ui.viewmodel.TermsFormEvent
 import com.zipdabang.zipdabang_android.ui.component.AppBarSignUp
 import com.zipdabang.zipdabang_android.ui.component.MainAndSubTitle
 import com.zipdabang.zipdabang_android.ui.component.PrimaryButtonWithStatus
@@ -48,10 +52,13 @@ fun TermsScreen(
     onClickNext: ()->Unit,
     onClickDetailNext : (Int) -> Unit,
 ) {
-    val stateTerms = authSharedViewModel.stateTerms.value
-    val stateTermsAllagree by authSharedViewModel.stateTermsAllagree.collectAsState()
-    val stateTermsListAgree by authSharedViewModel.stateTermsListAgree.collectAsState()
-    val stateTermsValidate by authSharedViewModel.stateTermsValidate.collectAsState()
+    val stateTerms = authSharedViewModel.stateTerms.value //api로 받은 정보를 담아놓는 state
+    val stateTermsForm = authSharedViewModel.stateTermsForm //term check 상태를 담아놓는 state
+
+    LaunchedEffect(key1 = stateTermsForm){
+        authSharedViewModel.onTermsEvent(TermsFormEvent.BtnChanged(stateTermsForm.btnEnabled))
+        Log.e("terms-screen", "${stateTermsForm}")
+    }
 
     Scaffold(
         modifier = Modifier
@@ -89,9 +96,9 @@ fun TermsScreen(
 
                 CheckBoxWithText(
                     isCheckBox = true,
-                    isChecked = stateTermsAllagree,
-                    isCheckedChange = {selectedChecked ->
-                        authSharedViewModel.updateTermsAllagree(selectedChecked)
+                    isChecked = stateTermsForm.allAgree, //stateTermsAllagree,
+                    isCheckedChange = {
+                        authSharedViewModel.onTermsEvent(TermsFormEvent.AllAgreeChanged(it))
                     },
                     mainValue = stringResource(id = R.string.signup_terms_allagree),
                     mainTextStyle = ZipdabangandroidTheme.Typography.sixteen_700,
@@ -118,7 +125,72 @@ fun TermsScreen(
                     detailTextStyle = null
                 )
 
-                LazyColumn(
+                Column(
+                    modifier = Modifier.padding(0.dp,12.dp,0.dp,0.dp),
+                    verticalArrangement = Arrangement.spacedBy(10.dp),
+                ){
+                    CheckBoxWithText(
+                        isCheckBox = true,
+                        isChecked = stateTermsForm.requiredOne,
+                        isCheckedChange = {
+                            authSharedViewModel.onTermsEvent(TermsFormEvent.RequiredOneChanged(it))
+                        },
+                        mainValue = stateTerms.termsList[0].termsTitle,
+                        mainTextStyle = ZipdabangandroidTheme.Typography.fourteen_500,
+                        isDetailValue = true,
+                        detailValue = stateTerms.termsList[0].termsBody,
+                        detailTextStyle = ZipdabangandroidTheme.Typography.twelve_300
+                    )
+
+                    CheckBoxWithTextAndButton(
+                        isChecked = stateTermsForm.requiredTwo,
+                        isCheckedChange = {
+                            authSharedViewModel.onTermsEvent(TermsFormEvent.RequiredTwoChanged(it))
+                        },
+                        mainValue = stateTerms.termsList[1].termsTitle,
+                        mainTextStyle = ZipdabangandroidTheme.Typography.fourteen_500,
+                        onClick = {
+                            onClickDetailNext(1)
+                        }
+                    )
+
+                    CheckBoxWithTextAndButton(
+                        isChecked = stateTermsForm.requiredThree,
+                        isCheckedChange = {
+                            authSharedViewModel.onTermsEvent(TermsFormEvent.RequiredThreeChanged(it))
+                        },
+                        mainValue = stateTerms.termsList[2].termsTitle,
+                        mainTextStyle = ZipdabangandroidTheme.Typography.fourteen_500,
+                        onClick = {
+                            onClickDetailNext(2)
+                        }
+                    )
+
+                    CheckBoxWithTextAndButton(
+                        isChecked = stateTermsForm.requiredFour,
+                        isCheckedChange = {
+                            authSharedViewModel.onTermsEvent(TermsFormEvent.RequiredFourChanged(it))
+                        },
+                        mainValue = stateTerms.termsList[3].termsTitle,
+                        mainTextStyle = ZipdabangandroidTheme.Typography.fourteen_500,
+                        onClick = {
+                            onClickDetailNext(3)
+                        }
+                    )
+
+                    CheckBoxWithTextAndButton(
+                        isChecked = stateTermsForm.choice,
+                        isCheckedChange = {
+                            authSharedViewModel.onTermsEvent(TermsFormEvent.ChoiceChanged(it))
+                        },
+                        mainValue = stateTerms.termsList[4].termsTitle,
+                        mainTextStyle = ZipdabangandroidTheme.Typography.fourteen_500,
+                        onClick = {
+                            onClickDetailNext(4)
+                        }
+                    )
+                }
+                /*LazyColumn(
                     modifier = Modifier.padding(0.dp,12.dp,0.dp,0.dp),
                     verticalArrangement = Arrangement.spacedBy(10.dp),
                 ){
@@ -151,7 +223,7 @@ fun TermsScreen(
                                 detailTextStyle = ZipdabangandroidTheme.Typography.twelve_300,)
                         }
                     }
-                }
+                }*/
                 if(stateTerms.error.isNotBlank()){
                     Text(
                         text = stateTerms.error,
@@ -165,6 +237,7 @@ fun TermsScreen(
                     CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
                 }
             }
+
             //하단 버튼
             Box(
                 contentAlignment = Alignment.BottomCenter,
@@ -173,7 +246,7 @@ fun TermsScreen(
                 PrimaryButtonWithStatus(
                     text= stringResource(id = R.string.signup_btn_termsagree),
                     onClick={ onClickNext() },
-                    isFormFilled = stateTermsValidate
+                    isFormFilled = stateTermsForm.btnEnabled
                 )
             }
         }
