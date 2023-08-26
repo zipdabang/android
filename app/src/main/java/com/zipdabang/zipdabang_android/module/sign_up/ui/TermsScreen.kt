@@ -52,7 +52,7 @@ fun TermsScreen(
     onClickNext: ()->Unit,
     onClickDetailNext : (Int) -> Unit,
 ) {
-    val stateTerms = authSharedViewModel.stateTerms.value //api로 받은 정보를 담아놓는 state
+    //val stateTerms = authSharedViewModel.stateTerms.value //api로 받은 정보를 담아놓는 state
     val stateTermsForm = authSharedViewModel.stateTermsForm //term check 상태를 담아놓는 state
 
     LaunchedEffect(key1 = stateTermsForm){
@@ -135,10 +135,10 @@ fun TermsScreen(
                         isCheckedChange = {
                             authSharedViewModel.onTermsEvent(TermsFormEvent.RequiredOneChanged(it))
                         },
-                        mainValue = stateTerms.termsList[0].termsTitle,
+                        mainValue = stateTermsForm.requiredOneTitle,
                         mainTextStyle = ZipdabangandroidTheme.Typography.fourteen_500,
                         isDetailValue = true,
-                        detailValue = stateTerms.termsList[0].termsBody,
+                        detailValue = stateTermsForm.requiredOneBody,
                         detailTextStyle = ZipdabangandroidTheme.Typography.twelve_300
                     )
 
@@ -147,7 +147,7 @@ fun TermsScreen(
                         isCheckedChange = {
                             authSharedViewModel.onTermsEvent(TermsFormEvent.RequiredTwoChanged(it))
                         },
-                        mainValue = stateTerms.termsList[1].termsTitle,
+                        mainValue = stateTermsForm.requiredTwoTitle,
                         mainTextStyle = ZipdabangandroidTheme.Typography.fourteen_500,
                         onClick = {
                             onClickDetailNext(1)
@@ -159,7 +159,7 @@ fun TermsScreen(
                         isCheckedChange = {
                             authSharedViewModel.onTermsEvent(TermsFormEvent.RequiredThreeChanged(it))
                         },
-                        mainValue = stateTerms.termsList[2].termsTitle,
+                        mainValue = stateTermsForm.requiredThreeTitle,
                         mainTextStyle = ZipdabangandroidTheme.Typography.fourteen_500,
                         onClick = {
                             onClickDetailNext(2)
@@ -171,7 +171,7 @@ fun TermsScreen(
                         isCheckedChange = {
                             authSharedViewModel.onTermsEvent(TermsFormEvent.RequiredFourChanged(it))
                         },
-                        mainValue = stateTerms.termsList[3].termsTitle,
+                        mainValue = stateTermsForm.requiredFourTitle,
                         mainTextStyle = ZipdabangandroidTheme.Typography.fourteen_500,
                         onClick = {
                             onClickDetailNext(3)
@@ -183,7 +183,7 @@ fun TermsScreen(
                         isCheckedChange = {
                             authSharedViewModel.onTermsEvent(TermsFormEvent.ChoiceChanged(it))
                         },
-                        mainValue = stateTerms.termsList[4].termsTitle,
+                        mainValue = stateTermsForm.choiceTitle,
                         mainTextStyle = ZipdabangandroidTheme.Typography.fourteen_500,
                         onClick = {
                             onClickDetailNext(4)
@@ -224,16 +224,16 @@ fun TermsScreen(
                         }
                     }
                 }*/
-                if(stateTerms.error.isNotBlank()){
+                if(stateTermsForm.error.isNotBlank()){
                     Text(
-                        text = stateTerms.error,
+                        text = stateTermsForm.error,
                         color = Color.Red,
                         textAlign = TextAlign.Center,
                         modifier = Modifier
                             .fillMaxWidth()
                     )
                 }
-                if(stateTerms.isLoading) {
+                if(stateTermsForm.isLoading) {
                     CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
                 }
             }

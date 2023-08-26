@@ -41,7 +41,7 @@ fun TermDetailScreen(
     onClickBack: ()->Unit,
     termIndex : Int,
 ) {
-    val stateTerms = authSharedViewModel.stateTerms.value
+    val stateTerms = authSharedViewModel.stateTermsForm
 
     Scaffold(
         modifier = Modifier

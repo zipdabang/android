@@ -312,8 +312,8 @@ class AuthSharedViewModel @Inject constructor(
 
     /*API*/
     //terms - GET api
-    private val _stateTerms = mutableStateOf(TermsListState())
-    val stateTerms : State<TermsListState> = _stateTerms
+//    private val _stateTerms = mutableStateOf(TermsListState())
+//    val stateTerms : State<TermsListState> = _stateTerms
     //preferences - GET api
     private val _statePreferences = mutableStateOf(BeveragesListState())
     val statePreferences : State<BeveragesListState> = _statePreferences
@@ -325,16 +325,37 @@ class AuthSharedViewModel @Inject constructor(
         getTermsUseCase().onEach {result ->
             when(result) {
                 is Resource.Success ->{
-                    _stateTerms.value = TermsListState(
+                    /*_stateTerms.value = TermsListState(
                         termsList = result.data?.termsList ?: emptyList(),
                         size = result.data?.size ?: 0,
+                    )*/
+                    stateTermsForm = TermsFormState(
+                        termsList = result.data?.termsList ?: emptyList(),
+                        size = result.data?.size ?: 0,
+                        requiredOneTitle = result.data?.termsList?.get(0)?.termsTitle ?: "",
+                        requiredOneBody = result.data?.termsList?.get(0)?.termsBody ?: "",
+                        isMoreToSeeRequiredOne = result.data?.termsList?.get(0)?.isMoreToSee ?: false,
+                        requiredTwoTitle = result.data?.termsList?.get(1)?.termsTitle ?: "",
+                        requiredTwoBody = result.data?.termsList?.get(1)?.termsBody ?: "",
+                        isMoreToSeeRequiredTwo = result.data?.termsList?.get(1)?.isMoreToSee ?: false,
+                        requiredThreeTitle = result.data?.termsList?.get(2)?.termsTitle ?: "",
+                        requiredThreeBody = result.data?.termsList?.get(2)?.termsBody ?: "",
+                        isMoreToSeeRequiredThree = result.data?.termsList?.get(2)?.isMoreToSee ?: false,
+                        requiredFourTitle = result.data?.termsList?.get(3)?.termsTitle ?: "",
+                        requiredFourBody = result.data?.termsList?.get(3)?.termsBody ?: "",
+                        isMoreToSeeRequiredFour = result.data?.termsList?.get(3)?.isMoreToSee ?: false,
+                        choiceTitle = result.data?.termsList?.get(4)?.termsTitle ?: "",
+                        choiceBody = result.data?.termsList?.get(4)?.termsBody ?: "",
+                        isMoreToSeeChoice = result.data?.termsList?.get(4)?.isMoreToSee ?: false,
                     )
                 }
                 is Resource.Error ->{
-                    _stateTerms.value = TermsListState(error = result.message ?:"An unexpeted error occured")
+                    stateTermsForm = TermsFormState(error = result.message ?:"An unexpeted error occured")
+                   // _stateTerms.value = TermsListState(error = result.message ?:"An unexpeted error occured")
                 }
                 is Resource.Loading ->{
-                    _stateTerms.value = TermsListState(isLoading = true)
+                    stateTermsForm = TermsFormState(isLoading = true)
+                    //_stateTerms.value = TermsListState(isLoading = true)
                 }
                 else -> {}
             }

@@ -50,18 +50,6 @@ fun RegisterNicknameScreen(
     onClickBack: ()->Unit,
     onClickNext: ()->Unit,
 ) {
-    val stateNicknameValue by authSharedViewModel.stateNicknameValue.collectAsState()
-    val stateTrycount by authSharedViewModel.stateTrycount.collectAsState()
-    val stateIsError by authSharedViewModel.stateIsError.collectAsState()
-    val stateIsCorrect by authSharedViewModel.stateIsCorrect.collectAsState()
-    val stateErrorMessage by authSharedViewModel.stateErrorMessage.collectAsState()
-    val stateCorrectMessage by authSharedViewModel.stateCorrectMessage.collectAsState()
-    val stateNicknameValidate by authSharedViewModel.stateNicknameValidate.collectAsState()
-    /*Log.e("nickname-screen", "${stateIsError}")
-    Log.e("nickname-screen", "${stateIsCorrect}")
-    Log.e("nickname-screen", "${stateErrorMessage}")
-    Log.e("nickname-screen", "${stateCorrectMessage}")*/
-
     val stateNicknameForm = authSharedViewModel.stateNicknameForm
     Log.e("nickname-screen","${stateNicknameForm}")
 
