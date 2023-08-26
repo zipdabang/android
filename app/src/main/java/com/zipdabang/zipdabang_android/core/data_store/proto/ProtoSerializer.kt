@@ -18,7 +18,8 @@ object ProtoSerializer: Serializer<Token> {
             refreshToken = null,
             platformToken = null,
             platformStatus = CurrentPlatform.NONE,
-            fcmToken = null
+            fcmToken = null,
+            deviceNumber = null
         )
 
     override suspend fun readFrom(input: InputStream): Token {
