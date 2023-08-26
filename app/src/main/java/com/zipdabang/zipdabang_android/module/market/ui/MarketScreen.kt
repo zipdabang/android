@@ -207,10 +207,7 @@ fun MarketScreen(
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun MarketScreenn(
-   // viewMdoel: RecentMarketViewMdoel = hiltViewModel(),
-   // navController: NavController
-){
+fun MarketScreen_Test(){
     val empty =true
     //drawer에 필요한 drawerState랑 scope
     val drawerState = rememberDrawerState(DrawerValue.Closed)
@@ -387,5 +384,5 @@ fun MarketScreenn(
 @Preview
 @Composable
 fun marketPreview() {
-    MarketScreenn()
+    MarketScreen_Test()
 }

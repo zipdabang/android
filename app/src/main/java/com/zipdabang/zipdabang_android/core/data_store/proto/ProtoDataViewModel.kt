@@ -1,12 +1,9 @@
-package com.zipdabang.zipdabang_android.core.data_store
+package com.zipdabang.zipdabang_android.core.data_store.proto
 
 import android.util.Log
-import androidx.compose.runtime.collectAsState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -51,6 +48,12 @@ class ProtoDataViewModel @Inject constructor(
     fun updateFcmToken(fcmToken: String) {
         viewModelScope.launch {
             protoRepository.updateFcmToken(fcmToken)
+        }
+    }
+
+    fun updateDeviceNumber(deviceNumber: String) {
+        viewModelScope.launch {
+            protoRepository.updateDeviceNumber(deviceNumber)
         }
     }
 

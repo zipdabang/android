@@ -6,13 +6,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.zipdabang.zipdabang_android.common.MarketResource
-import com.zipdabang.zipdabang_android.core.data_store.ProtoRepository
-import com.zipdabang.zipdabang_android.core.data_store.Token
+import com.zipdabang.zipdabang_android.core.data_store.proto.ProtoRepository
+import com.zipdabang.zipdabang_android.core.data_store.proto.Token
 import com.zipdabang.zipdabang_android.module.market.domain.use_case.get_recentItem.GetRecentUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch

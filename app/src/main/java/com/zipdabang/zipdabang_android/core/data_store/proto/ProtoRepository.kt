@@ -1,4 +1,4 @@
-package com.zipdabang.zipdabang_android.core.data_store
+package com.zipdabang.zipdabang_android.core.data_store.proto
 
 import kotlinx.coroutines.flow.Flow
 
@@ -15,6 +15,8 @@ interface ProtoRepository {
     suspend fun updateRefreshToken(refreshToken: String)
 
     suspend fun updateFcmToken(fcmToken: String)
+
+    suspend fun updateDeviceNumber(deviceNumber: String)
 
     suspend fun resetToken()
 }
