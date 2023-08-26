@@ -1,4 +1,4 @@
-package com.zipdabang.zipdabang_android.core.data_store
+package com.zipdabang.zipdabang_android.core.data_store.proto
 
 import android.content.Context
 import androidx.datastore.core.DataStore
@@ -50,6 +50,14 @@ class ProtoRepositoryImpl @Inject constructor(
         protoDataStore.updateData { token ->
             token.copy(
                 fcmToken = fcmToken
+            )
+        }
+    }
+
+    override suspend fun updateDeviceNumber(deviceNumber: String) {
+        protoDataStore.updateData { token ->
+            token.copy(
+                deviceNumber = deviceNumber
             )
         }
     }
