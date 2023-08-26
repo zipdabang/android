@@ -8,8 +8,8 @@ import androidx.paging.PagingState
 import androidx.paging.RemoteMediator
 import androidx.room.withTransaction
 import com.zipdabang.zipdabang_android.core.Paging3Database
-import com.zipdabang.zipdabang_android.core.data_store.ProtoRepository
-import com.zipdabang.zipdabang_android.core.data_store.Token
+import com.zipdabang.zipdabang_android.core.data_store.proto.ProtoRepository
+import com.zipdabang.zipdabang_android.core.data_store.proto.Token
 import com.zipdabang.zipdabang_android.core.remotekey.RemoteKeys
 import com.zipdabang.zipdabang_android.module.market.data.MarketApi
 import kotlinx.coroutines.CoroutineScope
