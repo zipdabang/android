@@ -148,7 +148,9 @@ fun CategoryMarketScreen(
                                             title =allItems[index]!!.productName ,
                                             price = allItems[index]!!.price,
                                             star =allItems[index]!!.productScore ,
-                                            star_users ="3"
+                                            star_users ="3",
+                                            {},
+                                            {}
                                         )
                                     }
                                 }

@@ -166,7 +166,9 @@ fun MarketScreen(
                                             title = item.productName,
                                             price = item.price,
                                             star = item.productScore,
-                                            star_users = "1"
+                                            star_users = "1",
+                                            {},
+                                            {}
                                         )
                                     }
                                 }
@@ -297,25 +299,14 @@ fun MarketScreen_Test(){
                                 tint = MarketBrown)
                         }
 
-                        if(!empty){
+                        if(empty){
                             Box(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .height(224.dp)
+                                    .height(100.dp)
                                     .padding(horizontal = 8.dp)
-                                    .background(color = Color.White)
                             ) {
-                                Text(
-                                    text = "앗! 최근 봤던 아이템이 없네요.한번 찾아볼까요?",
-                                    fontSize = 14.sp,
-                                    fontFamily = FontFamily(Font(R.font.kopubworlddotum_medium)),
-                                    fontWeight = FontWeight(300),
-                                    color = Color(0xFF262D31),
-                                    textAlign = TextAlign.Center,
-                                    modifier = Modifier
-                                        .align(Alignment.BottomCenter)
-                                        .padding(bottom = 5.dp)
-                                )
+                                NoRecentItem()
                             }
                         }else{
                             LazyRow(
@@ -331,7 +322,9 @@ fun MarketScreen_Test(){
                                         title = "우유우유우유",
                                         price ="20000원",
                                         star = 3,
-                                        star_users = "1"
+                                        star_users = "1",
+                                        {},
+                                        {}
                                     )
                                 }
                             }
