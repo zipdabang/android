@@ -54,10 +54,9 @@ fun TextFieldErrorAndCorrect(
     imeAction : ImeAction, //default,none이면 엔터키, next면 다음 텍스트필드로 넘어감, done면 완료키
 ) {
     //var isFocused by remember { mutableStateOf(false) }
-    var valueLocal by remember { mutableStateOf(value) }
 
         TextField(
-            value = valueLocal,
+            value = value,
             onValueChange = { onValueChanged(it) },
             textStyle = ZipdabangandroidTheme.Typography.sixteen_300,
             modifier = Modifier
@@ -179,10 +178,8 @@ fun TextFieldBasic(
     keyboardType : KeyboardType,
     imeAction : ImeAction, //default,none이면 엔터키, next면 다음 텍스트필드로 넘어감, done면 완료키
 ) {
-    val valueLocal by remember { mutableStateOf(value) }
-
         TextField(
-            value = valueLocal,
+            value = value,
             onValueChange = { onValueChanged(it) },
             textStyle = ZipdabangandroidTheme.Typography.sixteen_300,
             modifier = Modifier

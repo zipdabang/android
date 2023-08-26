@@ -49,15 +49,16 @@ import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
 fun TermsScreen(
     navController: NavHostController,
     authSharedViewModel: AuthSharedViewModel= hiltViewModel(),
+    onClickBack : () -> Unit,
     onClickNext: ()->Unit,
     onClickDetailNext : (Int) -> Unit,
 ) {
-    //val stateTerms = authSharedViewModel.stateTerms.value //api로 받은 정보를 담아놓는 state
+    //val stateTerms = authSharedViewModel.stateTerms //api로 받은 정보를 담아놓는 state
     val stateTermsForm = authSharedViewModel.stateTermsForm //term check 상태를 담아놓는 state
 
     LaunchedEffect(key1 = stateTermsForm){
         authSharedViewModel.onTermsEvent(TermsFormEvent.BtnChanged(stateTermsForm.btnEnabled))
-        Log.e("terms-screen", "${stateTermsForm}")
+        //Log.e("terms-screen", "${stateTermsForm}")
     }
 
     Scaffold(
@@ -66,10 +67,10 @@ fun TermsScreen(
         topBar = {
             AppBarSignUp(
                 navigationIcon = R.drawable.ic_topbar_backbtn,
-                onClickNavIcon = {},
+                onClickNavIcon = {onClickBack()},
                 centerText = stringResource(id = R.string.signup)
             )
-        },
+        }
     ) {
         Surface(
             modifier = Modifier
@@ -199,9 +200,9 @@ fun TermsScreen(
 
                         if(termInfo.isMoreToSee){
                             CheckBoxWithTextAndButton(
-                                isChecked = stateTermsListAgree[index],
+                                isChecked = , //stateTermsListAgree[index],
                                 isCheckedChange = { selectedChecked ->
-                                    authSharedViewModel.updateTermsListAgree(index, selectedChecked)
+                                    //authSharedViewModel.updateTermsListAgree(index, selectedChecked)
                                 },
                                 mainValue = termInfo.termsTitle,
                                 mainTextStyle = ZipdabangandroidTheme.Typography.fourteen_500,
@@ -212,9 +213,9 @@ fun TermsScreen(
                         } else{
                             CheckBoxWithText(
                                 isCheckBox = true,
-                                isChecked = stateTermsListAgree[index],
+                                isChecked = ,
                                 isCheckedChange = {selectedChecked ->
-                                    authSharedViewModel.updateTermsListAgree(index, selectedChecked)
+
                                 },
                                 mainValue = termInfo.termsTitle,
                                 mainTextStyle = ZipdabangandroidTheme.Typography.fourteen_500,
@@ -264,6 +265,7 @@ fun PreviewTermsScreen(){
         onClickNext = {
             navController.navigate(AuthScreen.RegisterUserInfo.route)
         },
+        onClickBack = { },
         onClickDetailNext = { }
     )
 }

@@ -33,6 +33,7 @@ import androidx.navigation.compose.rememberNavController
 import com.zipdabang.zipdabang_android.R
 import com.zipdabang.zipdabang_android.core.navigation.AuthScreen
 import com.zipdabang.zipdabang_android.module.sign_up.ui.viewmodel.AuthSharedViewModel
+import com.zipdabang.zipdabang_android.module.sign_up.ui.viewmodel.UserAddressFormEvent
 import com.zipdabang.zipdabang_android.ui.component.AppBarSignUp
 import com.zipdabang.zipdabang_android.ui.component.MainAndSubTitle
 import com.zipdabang.zipdabang_android.ui.component.PrimaryButtonOutLined
@@ -47,9 +48,7 @@ fun RegisterUserAddressScreen(
     onClickBack: ()->Unit,
     onClickNext: ()->Unit,
 ) {
-    val stateZipcodeValue by authSharedViewModel.stateZipcodeValue.collectAsState()
-    val stateAddressValue by authSharedViewModel.stateAddressValue.collectAsState()
-    val stateDetailaddressValue by authSharedViewModel.stateDetailaddressValue.collectAsState()
+    val stateUserAddressForm = authSharedViewModel.stateUserAddressForm
 
     Scaffold(
         modifier = Modifier
@@ -112,9 +111,9 @@ fun RegisterUserAddressScreen(
                             modifier = Modifier.weight(5.4f)
                         ){
                             TextFieldBasic(
-                                value = stateZipcodeValue,
+                                value = stateUserAddressForm.zipCode,
                                 onValueChanged = {
-                                    authSharedViewModel.updateZipcode(it)
+                                    authSharedViewModel.onUserAddressEvent(UserAddressFormEvent.ZipcodeChanged(it))
                                 },
                                 labelValue = stringResource(id = R.string.signup_userinfo_zipcode),
                                 placeHolderValue = "",
@@ -153,9 +152,9 @@ fun RegisterUserAddressScreen(
                             modifier = Modifier.weight(8.8f)
                         ){
                             TextFieldBasic(
-                                value = stateAddressValue,
+                                value = stateUserAddressForm.address,
                                 onValueChanged = {
-                                    authSharedViewModel.updateAddress(it)
+                                    authSharedViewModel.onUserAddressEvent(UserAddressFormEvent.AddressChanged(it))
                                 },
                                 labelValue = stringResource(id = R.string.signup_userinfo_address),
                                 placeHolderValue = "",
@@ -178,9 +177,9 @@ fun RegisterUserAddressScreen(
                             modifier = Modifier.weight(8.8f)
                         ){
                             TextFieldBasic(
-                                value = stateDetailaddressValue,
+                                value = stateUserAddressForm.detailAddress,
                                 onValueChanged = {
-                                    authSharedViewModel.updateDetailaddres(it)
+                                    authSharedViewModel.onUserAddressEvent(UserAddressFormEvent.DetailaddressChanged(it))
                                 },
                                 labelValue = stringResource(id = R.string.signup_userinfo_detailaddress),
                                 placeHolderValue = stringResource(id = R.string.signup_userinfo_detailaddress_placeholder),

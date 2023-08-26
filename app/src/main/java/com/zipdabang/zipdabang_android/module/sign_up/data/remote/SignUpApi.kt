@@ -10,7 +10,7 @@ interface SignUpApi {
     suspend fun getTerms() : TermsResponse
     @POST("members/phone/sms")
     suspend fun postPhoneSms(
-        @Body phoneRequest : PhoneRequest
+        @Body phoneRequest : String
     ) : PhoneResponse
     @POST()
     suspend fun postPhoneAuth() //:

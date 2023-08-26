@@ -2,7 +2,6 @@ package com.zipdabang.zipdabang_android.module.sign_up.data.repository
 
 import com.zipdabang.zipdabang_android.module.sign_up.data.remote.BeveragesResponse
 import com.zipdabang.zipdabang_android.module.sign_up.data.remote.NicknameResponse
-import com.zipdabang.zipdabang_android.module.sign_up.data.remote.PhoneRequest
 import com.zipdabang.zipdabang_android.module.sign_up.data.remote.PhoneResponse
 import com.zipdabang.zipdabang_android.module.sign_up.data.remote.SignUpApi
 import com.zipdabang.zipdabang_android.module.sign_up.data.remote.TermsResponse
@@ -16,7 +15,7 @@ class SignUpRepositoryImpl @Inject constructor(
         return api.getTerms()
     }
 
-    override suspend fun postPhoneSms(phoneRequest: PhoneRequest): PhoneResponse {
+    override suspend fun postPhoneSms(phoneRequest: String): PhoneResponse {
         return api.postPhoneSms(phoneRequest)
     }
 

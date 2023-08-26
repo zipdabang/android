@@ -53,11 +53,6 @@ fun RegisterNicknameScreen(
     val stateNicknameForm = authSharedViewModel.stateNicknameForm
     Log.e("nickname-screen","${stateNicknameForm}")
 
-   /* LaunchedEffect(
-        stateIsCorrect
-    ){
-        authSharedViewModel.updateNicknameValidation(stateIsCorrect)
-    }*/
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -134,7 +129,7 @@ fun RegisterNicknameScreen(
                             labelValue = stringResource(id = R.string.signup_nickname),
                             placeHolderValue = stringResource(id = R.string.signup_nickname_placeholder),
                             isError = stateNicknameForm.isError,
-                            isCorrect = stateNicknameForm.isError,
+                            isCorrect = stateNicknameForm.isSuccess,
                             errorMessage = stateNicknameForm.errorMessage,
                             correctMessage = stateNicknameForm.successMessage,
                             keyboardType = KeyboardType.Text,

@@ -41,7 +41,7 @@ fun TermDetailScreen(
     onClickBack: ()->Unit,
     termIndex : Int,
 ) {
-    val stateTerms = authSharedViewModel.stateTermsForm
+    val stateTermsForm = authSharedViewModel.stateTermsForm
 
     Scaffold(
         modifier = Modifier
@@ -72,7 +72,7 @@ fun TermDetailScreen(
                     mainValue = stringResource(id = R.string.signup_terms_maintitle),
                     mainTextStyle = ZipdabangandroidTheme.Typography.twentytwo_700,
                     mainTextColor = ZipdabangandroidTheme.Colors.Typo,
-                    subValue = stateTerms.termsList[termIndex].termsTitle,
+                    subValue = stateTermsForm.termsList[termIndex].termsTitle,
                     subTextStyle = ZipdabangandroidTheme.Typography.sixteen_300,
                     subTextColor =  ZipdabangandroidTheme.Colors.Typo
                 )

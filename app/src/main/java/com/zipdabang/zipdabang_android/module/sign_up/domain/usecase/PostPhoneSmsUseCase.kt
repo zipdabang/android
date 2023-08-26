@@ -1,7 +1,6 @@
 package com.zipdabang.zipdabang_android.module.sign_up.domain.usecase
 
 import com.zipdabang.zipdabang_android.common.Resource
-import com.zipdabang.zipdabang_android.module.sign_up.data.remote.PhoneRequest
 import com.zipdabang.zipdabang_android.module.sign_up.data.remote.PhoneResponse
 import com.zipdabang.zipdabang_android.module.sign_up.domain.repository.SignUpRepository
 import kotlinx.coroutines.flow.Flow
@@ -10,13 +9,13 @@ import retrofit2.HttpException
 import java.io.IOException
 import javax.inject.Inject
 
-class GetPhoneSmsUseCase @Inject constructor(
+class PostPhoneSmsUseCase @Inject constructor(
     private val repository : SignUpRepository
 ) {
-    operator fun invoke(phone : PhoneRequest) : Flow<Resource<PhoneResponse>> = flow{
+    operator fun invoke(phoneNumber : String) : Flow<Resource<PhoneResponse>> = flow{
         try{
             emit(Resource.Loading())
-            val phoneSmsResponse = repository.postPhoneSms(phoneRequest = phone)
+            val phoneSmsResponse = repository.postPhoneSms(phoneRequest = phoneNumber)
             emit(
                 Resource.Success(
                     data = phoneSmsResponse,
