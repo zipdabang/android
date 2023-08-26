@@ -1,4 +1,4 @@
-package com.zipdabang.zipdabang_android.module.home.data.bestreciepe
+package com.zipdabang.zipdabang_android.module.home.data.bestrecipe
 
 data class Recipe(
     val categoryId: List<Int>,
