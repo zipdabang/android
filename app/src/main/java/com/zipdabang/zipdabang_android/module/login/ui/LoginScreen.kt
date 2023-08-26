@@ -1,10 +1,14 @@
 package com.zipdabang.zipdabang_android.module.login.ui
 
 import android.app.Activity.RESULT_OK
+import android.content.Context
+import android.os.Build
+import android.telephony.TelephonyManager
 import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -16,6 +20,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -30,6 +35,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.android.gms.auth.api.identity.Identity
 import com.zipdabang.zipdabang_android.R
 import com.zipdabang.zipdabang_android.common.Constants
+import com.zipdabang.zipdabang_android.common.Constants.TOKEN_NULL
 import com.zipdabang.zipdabang_android.core.data_store.proto.ProtoDataViewModel
 import com.zipdabang.zipdabang_android.module.login.platform_client.GoogleAuthClient
 import com.zipdabang.zipdabang_android.module.login.platform_client.KakaoAuthClient
@@ -51,6 +57,18 @@ fun LoginScreen(
 
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
+    var fcmToken = TOKEN_NULL
+    var deviceNumber = TOKEN_NULL
+/*    val deviceNumber = tm.simSerialNumber*/
+
+    LaunchedEffect(key1 = true) {
+        tokenStoreViewModel.tokens.collect { tokens ->
+            fcmToken = tokens.fcmToken ?: TOKEN_NULL
+            deviceNumber = tokens.deviceNumber ?: TOKEN_NULL
+            Log.d(TAG, "fcm token : $fcmToken, deviceNumber : $deviceNumber")
+        }
+    }
+
 
     val googleAuthClient by lazy {
         GoogleAuthClient(
@@ -85,7 +103,11 @@ fun LoginScreen(
                             val profile = googleUserInfo.profile
                             val email = googleUserInfo.email
                             viewModel.getAuthResult(
-                                body = AuthBody(email!!),
+                                body = AuthBody(
+                                    email = email!!,
+                                    fcmToken = fcmToken,
+                                    serialNumber = deviceNumber
+                                ),
                                 platform = Constants.PLATFORM_GOOGLE,
                                 email = email,
                                 profile = profile!!,
@@ -166,7 +188,11 @@ fun LoginScreen(
                                 val profile = result.data.profile
                                 Log.d(TAG, "email: $email, profile: $profile")
                                 viewModel.getAuthResult(
-                                    body = AuthBody(email),
+                                    body = AuthBody(
+                                        email = email,
+                                        fcmToken = fcmToken,
+                                        serialNumber = deviceNumber
+                                    ),
                                     platform = Constants.PLATFORM_KAKAO,
                                     tokenStoreViewModel = tokenStoreViewModel,
                                     email = email,

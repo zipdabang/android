@@ -10,7 +10,9 @@ data class Token(
     var refreshToken: String?,
     var platformToken: String?,
     var platformStatus: CurrentPlatform,
-    var fcmToken: String?
+    var fcmToken: String?,
+    // 새로운 필드 추가 시, 기본값을 설정해 주어야 런타임 에러를 피할 수 있음
+    var deviceNumber: String? = null
 )
 
 // 선택의 폭을 제한
