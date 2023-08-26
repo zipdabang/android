@@ -1,6 +1,6 @@
 package com.zipdabang.zipdabang_android.module.recipes.domain
 
-import com.zipdabang.zipdabang_android.module.recipes.data.preview.RecipeItem
+import com.zipdabang.zipdabang_android.module.recipes.data.common.RecipeItem
 
 data class RecipePreview(
     val code: Int,

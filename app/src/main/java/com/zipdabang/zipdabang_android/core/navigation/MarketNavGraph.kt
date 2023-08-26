@@ -12,6 +12,7 @@ import com.zipdabang.zipdabang_android.module.home.ui.GuideScreen
 import com.zipdabang.zipdabang_android.module.home.ui.HomeScreen
 import com.zipdabang.zipdabang_android.module.market.ui.CategoryMarketScreen
 import com.zipdabang.zipdabang_android.module.market.ui.MarketScreen
+import com.zipdabang.zipdabang_android.module.market.ui.MarketScreen_Test
 
 
 @OptIn(ExperimentalPagingApi::class)
@@ -20,7 +21,7 @@ fun NavGraphBuilder.MarketNavGraph(navController: NavController){
 
     navigation(startDestination = MarketScreen.Home.route,route = MARKET_ROUTE){
         composable( MarketScreen.Home.route){
-            MarketScreen(navController = navController)
+            MarketScreen_Test()
         }
         composable( MarketScreen.Category.route,
             arguments = listOf(navArgument("categoryId"){

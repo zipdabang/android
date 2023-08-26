@@ -174,7 +174,7 @@ fun MarketScreen(
 
 
 @Composable
-fun MarketScreenn(
+fun MarketScreen_Test(
 ){
     val empty =true
     //drawer에 필요한 drawerState랑 scope
@@ -311,5 +311,5 @@ fun MarketScreenn(
 @Preview
 @Composable
 fun marketPreview() {
-    MarketScreenn()
+    MarketScreen_Test()
 }

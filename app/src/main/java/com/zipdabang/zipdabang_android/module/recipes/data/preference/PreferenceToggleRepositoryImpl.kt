@@ -1,9 +1,5 @@
 package com.zipdabang.zipdabang_android.module.recipes.data.preference
 
-import androidx.compose.runtime.collectAsState
-import androidx.hilt.navigation.compose.hiltViewModel
-import com.zipdabang.zipdabang_android.core.data_store.ProtoDataViewModel
-import com.zipdabang.zipdabang_android.core.data_store.ProtoRepository
 import com.zipdabang.zipdabang_android.module.recipes.data.RecipeApi
 import com.zipdabang.zipdabang_android.module.recipes.domain.PreferenceToggleRepository
 

@@ -1,4 +1,4 @@
-package com.zipdabang.zipdabang_android.core.data_store
+package com.zipdabang.zipdabang_android.core.data_store.proto
 
 import android.content.Context
 import androidx.datastore.core.DataStore

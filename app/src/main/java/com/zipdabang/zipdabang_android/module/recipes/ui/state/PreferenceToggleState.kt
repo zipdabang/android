@@ -1,6 +1,4 @@
-package com.zipdabang.zipdabang_android.module.recipes.ui
-
-import com.zipdabang.zipdabang_android.module.recipes.data.preview.RecipeItem
+package com.zipdabang.zipdabang_android.module.recipes.ui.state
 
 data class PreferenceToggleState(
     val isLoading: Boolean = false,
