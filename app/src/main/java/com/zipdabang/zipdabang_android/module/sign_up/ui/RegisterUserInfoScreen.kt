@@ -18,6 +18,8 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -34,6 +36,8 @@ import androidx.navigation.compose.rememberNavController
 import com.zipdabang.zipdabang_android.R
 import com.zipdabang.zipdabang_android.core.navigation.AuthScreen
 import com.zipdabang.zipdabang_android.module.sign_up.ui.viewmodel.AuthSharedViewModel
+import com.zipdabang.zipdabang_android.module.sign_up.ui.viewmodel.TermsFormEvent
+import com.zipdabang.zipdabang_android.module.sign_up.ui.viewmodel.UserInfoFormEvent
 import com.zipdabang.zipdabang_android.ui.component.AppBarSignUp
 import com.zipdabang.zipdabang_android.ui.component.MainAndSubTitle
 import com.zipdabang.zipdabang_android.ui.component.PrimaryButtonOutLined
@@ -49,11 +53,8 @@ fun RegisterUserInfoScreen(
     onClickBack: ()->Unit,
     onClickNext: ()->Unit,
 ) {
-    val stateNameValue by authSharedViewModel.stateNameValue.collectAsState()
-    val stateBirthdayValue by authSharedViewModel.stateBirthdayValue.collectAsState()
-    val stateGenderList by authSharedViewModel.stateGenderList.collectAsState()
-    val statePhonenumberValue by authSharedViewModel.statePhonenumberValue.collectAsState()
-    val stateCertificatenumberValue by authSharedViewModel.stateCertificatenumberValue.collectAsState()
+    val stateUserInfoForm = authSharedViewModel.stateUserInfoForm
+    val genderList = authSharedViewModel.genderList
 
     Scaffold(
         modifier = Modifier
@@ -117,13 +118,13 @@ fun RegisterUserInfoScreen(
                             modifier = Modifier.weight(8.8f)
                         ){
                             TextFieldBasic(
-                                value = stateNameValue,
+                                value = stateUserInfoForm.name,
                                 onValueChanged = {
-                                    authSharedViewModel.updateName(it)
+                                    authSharedViewModel.onUserInfoEvent(UserInfoFormEvent.NameChanged(it))
                                 },
                                 labelValue = stringResource(id = R.string.signup_userinfo_name),
                                 placeHolderValue ="",
-                                onError = { return@TextFieldBasic false } ,
+                                isError = false ,
                                 errorMessage = "",
                                 keyboardType = KeyboardType.Text,
                                 imeAction = ImeAction.Next,
@@ -148,27 +149,26 @@ fun RegisterUserInfoScreen(
                             modifier = Modifier.weight(5.4f)
                         ){
                             TextFieldBasic(
-                                value = stateBirthdayValue,
+                                value = stateUserInfoForm.birthday,
                                 onValueChanged = {
-                                    authSharedViewModel.updateBirthday(it)
+                                    authSharedViewModel.onUserInfoEvent(UserInfoFormEvent.BirthdayChanged(it))
                                 },
                                 labelValue = stringResource(id = R.string.signup_userinfo_birthday),
                                 placeHolderValue = stringResource(id = R.string.signup_userinfo_birthday_placeholder),
-                                onError = { return@TextFieldBasic false } ,
-                                errorMessage = "형식에 맞게 입력해주세요",
+                                isError = stateUserInfoForm.birthdayIsError,
+                                errorMessage = stateUserInfoForm.birthdayErrorMessage,
                                 keyboardType = KeyboardType.Number,
                                 imeAction = ImeAction.Next,
                             )
                         }
 
-
                         Box(
                             modifier = Modifier.weight(3.4f)
                         ){
                             RadioGroupHorizontal(
-                                optionList = stateGenderList,
+                                optionList = genderList,
                                 onOptionChange = {
-                                   authSharedViewModel.updateGender(it)
+                                    authSharedViewModel.onUserInfoEvent(UserInfoFormEvent.GenderChanged(it))
                                 }
                             )
                         }
@@ -204,14 +204,14 @@ fun RegisterUserInfoScreen(
                             modifier = Modifier.weight(5.4f)
                         ){
                             TextFieldBasic(
-                                value = statePhonenumberValue,
+                                value = stateUserInfoForm.phoneNumber,
                                 onValueChanged = {
-                                    authSharedViewModel.updatePhonenumber(it)
+                                    authSharedViewModel.onUserInfoEvent(UserInfoFormEvent.PhoneNumberChanged(it))
                                 },
                                 labelValue = stringResource(id = R.string.signup_userinfo_phonenumber),
                                 placeHolderValue = stringResource(id = R.string.signup_userinfo_phonenumber_placeholder),
-                                onError = { return@TextFieldBasic false } ,
-                                errorMessage = "전화번호를 정확히 입력해주세요",
+                                isError = stateUserInfoForm.phoneNumberIsError ,
+                                errorMessage = stateUserInfoForm.phoneNumberErrorMessage,
                                 keyboardType = KeyboardType.Number,
                                 imeAction = ImeAction.Done,
                             )
@@ -223,7 +223,7 @@ fun RegisterUserInfoScreen(
                                 borderColor =ZipdabangandroidTheme.Colors.BlackSesame,
                                 text = stringResource(id = R.string.signup_userinfo_certificatecall),
                                 onClick = {
-
+                                    authSharedViewModel.btnPhonenumberClicked()
                                 }
                             )
                         }
@@ -240,21 +240,21 @@ fun RegisterUserInfoScreen(
                             modifier = Modifier.weight(4.2f)
                         ){
                             TextFieldBasic(
-                                value = stateCertificatenumberValue,
+                                value = stateUserInfoForm.authNumber,
                                 onValueChanged = {
-                                    authSharedViewModel.updateCertificatenumber(it)
+                                    authSharedViewModel.onUserInfoEvent(UserInfoFormEvent.AuthNumberChanged(it))
                                 },
                                 labelValue = stringResource(id = R.string.signup_userinfo_certificatenumber),
                                 placeHolderValue = "",
-                                onError = { return@TextFieldBasic false } ,
-                                errorMessage = "인증 번호 불일치",
+                                isError = stateUserInfoForm.authNumberIsError,
+                                errorMessage = stateUserInfoForm.authNumberErrorMessage,
                                 keyboardType = KeyboardType.Number,
                                 imeAction = ImeAction.Done,
                             )
                         }
                         Text(
                             modifier = Modifier.weight(1.6f),
-                            text = "00:00",
+                            text = stateUserInfoForm.authTime,
                             color = Color(0xFFB00020),
                             style = ZipdabangandroidTheme.Typography.fourteen_300,
                             textAlign = TextAlign.Center

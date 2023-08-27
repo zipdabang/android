@@ -60,6 +60,9 @@ fun NavGraphBuilder.authNavGraph(navController: NavHostController) {
             TermsScreen(
                 navController = navController,
                 authSharedViewModel = authSharedViewModel,
+                onClickBack = {
+                    navController.popBackStack(AuthScreen.SignIn.route, inclusive = false)
+                },
                 onClickNext = {
                     navController.navigate(AuthScreen.RegisterUserInfo.route)
                 },
