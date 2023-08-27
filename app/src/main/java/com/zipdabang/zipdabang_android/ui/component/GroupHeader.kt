@@ -65,14 +65,14 @@ fun GroupHeader(
                     text = formerHeaderStrawberry,
                     spanStyle = SpanStyle(
                         color = ZipdabangandroidTheme.Colors.Strawberry,
-                        fontFamily = FontFamily(Font(R.font.cafe24ssurroundair)),
+                        fontFamily = FontFamily(Font(R.font.kopubworlddotum_bold)),
                         fontSize = 16.sp
                     )
                 ) + AnnotatedString(
                     text = latterHeaderChoco,
                     spanStyle = SpanStyle(
                         color = ZipdabangandroidTheme.Colors.Choco,
-                        fontFamily = FontFamily(Font(R.font.cafe24ssurroundair)),
+                        fontFamily = FontFamily(Font(R.font.kopubworlddotum_bold)),
                         fontSize = 16.sp
                     )
                 )
@@ -125,14 +125,14 @@ fun GroupHeaderReversed(
                     text = formerHeaderChoco,
                     spanStyle = SpanStyle(
                         color = ZipdabangandroidTheme.Colors.Choco,
-                        fontFamily = FontFamily(Font(R.font.cafe24ssurroundair)),
+                        fontFamily = FontFamily(Font(R.font.kopubworlddotum_bold)),
                         fontSize = 16.sp
                     )
                 ) + AnnotatedString(
                     text = latterHeaderStrawberry,
                     spanStyle = SpanStyle(
                         color = ZipdabangandroidTheme.Colors.Strawberry,
-                        fontFamily = FontFamily(Font(R.font.cafe24ssurroundair)),
+                        fontFamily = FontFamily(Font(R.font.kopubworlddotum_bold)),
                         fontSize = 16.sp
                     )
                 )
