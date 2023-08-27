@@ -227,7 +227,9 @@ fun RecipeCardLoading() {
                 shape = ZipdabangandroidTheme.Shapes.small
             )
     ) {
-        Spacer(modifier = Modifier.fillMaxSize().background(brush))
+        Spacer(modifier = Modifier
+            .fillMaxSize()
+            .background(brush))
     }
 }
 
