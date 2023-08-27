@@ -1,10 +1,12 @@
 package com.zipdabang.zipdabang_android.module.recipes.mapper
 
+import com.zipdabang.zipdabang_android.module.recipes.data.banner.RecipeBannerDto
 import com.zipdabang.zipdabang_android.module.recipes.data.category.RecipeCategoryDto
 import com.zipdabang.zipdabang_android.module.recipes.data.preference.PreferenceResultDto
 import com.zipdabang.zipdabang_android.module.recipes.data.preview.RecipePreviewItemsDto
 import com.zipdabang.zipdabang_android.module.recipes.data.recipe_list.RecipeListDto
 import com.zipdabang.zipdabang_android.module.recipes.domain.PreferenceToggle
+import com.zipdabang.zipdabang_android.module.recipes.domain.RecipeBanner
 import com.zipdabang.zipdabang_android.module.recipes.domain.RecipeCategoryItems
 import com.zipdabang.zipdabang_android.module.recipes.domain.RecipePreview
 
@@ -41,5 +43,14 @@ fun RecipeListDto.toRecipePreview(): RecipePreview {
         isSuccessful = isSuccess,
         message = message,
         recipeList = result.recipeList
+    )
+}
+
+fun RecipeBannerDto.toRecipeBanner(): RecipeBanner {
+    return RecipeBanner(
+        code = code,
+        isSuccessful = isSuccess,
+        message = message,
+        recipeBanners = result.bannerList
     )
 }

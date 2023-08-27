@@ -80,6 +80,7 @@ object AppModule {
             // specifies whether encounters of unknown properties in the input JSON should be ignored,
             // instead of exception(SerializationException)
             ignoreUnknownKeys = true
+            coerceInputValues = true
         }
         return Retrofit.Builder()
             .baseUrl(BASE_URL)

@@ -4,10 +4,12 @@ import androidx.datastore.core.DataStore
 import com.zipdabang.zipdabang_android.core.Paging3Database
 import com.zipdabang.zipdabang_android.core.data_store.proto.Token
 import com.zipdabang.zipdabang_android.module.recipes.data.RecipeApi
+import com.zipdabang.zipdabang_android.module.recipes.data.banner.RecipeBannerRepositoryImpl
 import com.zipdabang.zipdabang_android.module.recipes.data.category.RecipeCategoryRepositoryImpl
 import com.zipdabang.zipdabang_android.module.recipes.data.preference.PreferenceToggleRepositoryImpl
 import com.zipdabang.zipdabang_android.module.recipes.data.common.RecipeListRepositoryImpl
 import com.zipdabang.zipdabang_android.module.recipes.domain.PreferenceToggleRepository
+import com.zipdabang.zipdabang_android.module.recipes.domain.RecipeBannerRepository
 import com.zipdabang.zipdabang_android.module.recipes.domain.RecipeCategoryRepository
 import com.zipdabang.zipdabang_android.module.recipes.domain.RecipeListRepository
 import com.zipdabang.zipdabang_android.module.recipes.domain.mediator.CategoryRecipeListMediator
@@ -49,6 +51,14 @@ object RecipeModule {
         recipeApi: RecipeApi,
     ): PreferenceToggleRepository {
         return PreferenceToggleRepositoryImpl(recipeApi)
+    }
+
+    @Provides
+    @Singleton
+    fun provideRecipeBannerRepository(
+        recipeApi: RecipeApi
+    ): RecipeBannerRepository {
+        return RecipeBannerRepositoryImpl(recipeApi)
     }
 
 }
