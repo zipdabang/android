@@ -14,9 +14,10 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @HiltViewModel
-class HomeViewModel(
+class HomeViewModel @Inject constructor(
     private val datastore : DataStore<Token>,
     private val getHomeBanner : GetHomeBanner,
     private  val getBestRecipe: GetBestRecipe
