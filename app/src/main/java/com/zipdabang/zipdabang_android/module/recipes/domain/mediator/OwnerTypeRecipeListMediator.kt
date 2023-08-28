@@ -26,7 +26,7 @@ class OwnerTypeRecipeListMediator(
     private val recipeApi: RecipeApi,
     private val database: Paging3Database,
     private val datastore: DataStore<Token>,
-    private val ownerType: OwnerType,
+    private val ownerType: String,
     private val orderBy: String
 ): RecipeMediator<RecipeItem>(recipeApi, database) {
 
@@ -39,7 +39,7 @@ class OwnerTypeRecipeListMediator(
 
         val response = recipeApi.getRecipeListByOwnerType(
             accessToken = accessToken,
-            ownerType = ownerType.type,
+            ownerType = ownerType,
             order = orderBy,
             pageIndex = currentPage
         ).result.recipeList

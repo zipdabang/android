@@ -36,6 +36,11 @@ sealed class BasketScreen(val route : String){
 }
 sealed class RecipeScreen(val route : String){
     object Home : RecipeScreen(route = "recipes/home")
+    object RecipeList: RecipeScreen("recipes/list?category={category}&ownerType={ownerType}") {
+        fun passQuery(category: Int? = null, ownerType: String? = null): String {
+            return "recipes/list?category=$category&ownerType=$ownerType"
+        }
+    }
 }
 sealed class MyScreen(val route : String){
     object Home : MyScreen(route = "my/home")
