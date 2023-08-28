@@ -46,6 +46,7 @@ fun Pager(
         }
 
         TabContent(tabs = tabsList, pagerState = pagerState)
+
     }
 }
 
@@ -109,6 +110,7 @@ fun TabContent(
 @Preview
 @Composable
 fun PagerPreview() {
+    // real usage
     Column(
         modifier = Modifier.fillMaxSize()
     ) {
