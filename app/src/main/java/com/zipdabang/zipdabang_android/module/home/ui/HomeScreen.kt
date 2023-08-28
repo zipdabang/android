@@ -4,6 +4,10 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.material3.DrawerValue
@@ -13,10 +17,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.zipdabang.zipdabang_android.R
+import com.zipdabang.zipdabang_android.module.item.recipe.ui.RecipeCard
 import com.zipdabang.zipdabang_android.ui.component.AppBarHome
 import com.zipdabang.zipdabang_android.ui.component.Banner
+import com.zipdabang.zipdabang_android.ui.component.GroupHeader
+import com.zipdabang.zipdabang_android.ui.component.GroupHeaderReversed
 import com.zipdabang.zipdabang_android.ui.component.ModalDrawer
 import kotlinx.coroutines.launch
 
@@ -47,10 +55,13 @@ fun HomeScreen(
                 containerColor = Color.White,
                 contentColor = Color.Black,
                     content = {
-                   LazyColumn(
-                       modifier = Modifier.padding(top= it.calculateTopPadding())
+
+                        val scrollState = rememberScrollState()
+                        Column(
+                       modifier = Modifier
+                           .padding(top = it.calculateTopPadding())
+                           .verticalScroll(scrollState)
                    ){
-                       item{
                            if(bannerState.value.isLoading){
                                TODO("shimmering effect")
                            }else{
@@ -59,10 +70,48 @@ fun HomeScreen(
                                Banner(imageUrlList)
                            }
                        }
+
+                       GroupHeaderReversed(
+                           groupName = "Home_Title",
+                           formerHeaderChoco = "주간 베스트 ",
+                           latterHeaderStrawberry = "레시피",
+                           onClick = { TODO("Go TO Best Recipe") }
+                       )
+                        
+                        
+                        LazyRow(modifier = Modifier.padding(horizontal = 4.dp)){
+                            itemsIndexed(recipeState.value.recipeList){
+                                   index, item -> RecipeCard(
+                                recipeId = item.recipeId ,
+                                title = item.recipeName,
+                                user = item.owner,
+                                thumbnail = item.thumbnailUrl ,
+                                date = item.createdAt,
+                                likes = item.likes,
+                                comments = item.comments,
+                                isLikeSelected = item.isLiked,
+                                isScrapSelected = item.isScrapped,
+                                onLikeClick ={} ,
+                                onScrapClick ={} ,
+                                onItemClick = {}
+                            )
+                            }
+
+                            TODO("Best Product")
+
+
+
+
+                            
+                        }
+
+
+
+
                        
 
 
-                   }
+
                 }
             )
         },

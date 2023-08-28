@@ -28,6 +28,11 @@ class HomeViewModel @Inject constructor(
 
     private val _recipeState =  mutableStateOf(HomeRecipeState())
     var recipeState = _recipeState
+
+    init {
+        getBannerList()
+        getBestRecipe()
+    }
     fun getBannerList() {
         viewModelScope.launch {
 
