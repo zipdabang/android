@@ -43,7 +43,7 @@ fun Banner(
      modifier = Modifier.fillMaxSize()
     ){
     HorizontalPager(
-        count = 3,
+        count = images.size,
         state= pagerState,
         verticalAlignment = Alignment.CenterVertically,
     ) {
