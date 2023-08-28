@@ -18,6 +18,7 @@ import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
@@ -25,7 +26,7 @@ class OwnerTypeRecipeListMediator(
     private val recipeApi: RecipeApi,
     private val database: Paging3Database,
     private val datastore: DataStore<Token>,
-    private val ownerType: OwnerType,
+    private val ownerType: String,
     private val orderBy: String
 ): RecipeMediator<RecipeItem>(recipeApi, database) {
 
@@ -34,17 +35,11 @@ class OwnerTypeRecipeListMediator(
 
     override suspend fun getResponse(loadType: LoadType, currentPage: Int) {
 
-        var accessToken: String = TOKEN_NULL
-
-        datastore.data.map { tokens ->
-            tokens.accessToken ?: TOKEN_NULL
-        }.collect {
-            accessToken = it
-        }
+        val accessToken = datastore.data.first().accessToken ?: TOKEN_NULL
 
         val response = recipeApi.getRecipeListByOwnerType(
             accessToken = accessToken,
-            ownerType = ownerType.type,
+            ownerType = ownerType,
             order = orderBy,
             pageIndex = currentPage
         ).result.recipeList

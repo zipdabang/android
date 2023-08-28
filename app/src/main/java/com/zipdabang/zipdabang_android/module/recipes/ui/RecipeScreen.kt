@@ -1,8 +1,12 @@
 package com.zipdabang.zipdabang_android.module.recipes.ui
 
 import android.annotation.SuppressLint
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.rememberDrawerState
@@ -15,10 +19,13 @@ import com.zipdabang.zipdabang_android.ui.component.AppBarHome
 import com.zipdabang.zipdabang_android.ui.component.ModalDrawer
 import kotlinx.coroutines.launch
 
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun RecipeScreen(
-    onGoToDetail: ()-> Unit
+    onCategoryClick: (Int) -> Unit,
+    onOwnerTypeClick: (String) -> Unit,
+    onRecipeClick: (Int) -> Unit,
+    onLikeClick: (Int) -> Unit,
+    onScrapClick: (Int) -> Unit
 ){
     //drawer에 필요한 drawerState랑 scope
     val drawerState = rememberDrawerState(DrawerValue.Closed)
@@ -40,9 +47,20 @@ fun RecipeScreen(
                 containerColor = Color.White,
                 contentColor = Color.Black,
 //                floatingActionButton =
-            ) {
-                val scrollState = rememberScrollState()
-                RecipeMenuScreen(scrollState = scrollState)
+            ) { padding ->
+                // scaffoldpadding parameter 미사용 시, 화면이 앱바를 고려하지 않고 맨 위에 붙어서 나와서
+                // 화면이 앱바에 가려짐
+
+                // val scrollState = rememberScrollState()
+
+                RecipeMenuScreen(
+                    modifier = Modifier.padding(padding),
+                    onCategoryClick = onCategoryClick,
+                    onOwnerTypeClick = onOwnerTypeClick,
+                    onRecipeClick = onRecipeClick,
+                    onLikeClick = onLikeClick,
+                    onScrapClick = onScrapClick
+                )
 
             }
         },

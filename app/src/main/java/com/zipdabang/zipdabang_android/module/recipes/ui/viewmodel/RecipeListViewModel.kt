@@ -47,7 +47,7 @@ class RecipeListViewModel @Inject constructor(
 
     fun getRecipeListByCategory(
         categoryId: Int,
-        orderBy: String
+        orderBy: String = "latest"
     ): Flow<PagingData<RecipeItem>> {
         return recipeListRepository.getRecipeListByCategory(
             categoryId = categoryId,
@@ -56,8 +56,8 @@ class RecipeListViewModel @Inject constructor(
     }
 
     fun getRecipeListByOwnerType(
-        ownerType: OwnerType,
-        orderBy: String
+        ownerType: String,
+        orderBy: String = "latest"
     ): Flow<PagingData<RecipeItem>> {
         return recipeListRepository.getRecipeListByOwnerType(
             ownerType = ownerType,

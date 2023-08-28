@@ -54,6 +54,14 @@ class ProtoRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun updateDeviceNumber(deviceNumber: String) {
+        protoDataStore.updateData { token ->
+            token.copy(
+                deviceNumber = deviceNumber
+            )
+        }
+    }
+
     override suspend fun resetToken() {
         protoDataStore.updateData { token ->
             token.copy(

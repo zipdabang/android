@@ -12,7 +12,7 @@ interface RecipeListRepository {
     suspend fun getRecipePreviewList(accessToken: String, ownerType: String): RecipePreviewItemsDto
 
     fun getRecipeListByOwnerType(
-        ownerType: OwnerType,
+        ownerType: String,
         orderBy: String,
     ): Flow<PagingData<RecipeItem>>
 

@@ -37,7 +37,7 @@ class RecipeListRepositoryImpl(
 
     @OptIn(ExperimentalPagingApi::class)
     override fun getRecipeListByOwnerType(
-        ownerType: OwnerType,
+        ownerType: String,
         orderBy: String,
     ): Flow<PagingData<RecipeItem>> {
         val pagingSourceFactory = {
@@ -94,6 +94,11 @@ class RecipeListRepositoryImpl(
             val recipeItem = database.recipeListDao().getRecipeItemById(recipeId)
             recipeItem?.let {
                 it.isLiked = !it.isLiked
+                if (it.isLiked) {
+                    it.likes += 1
+                } else {
+                    it.likes -= 1
+                }
                 database.recipeListDao().updateRecipe(it)
             }
             preferencesResultDto
@@ -121,6 +126,11 @@ class RecipeListRepositoryImpl(
             val recipeItem = database.recipeListDao().getRecipeItemById(recipeId)
             recipeItem?.let {
                 it.isScrapped = !it.isScrapped
+                if (it.isScrapped) {
+                    it.scraps += 1
+                } else {
+                    it.scraps -= 1
+                }
                 database.recipeListDao().updateRecipe(it)
             }
             preferencesResultDto
