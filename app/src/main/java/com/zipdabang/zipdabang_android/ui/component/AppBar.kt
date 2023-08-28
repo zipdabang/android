@@ -55,7 +55,7 @@ fun AppBarHome(
             ) {
                 Text(
                     text = centerText,
-                    fontSize = 30.sp,
+                    fontSize = 24.sp,
                     fontFamily = FontFamily(Font(R.font.cafe24ssurroundair)),
                     color = Color(0xFFA38F85),
                     maxLines = 1,
@@ -129,7 +129,7 @@ fun AppBarDefault(
             ) {
                 Text(
                     text = centerText,
-                    fontSize = 30.sp,
+                    fontSize = 24.sp,
                     fontFamily = FontFamily(Font(R.font.cafe24ssurroundair)),
                     color = Color(0xFFA38F85),
                     maxLines = 1,
@@ -187,7 +187,7 @@ fun AppBarSignUp(
             ) {
                 Text(
                     text = centerText,
-                    fontSize = 30.sp,
+                    fontSize = 24.sp,
                     fontFamily = FontFamily(Font(R.font.cafe24ssurroundair)),
                     color = Color(0xFFA38F85),
                     maxLines = 1,
@@ -222,7 +222,7 @@ fun AppBarMy(
             ) {
                 Text(
                     text = centerText,
-                    fontSize = 30.sp,
+                    fontSize = 24.sp,
                     fontFamily = FontFamily(Font(R.font.cafe24ssurroundair)),
                     color = Color(0xFFA38F85),
                     maxLines = 1,
@@ -259,7 +259,7 @@ fun AppBarPreview() {
         endIcon2 = androidx.appcompat.R.drawable.abc_ic_menu_copy_mtrl_am_alpha,
         onClickEndIcon1 = {},
         onClickEndIcon2 = {},
-        centerText = "집다방"
+        centerText = "레시피.zip"
     )
 }
 

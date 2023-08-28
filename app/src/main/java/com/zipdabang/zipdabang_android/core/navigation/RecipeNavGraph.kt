@@ -7,7 +7,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import androidx.navigation.navigation
-import com.zipdabang.zipdabang_android.module.item.recipe.common.RecipeListTitle
+import com.zipdabang.zipdabang_android.module.item.recipe.common.RecipeSubtitleState
 import com.zipdabang.zipdabang_android.module.item.recipe.ui.RecipeListScreen
 import com.zipdabang.zipdabang_android.module.recipes.ui.RecipeScreen
 
@@ -51,7 +51,7 @@ fun NavGraphBuilder.RecipeNavGraph(navController: NavController) {
                 }
             )
         ) { backStackEntry ->
-            val categoryState = RecipeListTitle(
+            val categoryState = RecipeSubtitleState(
                 categoryId =  backStackEntry.arguments?.getInt("category"),
                 ownerType =  backStackEntry.arguments?.getString("ownerType")
             )

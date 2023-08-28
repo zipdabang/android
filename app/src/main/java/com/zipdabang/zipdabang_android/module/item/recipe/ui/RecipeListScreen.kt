@@ -1,6 +1,5 @@
 package com.zipdabang.zipdabang_android.module.item.recipe.ui
 
-import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -16,9 +15,8 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import com.zipdabang.zipdabang_android.R
-import com.zipdabang.zipdabang_android.module.item.recipe.common.RecipeListTitle
+import com.zipdabang.zipdabang_android.module.item.recipe.common.RecipeSubtitleState
 import com.zipdabang.zipdabang_android.module.recipes.common.OwnerType
-import com.zipdabang.zipdabang_android.module.recipes.ui.state.RecipeCategoryState
 import com.zipdabang.zipdabang_android.ui.component.AppBarHome
 import com.zipdabang.zipdabang_android.ui.component.FloatingActionButton
 import com.zipdabang.zipdabang_android.ui.component.ModalDrawer
@@ -27,7 +25,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun RecipeListScreen(
     modifier: Modifier = Modifier,
-    categoryState: RecipeListTitle,
+    categoryState: RecipeSubtitleState,
     onShareClick: () -> Unit,
     onItemClick: (Int) -> Unit,
     onLikeClick: (Int) -> Unit,
