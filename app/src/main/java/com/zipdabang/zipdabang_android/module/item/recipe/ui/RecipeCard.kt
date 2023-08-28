@@ -1,5 +1,11 @@
 package com.zipdabang.zipdabang_android.module.item.recipe.ui
 
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Indication
 import androidx.compose.foundation.IndicationInstance
 import androidx.compose.foundation.background
@@ -11,6 +17,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -25,6 +32,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -51,8 +60,8 @@ fun RecipeCard(
     comments: Int,
     isLikeSelected: Boolean,
     isScrapSelected: Boolean,
-    onLikeClick: (Boolean) -> Unit,
-    onScrapClick: (Boolean) -> Unit,
+    onLikeClick: (Int) -> Unit,
+    onScrapClick: (Int) -> Unit,
     // id
     onItemClick: (Int) -> Unit
 ) {
@@ -68,7 +77,7 @@ fun RecipeCard(
                 interactionSource = remember { MutableInteractionSource() },
                 indication = rememberRipple()
             ) {
-              onItemClick(recipeId)
+                onItemClick(recipeId)
             },
     ) {
         Column(
@@ -154,7 +163,10 @@ fun RecipeCard(
                     iconChecked = scrapChecked,
                     iconNotChecked = scrapNotChecked,
                     checked = isScrapSelected,
-                    onClick = onScrapClick,
+                    onClick = { isScrapSelected ->
+                        !isScrapSelected
+                        onScrapClick(recipeId)
+                    },
                     checkedColor = ZipdabangandroidTheme.Colors.Cream
                 )
 
@@ -164,12 +176,60 @@ fun RecipeCard(
                     iconChecked = favoriteChecked,
                     iconNotChecked = favoriteNotChecked,
                     checked = isLikeSelected,
-                    onClick = onLikeClick,
+                    onClick = { isLikeSelected ->
+                        !isLikeSelected
+                        onLikeClick(recipeId)
+                    },
                     checkedColor = ZipdabangandroidTheme.Colors.Strawberry
                 )
             }
         }
 
+    }
+}
+
+@Composable
+fun RecipeCardLoading() {
+    val shimmerColors = listOf(
+        Color.LightGray.copy(alpha = 0.6f),
+        // the lightest color should be in the middle
+        Color.LightGray.copy(alpha = 0.2f),
+        Color.LightGray.copy(alpha = 0.35f)
+    )
+
+    // animate shimmer as long as we want
+    val transition = rememberInfiniteTransition(label = "")
+    val translateAnim = transition.animateFloat(
+        initialValue = 0f,
+        targetValue = 1000f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(
+                durationMillis = 1000,
+                easing = FastOutSlowInEasing,
+            ),
+            repeatMode = RepeatMode.Restart
+        ),
+        label = ""
+    )
+
+    val brush = Brush.linearGradient(
+        colors = shimmerColors,
+        start = Offset.Zero,
+        end = Offset(x = translateAnim.value, y = translateAnim.value)
+    )
+
+    Column(
+        modifier = Modifier
+            .width(160.dp)
+            .border(
+                width = 1.dp,
+                color = Color(0x1A262D31),
+                shape = ZipdabangandroidTheme.Shapes.small
+            )
+    ) {
+        Spacer(modifier = Modifier
+            .fillMaxSize()
+            .background(brush))
     }
 }
 
@@ -195,10 +255,10 @@ fun RecipeCardPreview() {
         isLikeSelected = like,
         isScrapSelected = scrap,
         onLikeClick = { state ->
-            like = state
+            like = !like
         },
         onScrapClick = { state ->
-            scrap = state
+            scrap = !scrap
         },
         onItemClick = { recipeId ->
 

@@ -50,7 +50,7 @@ fun RegisterPreferencesScreen(
     onClickBack : ()->Unit,
     onClickNext: ()->Unit,
 ) {
-    val state = authSharedViewModel.statePreferences.value
+    val state = authSharedViewModel.statePreferences
     val stateBeverageList by authSharedViewModel.stateBeverageList.collectAsState()
     val statePreferencesValidate by authSharedViewModel.statePreferencesValidate.collectAsState()
     //Log.e("preferences-screen", "${stateBeverageList}")
@@ -100,7 +100,7 @@ fun RegisterPreferencesScreen(
                             subTextColor =  ZipdabangandroidTheme.Colors.Typo
                         )
 
-                        val chunkedBeverageList = state.beverageList.chunked(3)
+                        val chunkedBeverageList = state.value.beverageList.chunked(3)//state.beverageList.chunked(3)
                         Column(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -119,7 +119,7 @@ fun RegisterPreferencesScreen(
                                 ) {
                                     for (preference in chunk) {
                                         RoundedButton(
-                                            imageUrl = preference.imageUrl,
+                                            imageUrl = R.drawable.all_arrow_right, //preference.imageUrl,
                                             buttonText = preference.categoryName,
                                             isClicked = stateBeverageList[index],
                                             isClickedChange = { selectedClicked ->
@@ -130,15 +130,15 @@ fun RegisterPreferencesScreen(
                                     }
                                 }
                             }
-                            if (state.error.isNotBlank()) {
+                            if (state.value.error.isNotBlank()) {
                                 Text(
-                                    text = state.error,
+                                    text = state.value.error,
                                     color = Color.Red,
                                     textAlign = TextAlign.Center,
                                     modifier = Modifier.fillMaxWidth()
                                 )
                             }
-                            if (state.isLoading) {
+                            if (state.value.isLoading) {
                                 CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
                             }
                         }
@@ -171,7 +171,7 @@ fun RegisterPreferencesScreen(
                     )
                 }
             }
-
+            //하단 버튼
             Box(
                 contentAlignment = Alignment.BottomCenter,
                 modifier = Modifier.padding(16.dp,0.dp,16.dp, 12.dp)
