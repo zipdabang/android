@@ -3,6 +3,7 @@ package com.zipdabang.zipdabang_android.module.home.ui
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.material3.DrawerValue
@@ -12,19 +13,23 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.zipdabang.zipdabang_android.R
 import com.zipdabang.zipdabang_android.ui.component.AppBarHome
+import com.zipdabang.zipdabang_android.ui.component.Banner
 import com.zipdabang.zipdabang_android.ui.component.ModalDrawer
 import kotlinx.coroutines.launch
 
 @Composable
 fun HomeScreen(
-    onGoToGuide: () -> Unit,
-    onGoToDetail: () -> Unit
+    viewModel: HomeViewModel= hiltViewModel()
 ){
     //drawer에 필요한 drawerState랑 scope
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
+
+    val bannerState = viewModel.bannerState
+    val recipeState = viewModel.recipeState
 
     ModalDrawer(
         scaffold = {
@@ -42,16 +47,22 @@ fun HomeScreen(
                 containerColor = Color.White,
                 contentColor = Color.Black,
                     content = {
-                    Column {
-                        Text(text = "home", modifier = Modifier.padding(it))
-                        TextButton(onClick = { onGoToGuide() }) {
-                            Text("Guide")
-                        }
-                        TextButton(onClick = { onGoToDetail() }) {
-                            Text("Detail")
-                        }
+                   LazyColumn(
+                       modifier = Modifier.padding(top= it.calculateTopPadding())
+                   ){
+                       item{
+                           if(bannerState.value.isLoading){
+                               TODO("shimmering effect")
+                           }else{
+                               val bannerListState= bannerState.value.bannerList
+                               val imageUrlList: List<String> = bannerListState.map { it.imageUrl }
+                               Banner(imageUrlList)
+                           }
+                       }
+                       
 
-                    }
+
+                   }
                 }
             )
         },
