@@ -1,16 +1,20 @@
 package com.zipdabang.zipdabang_android.module.item.goods.ui
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.Card
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -48,7 +52,6 @@ fun GoodsCard(
 
 
       Card(
-          onClick = { /*TODO*/ },
           modifier = Modifier
               .size(height = 224.dp, width = 160.dp)
               .padding(horizontal = 4.dp),
@@ -75,7 +78,9 @@ fun GoodsCard(
                           CardTitleReversed(title = price, subTitle = title)
                           Row(
                               verticalAlignment = Alignment.CenterVertically,
-                              modifier = Modifier.padding(bottom = 1.dp).offset(y = (-4).dp)
+                              modifier = Modifier
+                                  .padding(bottom = 1.dp)
+                                  .offset(y = (-4).dp)
                                   .height(20.dp)
                           ) {
                               Icon(
@@ -97,15 +102,35 @@ fun GoodsCard(
                               )
                           }
                   }
-                  Row(modifier = Modifier.weight(1f)
-                      .fillMaxHeight()
-                      .padding(bottom = 6.dp),
-                      verticalAlignment = Alignment.Bottom){
-                      Icon(painter = painterResource(id = R.drawable.market_itembasket_inactive_small),
-                          contentDescription = null)
-                      Icon(painter = painterResource(id = R.drawable.market_itemliked_inactive_small),
-                          contentDescription = null)
+                  Column(Modifier.weight(1f)
+                      .fillMaxSize()
+                  ) {
+                     Row(Modifier.weight(1f)){}
+                      Row(
+                          modifier = Modifier
+                              .weight(1f)
+                              .fillMaxWidth()
+                              .padding(bottom= 4.dp,end= 3.dp),
+                          verticalAlignment = Alignment.CenterVertically
+                      ) {
+                          GoodsToggle(
+                              iconChecked = R.drawable.market_itembasket_active_small,
+                              iconNotChecked = R.drawable.market_itembasket_inactive_small,
+                              checked = isBasket,
+                              onClick =  onBasketClick ,
+                              checkedColor = ZipdabangandroidTheme.Colors.Cream
+                          )
+                          Spacer(Modifier.width(1.dp))
 
+                          GoodsToggle(
+                              iconChecked = R.drawable.market_itemliked_active_small,
+                              iconNotChecked = R.drawable.market_itemliked_inactive_small,
+                              checked = isFavorite,
+                              onClick =  onLikeClick ,
+                              checkedColor = ZipdabangandroidTheme.Colors.Cream
+                          )
+
+                      }
                   }
               }
           }
@@ -120,7 +145,7 @@ fun cardPreview(){
         GoodsCard(
             image = "https://www.jungle.co.kr/image/9795b5664b049958cef6619c",
             isBasket = false,
-            isFavorite =false ,
+            isFavorite = true,
             title = "맛있는 우유" ,
             price = "20000원",
             star = 4,

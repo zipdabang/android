@@ -32,6 +32,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.getValue
+
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterEnd
 import androidx.compose.ui.Modifier
@@ -210,7 +212,7 @@ fun MarketScreen(
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun MarketScreen_Test(){
-    val empty =true
+    val empty = false
     //drawer에 필요한 drawerState랑 scope
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
@@ -221,6 +223,12 @@ fun MarketScreen_Test(){
     )
     var selectedTabIndex by remember {
         mutableStateOf(0)
+    }
+    var likechecked by remember {
+        mutableStateOf(false)
+    }
+    var inBasket by remember {
+        mutableStateOf(false)
     }
     ModalDrawer(
         scaffold = {
@@ -236,136 +244,223 @@ fun MarketScreen_Test(){
                     )
                 },
                 containerColor = Color.White,
-                contentColor = Color.Black,
-                content = {
-                    val scrollState = rememberScrollState()
-                    Column(
-                        modifier = Modifier
-                            .padding(
-                                top = it.calculateTopPadding(),
-                                bottom = it.calculateBottomPadding()
-                            )
-                            .verticalScroll(scrollState)
-                    ) {
-                        Box(modifier = Modifier
-                            .fillMaxWidth()
-                            .height(200.dp)) {
-                            Banner(images)
-                        }
-                        Row(
-                            modifier = Modifier
-                                .padding(start = 8.dp, end = 8.dp, top = 20.dp, bottom = 10.dp)
-                                .fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceEvenly
-                        ){
-                            MarketCategory(category = "음료", imageUrl = "https://menu.moneys.co.kr/moneyweek/thumb/2019/07/04/06/2019070409188047775_1.jpg/dims/thumbnail/620/optimize/", onClick = { })//navController.navigate(MarketScreen.Category.passCategoryId(1))})
-                            MarketCategory(category = "재료", imageUrl = "https://menu.moneys.co.kr/moneyweek/thumb/2019/07/04/06/2019070409188047775_1.jpg/dims/thumbnail/620/optimize/", onClick = { })//navController.navigate(MarketScreen.Category.passCategoryId(2))})
-                            MarketCategory(category ="장비", imageUrl = "https://menu.moneys.co.kr/moneyweek/thumb/2019/07/04/06/2019070409188047775_1.jpg/dims/thumbnail/620/optimize/", onClick = { })//navController.navigate(MarketScreen.Category.passCategoryId(3)) })
-                            MarketCategory(category = "굿즈", imageUrl = "https://menu.moneys.co.kr/moneyweek/thumb/2019/07/04/06/2019070409188047775_1.jpg/dims/thumbnail/620/optimize/", onClick = {}) //navController.navigate(MarketScreen.Category.passCategoryId(4))})
-                            MarketCategory(category = "키트", imageUrl = "https://menu.moneys.co.kr/moneyweek/thumb/2019/07/04/06/2019070409188047775_1.jpg/dims/thumbnail/620/optimize/", onClick = {}) //navController.navigate(MarketScreen.Category.passCategoryId(5))})
-                            MarketCategory(category = "장비", imageUrl ="https://menu.moneys.co.kr/moneyweek/thumb/2019/07/04/06/2019070409188047775_1.jpg/dims/thumbnail/620/optimize/", onClick = {  })//navController.navigate(MarketScreen.Category.passCategoryId(0))})
-                        }
-
-                        Canvas(
-                            Modifier
-                                .fillMaxWidth()
-                                .height(1.dp)
-                                .padding(horizontal = 8.dp)
-                        ){
-                            drawLine(
-                                color= Color(0xFFCDC6C3),
-                                start = Offset(0f,0f),
-                                end = Offset(size.width,0f)
-
-                            )
-                        }
-
-
-                        Row(
-                            modifier = Modifier
-                                .padding(horizontal = 8.dp, vertical = 16.dp)
-                                .fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween
-
-                        ){
-                            Text(text = "내가 최근 봤던 아이템",
-                                fontSize = 16.sp,
-                                lineHeight = 24.sp,
-                                fontFamily = FontFamily(Font(R.font.cafe24ohsquareair)),
-                                fontWeight = FontWeight(300),
-                                color = MarketBrown
-                            )
-                            Icon(painter= painterResource(id = R.drawable.market_arrow_small),contentDescription = null,
-                                tint = MarketBrown)
-                        }
-
-                        if(empty){
-                            Box(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .height(100.dp)
-                                    .padding(horizontal = 8.dp)
-                            ) {
-                                NoRecentItem()
-                            }
-                        }else{
-                            LazyRow(
-                                modifier= Modifier.padding(horizontal = 4.dp),
-                            ){
-                                items(3){
-                                        item ->
-
-                                    GoodsCard(
-                                        image = "https://menu.moneys.co.kr/moneyweek/thumb/2019/07/04/06/2019070409188047775_1.jpg/dims/thumbnail/620/optimize/",
-                                        isBasket = false,
-                                        isFavorite = false,
-                                        title = "우유우유우유",
-                                        price ="20000원",
-                                        star = 3,
-                                        star_users = "1",
-                                        {},
-                                        {}
-                                    )
-                                }
-                            }
-                        }
-
-                        GroupHeaderReversed(
-                            groupName = "hot item",
-                            formerHeaderChoco = "카테고리별 ",
-                            latterHeaderStrawberry = "인기 아이템",
-                            onClick = { TODO() }
+                contentColor = Color.Black
+            ) {
+                val scrollState = rememberScrollState()
+                Column(
+                    modifier = Modifier
+                        .padding(
+                            top = it.calculateTopPadding(),
+                            bottom = it.calculateBottomPadding()
                         )
-                        val categoryList = listOf("음료","재료","장비","굿즈","키트","전체")
+                        .verticalScroll(scrollState)
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(200.dp)
+                    ) {
+                        Banner(images)
+                    }
+                    Row(
+                        modifier = Modifier
+                            .padding(start = 8.dp, end = 8.dp, top = 20.dp, bottom = 10.dp)
+                            .fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceEvenly
+                    ) {
+                        MarketCategory(
+                            category = "음료",
+                            imageUrl = "https://menu.moneys.co.kr/moneyweek/thumb/2019/07/04/06/2019070409188047775_1.jpg/dims/thumbnail/620/optimize/",
+                            onClick = { })//navController.navigate(MarketScreen.Category.passCategoryId(1))})
+                        MarketCategory(
+                            category = "재료",
+                            imageUrl = "https://menu.moneys.co.kr/moneyweek/thumb/2019/07/04/06/2019070409188047775_1.jpg/dims/thumbnail/620/optimize/",
+                            onClick = { })//navController.navigate(MarketScreen.Category.passCategoryId(2))})
+                        MarketCategory(
+                            category = "장비",
+                            imageUrl = "https://menu.moneys.co.kr/moneyweek/thumb/2019/07/04/06/2019070409188047775_1.jpg/dims/thumbnail/620/optimize/",
+                            onClick = { })//navController.navigate(MarketScreen.Category.passCategoryId(3)) })
+                        MarketCategory(
+                            category = "굿즈",
+                            imageUrl = "https://menu.moneys.co.kr/moneyweek/thumb/2019/07/04/06/2019070409188047775_1.jpg/dims/thumbnail/620/optimize/",
+                            onClick = {}) //navController.navigate(MarketScreen.Category.passCategoryId(4))})
+                        MarketCategory(
+                            category = "키트",
+                            imageUrl = "https://menu.moneys.co.kr/moneyweek/thumb/2019/07/04/06/2019070409188047775_1.jpg/dims/thumbnail/620/optimize/",
+                            onClick = {}) //navController.navigate(MarketScreen.Category.passCategoryId(5))})
+                        MarketCategory(
+                            category = "장비",
+                            imageUrl = "https://menu.moneys.co.kr/moneyweek/thumb/2019/07/04/06/2019070409188047775_1.jpg/dims/thumbnail/620/optimize/",
+                            onClick = { })//navController.navigate(MarketScreen.Category.passCategoryId(0))})
+                    }
 
-                        MarketTabView(categoryList =categoryList , modifier = Modifier.padding(horizontal = 8.dp), onTabSelected = {
-                            selectedTabIndex = it
-                        })
-                        Spacer(modifier = Modifier.height(10.dp))
+                    Canvas(
+                        Modifier
+                            .fillMaxWidth()
+                            .height(1.dp)
+                            .padding(horizontal = 8.dp)
+                    ) {
+                        drawLine(
+                            color = Color(0xFFCDC6C3),
+                            start = Offset(0f, 0f),
+                            end = Offset(size.width, 0f)
 
-                        val list = listOf(RankItem(rank = "1", imageUrl = "https://menu.moneys.co.kr/moneyweek/thumb/2019/07/04/06/2019070409188047775_1.jpg/dims/thumbnail/620/optimize/", marketName = "집다방", productName = "레모네이드", price ="3000원"),
-                            RankItem(rank = "2", imageUrl = "https://menu.moneys.co.kr/moneyweek/thumb/2019/07/04/06/2019070409188047775_1.jpg/dims/thumbnail/620/optimize/", marketName = "집다방", productName = "레모네이드", price ="3000원"),
-                            RankItem(rank = "3", imageUrl = "https://menu.moneys.co.kr/moneyweek/thumb/2019/07/04/06/2019070409188047775_1.jpg/dims/thumbnail/620/optimize/", marketName = "집다방", productName = "레모네이드", price ="3000원"),
-                            RankItem(rank = "4", imageUrl = "https://menu.moneys.co.kr/moneyweek/thumb/2019/07/04/06/2019070409188047775_1.jpg/dims/thumbnail/620/optimize/", marketName = "집다방", productName = "레모네이드", price ="3000원"),
-                            RankItem(rank = "5", imageUrl = "https://menu.moneys.co.kr/moneyweek/thumb/2019/07/04/06/2019070409188047775_1.jpg/dims/thumbnail/620/optimize/", marketName = "집다방", productName = "레모네이드", price ="3000원"))
-                        val list2 = listOf(RankItem(rank = "1", imageUrl = "https://menu.moneys.co.kr/moneyweek/thumb/2019/07/04/06/2019070409188047775_1.jpg/dims/thumbnail/620/optimize/", marketName = "집다방23", productName = "레모네이드", price ="3000원"),
-                            RankItem(rank = "2", imageUrl = "https://menu.moneys.co.kr/moneyweek/thumb/2019/07/04/06/2019070409188047775_1.jpg/dims/thumbnail/620/optimize/", marketName = "집다방333", productName = "레모네이드3", price ="322000원"),
-                            RankItem(rank = "3", imageUrl = "https://menu.moneys.co.kr/moneyweek/thumb/2019/07/04/06/2019070409188047775_1.jpg/dims/thumbnail/620/optimize/", marketName = "집다방33", productName = "레모네이드", price ="3000원"),
-                            RankItem(rank = "4", imageUrl = "https://menu.moneys.co.kr/moneyweek/thumb/2019/07/04/06/2019070409188047775_1.jpg/dims/thumbnail/620/optimize/", marketName = "집다방4", productName = "레모네이드", price ="3000원"),
-                            RankItem(rank = "5", imageUrl = "https://menu.moneys.co.kr/moneyweek/thumb/2019/07/04/06/2019070409188047775_1.jpg/dims/thumbnail/620/optimize/", marketName = "집다방5", productName = "레모네이드", price ="3000원"))
-                        when (selectedTabIndex){
-                            0 -> MarketRankItem(categoryRankList = list)
-                            1 -> MarketRankItem(categoryRankList = list2)
-                        }
-
-
-
+                        )
                     }
 
 
+                    Row(
+                        modifier = Modifier
+                            .padding(horizontal = 8.dp, vertical = 16.dp)
+                            .fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween
+
+                    ) {
+                        Text(
+                            text = "내가 최근 봤던 아이템",
+                            fontSize = 16.sp,
+                            lineHeight = 24.sp,
+                            fontFamily = FontFamily(Font(R.font.cafe24ohsquareair)),
+                            fontWeight = FontWeight(300),
+                            color = MarketBrown
+                        )
+                        Icon(
+                            painter = painterResource(id = R.drawable.market_arrow_small),
+                            contentDescription = null,
+                            tint = MarketBrown
+                        )
+                    }
+
+                    if (empty) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(100.dp)
+                                .padding(horizontal = 8.dp)
+                        ) {
+                            NoRecentItem()
+                        }
+                    } else {
+                        LazyRow(
+                            modifier = Modifier.padding(horizontal = 4.dp),
+                        ) {
+                            items(3) { item ->
+
+                                GoodsCard(
+                                    image = "https://menu.moneys.co.kr/moneyweek/thumb/2019/07/04/06/2019070409188047775_1.jpg/dims/thumbnail/620/optimize/",
+                                    isBasket = inBasket,
+                                    isFavorite = likechecked,
+                                    title = "우유우유우유",
+                                    price = "20000원",
+                                    star = 3,
+                                    star_users = "1",
+                                    {state -> inBasket = state},
+                                    { state -> likechecked = state }
+                                )
+                            }
+                        }
+                    }
+
+                    GroupHeaderReversed(
+                        groupName = "hot item",
+                        formerHeaderChoco = "카테고리별 ",
+                        latterHeaderStrawberry = "인기 아이템",
+                        onClick = { TODO() }
+                    )
+                    val categoryList = listOf("음료", "재료", "장비", "굿즈", "키트", "전체")
+
+                    MarketTabView(
+                        categoryList = categoryList,
+                        modifier = Modifier.padding(horizontal = 8.dp),
+                        onTabSelected = {
+                            selectedTabIndex = it
+                        })
+                    Spacer(modifier = Modifier.height(10.dp))
+
+                    val list = listOf(
+                        RankItem(
+                            rank = "1",
+                            imageUrl = "https://menu.moneys.co.kr/moneyweek/thumb/2019/07/04/06/2019070409188047775_1.jpg/dims/thumbnail/620/optimize/",
+                            marketName = "집다방",
+                            productName = "레모네이드",
+                            price = "3000원"
+                        ),
+                        RankItem(
+                            rank = "2",
+                            imageUrl = "https://menu.moneys.co.kr/moneyweek/thumb/2019/07/04/06/2019070409188047775_1.jpg/dims/thumbnail/620/optimize/",
+                            marketName = "집다방",
+                            productName = "레모네이드",
+                            price = "3000원"
+                        ),
+                        RankItem(
+                            rank = "3",
+                            imageUrl = "https://menu.moneys.co.kr/moneyweek/thumb/2019/07/04/06/2019070409188047775_1.jpg/dims/thumbnail/620/optimize/",
+                            marketName = "집다방",
+                            productName = "레모네이드",
+                            price = "3000원"
+                        ),
+                        RankItem(
+                            rank = "4",
+                            imageUrl = "https://menu.moneys.co.kr/moneyweek/thumb/2019/07/04/06/2019070409188047775_1.jpg/dims/thumbnail/620/optimize/",
+                            marketName = "집다방",
+                            productName = "레모네이드",
+                            price = "3000원"
+                        ),
+                        RankItem(
+                            rank = "5",
+                            imageUrl = "https://menu.moneys.co.kr/moneyweek/thumb/2019/07/04/06/2019070409188047775_1.jpg/dims/thumbnail/620/optimize/",
+                            marketName = "집다방",
+                            productName = "레모네이드",
+                            price = "3000원"
+                        )
+                    )
+                    val list2 = listOf(
+                        RankItem(
+                            rank = "1",
+                            imageUrl = "https://menu.moneys.co.kr/moneyweek/thumb/2019/07/04/06/2019070409188047775_1.jpg/dims/thumbnail/620/optimize/",
+                            marketName = "집다방23",
+                            productName = "레모네이드",
+                            price = "3000원"
+                        ),
+                        RankItem(
+                            rank = "2",
+                            imageUrl = "https://menu.moneys.co.kr/moneyweek/thumb/2019/07/04/06/2019070409188047775_1.jpg/dims/thumbnail/620/optimize/",
+                            marketName = "집다방333",
+                            productName = "레모네이드3",
+                            price = "322000원"
+                        ),
+                        RankItem(
+                            rank = "3",
+                            imageUrl = "https://menu.moneys.co.kr/moneyweek/thumb/2019/07/04/06/2019070409188047775_1.jpg/dims/thumbnail/620/optimize/",
+                            marketName = "집다방33",
+                            productName = "레모네이드",
+                            price = "3000원"
+                        ),
+                        RankItem(
+                            rank = "4",
+                            imageUrl = "https://menu.moneys.co.kr/moneyweek/thumb/2019/07/04/06/2019070409188047775_1.jpg/dims/thumbnail/620/optimize/",
+                            marketName = "집다방4",
+                            productName = "레모네이드",
+                            price = "3000원"
+                        ),
+                        RankItem(
+                            rank = "5",
+                            imageUrl = "https://menu.moneys.co.kr/moneyweek/thumb/2019/07/04/06/2019070409188047775_1.jpg/dims/thumbnail/620/optimize/",
+                            marketName = "집다방5",
+                            productName = "레모네이드",
+                            price = "3000원"
+                        )
+                    )
+                    when (selectedTabIndex) {
+                        0 -> MarketRankItem(categoryRankList = list)
+                        1 -> MarketRankItem(categoryRankList = list2)
+                    }
+
 
                 }
-            )
+
+
+            }
         },
         drawerState = drawerState
     )
