@@ -16,6 +16,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -38,7 +39,7 @@ import com.zipdabang.zipdabang_android.ui.component.AppBarSignUp
 import com.zipdabang.zipdabang_android.ui.component.MainAndSubTitle
 import com.zipdabang.zipdabang_android.ui.component.PrimaryButtonOutLined
 import com.zipdabang.zipdabang_android.ui.component.PrimaryButtonWithStatus
-import com.zipdabang.zipdabang_android.ui.component.TextFieldBasic
+import com.zipdabang.zipdabang_android.ui.component.TextFieldError
 import com.zipdabang.zipdabang_android.ui.component.TextFieldErrorAndCorrect
 import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
 
@@ -50,6 +51,10 @@ fun RegisterUserAddressScreen(
     onClickNext: ()->Unit,
 ) {
     val stateUserAddressForm = authSharedViewModel.stateUserAddressForm
+
+    LaunchedEffect(key1 = stateUserAddressForm){
+        authSharedViewModel.onUserAddressEvent(UserAddressFormEvent.BtnChanged(true))
+    }
 
     Scaffold(
         modifier = Modifier
@@ -111,7 +116,7 @@ fun RegisterUserAddressScreen(
                         Box(
                             modifier = Modifier.weight(5.2f)
                         ){
-                            TextFieldBasic(
+                            TextFieldError(
                                 value = stateUserAddressForm.zipCode,
                                 onValueChanged = {
                                     authSharedViewModel.onUserAddressEvent(UserAddressFormEvent.ZipcodeChanged(it))
@@ -155,7 +160,7 @@ fun RegisterUserAddressScreen(
                         Box(
                             modifier = Modifier.weight(8.6f)
                         ){
-                            TextFieldBasic(
+                            TextFieldError(
                                 value = stateUserAddressForm.address,
                                 onValueChanged = {
                                     authSharedViewModel.onUserAddressEvent(UserAddressFormEvent.AddressChanged(it))
@@ -180,7 +185,7 @@ fun RegisterUserAddressScreen(
                         Box(
                             modifier = Modifier.weight(8.6f)
                         ){
-                            TextFieldBasic(
+                            TextFieldError(
                                 value = stateUserAddressForm.detailAddress,
                                 onValueChanged = {
                                     authSharedViewModel.onUserAddressEvent(UserAddressFormEvent.DetailaddressChanged(it))
@@ -204,7 +209,7 @@ fun RegisterUserAddressScreen(
                 PrimaryButtonWithStatus(
                     text= stringResource(id = R.string.signup_btn_inputdone),
                     onClick={ onClickNext() },
-                    isFormFilled = true //stateTermsValidate
+                    isFormFilled = stateUserAddressForm.btnEnabled
                 )
             }
         }

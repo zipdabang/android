@@ -6,7 +6,6 @@ sealed class UserInfoFormEvent{
     data class GenderChanged(val gender : String) : UserInfoFormEvent()
     data class PhoneNumberChanged(val phoneNumber : String) : UserInfoFormEvent()
     data class PhoneNumberClicked(val clicked : Boolean) : UserInfoFormEvent()
-    data class TimerCount(val time : String) : UserInfoFormEvent()
     data class AuthNumberChanged(val authNumber : String) : UserInfoFormEvent()
     data class AuthNumberClicked(val clicked : Boolean) : UserInfoFormEvent()
     data class BtnChanged(val enabled: Boolean) : UserInfoFormEvent()

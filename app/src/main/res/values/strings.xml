@@ -22,7 +22,6 @@
     <string name="drawer_appVersion">집다방 앱 버전</string>
     <string name="drawer_appDetail">집다방은 어쩌구 저쩌구 어쩌구 저쩌구 어쩌구 저쩌구 어쩌구 저쩌구 어쩌구 저쩌구 어쩌구 저쩌구 어쩌구 저쩌구 어쩌구 저쩌구 어쩌구 저쩌구 어쩌구 저쩌구 어쩌구 저쩌구</string>
 
-
     <string name="signup">회원가입</string>
     <string name="signup_btn_termsagree">약관 동의</string>
     <string name="signup_btn_choicecomplete">선택 완료</string>
@@ -53,6 +52,7 @@
     <string name="signup_userinfo_birthday_notformed">생년월일 형식에 맞지 않습니다</string>
     <string name="signup_userinfo_birthday_notsix">생년월일 6자리를 입력해주세요</string>
     <string name="signup_userinfo_birthday_underfifteen">만 15세 미만은 가입이 불가해요</string>
+    <string name="signup_userinfo_phonenumber_notformed">전화번호를 정확히 입력해주세요</string>
     <string name="signup_userinfo_phonenumber_notcertificate">인증 번호 불일치</string>
     <string name="signup_userinfo_phonenumber_certificate">인증 완료</string>
     <string name="signup_nickname_maintitle_zipdabang">집다방</string>

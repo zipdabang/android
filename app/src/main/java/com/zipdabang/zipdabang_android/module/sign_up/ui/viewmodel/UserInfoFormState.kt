@@ -8,8 +8,9 @@ data class UserInfoFormState(
     val birthday : String = "",
     val birthdayErrorMessage : String = "",
     val birthdayIsError : Boolean = false,
+    val birthdayIsTried : Boolean = false,
 
-    val gender : String ="",
+    val gender : String ="남",
 
     val phoneNumber : String = "",
     val phoneNumberErrorMessage : String = "",
@@ -27,8 +28,8 @@ data class UserInfoFormState(
     val authNumberIsCorrect : Boolean = false,
     val authNumberIsTried : Boolean = false,
 
-    val btnEnabled : Boolean = true,
-    val validate : Boolean = true,
+    val btnEnabled : Boolean = false,
+    val validate : Boolean = false,
 
     val error : String = ""
 )

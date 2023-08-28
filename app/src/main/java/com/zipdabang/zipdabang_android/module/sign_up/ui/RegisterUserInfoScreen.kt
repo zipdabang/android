@@ -17,10 +17,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -37,16 +33,18 @@ import androidx.navigation.compose.rememberNavController
 import com.zipdabang.zipdabang_android.R
 import com.zipdabang.zipdabang_android.core.navigation.AuthScreen
 import com.zipdabang.zipdabang_android.module.sign_up.ui.viewmodel.AuthSharedViewModel
-import com.zipdabang.zipdabang_android.module.sign_up.ui.viewmodel.TermsFormEvent
 import com.zipdabang.zipdabang_android.module.sign_up.ui.viewmodel.UserInfoFormEvent
 import com.zipdabang.zipdabang_android.ui.component.AppBarSignUp
 import com.zipdabang.zipdabang_android.ui.component.MainAndSubTitle
 import com.zipdabang.zipdabang_android.ui.component.PrimaryButtonOutLined
 import com.zipdabang.zipdabang_android.ui.component.PrimaryButtonWithStatus
 import com.zipdabang.zipdabang_android.ui.component.RadioGroupHorizontal
-import com.zipdabang.zipdabang_android.ui.component.TextFieldBasic
+import com.zipdabang.zipdabang_android.ui.component.TextFieldError
 import com.zipdabang.zipdabang_android.ui.component.TextFieldErrorAndCorrect
 import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.onEach
 
 @Composable
 fun RegisterUserInfoScreen(
@@ -58,15 +56,17 @@ fun RegisterUserInfoScreen(
     val stateUserInfoForm = authSharedViewModel.stateUserInfoForm
     val genderList = authSharedViewModel.genderList
 
+    LaunchedEffect(authSharedViewModel.remainingTime) {
+        val timer = (authSharedViewModel.remainingTime downTo 0).asFlow()
+            .onEach { delay(1000) } // 1초 지연
+            .collect { newTime ->
+                authSharedViewModel.remainingTime = newTime
+            }
+    }
     LaunchedEffect(key1 = stateUserInfoForm){
         authSharedViewModel.onUserInfoEvent(UserInfoFormEvent.BtnChanged(true))
-        //Log.e("userinfo-screen", "${stateUserInfoForm}")
     }
 
-    LaunchedEffect(key1 = stateUserInfoForm.btnEnabled){
-        authSharedViewModel.onUserInfoEvent(UserInfoFormEvent.ValidateChanged(false))
-        //Log.e("userinfo-screen", "${stateUserInfoForm}")
-    }
 
     Scaffold(
         modifier = Modifier
@@ -129,7 +129,7 @@ fun RegisterUserInfoScreen(
                         Box(
                             modifier = Modifier.weight(8.6f)
                         ){
-                            TextFieldBasic(
+                            TextFieldError(
                                 value = stateUserInfoForm.name,
                                 onValueChanged = {
                                     authSharedViewModel.onUserInfoEvent(UserInfoFormEvent.NameChanged(it))
@@ -160,14 +160,17 @@ fun RegisterUserInfoScreen(
                         Box(
                             modifier = Modifier.weight(5.6f)
                         ){
-                            TextFieldBasic(
+                            TextFieldErrorAndCorrect(
                                 value = stateUserInfoForm.birthday,
                                 onValueChanged = {
                                     authSharedViewModel.onUserInfoEvent(UserInfoFormEvent.BirthdayChanged(it))
                                 },
                                 labelValue = stringResource(id = R.string.signup_userinfo_birthday),
                                 placeHolderValue = stringResource(id = R.string.signup_userinfo_birthday_placeholder),
+                                isTried = stateUserInfoForm.birthdayIsTried,
                                 isError = stateUserInfoForm.birthdayIsError,
+                                isCorrect = false,
+                                correctMessage = "",
                                 errorMessage = stateUserInfoForm.birthdayErrorMessage,
                                 keyboardType = KeyboardType.Number,
                                 imeAction = ImeAction.Next,
@@ -215,15 +218,18 @@ fun RegisterUserInfoScreen(
                         Box(
                             modifier = Modifier.weight(5.2f)
                         ){
-                            TextFieldBasic(
+                            TextFieldErrorAndCorrect(
                                 value = stateUserInfoForm.phoneNumber,
                                 onValueChanged = {
                                     authSharedViewModel.onUserInfoEvent(UserInfoFormEvent.PhoneNumberChanged(it))
                                 },
                                 labelValue = stringResource(id = R.string.signup_userinfo_phonenumber),
                                 placeHolderValue = stringResource(id = R.string.signup_userinfo_phonenumber_placeholder),
+                                isTried = stateUserInfoForm.phoneNumberIsTried,
                                 isError = stateUserInfoForm.phoneNumberIsError,
+                                isCorrect = stateUserInfoForm.phoneNumberIsCorrect,
                                 errorMessage = stateUserInfoForm.phoneNumberErrorMessage,
+                                correctMessage = stateUserInfoForm.phoneNumberCorrectMessage,
                                 keyboardType = KeyboardType.Number,
                                 imeAction = ImeAction.Done,
                             )
@@ -263,14 +269,13 @@ fun RegisterUserInfoScreen(
                                 isCorrect = stateUserInfoForm.authNumberIsCorrect,
                                 errorMessage = stateUserInfoForm.authNumberErrorMessage,
                                 correctMessage = stateUserInfoForm.authNumberCorrectMessage,
-                                correctIcon = false,
                                 keyboardType = KeyboardType.Number,
                                 imeAction = ImeAction.Done,
                             )
                         }
                         Text(
                             modifier = Modifier.weight(1.4f),
-                            text = stateUserInfoForm.timer,
+                            text = formatTime(authSharedViewModel.remainingTime),
                             color = Color(0xFFB00020),
                             style = ZipdabangandroidTheme.Typography.fourteen_300,
                             textAlign = TextAlign.Center
@@ -288,7 +293,6 @@ fun RegisterUserInfoScreen(
                         }
                     }
                 }
-
             }
 
             Box(
@@ -300,8 +304,8 @@ fun RegisterUserInfoScreen(
                     onClick={
                         if(stateUserInfoForm.validate){
                             onClickNext()
-                        } else{
-                            //authSharedViewModel.onUserInfoEvent(UserInfoFormEvent.BtnChanged(true))
+                        } else {
+                            authSharedViewModel.onUserInfoEvent(UserInfoFormEvent.ValidateChanged(true))
                         }
                     },
                     isFormFilled = stateUserInfoForm.btnEnabled
@@ -309,7 +313,12 @@ fun RegisterUserInfoScreen(
             }
         }
     }
+}
 
+fun formatTime(seconds: Int): String {
+    val minutes = seconds / 60
+    val remainingSeconds = seconds % 60
+    return String.format("%02d:%02d", minutes, remainingSeconds)
 }
 
 @Preview

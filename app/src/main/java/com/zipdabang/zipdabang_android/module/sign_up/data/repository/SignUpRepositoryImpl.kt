@@ -7,7 +7,6 @@ import com.zipdabang.zipdabang_android.module.sign_up.data.remote.InfoRequest
 import com.zipdabang.zipdabang_android.module.sign_up.data.remote.InfoResponse
 import com.zipdabang.zipdabang_android.module.sign_up.data.remote.NicknameResponse
 import com.zipdabang.zipdabang_android.module.sign_up.data.remote.PhoneRequest
-import com.zipdabang.zipdabang_android.module.sign_up.data.remote.PhoneResponse
 import com.zipdabang.zipdabang_android.module.sign_up.data.remote.SignUpApi
 import com.zipdabang.zipdabang_android.module.sign_up.data.remote.TermsResponse
 import com.zipdabang.zipdabang_android.module.sign_up.domain.repository.SignUpRepository
@@ -20,7 +19,7 @@ class SignUpRepositoryImpl @Inject constructor(
         return api.getTerms()
     }
 
-    override suspend fun postPhoneSms(phoneRequest: PhoneRequest): PhoneResponse {
+    override suspend fun postPhoneSms(phoneRequest: PhoneRequest): AuthResponse {
         return api.postPhoneSms(phoneRequest)
     }
 

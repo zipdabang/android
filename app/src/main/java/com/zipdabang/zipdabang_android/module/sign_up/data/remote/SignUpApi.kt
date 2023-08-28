@@ -11,7 +11,7 @@ interface SignUpApi {
     @POST("members/phone/sms")
     suspend fun postPhoneSms(
         @Body phoneRequest : PhoneRequest
-    ) : PhoneResponse
+    ) : AuthResponse
     @POST("members/phone/auth")
     suspend fun postPhoneAuth(
         @Body authRequest : AuthRequest
