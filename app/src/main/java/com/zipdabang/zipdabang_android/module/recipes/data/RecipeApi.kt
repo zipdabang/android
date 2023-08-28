@@ -1,5 +1,6 @@
 package com.zipdabang.zipdabang_android.module.recipes.data
 
+import com.zipdabang.zipdabang_android.module.detail.recipe.data.RecipeDetailDto
 import com.zipdabang.zipdabang_android.module.recipes.data.banner.RecipeBannerDto
 import com.zipdabang.zipdabang_android.module.recipes.data.category.RecipeCategoryDto
 import com.zipdabang.zipdabang_android.module.recipes.data.preference.PreferenceResultDto
@@ -64,4 +65,11 @@ interface RecipeApi {
         @Query("order") order: String,
         @Query("pageIndex") pageIndex: Int
     ): RecipeListDto
+
+    //----------------------------------------------------------------------------------------------
+    @GET("/members/recipes/{recipeId}")
+    suspend fun getRecipeDetail(
+        @Header("Authorization") accessToken: String,
+        @Path("recipeId") recipeId: Int
+    ): RecipeDetailDto
 }

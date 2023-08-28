@@ -16,7 +16,7 @@ import com.zipdabang.zipdabang_android.ui.component.ModalDrawer
 import kotlinx.coroutines.launch
 
 @Composable
-fun DetailRecipeScreen(){
+fun RecipeDetailScreen(){
     //drawer에 필요한 drawerState랑 scope
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()

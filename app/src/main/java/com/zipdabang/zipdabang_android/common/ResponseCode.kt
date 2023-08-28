@@ -10,6 +10,7 @@ enum class ResponseCode(val responseResult: ResponseResult, val code: Int, val m
     UNAUTHORIZED_TOKEN_NOT_EXISTS(ResponseResult.ERROR, 4010, "토큰이 없습니다."),
     BAD_REQUEST_USER_NOT_EXISTS(ResponseResult.ERROR, 4013, "사용자가 없습니다. 서버 개발자에게 문의하세요."),
     BAD_REQUEST_RECIPE_NOT_EXISTS(ResponseResult.ERROR, 4101, "존재하지 않는 레시피 아이디입니다."),
+    BAD_REQUEST_RECIPE_BANNED(ResponseResult.ERROR, 4102, "차단한 사용자의 레시피입니다."),
     SERVER_ERROR(ResponseResult.ERROR, 5000, "서버에러가 발생하였습니다. 서버 개발자에게 문의하세요.");
 
     companion object {
