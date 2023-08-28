@@ -50,7 +50,9 @@
     <string name="signup_userinfo_address">주소</string>
     <string name="signup_userinfo_detailaddress">상세 주소</string>
     <string name="signup_userinfo_detailaddress_placeholder">상세 주소 (배달 주문 시 입력 가능)</string>
-    <string name="signup_userinfo_birthday_notformed">생년월일 형식에 맞지 않습니다.</string>
+    <string name="signup_userinfo_birthday_notformed">생년월일 형식에 맞지 않습니다</string>
+    <string name="signup_userinfo_birthday_notsix">생년월일 6자리를 입력해주세요</string>
+    <string name="signup_userinfo_birthday_underfifteen">만 15세 미만은 가입이 불가해요</string>
     <string name="signup_userinfo_phonenumber_notcertificate">인증 번호 불일치</string>
     <string name="signup_userinfo_phonenumber_certificate">인증 완료</string>
     <string name="signup_nickname_maintitle_zipdabang">집다방</string>

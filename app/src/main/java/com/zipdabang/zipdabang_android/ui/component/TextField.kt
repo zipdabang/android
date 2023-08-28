@@ -49,6 +49,7 @@ fun TextFieldErrorAndCorrect(
     isCorrect : Boolean,
     errorMessage : String,
     correctMessage : String,
+    correctIcon : Boolean,
 
     keyboardType : KeyboardType,
     imeAction : ImeAction, //default,none이면 엔터키, next면 다음 텍스트필드로 넘어감, done면 완료키
@@ -124,14 +125,19 @@ fun TextFieldErrorAndCorrect(
             ),
             //visualTransformation = PasswordVisualTransformation(),
             trailingIcon = {
-                if(isCorrect && isTried){
-                    Icon(
-                        imageVector = Icons.Filled.Done,
-                        contentDescription = "check icon",
-                        tint =  Color(0xFF6200EE),
-                        modifier = Modifier
-                            .size(22.dp)
-                    )
+                if(correctIcon){
+                    if(isCorrect && isTried){
+                        Icon(
+                            imageVector = Icons.Filled.Done,
+                            contentDescription = "check icon",
+                            tint =  Color(0xFF6200EE),
+                            modifier = Modifier
+                                .size(22.dp)
+                        )
+                    }
+                }
+                else{
+
                 }
             },
         )
@@ -155,6 +161,7 @@ fun PreviewTextFieldErrorAndCorrect(){
             isCorrect = true,
             errorMessage = "닉네임에 맞지 않습니다.",
             correctMessage = "닉네임에 맞습니다.",
+            correctIcon = true,
             keyboardType = KeyboardType.Text,
             imeAction = ImeAction.Done
         )

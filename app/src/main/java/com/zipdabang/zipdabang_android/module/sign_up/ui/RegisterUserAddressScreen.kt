@@ -39,6 +39,7 @@ import com.zipdabang.zipdabang_android.ui.component.MainAndSubTitle
 import com.zipdabang.zipdabang_android.ui.component.PrimaryButtonOutLined
 import com.zipdabang.zipdabang_android.ui.component.PrimaryButtonWithStatus
 import com.zipdabang.zipdabang_android.ui.component.TextFieldBasic
+import com.zipdabang.zipdabang_android.ui.component.TextFieldErrorAndCorrect
 import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
 
 @Composable
@@ -105,20 +106,23 @@ fun RegisterUserAddressScreen(
                             tint = ZipdabangandroidTheme.Colors.Choco,
                             modifier = Modifier
                                 .size(12.dp)
-                                .weight(1.2f),
+                                .weight(1.4f),
                         )
                         Box(
-                            modifier = Modifier.weight(5.4f)
+                            modifier = Modifier.weight(5.2f)
                         ){
                             TextFieldBasic(
                                 value = stateUserAddressForm.zipCode,
                                 onValueChanged = {
                                     authSharedViewModel.onUserAddressEvent(UserAddressFormEvent.ZipcodeChanged(it))
                                 },
+                                //isTried = stateUserAddressForm.zipCodeIsTried,
                                 labelValue = stringResource(id = R.string.signup_userinfo_zipcode),
                                 placeHolderValue = "",
-                                isError = false ,
-                                errorMessage = "아직 배송 지원 불가 지역입니다",
+                                isError = stateUserAddressForm.zipCodeIsError,
+                                //isCorrect = stateUserAddressForm.zipCodeIsCorrect,
+                                errorMessage = stateUserAddressForm.zipCodeErrorMessage,
+                                //correctMessage = stateUserAddressForm.zipCodeCorrectMessage,
                                 keyboardType = KeyboardType.Number,
                                 imeAction = ImeAction.Done,
                             )
@@ -130,7 +134,7 @@ fun RegisterUserAddressScreen(
                                 borderColor =ZipdabangandroidTheme.Colors.BlackSesame,
                                 text = stringResource(id = R.string.signup_userinfo_addresssearch),
                                 onClick = {
-
+                                    authSharedViewModel.onUserAddressEvent(UserAddressFormEvent.ZipcodeClicked(true))
                                 }
                             )
                         }
@@ -146,10 +150,10 @@ fun RegisterUserAddressScreen(
                             tint = ZipdabangandroidTheme.Colors.Choco,
                             modifier = Modifier
                                 .size(16.dp)
-                                .weight(1.2f),
+                                .weight(1.4f),
                         )
                         Box(
-                            modifier = Modifier.weight(8.8f)
+                            modifier = Modifier.weight(8.6f)
                         ){
                             TextFieldBasic(
                                 value = stateUserAddressForm.address,
@@ -171,10 +175,10 @@ fun RegisterUserAddressScreen(
                         verticalAlignment = Alignment.CenterVertically
                     ){
                         Spacer(
-                            modifier = Modifier.weight(1.2f)
+                            modifier = Modifier.weight(1.4f)
                         )
                         Box(
-                            modifier = Modifier.weight(8.8f)
+                            modifier = Modifier.weight(8.6f)
                         ){
                             TextFieldBasic(
                                 value = stateUserAddressForm.detailAddress,

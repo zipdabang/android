@@ -16,6 +16,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -44,6 +45,7 @@ import com.zipdabang.zipdabang_android.ui.component.PrimaryButtonOutLined
 import com.zipdabang.zipdabang_android.ui.component.PrimaryButtonWithStatus
 import com.zipdabang.zipdabang_android.ui.component.RadioGroupHorizontal
 import com.zipdabang.zipdabang_android.ui.component.TextFieldBasic
+import com.zipdabang.zipdabang_android.ui.component.TextFieldErrorAndCorrect
 import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
 
 @Composable
@@ -55,6 +57,16 @@ fun RegisterUserInfoScreen(
 ) {
     val stateUserInfoForm = authSharedViewModel.stateUserInfoForm
     val genderList = authSharedViewModel.genderList
+
+    LaunchedEffect(key1 = stateUserInfoForm){
+        authSharedViewModel.onUserInfoEvent(UserInfoFormEvent.BtnChanged(true))
+        //Log.e("userinfo-screen", "${stateUserInfoForm}")
+    }
+
+    LaunchedEffect(key1 = stateUserInfoForm.btnEnabled){
+        authSharedViewModel.onUserInfoEvent(UserInfoFormEvent.ValidateChanged(false))
+        //Log.e("userinfo-screen", "${stateUserInfoForm}")
+    }
 
     Scaffold(
         modifier = Modifier
@@ -112,10 +124,10 @@ fun RegisterUserInfoScreen(
                             tint = ZipdabangandroidTheme.Colors.Choco,
                             modifier = Modifier
                                 .size(16.dp)
-                                .weight(1.2f),
+                                .weight(1.4f),
                         )
                         Box(
-                            modifier = Modifier.weight(8.8f)
+                            modifier = Modifier.weight(8.6f)
                         ){
                             TextFieldBasic(
                                 value = stateUserInfoForm.name,
@@ -143,10 +155,10 @@ fun RegisterUserInfoScreen(
                             tint = ZipdabangandroidTheme.Colors.Choco,
                             modifier = Modifier
                                 .size(16.dp)
-                                .weight(1.2f),
+                                .weight(1.4f),
                         )
                         Box(
-                            modifier = Modifier.weight(5.4f)
+                            modifier = Modifier.weight(5.6f)
                         ){
                             TextFieldBasic(
                                 value = stateUserInfoForm.birthday,
@@ -198,10 +210,10 @@ fun RegisterUserInfoScreen(
                             tint = ZipdabangandroidTheme.Colors.Choco,
                             modifier = Modifier
                                 .size(16.dp)
-                                .weight(1.2f),
+                                .weight(1.4f),
                         )
                         Box(
-                            modifier = Modifier.weight(5.4f)
+                            modifier = Modifier.weight(5.2f)
                         ){
                             TextFieldBasic(
                                 value = stateUserInfoForm.phoneNumber,
@@ -210,7 +222,7 @@ fun RegisterUserInfoScreen(
                                 },
                                 labelValue = stringResource(id = R.string.signup_userinfo_phonenumber),
                                 placeHolderValue = stringResource(id = R.string.signup_userinfo_phonenumber_placeholder),
-                                isError = stateUserInfoForm.phoneNumberIsError ,
+                                isError = stateUserInfoForm.phoneNumberIsError,
                                 errorMessage = stateUserInfoForm.phoneNumberErrorMessage,
                                 keyboardType = KeyboardType.Number,
                                 imeAction = ImeAction.Done,
@@ -223,7 +235,7 @@ fun RegisterUserInfoScreen(
                                 borderColor =ZipdabangandroidTheme.Colors.BlackSesame,
                                 text = stringResource(id = R.string.signup_userinfo_certificatecall),
                                 onClick = {
-                                    authSharedViewModel.btnPhonenumberClicked()
+                                    authSharedViewModel.onUserInfoEvent(UserInfoFormEvent.PhoneNumberClicked(true))
                                 }
                             )
                         }
@@ -234,27 +246,31 @@ fun RegisterUserInfoScreen(
                         verticalAlignment = Alignment.CenterVertically
                     ){
                         Spacer(
-                            modifier = Modifier.weight(1.2f)
+                            modifier = Modifier.weight(1.4f)
                         )
                         Box(
-                            modifier = Modifier.weight(4.2f)
+                            modifier = Modifier.weight(3.8f)
                         ){
-                            TextFieldBasic(
+                            TextFieldErrorAndCorrect(
                                 value = stateUserInfoForm.authNumber,
                                 onValueChanged = {
                                     authSharedViewModel.onUserInfoEvent(UserInfoFormEvent.AuthNumberChanged(it))
                                 },
+                                isTried = stateUserInfoForm.authNumberIsTried,
                                 labelValue = stringResource(id = R.string.signup_userinfo_certificatenumber),
                                 placeHolderValue = "",
                                 isError = stateUserInfoForm.authNumberIsError,
+                                isCorrect = stateUserInfoForm.authNumberIsCorrect,
                                 errorMessage = stateUserInfoForm.authNumberErrorMessage,
+                                correctMessage = stateUserInfoForm.authNumberCorrectMessage,
+                                correctIcon = false,
                                 keyboardType = KeyboardType.Number,
                                 imeAction = ImeAction.Done,
                             )
                         }
                         Text(
-                            modifier = Modifier.weight(1.6f),
-                            text = stateUserInfoForm.authTime,
+                            modifier = Modifier.weight(1.4f),
+                            text = stateUserInfoForm.timer,
                             color = Color(0xFFB00020),
                             style = ZipdabangandroidTheme.Typography.fourteen_300,
                             textAlign = TextAlign.Center
@@ -266,7 +282,7 @@ fun RegisterUserInfoScreen(
                                 borderColor =ZipdabangandroidTheme.Colors.BlackSesame,
                                 text = stringResource(id = R.string.signup_userinfo_ok),
                                 onClick = {
-
+                                    authSharedViewModel.onUserInfoEvent(UserInfoFormEvent.AuthNumberClicked(true))
                                 }
                             )
                         }
@@ -281,8 +297,14 @@ fun RegisterUserInfoScreen(
             ){
                 PrimaryButtonWithStatus(
                     text= stringResource(id = R.string.signup_btn_inputdone),
-                    onClick={ onClickNext() },
-                    isFormFilled = true //stateTermsValidate
+                    onClick={
+                        if(stateUserInfoForm.validate){
+                            onClickNext()
+                        } else{
+                            //authSharedViewModel.onUserInfoEvent(UserInfoFormEvent.BtnChanged(true))
+                        }
+                    },
+                    isFormFilled = stateUserInfoForm.btnEnabled
                 )
             }
         }

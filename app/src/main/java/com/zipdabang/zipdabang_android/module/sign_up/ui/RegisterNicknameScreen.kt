@@ -132,6 +132,7 @@ fun RegisterNicknameScreen(
                             isCorrect = stateNicknameForm.isSuccess,
                             errorMessage = stateNicknameForm.errorMessage,
                             correctMessage = stateNicknameForm.successMessage,
+                            correctIcon = true,
                             keyboardType = KeyboardType.Text,
                             imeAction = ImeAction.Done
                         )
@@ -145,7 +146,7 @@ fun RegisterNicknameScreen(
                             borderColor = ZipdabangandroidTheme.Colors.BlackSesame,
                             text= stringResource(id = R.string.signup_nickname_deplicatecheck),
                             onClick= {
-                                authSharedViewModel.btnNicknameClicked()
+                                authSharedViewModel.onNicknameEvent(NicknameFormEvent.NicknameCliked(true))
                             }
                         )
                     }
