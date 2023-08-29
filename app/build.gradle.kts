@@ -134,6 +134,8 @@ dependencies {
     //for pager
     implementation ("com.google.accompanist:accompanist-pager:0.24.2-alpha")
     implementation ("com.google.accompanist:accompanist-pager-indicators:0.24.2-alpha")
+    implementation ("androidx.paging:paging-compose:1.0.0-alpha14")
+
 
     // preferences datastore
     implementation ("androidx.datastore:datastore:1.0.0")
