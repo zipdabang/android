@@ -16,6 +16,7 @@ import androidx.compose.material.Text
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -47,6 +48,7 @@ import com.zipdabang.zipdabang_android.ui.component.PrimaryButtonOutLined
 import com.zipdabang.zipdabang_android.ui.component.PrimaryButtonWithStatus
 import com.zipdabang.zipdabang_android.ui.component.RoundedButton
 import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
+import kotlinx.coroutines.flow.FlowCollector
 
 @Composable
 fun RegisterPreferencesScreen(
@@ -54,9 +56,15 @@ fun RegisterPreferencesScreen(
     authSharedViewModel: AuthSharedViewModel = hiltViewModel(), //FakeAuthSharedViewModel = provideFakeAuthSharedViewModel(),
     onClickBack : ()->Unit,
     onClickNext: ()->Unit,
+    onClickNextAfterChoose : () -> Unit,
 ) {
     val stateBeverageForm = authSharedViewModel.stateBeverageForm
-    val viewModel = hiltViewModel<ProtoDataViewModel>()
+    //val viewModel = hiltViewModel<ProtoDataViewModel>()
+
+    LaunchedEffect(key1 = stateBeverageForm){
+        authSharedViewModel.onBeverageEvent(BeverageFormEvent.BtnChanged(true))
+        authSharedViewModel.updateSocial()
+    }
 
     Scaffold(
         modifier = Modifier
@@ -103,7 +111,7 @@ fun RegisterPreferencesScreen(
                             subTextColor =  ZipdabangandroidTheme.Colors.Typo
                         )
 
-                        val chunkedBeverageList = stateBeverageForm.beverageList.chunked(3)//state.beverageList.chunked(3)
+                        val chunkedBeverageList = stateBeverageForm.beverageList.chunked(3)
                         Column(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -170,7 +178,10 @@ fun RegisterPreferencesScreen(
                             ),
                         ),
                         style = ZipdabangandroidTheme.Typography.fourteen_300,
-                        onClick={  },
+                        onClick={
+                            authSharedViewModel.postInfo()
+                            onClickNextAfterChoose()
+                        },
                     )
                 }
             }
@@ -182,6 +193,7 @@ fun RegisterPreferencesScreen(
                 PrimaryButtonWithStatus(
                     text= stringResource(id = R.string.signup_btn_choicecomplete),
                     onClick={
+                        authSharedViewModel.postInfo()
                         onClickNext()
                     },
                     isFormFilled = stateBeverageForm.btnEnabled
@@ -202,6 +214,9 @@ fun PreviewRegisterPreferencesScreen(){
         },
         onClickNext = {
             navController.navigate(AuthScreen.RegisterPreferences.route)
+        },
+        onClickNextAfterChoose = {
+
         }
     )
 }

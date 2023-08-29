@@ -70,14 +70,14 @@ class AuthSharedViewModel @Inject constructor(
         _profile.value = profile
     }
 
-
+    //social login platform
     lateinit var social : String
-    private suspend fun updateSocial(){
+    suspend fun updateSocial(){
         social = dataStore.data.first().platformStatus.toString()
     }
 
 
-    // 최종 post, info 글자수 제한하기, 생년월일 더 제한, 카카오 주소 api, response enum class로 옮기기, textfield 옮겨갈때마다 focusing
+    // info 글자수 제한하기, 생년월일 더 제한, 카카오 주소 api, response enum class로 옮기기, textfield 옮겨갈때마다 focusing
 
 
     /*TermsScreen*/
@@ -191,10 +191,12 @@ class AuthSharedViewModel @Inject constructor(
             }
             is NicknameFormEvent.NicknameCliked ->{
                 val nicknameResult = validateNicknameUseCase(stateNicknameForm.nickname)
+
                 if(nicknameResult.successful){
                     getNickname()
                 } else {
                     stateNicknameForm = stateNicknameForm.copy(
+                        isTried = true,
                         isError = true,
                         errorMessage = nicknameResult.errorMessage
                     )
@@ -263,7 +265,8 @@ class AuthSharedViewModel @Inject constructor(
                 }
             }
             is UserInfoFormEvent.AuthNumberClicked ->{
-                postAuthNumber()
+                //전화번호 여기 주석 풀어
+                //postAuthNumber()
                 stateUserInfoForm = stateUserInfoForm.copy(
                     phoneNumberCorrectMessage = "",
                     phoneNumberIsCorrect = false,
@@ -299,7 +302,8 @@ class AuthSharedViewModel @Inject constructor(
         val phonenumberResult = validatePhoneUseCase(stateUserInfoForm.phoneNumber)
 
         if(phonenumberResult.successful){
-            postPhonenumber() //api 호출
+            //전화번호 여기 주석 풀어
+            //postPhonenumber() //api 호출
         } else{
             stateUserInfoForm = stateUserInfoForm.copy(
                 phoneNumberIsTried = true,
@@ -320,19 +324,20 @@ class AuthSharedViewModel @Inject constructor(
 
         val isError = stateUserInfoForm.birthdayIsError
 
-        val isValidateAtPhone = stateUserInfoForm.authNumberIsCorrect
-        //Log.e("userinfo-BtnEnabled", "${stateUserInfoForm} ${isFull} ${isValidateAtPhone}")
+        //전화번호 여기 주석 풀어
+        //val isValidateAtPhone = stateUserInfoForm.authNumberIsCorrect
 
-        if (isFull && isValidateAtPhone && !isError){
+        if (isFull && !isError){ //isFull && isValidateAtPhone && !isError
             stateUserInfoForm = stateUserInfoForm.copy(btnEnabled = true)
         } else {
             stateUserInfoForm = stateUserInfoForm.copy(btnEnabled = false)
         }
     }
-    fun updateValidateUserInfo() : Boolean{
+    fun updateValidateUserInfo() : Boolean {
         var isCorrect = listOf(
             !stateUserInfoForm.birthdayIsError,
-            stateUserInfoForm.authNumberIsCorrect
+            //전화번호 여기 주석 풀어
+            //stateUserInfoForm.authNumberIsCorrect
         ).all{ it==true }
 
         Log.e("userinfo-validate", "validate : ${stateUserInfoForm.validate} birtdayIsError : ${stateUserInfoForm.birthdayIsError}")
@@ -349,6 +354,7 @@ class AuthSharedViewModel @Inject constructor(
 
         return stateUserInfoForm.validate
     }
+
 
 
     /*UserAddressScreen*/
@@ -386,6 +392,7 @@ class AuthSharedViewModel @Inject constructor(
     }
 
 
+
     /*PreferencesScreen*/
     var stateBeverageForm by mutableStateOf(BeverageFormState())
     fun onBeverageEvent(event : BeverageFormEvent){
@@ -395,7 +402,9 @@ class AuthSharedViewModel @Inject constructor(
                     set(event.index, event.checked)
                 }
                 stateBeverageForm = stateBeverageForm.copy(beverageCheckList = updatedCheckList)
-                Log.e("beverage-viewemodel", "${stateBeverageForm}")
+                Log.e("beverage-viewemodel", "${stateBeverageForm.beverageCheckList.mapIndexedNotNull { index, isSelected ->
+                    if (isSelected) index+1 else null
+                }}")
             }
             is BeverageFormEvent.BtnChanged ->{
                 updateBtnEnabledBeverage()
@@ -643,7 +652,9 @@ class AuthSharedViewModel @Inject constructor(
             }
         }.launchIn(viewModelScope)
     }
-    private fun postInfo(){
+    fun postInfo(
+        //tokenStoreViewModel: ProtoDataViewModel,
+    ){
         postInfoUseCase(
             social = social,
             infoRequest = InfoRequest(
@@ -652,7 +663,7 @@ class AuthSharedViewModel @Inject constructor(
                 agreeTermsIdList = listOf(stateTermsForm.choiceId),
                 name = stateUserInfoForm.name,
                 birth = stateUserInfoForm.birthday,
-                phoneNum = stateUserInfoForm.phoneNumber,
+                phoneNum = "01075572261", //stateUserInfoForm.phoneNumber,
                 gender = stateUserInfoForm.gender,
                 zipCode = stateUserAddressForm.zipCode,
                 address = stateUserAddressForm.address,
@@ -665,21 +676,37 @@ class AuthSharedViewModel @Inject constructor(
         ).onEach{result ->
             when(result){
                 is Resource.Success ->{
-                    if(result.data?.result?.accessToken != null){
-                        //updateAccessToken(result.data.result.accessToken)
+                    if(result.data?.code == 2000){
+                        //tokenStoreViewModel.updateAccessToken(result.data.result.accessToken)
                         //tokenStoreViewModel.updateRefreshToken(result.data.result.refreshToken)
                     } else{
                         //토큰 null임 뭐지?
                     }
+                    Log.e("signup-token", "성공 : ${result.data?.result}")
                 }
                 is Resource.Error ->{
-                    Log.e("token", "에러 : ${result.data?.result}")
+                    Log.e("signup-token", "에러 : ${result.message} ${social} ${InfoRequest(
+                        email = _email.value,
+                        profileUrl = _profile.value,
+                        agreeTermsIdList = listOf(stateTermsForm.choiceId),
+                        name = stateUserInfoForm.name,
+                        birth = stateUserInfoForm.birthday,
+                        phoneNum = "01075572261", //stateUserInfoForm.phoneNumber,
+                        gender = stateUserInfoForm.gender,
+                        zipCode = stateUserAddressForm.zipCode,
+                        address = stateUserAddressForm.address,
+                        detailAddress = stateUserAddressForm.detailAddress,
+                        nickname = stateNicknameForm.nickname,
+                        preferBeverages = stateBeverageForm.beverageCheckList.mapIndexedNotNull { index, isSelected ->
+                            if (isSelected) index+1 else null
+                        },
+                    )}")
                 }
                 is Resource.Loading ->{
-                    Log.e("token", "로딩중 : ${result.data?.result}")
+                    Log.e("signup-token", "로딩중 : ${result.data?.result}")
                 }
             }
-        }
+        }.launchIn(viewModelScope)
     }
 
 
