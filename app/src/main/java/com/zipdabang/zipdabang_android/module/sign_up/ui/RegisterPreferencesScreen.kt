@@ -34,6 +34,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.zipdabang.zipdabang_android.R
+import com.zipdabang.zipdabang_android.core.data_store.proto.ProtoDataViewModel
 import com.zipdabang.zipdabang_android.core.navigation.AuthScreen
 import com.zipdabang.zipdabang_android.module.sign_up.ui.viewmodel.AuthSharedViewModel
 import com.zipdabang.zipdabang_android.ui.component.AppBarSignUp
@@ -46,6 +47,7 @@ import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
 @Composable
 fun RegisterPreferencesScreen(
     navController: NavHostController,
+    tokenStoreViewModel: ProtoDataViewModel = hiltViewModel(),
     authSharedViewModel: AuthSharedViewModel = hiltViewModel(), //FakeAuthSharedViewModel = provideFakeAuthSharedViewModel(),
     onClickBack : ()->Unit,
     onClickNext: ()->Unit,
@@ -178,7 +180,9 @@ fun RegisterPreferencesScreen(
             ){
                 PrimaryButtonWithStatus(
                     text= stringResource(id = R.string.signup_btn_choicecomplete),
-                    onClick={ onClickNext() },
+                    onClick={
+                        onClickNext()
+                    },
                     isFormFilled = statePreferencesValidate
                 )
             }

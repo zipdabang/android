@@ -1,5 +1,6 @@
 package com.zipdabang.zipdabang_android.module.sign_up.domain.usecase
 
+import android.util.Log
 import com.zipdabang.zipdabang_android.common.Resource
 import com.zipdabang.zipdabang_android.module.sign_up.data.remote.TermsResult
 import com.zipdabang.zipdabang_android.module.sign_up.domain.repository.SignUpRepository
