@@ -48,5 +48,5 @@ sealed class MyScreen(val route : String){
 
 
 sealed class SharedScreen(val route : String){
-    object DetailRecipe : SharedScreen(route = "shared/detail")
+    object DetailRecipe : SharedScreen(route = "shared/detail/{recipeId}")
 }
