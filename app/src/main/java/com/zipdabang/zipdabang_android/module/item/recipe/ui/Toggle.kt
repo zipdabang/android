@@ -3,6 +3,7 @@ package com.zipdabang.zipdabang_android.module.item.recipe.ui
 import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
@@ -33,7 +34,7 @@ fun IconToggle(
 ) {
     IconToggleButton(
         modifier = Modifier
-            .size(24.dp),
+            .fillMaxSize(),
         checked = checked,
         onCheckedChange = {
             onClick(it)
@@ -45,7 +46,8 @@ fun IconToggle(
                 if (checked) painterResource(id = iconChecked)
                 else painterResource(id = iconNotChecked),
             contentDescription = "toggle",
-            tint = if (checked) checkedColor else LocalContentColor.current
+            tint = if (checked) checkedColor else LocalContentColor.current,
+            modifier = Modifier.size(20.dp)
         )
 
         Log.d("icon state", "$checked")

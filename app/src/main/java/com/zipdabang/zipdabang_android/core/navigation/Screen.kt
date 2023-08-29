@@ -29,7 +29,11 @@ sealed class HomeScreen(val route : String){
 sealed class MarketScreen(val route : String){
     object Home : MarketScreen(route = "market/home")
 
-    object Category : MarketScreen(route = "market/category/{categoryId}")
+    object Category : MarketScreen(route = "market/category/{categoryId}"){
+        fun passCategoryId(id: Int): String{
+            return "market/category/$id"
+        }
+    }
 }
 sealed class BasketScreen(val route : String){
     object Home : BasketScreen(route = "basket/home")

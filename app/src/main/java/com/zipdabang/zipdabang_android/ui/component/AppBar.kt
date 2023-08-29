@@ -1,37 +1,90 @@
 package com.zipdabang.zipdabang_android.ui.component
 
+import android.content.Context
+import android.util.DisplayMetrics
+import androidx.annotation.DrawableRes
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.rounded.AccountBox
+import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LargeTopAppBar
+import androidx.compose.material3.LocalContentColor
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Stable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.mapSaver
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.structuralEqualityPolicy
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.BiasAlignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.paint
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.Layout
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.rememberNestedScrollInteropConnection
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.lerp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.toBitmap
+import coil.compose.AsyncImage
+import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.zipdabang.zipdabang_android.R
 import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
+import me.onebone.toolbar.CollapsingToolbarScaffold
+import me.onebone.toolbar.ScrollStrategy
+import me.onebone.toolbar.rememberCollapsingToolbarScaffoldState
+import kotlin.math.roundToInt
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -250,6 +303,95 @@ fun AppBarMy(
     )
 }
 
+@Composable
+fun AppBarCollapsing(
+    startIcon: ImageBitmap?,
+    endIcon: ImageBitmap?,
+    imageUrl: String,
+    onClickStartIcon: () -> Unit,
+    onClickEndIcon: () -> Unit,
+    content: @Composable () -> Unit
+) {
+    val state = rememberCollapsingToolbarScaffoldState()
+
+    CollapsingToolbarScaffold(
+        modifier = Modifier.fillMaxSize(),
+        state = state,
+        scrollStrategy = ScrollStrategy.ExitUntilCollapsed,
+        toolbar = {
+
+            val size = (70+(300-10) * state.toolbarState.progress).dp
+
+            /*val display = applicationContext.resources?.displayMetrics
+            val deviceWidth = display?.widthPixels
+            val deviceHeight = display?.heightPixels
+            val deviceWidthDp = deviceWidth?.div(((applicationContext.resources.displayMetrics.densityDpi.toFloat()) / DisplayMetrics.DENSITY_DEFAULT))
+            */
+
+            AsyncImage(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(size),
+                model = imageUrl,
+                contentDescription = "thumbnail",
+                contentScale = ContentScale.Crop,
+                alpha = state.toolbarState.progress
+            )
+
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(color = Color.White)
+            ) {
+
+            }
+
+            startIcon?.let {
+                IconButton(
+                    modifier = Modifier
+                        .padding(8.dp)
+                        .road(
+                            whenCollapsed = Alignment.TopStart,
+                            whenExpanded = Alignment.TopStart
+                        ),
+                    onClick = { onClickStartIcon() }
+                ) {
+                    Icon(
+                        bitmap = startIcon,
+                        contentDescription = "search",
+                        modifier = Modifier
+                            .padding(4.dp),
+                        tint = Color.White
+                    )
+                }
+            }
+
+
+            endIcon?.let {
+                IconButton(
+                    modifier = Modifier
+                        .padding(8.dp)
+                        .road(
+                            whenCollapsed = Alignment.TopEnd,
+                            whenExpanded = Alignment.TopEnd
+                        ),
+                    onClick = { onClickEndIcon() }
+                ) {
+                    Icon(
+                        bitmap = endIcon,
+                        contentDescription = "search",
+                        modifier = Modifier
+                            .padding(4.dp),
+                        tint = Color.White
+                    )
+                }
+            }
+        }
+    ) {
+        content()
+    }
+}
+
 
 @Preview
 @Composable
@@ -294,3 +436,29 @@ fun AppBarMyPreview() {
         centerText = "집다방"
     )
 }
+
+@Preview
+@Composable
+fun AppBarCollapsingPreview() {
+    AppBarCollapsing(
+        startIcon = loadXmlDrawable(resId = R.drawable.recipe_arrow_left),
+        endIcon = loadXmlDrawable(resId = R.drawable.recipe_more_white),
+        imageUrl = "https://github.com/kmkim2689/jetpack-compose-practice/assets/101035437/2bb0c4ab-e42b-4697-87c6-2fbe3c836cd7",
+        onClickStartIcon = { /*TODO*/ },
+        onClickEndIcon = { /*TODO*/ },
+    ) {
+        LazyColumn(modifier = Modifier.fillMaxSize()) {
+            items(100) {
+                Text("kmkim")
+            }
+        }
+    }
+}
+
+// https://slack-chats.kotlinlang.org/t/506477/hello-i-am-trying-to-load-a-layer-list-drawable-with-this-co
+@Composable
+fun loadXmlDrawable(@DrawableRes resId: Int): ImageBitmap? =
+    ContextCompat.getDrawable(
+        LocalContext.current,
+        resId
+    )?.toBitmap()?.asImageBitmap()

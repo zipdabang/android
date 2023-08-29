@@ -6,7 +6,6 @@ import kotlinx.serialization.Serializable
 data class RecipeDetailResult(
     val ingredients: List<Ingredient>,
     val owner: Boolean,
-    val ownerImage: String,
     val recipeInfo: RecipeInfo,
     val steps: List<RecipeStep>
 )
