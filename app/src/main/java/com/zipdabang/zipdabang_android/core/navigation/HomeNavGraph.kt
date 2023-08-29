@@ -14,15 +14,7 @@ fun NavGraphBuilder.HomeNavGraph(navController: NavController){
 
     navigation(startDestination = HomeScreen.Home.route,route = HOME_ROUTE){
         composable(HomeScreen.Home.route){
-            HomeScreen(
-                onGoToGuide = {
-                    navController.navigate(HomeScreen.Guide.route)
-                },
-                onGoToDetail = {
-                    navController.navigate(SharedScreen.DetailRecipe.route)
-
-                }
-            )
+            HomeScreen({},{})
         }
         composable(HomeScreen.Guide.route){
             GuideScreen()

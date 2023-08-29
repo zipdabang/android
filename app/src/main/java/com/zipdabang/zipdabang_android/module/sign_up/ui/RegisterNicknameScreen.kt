@@ -41,6 +41,7 @@ import com.zipdabang.zipdabang_android.ui.component.AppBarSignUp
 import com.zipdabang.zipdabang_android.ui.component.PrimaryButtonOutLined
 import com.zipdabang.zipdabang_android.ui.component.PrimaryButtonWithStatus
 import com.zipdabang.zipdabang_android.ui.component.TextFieldErrorAndCorrect
+import com.zipdabang.zipdabang_android.ui.component.TextFieldErrorAndCorrectIcon
 import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
 
 @Composable
@@ -51,8 +52,6 @@ fun RegisterNicknameScreen(
     onClickNext: ()->Unit,
 ) {
     val stateNicknameForm = authSharedViewModel.stateNicknameForm
-    Log.e("nickname-screen","${stateNicknameForm}")
-
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -120,7 +119,7 @@ fun RegisterNicknameScreen(
                     Box(
                         modifier = Modifier.weight(6.8f),
                     ){
-                        TextFieldErrorAndCorrect(
+                        TextFieldErrorAndCorrectIcon(
                             value = stateNicknameForm.nickname,
                             onValueChanged = {
                                 authSharedViewModel.onNicknameEvent(NicknameFormEvent.NicknameChanged(it))
@@ -145,7 +144,7 @@ fun RegisterNicknameScreen(
                             borderColor = ZipdabangandroidTheme.Colors.BlackSesame,
                             text= stringResource(id = R.string.signup_nickname_deplicatecheck),
                             onClick= {
-                                authSharedViewModel.btnNicknameClicked()
+                                authSharedViewModel.onNicknameEvent(NicknameFormEvent.NicknameCliked(true))
                             }
                         )
                     }

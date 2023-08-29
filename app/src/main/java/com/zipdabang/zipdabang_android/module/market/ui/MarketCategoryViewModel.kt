@@ -1,7 +1,15 @@
 package com.zipdabang.zipdabang_android.module.market.ui
 
+import android.util.Log
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import androidx.paging.ExperimentalPagingApi
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
+import androidx.paging.map
+import com.zipdabang.zipdabang_android.module.market.data.marketCategory.Category_Product
 import com.zipdabang.zipdabang_android.core.data_store.proto.ProtoRepository
 import com.zipdabang.zipdabang_android.core.data_store.proto.Token
 import com.zipdabang.zipdabang_android.module.market.data.marketCategory.PagingRepository
@@ -13,32 +21,18 @@ import javax.inject.Inject
 @ExperimentalPagingApi
 @HiltViewModel
 class MarketCategoryViewModel @Inject constructor(
-    private val repository: PagingRepository,
-    private val protoRepository: ProtoRepository
+    repository: PagingRepository,
 ): ViewModel() {
 
-    var token: String? = null
-    private val categoryId: Int = 0
 
-    private val accessToken: Flow<Token>
-        get() {
-            return protoRepository.tokens
-        }
+    private var categoryId: Int = 0
 
+    fun setCategoryId(id : Int){
+        categoryId = id
+    }
 
 
-   /* val getMarketCategoryItems :  Flow<PagingData<Category_Product>>  =
-        {
-        viewModelScope.launch {
-            accessToken
-                .map { it.accessToken }
-                .collect {
-                    token = it
-                }
-            token?.let {
-                repository.getAllItems(categoryId, token!!)
-            }
-        }
-    } */
+    val getMarketCategoryItems = repository.getAllItems(categoryId).cachedIn(viewModelScope)
+
 
 }

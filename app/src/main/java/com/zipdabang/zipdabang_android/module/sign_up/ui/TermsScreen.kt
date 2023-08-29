@@ -57,7 +57,7 @@ fun TermsScreen(
     val stateTermsForm = authSharedViewModel.stateTermsForm //term check 상태를 담아놓는 state
 
     LaunchedEffect(key1 = stateTermsForm){
-        authSharedViewModel.onTermsEvent(TermsFormEvent.BtnChanged(stateTermsForm.btnEnabled))
+        authSharedViewModel.onTermsEvent(TermsFormEvent.BtnChanged(true))
         //Log.e("terms-screen", "${stateTermsForm}")
     }
 

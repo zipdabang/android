@@ -35,13 +35,13 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
 
-//textfield -> api를 통해 error와 correct check가 필요할때
+//textfield -> api를 통해 error와 correct check가 필요할때 + checkicon 필요할때
 @SuppressLint("SuspiciousIndentation")
 @Composable
-fun TextFieldErrorAndCorrect(
+fun TextFieldErrorAndCorrectIcon(
     value : String,
     onValueChanged : (String) -> Unit,
-    isTried : Boolean,
+    isTried : Boolean, //api 시도했으면 true, !!!!!이걸 true로 설정해야 error와 check가 표시되요!!!!!
     labelValue : String,
     placeHolderValue : String,
 
@@ -53,8 +53,6 @@ fun TextFieldErrorAndCorrect(
     keyboardType : KeyboardType,
     imeAction : ImeAction, //default,none이면 엔터키, next면 다음 텍스트필드로 넘어감, done면 완료키
 ) {
-    //var isFocused by remember { mutableStateOf(false) }
-
         TextField(
             value = value,
             onValueChange = { onValueChanged(it) },
@@ -62,7 +60,6 @@ fun TextFieldErrorAndCorrect(
             modifier = Modifier
                 .fillMaxWidth()
                 .background(Color(0xFFF7F6F6)),
-                //.onFocusChanged { isFocused = it.isFocused },
             label = {
                 if (isCorrect && isTried) {
                     Text(
@@ -124,49 +121,116 @@ fun TextFieldErrorAndCorrect(
             ),
             //visualTransformation = PasswordVisualTransformation(),
             trailingIcon = {
-                if(isCorrect && isTried){
-                    Icon(
-                        imageVector = Icons.Filled.Done,
-                        contentDescription = "check icon",
-                        tint =  Color(0xFF6200EE),
-                        modifier = Modifier
-                            .size(22.dp)
-                    )
-                }
+               if(isCorrect && isTried){
+                   Icon(
+                       imageVector = Icons.Filled.Done,
+                       contentDescription = "check icon",
+                       tint =  Color(0xFF6200EE),
+                       modifier = Modifier
+                           .size(22.dp)
+                   )
+               }
             },
         )
 }
 
-@Preview
+
+//textfield -> api를 통해 error와 correct check가 필요할때 + checkicon 필요없을때
+@SuppressLint("SuspiciousIndentation")
 @Composable
-fun PreviewTextFieldErrorAndCorrect(){
-    var textState by remember { mutableStateOf("") }
+fun TextFieldErrorAndCorrect(
+    value : String,
+    onValueChanged : (String) -> Unit,
+    isTried : Boolean, //api 시도했으면 true, !!!!!이걸 true로 설정해야 error와 check가 표시되요!!!!!
+    labelValue : String,
+    placeHolderValue : String,
 
-    Box(
-        modifier = Modifier.padding(16.dp)
-    ){
-        TextFieldErrorAndCorrect(
-            value = textState,
-            onValueChanged = { textState = it },
-            isTried = false,
-            labelValue = "닉네임",
-            placeHolderValue = "2-6자 한글, 영어, 숫자",
-            isError = false,
-            isCorrect = true,
-            errorMessage = "닉네임에 맞지 않습니다.",
-            correctMessage = "닉네임에 맞습니다.",
-            keyboardType = KeyboardType.Text,
-            imeAction = ImeAction.Done
-        )
+    isError : Boolean,
+    isCorrect : Boolean,
+    errorMessage : String,
+    correctMessage : String,
 
-    }
+    keyboardType : KeyboardType,
+    imeAction : ImeAction,
+) {
+    //var isFocused by remember { mutableStateOf(false) }
+
+    TextField(
+        value = value,
+        onValueChange = { onValueChanged(it) },
+        textStyle = ZipdabangandroidTheme.Typography.sixteen_300,
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(Color(0xFFF7F6F6)),
+        //.onFocusChanged { isFocused = it.isFocused },
+        label = {
+            if (isCorrect && isTried) {
+                Text(
+                    text = correctMessage,
+                    style = ZipdabangandroidTheme.Typography.twelve_300,
+                    color = Color(0xFF6200EE)
+                )
+            } else if (isError && isTried){
+                Text(
+                    text = errorMessage,
+                    style = ZipdabangandroidTheme.Typography.twelve_300,
+                    color = Color(0xFFB00020)
+                )
+            } else {
+                Text(
+                    text = labelValue,
+                    style = ZipdabangandroidTheme.Typography.twelve_300,
+                    color = ZipdabangandroidTheme.Colors.Typo
+                )
+            }
+        },
+        placeholder = {
+            Text(
+                text = placeHolderValue,
+                style = ZipdabangandroidTheme.Typography.sixteen_300,
+                color = ZipdabangandroidTheme.Colors.Typo.copy(alpha = 0.5f)
+            )
+        },
+        isError = isError && isTried,
+        singleLine = true,
+        colors = TextFieldDefaults.colors(
+            unfocusedContainerColor = Color(0xFFF7F6F6), //상자
+            unfocusedIndicatorColor = //밑줄
+            if (isCorrect && isTried) Color(0xFF6200EE)
+            else ZipdabangandroidTheme.Colors.Typo.copy(alpha = 0.5f),
+
+            focusedContainerColor = Color(0xFFF7F6F6), //쓸때 상자
+            focusedLabelColor = ZipdabangandroidTheme.Colors.Typo, //쓸때 위에
+            cursorColor = //쓸때 커서
+            if (isCorrect && isTried) Color(0xFF6200EE)
+            else ZipdabangandroidTheme.Colors.Typo,
+            focusedIndicatorColor = //쓸때 밑줄
+            if (isCorrect && isTried) {
+                Color(0xFF6200EE)
+            } else if (isError && isTried) {
+                Color(0xFFB00020)
+            } else{
+                ZipdabangandroidTheme.Colors.Typo.copy(alpha = 0.5f)
+            },
+
+            errorCursorColor = Color(0xFFB00020), //에러 커서
+            errorLabelColor = Color(0xFFB00020),  //에러 위에
+            errorIndicatorColor = Color(0xFFB00020), //에러 밑줄
+            errorContainerColor = Color(0xFFF7F6F6), //에러 상자
+        ),
+        keyboardOptions = KeyboardOptions(
+            keyboardType = keyboardType, //email,text 등이 있다.
+            imeAction = imeAction, //done,default은 완료 키가 나온다. none이 엔터 키가 나온다.
+        ),
+        //visualTransformation = PasswordVisualTransformation(),
+    )
 }
 
 
 //textfield -> local에서 error check만 하면 될때
 @SuppressLint("SuspiciousIndentation")
 @Composable
-fun TextFieldBasic(
+fun TextFieldError(
     value : String,
     onValueChanged : (String) -> Unit,
     labelValue : String,
@@ -176,7 +240,7 @@ fun TextFieldBasic(
     errorMessage : String,
 
     keyboardType : KeyboardType,
-    imeAction : ImeAction, //default,none이면 엔터키, next면 다음 텍스트필드로 넘어감, done면 완료키
+    imeAction : ImeAction,
 ) {
         TextField(
             value = value,
@@ -235,13 +299,13 @@ fun TextFieldBasic(
 
 @Preview
 @Composable
-fun PreviewTextFieldBasic(){
+fun PreviewTextField(){
     var textState by remember { mutableStateOf("") }
 
-    Box(
+    Column(
         modifier = Modifier.padding(16.dp)
     ){
-        TextFieldBasic(
+        TextFieldError(
             value = textState,
             onValueChanged = {textState = it},
             labelValue = "생년월일",
@@ -251,8 +315,23 @@ fun PreviewTextFieldBasic(){
             keyboardType = KeyboardType.Number,
             imeAction = ImeAction.Done
         )
+        TextFieldErrorAndCorrectIcon(
+            value = textState,
+            onValueChanged = { textState = it },
+            isTried = false,
+            labelValue = "닉네임",
+            placeHolderValue = "2-6자 한글, 영어, 숫자",
+            isError = false,
+            isCorrect = true,
+            errorMessage = "닉네임에 맞지 않습니다.",
+            correctMessage = "닉네임에 맞습니다.",
+            keyboardType = KeyboardType.Text,
+            imeAction = ImeAction.Done
+        )
     }
 }
+
+
 
 
 

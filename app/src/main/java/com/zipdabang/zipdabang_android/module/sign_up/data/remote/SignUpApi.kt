@@ -10,10 +10,12 @@ interface SignUpApi {
     suspend fun getTerms() : TermsResponse
     @POST("members/phone/sms")
     suspend fun postPhoneSms(
-        @Body phoneRequest : String
-    ) : PhoneResponse
-    @POST()
-    suspend fun postPhoneAuth() //:
+        @Body phoneRequest : PhoneRequest
+    ) : AuthResponse
+    @POST("members/phone/auth")
+    suspend fun postPhoneAuth(
+        @Body authRequest : AuthRequest
+    ) : AuthResponse
     //주소 api
     @GET("members/exist-nickname")
     suspend fun getNickname(
@@ -21,7 +23,10 @@ interface SignUpApi {
     ) : NicknameResponse
     @GET("/categories")
     suspend fun getBeverages() : BeveragesResponse
-    @POST()
-    suspend fun postUserInfo() //:
+    @POST("members/oauth/info")
+    suspend fun postUserInfo(
+        @Query("social") social : String,
+        @Body infoRequest : InfoRequest
+    ) : InfoResponse
 
 }
