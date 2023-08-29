@@ -157,6 +157,9 @@ dependencies {
     // viewpager
     implementation ("com.google.accompanist:accompanist-pager:0.23.0")
     implementation ("com.google.accompanist:accompanist-pager-indicators:0.23.0")
+
+    // for collapsing toolbar
+    implementation ("me.onebone:toolbar-compose:2.3.2")
 }
 
 kapt {
