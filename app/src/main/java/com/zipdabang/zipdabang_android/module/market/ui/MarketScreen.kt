@@ -4,19 +4,15 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
@@ -32,10 +28,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.getValue
 
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.Alignment.Companion.CenterEnd
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
@@ -53,13 +47,13 @@ import com.zipdabang.zipdabang_android.R
 import com.zipdabang.zipdabang_android.core.navigation.MarketScreen
 import com.zipdabang.zipdabang_android.module.item.goods.RankItem
 import com.zipdabang.zipdabang_android.module.item.goods.ui.GoodsCard
-import com.zipdabang.zipdabang_android.module.item.goods.ui.HotItem
 import com.zipdabang.zipdabang_android.module.item.goods.ui.MarketCategory
 import com.zipdabang.zipdabang_android.ui.component.AppBarHome
 import com.zipdabang.zipdabang_android.ui.component.Banner
 import com.zipdabang.zipdabang_android.ui.component.GroupHeader
 import com.zipdabang.zipdabang_android.ui.component.GroupHeaderReversed
 import com.zipdabang.zipdabang_android.ui.component.ModalDrawer
+import com.zipdabang.zipdabang_android.ui.component.RectangleWithTwoLinesText
 import com.zipdabang.zipdabang_android.ui.theme.MarketBrown
 import kotlinx.coroutines.launch
 
@@ -185,7 +179,7 @@ fun MarketScreen(
                         )
                         val categoryList = listOf("음료","재료","장비","굿즈","키트","전체")
 
-                        MarketTabView(categoryList =categoryList , modifier = Modifier.padding(horizontal = 8.dp), onTabSelected = {})
+                  //      MarketTabView(categoryList =categoryList , modifier = Modifier.padding(horizontal = 8.dp), onTabSelected = {})
 
 
 
@@ -338,7 +332,7 @@ fun MarketScreen_Test(){
                                 .height(100.dp)
                                 .padding(horizontal = 8.dp)
                         ) {
-                            NoRecentItem()
+                            RectangleWithTwoLinesText(text1 = "앗! 최근 봤던 아이템이 아직 없어요.", text2 = "전체 상품 둘러보기" )
                         }
                     } else {
                         LazyRow(
@@ -368,14 +362,6 @@ fun MarketScreen_Test(){
                         onClick = { TODO() }
                     )
                     val categoryList = listOf("음료", "재료", "장비", "굿즈", "키트", "전체")
-
-                    MarketTabView(
-                        categoryList = categoryList,
-                        modifier = Modifier.padding(horizontal = 8.dp),
-                        onTabSelected = {
-                            selectedTabIndex = it
-                        })
-                    Spacer(modifier = Modifier.height(10.dp))
 
                     val list = listOf(
                         RankItem(
@@ -451,10 +437,15 @@ fun MarketScreen_Test(){
                             price = "3000원"
                         )
                     )
-                    when (selectedTabIndex) {
-                        0 -> MarketRankItem(categoryRankList = list)
-                        1 -> MarketRankItem(categoryRankList = list2)
-                    }
+                    val RankList = listOf(list,list2,null,null,null,null)
+
+                    MarketTabView(
+
+                        categoryList = categoryList,
+                        modifier = Modifier.padding(horizontal = 8.dp),
+                        categoryRankList = RankList
+                        )
+
 
 
                 }
