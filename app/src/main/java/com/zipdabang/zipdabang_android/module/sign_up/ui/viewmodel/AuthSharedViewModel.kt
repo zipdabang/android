@@ -181,7 +181,7 @@ class AuthSharedViewModel @Inject constructor(
     }
 
 
-    // 글자수 제한하기, 생년월일, api를 통해 왔으면 하는 message 수정해달라고 보내기, 카카오 주소 api, 최종 post api
+    // 글자수 제한하기, 카카오 주소 api
     /*UserInfoScreen*/
     var stateUserInfoForm by mutableStateOf(UserInfoFormState())
     var genderList by mutableStateOf(listOf("남", "여"))
@@ -254,7 +254,7 @@ class AuthSharedViewModel @Inject constructor(
             }
         }
     }
-    private fun updateValidateBirthday() {
+    fun updateValidateBirthday() {
         val birthdayResult = validateBirthdayUseCase(stateUserInfoForm.birthday)
         stateUserInfoForm = stateUserInfoForm.copy(birthdayIsTried = true)
 
@@ -306,10 +306,7 @@ class AuthSharedViewModel @Inject constructor(
             stateUserInfoForm = stateUserInfoForm.copy(btnEnabled = false)
         }
     }
-    private fun updateValidateUserInfo() : Boolean{
-        updateValidateBirthday()
-        //얘가 실행된 후에 아래가 실행되어야하고 순차적으로 UI에 있는게 실행돼야 한다
-
+    fun updateValidateUserInfo() : Boolean{
         var isCorrect = listOf(
             !stateUserInfoForm.birthdayIsError,
             stateUserInfoForm.authNumberIsCorrect
@@ -326,6 +323,8 @@ class AuthSharedViewModel @Inject constructor(
             return stateUserInfoForm.validate
             Log.e("userinfo-validate","validate false임")
         }
+
+        return stateUserInfoForm.validate
     }
 
 

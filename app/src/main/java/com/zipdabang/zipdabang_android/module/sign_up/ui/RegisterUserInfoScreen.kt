@@ -302,7 +302,9 @@ fun RegisterUserInfoScreen(
                 PrimaryButtonWithStatus(
                     text= stringResource(id = R.string.signup_btn_inputdone),
                     onClick={
-                        if(stateUserInfoForm.validate){
+                        authSharedViewModel.updateValidateBirthday()
+
+                        if(authSharedViewModel.updateValidateUserInfo()){
                             onClickNext()
                         } else {
                             authSharedViewModel.onUserInfoEvent(UserInfoFormEvent.ValidateChanged(true))
