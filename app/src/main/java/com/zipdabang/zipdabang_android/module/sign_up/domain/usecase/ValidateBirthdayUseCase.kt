@@ -20,7 +20,7 @@ class ValidateBirthdayUseCase @Inject constructor(
         }
 
         //birthday 형식에 맞지 않는 경우
-        //좀 더 수정해야하나
+        //좀 더 수정해야함
         val birthdayPattern = "^\\d{6}$".toRegex()
         if(!birthdayPattern.matches(birthday)){
             return ValidationResult(
@@ -28,6 +28,7 @@ class ValidateBirthdayUseCase @Inject constructor(
                 errorMessage = "생년월일 형식에 맞지 않습니다"
             )
         }
+
 
         //15세 미만일 경우
         val currentDate = Calendar.getInstance()

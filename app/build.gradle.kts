@@ -155,6 +155,13 @@ dependencies {
     implementation ("androidx.paging:paging-runtime-ktx:3.2.0")
 
     implementation("com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:0.8.0")
+
+    // viewpager
+    implementation ("com.google.accompanist:accompanist-pager:0.23.0")
+    implementation ("com.google.accompanist:accompanist-pager-indicators:0.23.0")
+
+    // for collapsing toolbar
+    implementation ("me.onebone:toolbar-compose:2.3.2")
 }
 
 kapt {

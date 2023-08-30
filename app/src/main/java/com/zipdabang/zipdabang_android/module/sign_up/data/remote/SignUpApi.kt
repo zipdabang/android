@@ -25,7 +25,7 @@ interface SignUpApi {
     suspend fun getBeverages() : BeveragesResponse
     @POST("members/oauth/info")
     suspend fun postUserInfo(
-        @Query("social") social : String,
+        @Query("type") social : String,
         @Body infoRequest : InfoRequest
     ) : InfoResponse
 

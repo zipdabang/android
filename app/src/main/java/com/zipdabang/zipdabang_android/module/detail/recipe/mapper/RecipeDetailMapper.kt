@@ -9,7 +9,7 @@ fun RecipeDetailDto.toRecipeDetailDomain(): RecipeDetailDomain {
         isSuccessful = isSuccess,
         message = message,
         isOwner = result?.owner,
-        profileUrl = result?.ownerImage,
+        profileUrl = result?.recipeInfo?.ownerImage,
         recipeInfo = result?.recipeInfo,
         recipeSteps = result?.steps,
         recipeIngredients = result?.ingredients
