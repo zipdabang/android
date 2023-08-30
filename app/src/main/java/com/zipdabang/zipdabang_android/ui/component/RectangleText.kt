@@ -35,19 +35,20 @@ fun RectangleWithRadiusText(
     fontSize : TextUnit,
 ){
 
-   Surface(
-       color = backgroundcolor,
-       shape = ZipdabangandroidTheme.Shapes.small,
+   Box(
        modifier = Modifier.fillMaxSize()
+           .background(backgroundcolor,shape =ZipdabangandroidTheme.Shapes.medium )
    ){
         Text(
             text = text,
             fontSize = fontSize,
             color = fontColor,
             textAlign = TextAlign.Center,
-            maxLines = 1,
+            maxLines = 2,
             modifier = Modifier
-                .padding(vertical= 10.dp),
+                .padding(vertical= 10.dp, horizontal = 10.dp)
+                .align(Alignment.Center)
+
         )
     }
 }
