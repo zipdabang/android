@@ -116,7 +116,7 @@ fun PagerPreview() {
     ) {
         val recipeDetailState = RecipeDetailState()
         val pagerState = rememberPagerState()
-        val tabsList = listOf(TabItem.RecipeInfo(recipeDetailState), TabItem.Comment(1))
+        val tabsList = listOf(TabItem.RecipeInfo(recipeDetailState, { string -> }), TabItem.Comment(1))
         Pager(tabsList = tabsList, pagerState = pagerState)
     }
 

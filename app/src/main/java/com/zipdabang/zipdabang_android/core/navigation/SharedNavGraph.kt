@@ -11,8 +11,16 @@ fun NavGraphBuilder.SharedNavGraph(navController: NavController){
 
 
     navigation(startDestination = SharedScreen.DetailRecipe.route,route = SHARED_ROUTE){
-        composable(SharedScreen.DetailRecipe.route){
-            RecipeDetailScreen()
+        composable(SharedScreen.DetailRecipe.route){ backStackEntry ->
+            RecipeDetailScreen(
+                navController = navController,
+                recipeId = backStackEntry.arguments?.getInt("recipeId"),
+                onClickBackIcon = {},
+                onClickProfile = { ownerId -> },
+                onClickLike = { recipeId -> },
+                onClickScrap = { recipeId -> },
+                onClickCart = { keyword -> }
+            )
         }
 
     }
