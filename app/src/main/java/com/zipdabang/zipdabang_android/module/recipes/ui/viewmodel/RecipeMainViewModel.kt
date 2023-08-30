@@ -2,26 +2,32 @@ package com.zipdabang.zipdabang_android.module.recipes.ui.viewmodel
 
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
+import androidx.datastore.core.DataStore
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.zipdabang.zipdabang_android.common.Resource
 import com.zipdabang.zipdabang_android.common.ResponseCode
+import com.zipdabang.zipdabang_android.core.data_store.proto.Token
 import com.zipdabang.zipdabang_android.module.recipes.common.OwnerType
 import com.zipdabang.zipdabang_android.module.recipes.ui.state.PreferenceToggleState
+import com.zipdabang.zipdabang_android.module.recipes.ui.state.RecipeBannerState
 import com.zipdabang.zipdabang_android.module.recipes.ui.state.RecipeCategoryState
 import com.zipdabang.zipdabang_android.module.recipes.ui.state.RecipePreviewState
+import com.zipdabang.zipdabang_android.module.recipes.use_case.GetRecipeBannerUseCase
 import com.zipdabang.zipdabang_android.module.recipes.use_case.GetRecipeCategoryUseCase
 import com.zipdabang.zipdabang_android.module.recipes.use_case.GetRecipePreviewUseCase
 import com.zipdabang.zipdabang_android.module.recipes.use_case.ToggleLikeUseCase
 import com.zipdabang.zipdabang_android.module.recipes.use_case.ToggleScrapUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
 
 @HiltViewModel
 class RecipeMainViewModel @Inject constructor(
+    private val getRecipeBannerUseCase: GetRecipeBannerUseCase,
     private val getRecipeCategoryUseCase: GetRecipeCategoryUseCase,
     private val getRecipePreviewUseCase: GetRecipePreviewUseCase,
     private val toggleLikeUseCase: ToggleLikeUseCase,
@@ -34,6 +40,9 @@ class RecipeMainViewModel @Inject constructor(
     }
 
     // mutableStateOf<List<RecipeResult>>(mutableListOf())
+    private val _banners = mutableStateOf(RecipeBannerState())
+    val banners: State<RecipeBannerState> = _banners
+
     private val _categoryList = mutableStateOf(RecipeCategoryState())
     val categoryList: State<RecipeCategoryState> = _categoryList
 
@@ -58,13 +67,61 @@ class RecipeMainViewModel @Inject constructor(
     val errorMessage: State<String?> = _errorMessage
 
     private val ownerTypeMap = mapOf(
-        OwnerType.ALL.type to _everyRecipeState,
-        OwnerType.INFLUENCER.type to _influencerRecipeState,
-        OwnerType.USER.type to _userRecipeState
+        OwnerType.ALL to _everyRecipeState,
+        OwnerType.INFLUENCER to _influencerRecipeState,
+        OwnerType.USER to _userRecipeState
     )
 
-    fun getRecipeCategoryList(accessToken: String) {
-        getRecipeCategoryUseCase(accessToken).onEach { result ->
+    fun getRecipeBanners() {
+        getRecipeBannerUseCase().onEach { result ->
+            when (result) {
+                is Resource.Success -> {
+                    when (result.code) {
+                        ResponseCode.RESPONSE_DEFAULT.code -> {
+                            result.data?.let {
+                                _banners.value = RecipeBannerState(
+                                    isLoading = false,
+                                    banners = it
+                                )
+                            }
+                        }
+
+                        ResponseCode.SERVER_ERROR.code -> {
+                            _banners.value = RecipeBannerState(
+                                isLoading = false,
+                                errorMessage = ResponseCode.SERVER_ERROR.message
+                            )
+                        }
+
+                        else -> {
+                            _banners.value = RecipeBannerState(
+                                isLoading = false,
+                                errorMessage = "unexpected error"
+                            )
+                        }
+                    }
+
+                }
+                is Resource.Error -> {
+                    _banners.value = RecipeBannerState(
+                        isLoading = false,
+                        errorMessage = result.message
+                    )
+                    result.message?.let {
+                        _errorMessage.value = it
+                    }
+                }
+                is Resource.Loading -> {
+                    _banners.value = RecipeBannerState(
+                        isLoading = true
+                    )
+                }
+            }
+        }.launchIn(viewModelScope)
+    }
+
+    fun getRecipeCategoryList() {
+        getRecipeCategoryUseCase().onEach { result ->
             when (result) {
                 is Resource.Success -> {
                     result.data?.let {
@@ -113,9 +170,8 @@ class RecipeMainViewModel @Inject constructor(
         }.launchIn(viewModelScope)
     }
 
-    fun getRecipesByOwnerType(accessToken: String, ownerType: String) {
+    fun getRecipesByOwnerType(ownerType: OwnerType) {
         getRecipePreviewUseCase(
-            accessToken = accessToken,
             ownerType = ownerType
         ).onEach { result ->
             when (result) {
@@ -181,8 +237,8 @@ class RecipeMainViewModel @Inject constructor(
 
 
 
-    fun toggleLike(accessToken: String, recipeId: Int) {
-        toggleLikeUseCase(accessToken, recipeId).onEach { result ->
+    fun toggleLike(recipeId: Int) {
+        toggleLikeUseCase(recipeId).onEach { result ->
             result.data?.let {
                 when (result) {
                     is Resource.Success -> {
@@ -269,8 +325,8 @@ class RecipeMainViewModel @Inject constructor(
         }.launchIn(viewModelScope)
     }
 
-    fun toggleScrap(accessToken: String, recipeId: Int) {
-        toggleScrapUseCase(accessToken, recipeId).onEach { result ->
+    fun toggleScrap(recipeId: Int) {
+        toggleScrapUseCase(recipeId).onEach { result ->
             result.data?.let {
                 when (result) {
                     is Resource.Success -> {

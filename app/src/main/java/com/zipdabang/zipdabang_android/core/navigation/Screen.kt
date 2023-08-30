@@ -29,13 +29,22 @@ sealed class HomeScreen(val route : String){
 sealed class MarketScreen(val route : String){
     object Home : MarketScreen(route = "market/home")
 
-    object Category : MarketScreen(route = "market/category/{categoryId}")
+    object Category : MarketScreen(route = "market/category/{categoryId}"){
+        fun passCategoryId(id: Int): String{
+            return "market/category/$id"
+        }
+    }
 }
 sealed class BasketScreen(val route : String){
     object Home : BasketScreen(route = "basket/home")
 }
 sealed class RecipeScreen(val route : String){
     object Home : RecipeScreen(route = "recipes/home")
+    object RecipeList: RecipeScreen("recipes/list?category={category}&ownerType={ownerType}") {
+        fun passQuery(category: Int? = null, ownerType: String? = null): String {
+            return "recipes/list?category=$category&ownerType=$ownerType"
+        }
+    }
 }
 sealed class MyScreen(val route : String){
     object Home : MyScreen(route = "my/home")
@@ -43,5 +52,5 @@ sealed class MyScreen(val route : String){
 
 
 sealed class SharedScreen(val route : String){
-    object DetailRecipe : SharedScreen(route = "shared/detail")
+    object DetailRecipe : SharedScreen(route = "shared/detail/{recipeId}")
 }

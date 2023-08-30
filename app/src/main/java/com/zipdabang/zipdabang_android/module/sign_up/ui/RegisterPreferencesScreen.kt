@@ -16,6 +16,7 @@ import androidx.compose.material.Text
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -30,18 +31,24 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.datastore.core.DataStore
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.zipdabang.zipdabang_android.R
+import com.zipdabang.zipdabang_android.core.data_store.proto.CurrentPlatform
+import com.zipdabang.zipdabang_android.core.data_store.proto.ProtoDataViewModel
+import com.zipdabang.zipdabang_android.core.data_store.proto.Token
 import com.zipdabang.zipdabang_android.core.navigation.AuthScreen
 import com.zipdabang.zipdabang_android.module.sign_up.ui.viewmodel.AuthSharedViewModel
+import com.zipdabang.zipdabang_android.module.sign_up.ui.viewmodel.BeverageFormEvent
 import com.zipdabang.zipdabang_android.ui.component.AppBarSignUp
 import com.zipdabang.zipdabang_android.ui.component.MainAndSubTitle
 import com.zipdabang.zipdabang_android.ui.component.PrimaryButtonOutLined
 import com.zipdabang.zipdabang_android.ui.component.PrimaryButtonWithStatus
 import com.zipdabang.zipdabang_android.ui.component.RoundedButton
 import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
+import kotlinx.coroutines.flow.FlowCollector
 
 @Composable
 fun RegisterPreferencesScreen(
@@ -49,11 +56,16 @@ fun RegisterPreferencesScreen(
     authSharedViewModel: AuthSharedViewModel = hiltViewModel(), //FakeAuthSharedViewModel = provideFakeAuthSharedViewModel(),
     onClickBack : ()->Unit,
     onClickNext: ()->Unit,
+    onClickNextAfterChoose : () -> Unit,
 ) {
-    val state = authSharedViewModel.statePreferences.value
-    val stateBeverageList by authSharedViewModel.stateBeverageList.collectAsState()
-    val statePreferencesValidate by authSharedViewModel.statePreferencesValidate.collectAsState()
-    //Log.e("preferences-screen", "${stateBeverageList}")
+    val stateBeverageForm = authSharedViewModel.stateBeverageForm
+    //val tokenStoreViewModel = hiltViewModel<ProtoDataViewModel>()
+
+    LaunchedEffect(key1 = stateBeverageForm){
+        authSharedViewModel.onBeverageEvent(BeverageFormEvent.BtnChanged(true))
+        authSharedViewModel.updateSocial()
+    }
+
 
     Scaffold(
         modifier = Modifier
@@ -100,7 +112,7 @@ fun RegisterPreferencesScreen(
                             subTextColor =  ZipdabangandroidTheme.Colors.Typo
                         )
 
-                        val chunkedBeverageList = state.beverageList.chunked(3)
+                        val chunkedBeverageList = stateBeverageForm.beverageList.chunked(3)
                         Column(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -119,26 +131,26 @@ fun RegisterPreferencesScreen(
                                 ) {
                                     for (preference in chunk) {
                                         RoundedButton(
-                                            imageUrl = preference.imageUrl,
+                                            imageUrl = R.drawable.all_arrow_right, //preference.imageUrl,
                                             buttonText = preference.categoryName,
-                                            isClicked = stateBeverageList[index],
+                                            isClicked = stateBeverageForm.beverageCheckList[index],
                                             isClickedChange = { selectedClicked ->
-                                                authSharedViewModel.updateBeverageList(preference.id-1 , selectedClicked)
+                                                authSharedViewModel.onBeverageEvent(BeverageFormEvent.BeverageCheckListChanged(preference.id-1 ,selectedClicked))
                                             }
                                         )
                                         index ++
                                     }
                                 }
                             }
-                            if (state.error.isNotBlank()) {
+                            if (stateBeverageForm.error.isNotBlank()) {
                                 Text(
-                                    text = state.error,
+                                    text = stateBeverageForm.error,
                                     color = Color.Red,
                                     textAlign = TextAlign.Center,
                                     modifier = Modifier.fillMaxWidth()
                                 )
                             }
-                            if (state.isLoading) {
+                            if (stateBeverageForm.isLoading) {
                                 CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
                             }
                         }
@@ -167,19 +179,23 @@ fun RegisterPreferencesScreen(
                             ),
                         ),
                         style = ZipdabangandroidTheme.Typography.fourteen_300,
-                        onClick={  },
+                        onClick={
+                            onClickNextAfterChoose()
+                        },
                     )
                 }
             }
-
+            //하단 버튼
             Box(
                 contentAlignment = Alignment.BottomCenter,
                 modifier = Modifier.padding(16.dp,0.dp,16.dp, 12.dp)
             ){
                 PrimaryButtonWithStatus(
                     text= stringResource(id = R.string.signup_btn_choicecomplete),
-                    onClick={ onClickNext() },
-                    isFormFilled = statePreferencesValidate
+                    onClick={
+                        onClickNext()
+                    },
+                    isFormFilled = stateBeverageForm.btnEnabled
                 )
             }
         }
@@ -197,6 +213,9 @@ fun PreviewRegisterPreferencesScreen(){
         },
         onClickNext = {
             navController.navigate(AuthScreen.RegisterPreferences.route)
+        },
+        onClickNextAfterChoose = {
+
         }
     )
 }

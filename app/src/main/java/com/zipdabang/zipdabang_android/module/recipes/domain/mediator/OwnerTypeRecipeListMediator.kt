@@ -1,6 +1,5 @@
 package com.zipdabang.zipdabang_android.module.recipes.domain.mediator
 
-import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.paging.LoadType
 import androidx.paging.PagingState
@@ -9,24 +8,15 @@ import com.zipdabang.zipdabang_android.common.Constants.TOKEN_NULL
 import com.zipdabang.zipdabang_android.core.Paging3Database
 import com.zipdabang.zipdabang_android.core.data_store.proto.Token
 import com.zipdabang.zipdabang_android.core.remotekey.RemoteKeys
-import com.zipdabang.zipdabang_android.module.recipes.common.OwnerType
-import com.zipdabang.zipdabang_android.module.recipes.common.RecipeListSort
 import com.zipdabang.zipdabang_android.module.recipes.data.RecipeApi
 import com.zipdabang.zipdabang_android.module.recipes.data.common.RecipeItem
-import dagger.assisted.Assisted
-import dagger.assisted.AssistedFactory
-import dagger.assisted.AssistedInject
-import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.map
-import javax.inject.Inject
 
 class OwnerTypeRecipeListMediator(
     private val recipeApi: RecipeApi,
     private val database: Paging3Database,
     private val datastore: DataStore<Token>,
-    private val ownerType: OwnerType,
+    private val ownerType: String,
     private val orderBy: String
 ): RecipeMediator<RecipeItem>(recipeApi, database) {
 
@@ -39,7 +29,7 @@ class OwnerTypeRecipeListMediator(
 
         val response = recipeApi.getRecipeListByOwnerType(
             accessToken = accessToken,
-            ownerType = ownerType.type,
+            ownerType = ownerType,
             order = orderBy,
             pageIndex = currentPage
         ).result.recipeList

@@ -87,7 +87,6 @@ fun PreviewImageWithIcon(){
     //imageUrl을 imageState에 저장한다.
     var imageState by remember { mutableStateOf(imageUrl) }
 
-
     Box(
         modifier = Modifier.size(100.dp)
             .padding(16.dp)

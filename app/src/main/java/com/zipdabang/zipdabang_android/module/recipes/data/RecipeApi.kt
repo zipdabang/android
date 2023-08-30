@@ -1,5 +1,7 @@
 package com.zipdabang.zipdabang_android.module.recipes.data
 
+import com.zipdabang.zipdabang_android.module.detail.recipe.data.RecipeDetailDto
+import com.zipdabang.zipdabang_android.module.recipes.data.banner.RecipeBannerDto
 import com.zipdabang.zipdabang_android.module.recipes.data.category.RecipeCategoryDto
 import com.zipdabang.zipdabang_android.module.recipes.data.preference.PreferenceResultDto
 import com.zipdabang.zipdabang_android.module.recipes.data.preview.RecipePreviewItemsDto
@@ -13,7 +15,11 @@ import retrofit2.http.Query
 interface RecipeApi {
 
     // TODO 레시피 메뉴 배너
-
+    // TODO url 수정하기
+    @GET("/banners")
+    suspend fun getRecipeBanners(
+        @Header("Authorization") accessToken: String,
+    ): RecipeBannerDto
 
     // 레시피 카테고리 이미지와 타이틀
     @GET("categories")
@@ -59,4 +65,11 @@ interface RecipeApi {
         @Query("order") order: String,
         @Query("pageIndex") pageIndex: Int
     ): RecipeListDto
+
+    //----------------------------------------------------------------------------------------------
+    @GET("/members/recipes/{recipeId}")
+    suspend fun getRecipeDetail(
+        @Header("Authorization") accessToken: String,
+        @Path("recipeId") recipeId: Int
+    ): RecipeDetailDto
 }

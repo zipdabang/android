@@ -17,7 +17,7 @@ class PagingRepository @Inject constructor(
     private val paging3Database: Paging3Database,
     private val protoRepository: ProtoRepository
 ){
-    fun getAllItems(categoryId: Int, tokens: String): Flow<PagingData<Category_Product>>{
+    fun getAllItems(categoryId: Int): Flow<PagingData<Category_Product>>{
        val pagingSourceFactory = { paging3Database.CategoryDao().getAllItem()}
         return Pager(
             config = PagingConfig(pageSize = 10),
@@ -25,7 +25,7 @@ class PagingRepository @Inject constructor(
                 marketApi = marketApi,
                 paging3Database = paging3Database,
                 categoryId = categoryId,
-                token = tokens
+                protoRepository = protoRepository
             ),
             pagingSourceFactory = pagingSourceFactory
         ).flow

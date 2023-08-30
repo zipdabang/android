@@ -2,20 +2,42 @@ package com.zipdabang.zipdabang_android.module.sign_up.ui.viewmodel
 
 import android.util.Log
 import androidx.compose.runtime.State
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.datastore.core.DataStore
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.zipdabang.zipdabang_android.common.Resource
-import com.zipdabang.zipdabang_android.module.sign_up.data.remote.BeverageCategory
+import com.zipdabang.zipdabang_android.core.data_store.proto.ProtoDataViewModel
+import com.zipdabang.zipdabang_android.core.data_store.proto.ProtoRepository
+import com.zipdabang.zipdabang_android.core.data_store.proto.Token
+import com.zipdabang.zipdabang_android.module.sign_up.data.remote.AuthRequest
+import com.zipdabang.zipdabang_android.module.sign_up.data.remote.InfoRequest
+import com.zipdabang.zipdabang_android.module.sign_up.data.remote.PhoneRequest
 import com.zipdabang.zipdabang_android.module.sign_up.domain.usecase.GetBeveragesUseCase
 import com.zipdabang.zipdabang_android.module.sign_up.domain.usecase.GetNicknameUseCase
-import com.zipdabang.zipdabang_android.module.sign_up.domain.usecase.GetPhoneSmsUseCase
 import com.zipdabang.zipdabang_android.module.sign_up.domain.usecase.GetTermsUseCase
+import com.zipdabang.zipdabang_android.module.sign_up.domain.usecase.PostAuthUseCase
+import com.zipdabang.zipdabang_android.module.sign_up.domain.usecase.PostInfoUseCase
+import com.zipdabang.zipdabang_android.module.sign_up.domain.usecase.PostPhoneSmsUseCase
+import com.zipdabang.zipdabang_android.module.sign_up.domain.usecase.ValidateBirthdayUseCase
+import com.zipdabang.zipdabang_android.module.sign_up.domain.usecase.ValidateNicknameUseCase
+import com.zipdabang.zipdabang_android.module.sign_up.domain.usecase.ValidatePhoneUseCase
+import com.zipdabang.zipdabang_android.module.sign_up.domain.usecase.ValidationResult
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.util.Calendar
 import javax.inject.Inject
 
 @HiltViewModel
@@ -23,8 +45,13 @@ class AuthSharedViewModel @Inject constructor(
     private val getTermsUseCase: GetTermsUseCase,
     private val getBeveragesUseCase: GetBeveragesUseCase,
     private val getNicknameUseCase: GetNicknameUseCase,
-    private val getPhoneSmsUseCase: GetPhoneSmsUseCase,
-    //savedStateHandle: SavedStateHandle
+    private val postPhoneSmsUseCase: PostPhoneSmsUseCase,
+    private val postAuthUseCase: PostAuthUseCase,
+    private val postInfoUseCase: PostInfoUseCase,
+    private val validateBirthdayUseCase : ValidateBirthdayUseCase = ValidateBirthdayUseCase(),
+    private val validatePhoneUseCase: ValidatePhoneUseCase = ValidatePhoneUseCase(),
+    private val validateNicknameUseCase: ValidateNicknameUseCase = ValidateNicknameUseCase(),
+    private val dataStore: DataStore<Token>
 ): ViewModel() {
 
     companion object {
@@ -43,274 +70,631 @@ class AuthSharedViewModel @Inject constructor(
         _profile.value = profile
     }
 
+    //social login platform
+    lateinit var social : String
+    suspend fun updateSocial(){
+        social = dataStore.data.first().platformStatus.toString()
+    }
+
+
+    // info 글자수 제한하기, 생년월일 더 제한, 카카오 주소 api, response enum class로 옮기기, textfield 옮겨갈때마다 focusing
 
 
     /*TermsScreen*/
-    //termsAgree - 전체동의하기
-    private val _stateTermsAllagree = MutableStateFlow(true)
-    val stateTermsAllagree = _stateTermsAllagree.asStateFlow()
-    //termsAgree - 전체동의하기 이외
-    private val _stateTermsListAgree = MutableStateFlow(listOf(true, true, true, true, true))
-    val stateTermsListAgree = _stateTermsListAgree.asStateFlow()
-    //terms - validate
-    private val _stateTermsValidate = MutableStateFlow(true)
-    val stateTermsValidate = _stateTermsValidate.asStateFlow()
-    fun updateTermsAllagree(isChecked: Boolean){
-        _stateTermsAllagree.value = isChecked
-        if (isChecked) {
-            _stateTermsListAgree.value = List(_stateTermsListAgree.value.size) { true }
+    var stateTermsForm by mutableStateOf(TermsFormState())
+    fun onTermsEvent(event : TermsFormEvent){
+        when(event){
+            is TermsFormEvent.AllAgreeChanged -> {
+                stateTermsForm = stateTermsForm.copy(allAgree = !stateTermsForm.allAgree)
+                clickAllAgree()
+            }
+            is TermsFormEvent.RequiredOneChanged -> {
+                stateTermsForm = stateTermsForm.copy(requiredOne = !stateTermsForm.requiredOne)
+                updateAllagree()
+            }
+            is TermsFormEvent.RequiredTwoChanged -> {
+                stateTermsForm = stateTermsForm.copy(requiredTwo = !stateTermsForm.requiredTwo)
+                updateAllagree()
+            }
+            is TermsFormEvent.RequiredThreeChanged ->{
+                stateTermsForm = stateTermsForm.copy(requiredThree = !stateTermsForm.requiredThree)
+                updateAllagree()
+            }
+            is TermsFormEvent.RequiredFourChanged -> {
+                stateTermsForm = stateTermsForm.copy(requiredFour = !stateTermsForm.requiredFour)
+                updateAllagree()
+            }
+            is TermsFormEvent.ChoiceChanged -> {
+                stateTermsForm = stateTermsForm.copy(choice = !stateTermsForm.choice)
+                updateAllagree()
+            }
+            is TermsFormEvent.BtnChanged -> {
+                updateValidationTerms()
+            }
         }
-        validateTerms()
-        //Log.e("termsAgree-viewmodel", "stateTermsAllagree: ${stateTermsAllagree.value}")
-        //Log.e("termsAgree-viewmodel", "stateTermsListAgree: ${stateTermsListAgree.value}")
     }
-    fun updateTermsListAgree(id : Int, isChecked : Boolean) {
-        _stateTermsListAgree.value = _stateTermsListAgree.value.toMutableList().apply {
-            set(id, isChecked)
+    //TermsEvent 관리
+    private fun updateValidationTerms() {
+        val isAllRequiredTrue = listOf(
+            stateTermsForm.requiredOne,
+            stateTermsForm.requiredTwo,
+            stateTermsForm.requiredThree,
+            stateTermsForm.requiredFour,
+        ).all{ it }
+
+        if(isAllRequiredTrue){
+            stateTermsForm = stateTermsForm.copy(btnEnabled = true)
+        } else{
+            stateTermsForm = stateTermsForm.copy(btnEnabled = false)
         }
-        val allTermsAgreed = _stateTermsListAgree.value.all { it } // 모든 요소가 true인지 검사
-        _stateTermsAllagree.value = allTermsAgreed // stateTermsAllagree 업데이트
-        validateTerms()
-        //Log.e("termsAgree-viewmodel", "stateTermsAllagree: ${stateTermsAllagree.value}")
-        //Log.e("termsAgree-viewmodel", "stateTermsListAgree: ${stateTermsListAgree.value}")
     }
-    fun updateTermsValidation(isValid: Boolean) {
-        _stateTermsValidate.value = isValid
+    //넘어가기 버튼 변화
+    private fun clickAllAgree(){
+        if(stateTermsForm.allAgree){
+            stateTermsForm = stateTermsForm.copy(
+                requiredOne = true,
+                requiredTwo = true,
+                requiredThree = true,
+                requiredFour = true,
+                choice = true,
+                btnEnabled = true
+            )
+            return
+        } else{
+            stateTermsForm = stateTermsForm.copy(
+                requiredOne = false,
+                requiredTwo = false,
+                requiredThree = false,
+                requiredFour = false,
+                choice = false,
+                btnEnabled = false
+            )
+            return
+        }
     }
-    fun validateTerms(): Boolean {
-        val termsInRange = stateTermsListAgree.value.subList(0, 4) // 0부터 3까지의 요소들
-        val requiredTermsAgree = termsInRange.all { it } // 모든 요소가 true인지 검사
-        updateTermsValidation(requiredTermsAgree) // _stateTermsValidate 값 업데이트
-        return requiredTermsAgree // 모든 요소가 true인지 검사
-    }
+    //전체 동의하기 버튼 클릭했을때, 전체 동의하기 버튼 변화
+    private fun updateAllagree(){
+        val hasTermFalse = listOf(
+            stateTermsForm.requiredOne,
+            stateTermsForm.requiredTwo,
+            stateTermsForm.requiredThree,
+            stateTermsForm.requiredFour,
+            stateTermsForm.choice,
+        ).any{ !it }
 
+        if(hasTermFalse){
+            stateTermsForm = stateTermsForm.copy(allAgree = false)
+        } else{
+            stateTermsForm = stateTermsForm.copy(allAgree = true)
+        }
+    }
+    //전체 동의하기 이외의 버튼을 클릭했을때, 전체 동의하기 버튼 변화
 
-    /*UserInfoScreen*/
-    //userinfo - name
-    private val _stateNameValue = MutableStateFlow("")
-    val stateNameValue = _stateNameValue.asStateFlow()
-    //userinfo - birthday
-    private val _stateBirthdayValue = MutableStateFlow("")
-    val stateBirthdayValue = _stateBirthdayValue.asStateFlow()
-    //userinfo - gender
-    private val _stateGenderList = MutableStateFlow(listOf("남", "여"))
-    val stateGenderList = _stateGenderList.asStateFlow()
-    private val _stateGenderValue = MutableStateFlow(_stateGenderList.value[0])
-    val stateGenderValue = _stateGenderValue.asStateFlow()
-    //userinfo - Phonenumber
-    private val _statePhonenumberValue = MutableStateFlow("")
-    val statePhonenumberValue = _statePhonenumberValue.asStateFlow()
-    //userinfo - Certificatenumber
-    private val _stateCertificatenumberValue = MutableStateFlow("")
-    val stateCertificatenumberValue = _stateCertificatenumberValue.asStateFlow()
-    //userinfo - Zipcode
-    private val _stateZipcodeValue = MutableStateFlow("")
-    val stateZipcodeValue = _stateZipcodeValue.asStateFlow()
-    //userinfo - Address
-    private val _stateAddressValue = MutableStateFlow("")
-    val stateAddressValue = _stateAddressValue.asStateFlow()
-    //userinfo - Detailaddress
-    private val _stateDetailaddressValue = MutableStateFlow("")
-    val stateDetailaddressValue = _stateDetailaddressValue.asStateFlow()
-    fun updateName(name : String){
-        _stateNameValue.value = name
-        Log.e("nickname-viewmodel","${stateNicknameValue.value}")
-    }
-    fun updateBirthday(birthday : String){
-        _stateBirthdayValue.value = birthday
-    }
-    fun updatePhonenumber(phonenumber : String){
-        _statePhonenumberValue.value = phonenumber
-    }
-    fun updateGender(gender : String){
-        _stateGenderValue.value = gender
-        Log.e("userinfo-viewmodel","${stateGenderValue.value}")
-    }
-    fun updateCertificatenumber(certificatenumber : String){
-        _stateCertificatenumberValue.value = certificatenumber
-    }
-    fun updateZipcode(zipcode : String){
-        _stateZipcodeValue.value = zipcode
-    }
-    fun updateAddress(address : String){
-        _stateAddressValue.value = address
-    }
-    fun updateDetailaddres(detailaddress : String){
-        _stateDetailaddressValue.value = detailaddress
-    }
 
 
     /*NickNameScreen*/
-    //nickname - text value
-    private val _stateNicknameValue = MutableStateFlow("")
-    val stateNicknameValue = _stateNicknameValue.asStateFlow()
-    //nickname - api 시도한 횟수(tryCount)
-    private val _stateTrycount = MutableStateFlow(0)
-    val stateTrycount = _stateTrycount.asStateFlow()
-    //nickname - api 시도하고 error상태인지
-    private val _stateIsError = MutableStateFlow(false)
-    val stateIsError = _stateIsError.asStateFlow()
-    //nickname - errormessage
-    private val _stateErrorMessage = MutableStateFlow("")
-    val stateErrorMessage = _stateErrorMessage.asStateFlow()
-    //nickname - api 시도하고 correct상태인지
-    private val _stateIsCorrect = MutableStateFlow(false)
-    val stateIsCorrect = _stateIsCorrect.asStateFlow()
-    //nickname - correctmessage
-    private val _stateCorrectMessage = MutableStateFlow("")
-    val stateCorrectMessage = _stateCorrectMessage.asStateFlow()
-    //nickname - validate
-    private val _stateNicknameValidate = MutableStateFlow(false)
-    val stateNicknameValidate = _stateNicknameValidate.asStateFlow()
-    fun updateNickname(nickname : String){
-        _stateNicknameValue.value = nickname
-        if(_stateIsCorrect.value == true || _stateIsError.value == true){
-            _stateIsError.value = false
-            _stateIsCorrect.value = false
-            _stateErrorMessage.value = ""
-            _stateCorrectMessage.value = ""
+    var stateNicknameForm by mutableStateOf(NicknameFormState())
+    fun onNicknameEvent(event : NicknameFormEvent) {
+        when(event){
+            is NicknameFormEvent.NicknameChanged ->{
+                stateNicknameForm = stateNicknameForm.copy(nickname = event.nickname)
+                if(stateNicknameForm.isSuccess || stateNicknameForm.isError){
+                    stateNicknameForm = stateNicknameForm.copy(
+                        nickname = event.nickname,
+                        isError = false,
+                        isSuccess = false,
+                        errorMessage = "",
+                        successMessage = "",
+                        btnEnabled = false
+                    )
+                }
+            }
+            is NicknameFormEvent.NicknameCliked ->{
+                val nicknameResult = validateNicknameUseCase(stateNicknameForm.nickname)
+
+                if(nicknameResult.successful){
+                    getNickname()
+                } else {
+                    stateNicknameForm = stateNicknameForm.copy(
+                        isTried = true,
+                        isError = true,
+                        errorMessage = nicknameResult.errorMessage
+                    )
+                }
+            }
         }
-        Log.e("nickname-viewmodel","${stateNicknameValue.value}")
     }
-    fun updateTrycount(){
-        _stateTrycount.value ++
-        getNickname()
-    }
-    fun updateIsError() : Boolean{
-        if(_stateErrorMessage.value != ""){
-            _stateIsError.value = true
-            _stateIsCorrect.value = false
+
+
+
+    /*UserInfoScreen*/
+    var stateUserInfoForm by mutableStateOf(UserInfoFormState())
+    var genderList by mutableStateOf(listOf("남", "여"))
+    var remainingTime by mutableStateOf(0)
+    fun onUserInfoEvent(event : UserInfoFormEvent){
+        when(event){
+            is UserInfoFormEvent.NameChanged -> {
+               stateUserInfoForm = stateUserInfoForm.copy(name = event.name)
+            }
+            is UserInfoFormEvent.BirthdayChanged -> {
+                stateUserInfoForm = stateUserInfoForm.copy(birthday = event.birthday)
+                if(stateUserInfoForm.birthdayIsError){
+                    stateUserInfoForm = stateUserInfoForm.copy(
+                        birthday = event.birthday,
+                        birthdayIsError = false,
+                        birthdayErrorMessage = "",
+                    )
+                }
+            }
+            is UserInfoFormEvent.GenderChanged ->{
+                stateUserInfoForm = stateUserInfoForm.copy(gender = event.gender)
+            }
+            is UserInfoFormEvent.PhoneNumberChanged->{
+                stateUserInfoForm = stateUserInfoForm.copy(phoneNumber = event.phoneNumber)
+                if(stateUserInfoForm.phoneNumberIsTried){
+                    stateUserInfoForm = stateUserInfoForm.copy(
+                        phoneNumber = event.phoneNumber,
+                        phoneNumberIsTried = false,
+                        phoneNumberIsCorrect = false,
+                        phoneNumberCorrectMessage = "",
+                    )
+                }
+                if(stateUserInfoForm.authNumberIsCorrect){
+                    stateUserInfoForm = stateUserInfoForm.copy(
+                        authNumber = "",
+                        authNumberIsCorrect = false,
+                        authNumberCorrectMessage = "",
+                        phoneNumber = event.phoneNumber,
+                        phoneNumberIsCorrect = false,
+                        phoneNumberCorrectMessage = "",
+                    )
+                }
+            }
+            is UserInfoFormEvent.PhoneNumberClicked->{
+                updateValidatePhonenumber()
+            }
+            is UserInfoFormEvent.AuthNumberChanged ->{
+               stateUserInfoForm = stateUserInfoForm.copy(authNumber = event.authNumber)
+                if(stateUserInfoForm.authNumberIsTried){
+                    stateUserInfoForm = stateUserInfoForm.copy(
+                        authNumber = event.authNumber,
+                        authNumberIsTried = false,
+                        authNumberCorrectMessage = "",
+                        authNumberIsCorrect = false,
+                    )
+                }
+            }
+            is UserInfoFormEvent.AuthNumberClicked ->{
+                //전화번호 여기 주석 풀어
+                //postAuthNumber()
+                stateUserInfoForm = stateUserInfoForm.copy(
+                    phoneNumberCorrectMessage = "",
+                    phoneNumberIsCorrect = false,
+                )
+            }
+            is UserInfoFormEvent.BtnChanged -> {
+                updateBtnEnabledUserInfo()
+            }
+            is UserInfoFormEvent.ValidateChanged ->{
+                updateValidateUserInfo()
+            }
         }
-        return _stateIsError.value
     }
-    fun updateIsCorrect() : Boolean{
-        if(_stateCorrectMessage.value != ""){
-            _stateIsCorrect.value = true
-            _stateIsError.value = false
+    fun updateValidateBirthday() {
+        val birthdayResult = validateBirthdayUseCase(stateUserInfoForm.birthday)
+        stateUserInfoForm = stateUserInfoForm.copy(birthdayIsTried = true)
+
+        if(birthdayResult.successful){
+            stateUserInfoForm = stateUserInfoForm.copy(
+                birthday = stateUserInfoForm.birthday,
+                validate = true,
+            )
+        } else {
+            stateUserInfoForm = stateUserInfoForm.copy(
+                birthday = stateUserInfoForm.birthday,
+                birthdayErrorMessage = birthdayResult.errorMessage,
+                birthdayIsError = true,
+                validate = false,
+            )
         }
-        return _stateIsCorrect.value
     }
-    fun updateNicknameValidation(isValid : Boolean){
-        _stateNicknameValidate.value = isValid
+    private fun updateValidatePhonenumber() {
+        val phonenumberResult = validatePhoneUseCase(stateUserInfoForm.phoneNumber)
+
+        if(phonenumberResult.successful){
+            //전화번호 여기 주석 풀어
+            //postPhonenumber() //api 호출
+        } else{
+            stateUserInfoForm = stateUserInfoForm.copy(
+                phoneNumberIsTried = true,
+                phoneNumberIsError = true,
+                phoneNumberErrorMessage = phonenumberResult.errorMessage,
+                authNumber = "",
+                authNumberIsCorrect = false,
+                authNumberCorrectMessage = "",
+            )
+            remainingTime = 0
+        }
     }
-    fun validateNickname() : Boolean{
-        return _stateIsCorrect.value
+    private fun updateBtnEnabledUserInfo(){
+        val isFull = listOf(
+            stateUserInfoForm.name,
+            stateUserInfoForm.birthday,
+        ).all{ it!="" }
+
+        val isError = stateUserInfoForm.birthdayIsError
+
+        //전화번호 여기 주석 풀어
+        //val isValidateAtPhone = stateUserInfoForm.authNumberIsCorrect
+
+        if (isFull && !isError){ //isFull && isValidateAtPhone && !isError
+            stateUserInfoForm = stateUserInfoForm.copy(btnEnabled = true)
+        } else {
+            stateUserInfoForm = stateUserInfoForm.copy(btnEnabled = false)
+        }
+    }
+    fun updateValidateUserInfo() : Boolean {
+        var isCorrect = listOf(
+            !stateUserInfoForm.birthdayIsError,
+            //전화번호 여기 주석 풀어
+            //stateUserInfoForm.authNumberIsCorrect
+        ).all{ it==true }
+
+        Log.e("userinfo-validate", "validate : ${stateUserInfoForm.validate} birtdayIsError : ${stateUserInfoForm.birthdayIsError}")
+
+        if (isCorrect){
+            stateUserInfoForm = stateUserInfoForm.copy(validate = true)
+            return stateUserInfoForm.validate
+            Log.e("userinfo-validate","validate true임")
+        } else {
+            stateUserInfoForm = stateUserInfoForm.copy(validate = false)
+            return stateUserInfoForm.validate
+            Log.e("userinfo-validate","validate false임")
+        }
+
+        return stateUserInfoForm.validate
+    }
+
+
+
+    /*UserAddressScreen*/
+    var stateUserAddressForm by mutableStateOf(UserAddressFormState())
+    fun onUserAddressEvent(event : UserAddressFormEvent){
+        when (event){
+            is UserAddressFormEvent.ZipcodeChanged ->{
+                stateUserAddressForm = stateUserAddressForm.copy(zipCode = event.zipCode)
+            }
+            is UserAddressFormEvent.ZipcodeClicked ->{
+                //웹뷰 띄우기
+            }
+            is UserAddressFormEvent.AddressChanged ->{
+                stateUserAddressForm = stateUserAddressForm.copy(address = event.address)
+            }
+            is UserAddressFormEvent.DetailaddressChanged ->{
+                stateUserAddressForm = stateUserAddressForm.copy(detailAddress = event.detailAddress)
+            }
+            is UserAddressFormEvent.BtnChanged ->{
+                updateBtnEnabledUserAddress()
+            }
+        }
+    }
+    private fun updateBtnEnabledUserAddress(){
+        val isFull = listOf(
+            stateUserAddressForm.zipCode,
+            stateUserAddressForm.address,
+        ).all{ it!="" }
+
+        if (isFull){
+            stateUserAddressForm = stateUserAddressForm.copy(btnEnabled = true)
+        } else{
+            stateUserAddressForm = stateUserAddressForm.copy(btnEnabled = false)
+        }
     }
 
 
 
     /*PreferencesScreen*/
-    //beverageList - 음료종류
-    private val _stateBeverageList = MutableStateFlow(listOf(false, false, false, false, false, false, false, false))
-    val stateBeverageList = _stateBeverageList.asStateFlow()
-    //preferences - validate
-    private val _statePreferencesValidate = MutableStateFlow(false)
-    val statePreferencesValidate = _statePreferencesValidate.asStateFlow()
-    fun updateBeverageList(id : Int, isChecked : Boolean) {
-       _stateBeverageList.value = _stateBeverageList.value.toMutableList().apply{
-           set(id, isChecked)
-       }
-        validatePreferences()
-        //Log.e("preferences-viewmodel", "${stateBeverageList.value}")
+    var stateBeverageForm by mutableStateOf(BeverageFormState())
+    fun onBeverageEvent(event : BeverageFormEvent){
+        when(event){
+            is BeverageFormEvent.BeverageCheckListChanged ->{
+                val updatedCheckList = stateBeverageForm.beverageCheckList.toMutableList().apply {
+                    set(event.index, event.checked)
+                }
+                stateBeverageForm = stateBeverageForm.copy(beverageCheckList = updatedCheckList)
+                Log.e("beverage-viewemodel", "${stateBeverageForm.beverageCheckList.mapIndexedNotNull { index, isSelected ->
+                    if (isSelected) index+1 else null
+                }}")
+            }
+            is BeverageFormEvent.BtnChanged ->{
+                updateBtnEnabledBeverage()
+            }
+        }
     }
-    fun updatePreferencesValidation(isValid: Boolean) {
-        _statePreferencesValidate.value = isValid
+    private fun updateBtnEnabledBeverage(){
+        val isChecked = stateBeverageForm.beverageCheckList.any{ it }
+
+        if (isChecked){
+            stateBeverageForm = stateBeverageForm.copy(btnEnabled = true)
+        } else{
+            stateBeverageForm = stateBeverageForm.copy(btnEnabled = false)
+        }
     }
-    fun validatePreferences() : Boolean {
-        val atleastOneChecked = stateBeverageList.value.any { it }
-        updatePreferencesValidation(atleastOneChecked)
-        return atleastOneChecked
-    }
-
-
-
-
 
 
 
     /*API*/
-    //terms - GET api
-    private val _stateTerms = mutableStateOf(TermsListState())
-    val stateTerms : State<TermsListState> = _stateTerms
-    //preferences - GET api
-    private val _statePreferences = mutableStateOf(BeveragesListState())
-    val statePreferences : State<BeveragesListState> = _statePreferences
     init{
         getTerms()
         getBeverages()
     }
     private fun getTerms(){
         getTermsUseCase().onEach {result ->
-            Log.e("signup-terms","${result.data?.termsList}")
             when(result) {
                 is Resource.Success ->{
-                    _stateTerms.value = TermsListState(
+                     stateTermsForm = TermsFormState(
                         termsList = result.data?.termsList ?: emptyList(),
                         size = result.data?.size ?: 0,
-                    )
+                        requiredOneTitle = result.data?.termsList?.get(0)?.termsTitle ?: "",
+                        requiredOneBody = result.data?.termsList?.get(0)?.termsBody ?: "",
+                        isMoreToSeeRequiredOne = result.data?.termsList?.get(0)?.isMoreToSee ?: false,
+                        requiredTwoTitle = result.data?.termsList?.get(1)?.termsTitle ?: "",
+                        requiredTwoBody = result.data?.termsList?.get(1)?.termsBody ?: "",
+                        isMoreToSeeRequiredTwo = result.data?.termsList?.get(1)?.isMoreToSee ?: false,
+                        requiredThreeTitle = result.data?.termsList?.get(2)?.termsTitle ?: "",
+                        requiredThreeBody = result.data?.termsList?.get(2)?.termsBody ?: "",
+                        isMoreToSeeRequiredThree = result.data?.termsList?.get(2)?.isMoreToSee ?: false,
+                        requiredFourTitle = result.data?.termsList?.get(3)?.termsTitle ?: "",
+                        requiredFourBody = result.data?.termsList?.get(3)?.termsBody ?: "",
+                        isMoreToSeeRequiredFour = result.data?.termsList?.get(3)?.isMoreToSee ?: false,
+                        choiceId = result.data?.termsList?.get(4)?.termsId ?: 0,
+                        choiceTitle = result.data?.termsList?.get(4)?.termsTitle ?: "",
+                        choiceBody = result.data?.termsList?.get(4)?.termsBody ?: "",
+                        isMoreToSeeChoice = result.data?.termsList?.get(4)?.isMoreToSee ?: false,
+                        )
+                    Log.e("terms-viewmodel", "성공 ${result.data?.termsList}")
                 }
                 is Resource.Error ->{
-                    _stateTerms.value = TermsListState(error = result.message ?:"An unexpeted error occured")
+                    stateTermsForm = TermsFormState(error = result.message ?:"An unexpeted error occured")
+                    Log.e("terms-viewmodel", "에러")
                 }
                 is Resource.Loading ->{
-                    _stateTerms.value = TermsListState(isLoading = true)
+                    stateTermsForm = TermsFormState(isLoading = true)
+                    Log.e("terms-viewmodel", "로딩중")
+                }
+            }
+        }.launchIn(viewModelScope)
+    }
+    private fun getNickname() {
+        getNicknameUseCase(stateNicknameForm.nickname).onEach{ result ->
+            when(result){
+                is Resource.Success ->{
+                    if(result?.data?.code ?: 0 == 2053){ //닉네임 가능
+                        stateNicknameForm = NicknameFormState(
+                            nickname = stateNicknameForm.nickname,
+                            isTried = true,
+                            isError = false,
+                            isSuccess = true,
+                            successMessage = result.data?.message ?: "",
+                            btnEnabled = true
+                        )
+                    } else { //닉네임 불가능, 2052:닉네임 중복, 4019:형식, 4020:욕
+                        stateNicknameForm = NicknameFormState(
+                            nickname = stateNicknameForm.nickname,
+                            isTried = true,
+                            isSuccess = false,
+                            isError = true,
+                            errorMessage = result.data?.message ?: "",
+                            btnEnabled = false
+                        )
+                    }
+                    Log.e("nickname-viewmodel","${stateNicknameForm}")
+                }
+                is Resource.Error ->{
+                    stateNicknameForm = NicknameFormState(
+                        nickname = stateNicknameForm.nickname,
+                        error = result.message ?: "An unexpeted error occured"
+                    )
+                }
+                is Resource.Loading->{
+                    stateNicknameForm = NicknameFormState(
+                        isLoading = true,
+                        nickname = stateNicknameForm.nickname
+                    )
                 }
             }
         }.launchIn(viewModelScope)
     }
     private fun getBeverages(){
         getBeveragesUseCase().onEach {result ->
-            Log.e("signup-preferences","${result.data?.beverageCategoryList}")
             when(result){
                 is Resource.Success ->{
-                    _statePreferences.value = BeveragesListState(
+                    stateBeverageForm = BeverageFormState(
                         beverageList = result.data?.beverageCategoryList ?: emptyList(),
-                        size = result.data?.size  ?: 0
+                        size = result.data?.size ?: 0,
+                        beverageCheckList = List(result.data?.size ?: 0) { false }
                     )
+                    Log.e("preferences-viewmodel", "성공 ${result.data?.beverageCategoryList}")
                 }
                 is Resource.Error ->{
-                    _statePreferences.value = BeveragesListState(error = result.message ?:"An unexpeted error occured")
+                    stateBeverageForm = BeverageFormState(error = result.message ?: "An unexpeted error occured")
+                    Log.e("preferences-viewmodel", "에러")
                 }
                 is Resource.Loading ->{
-                    _statePreferences.value = BeveragesListState(isLoading = true)
+                    stateBeverageForm = BeverageFormState(isLoading = true)
+                    Log.e("preferences-viewmodel", "로딩중")
                 }
             }
         }.launchIn(viewModelScope)
     }
-    private fun getNickname() {
-        getNicknameUseCase(_stateNicknameValue.value).onEach{ result ->
+    private fun postPhonenumber(){
+        postPhoneSmsUseCase(PhoneRequest(targetPhoneNum = stateUserInfoForm.phoneNumber)).onEach{ result ->
+            when(result) {
+                is Resource.Success -> {
+                    if(result.data?.code == 2000){ //성공
+                        stateUserInfoForm = stateUserInfoForm.copy(
+                            authNumber = "",
+                            authNumberIsTried = false,
+                            authNumberIsCorrect = false,
+                            authNumberIsError = false,
+                            authNumberCorrectMessage = "",
+                            authNumberErrorMessage = "",
+                            phoneNumberIsTried = true,
+                            phoneNumberIsCorrect = true,
+                            phoneNumberIsError = false,
+                            phoneNumberErrorMessage = "",
+                            phoneNumberCorrectMessage = result.data.message//"인증번호가 요청되었습니다"
+                        )
+                        remainingTime = 5 * 60
+                    } else if(result.data?.code == 2054) { //이미 가입됨
+                        stateUserInfoForm = stateUserInfoForm.copy(
+                            authNumber = "",
+                            authNumberIsTried = false,
+                            authNumberIsCorrect = false,
+                            authNumberIsError = false,
+                            authNumberCorrectMessage = "",
+                            authNumberErrorMessage = "",
+                            phoneNumberIsTried = true,
+                            phoneNumberIsCorrect = false,
+                            phoneNumberIsError = true,
+                            phoneNumberErrorMessage = result.data.message,
+                        )
+                        remainingTime = 0
+                    } else{
+                        //뭐지
+                    }
+                    Log.e("phonenumber-viewmodel","성공 : ${result.code}")
+                }
+                is Resource.Error -> {
+                    stateUserInfoForm = stateUserInfoForm.copy(
+                        authNumber = "",
+                        authNumberIsTried = false,
+                        authNumberIsCorrect = false,
+                        authNumberIsError = false,
+                        authNumberCorrectMessage = "",
+                        authNumberErrorMessage = "",
+                        error = result.message ?: "An unexpeted error occured",
+                    )
+                    Log.e("phonenumber-viewmodel","에러 : ${result.code}")
+                }
+                is Resource.Loading -> {
+                    stateUserInfoForm = stateUserInfoForm.copy(
+                        authNumber = "",
+                        authNumberIsTried = false,
+                        authNumberIsCorrect = false,
+                        authNumberIsError = false,
+                        authNumberCorrectMessage = "",
+                        authNumberErrorMessage = "",
+                        isLoading = true,
+                    )
+                    Log.e("phonenumber-viewmodel","로딩중 : ${result.code}")
+                }
+            }
+        }.launchIn(viewModelScope)
+    }
+    private fun postAuthNumber(){
+        postAuthUseCase(AuthRequest(
+            phoneNum = stateUserInfoForm.phoneNumber,
+            authNum = Integer.parseInt(stateUserInfoForm.authNumber)
+        )).onEach{ result ->
             when(result){
                 is Resource.Success ->{
-                    if(result.data?.code ?: 0 == 2011){ //닉네임 가능
-                        _stateCorrectMessage.value = result.data?.message ?: ""
-                        _stateIsCorrect.value = true
-                        Log.e("nickname-viewmodel", "${result.data?.message}")
-                    } else if(result.data?.code ?: 0 == 2010){ //닉네임 중복
-                        _stateErrorMessage.value = result.data?.message ?: ""
-                        _stateIsError.value = true
-                        Log.e("nickname-viewmodel", "${result.data?.message}")
-                    } else { //4019 : 형식 //4020 : 욕
-                        //엥 뭐지
+                    if(result.data?.code == 2000){ //성공
+                        stateUserInfoForm = stateUserInfoForm.copy(
+                            authNumberIsTried = true,
+                            authNumberIsError = false,
+                            authNumberIsCorrect = true,
+                            authNumberCorrectMessage = result.data.message,
+                            authNumberErrorMessage = "",
+                        )
+                        remainingTime = 0
+                    } else if(result.data?.code == 4056){ //bad_request
+                        stateUserInfoForm = stateUserInfoForm.copy(
+                            authNumberIsTried = true,
+                            authNumberIsError = true,
+                            authNumberIsCorrect = false,
+                            authNumberCorrectMessage = "",
+                            authNumberErrorMessage =result.data.message
+                        )
+                    } else if(result.data?.code == 4057) { //인증번호 불일치
+                        stateUserInfoForm = stateUserInfoForm.copy(
+                            authNumberIsTried = true,
+                            authNumberIsError = true,
+                            authNumberIsCorrect = false,
+                            authNumberCorrectMessage = "",
+                            authNumberErrorMessage = result.data.message
+                        )
+                    } else if(result.data?.code == 4058){ //인증번호 시간초과
+                        stateUserInfoForm = stateUserInfoForm.copy(
+                            authNumberIsTried = true,
+                            authNumberIsError = true,
+                            authNumberIsCorrect = false,
+                            authNumberCorrectMessage = "",
+                            authNumberErrorMessage = result.data.message
+                        )
+                    } else{
+                        //뭐지
                     }
-                    updateIsError()
-                    updateIsCorrect()
-                    Log.e("nickname-viewmodel", "errormessage : ${_stateErrorMessage.value}")
-                    Log.e("nickname-viewmodel", "correctmessage : ${_stateCorrectMessage.value}")
+                    Log.e("phonenumber-viewmodel","성공 : ${result.code}  ${stateUserInfoForm}")
                 }
-                is Resource.Error ->{
-                    Log.e("nickname-viewmodel", "에러")
+                is Resource.Error -> {
+                    stateUserInfoForm = stateUserInfoForm.copy(
+                        error = result.message ?: "An unexpeted error occured",
+                    )
+                    Log.e("phonenumber-viewmodel","에러 : ${result.code}")
                 }
-                is Resource.Loading->{
-                    Log.e("nickname-viewmodel", "로딩중")
+                is Resource.Loading ->{
+                    stateUserInfoForm = stateUserInfoForm.copy(
+                        isLoading = true,
+                    )
+                    Log.e("phonenumber-viewmodel","로딩중 : ${result.code}")
                 }
             }
         }.launchIn(viewModelScope)
     }
-    private fun getPhoneSms(){
-
+    fun postInfo(
+        tokenStoreViewModel: ProtoDataViewModel,
+    ){
+        postInfoUseCase(
+            social = social,
+            infoRequest = InfoRequest(
+                email = _email.value,
+                profileUrl = _profile.value,
+                agreeTermsIdList = listOf(stateTermsForm.choiceId),
+                name = stateUserInfoForm.name,
+                birth = stateUserInfoForm.birthday,
+                phoneNum = "01012345678", //stateUserInfoForm.phoneNumber,
+                gender = if (stateUserInfoForm.gender == "남") "1" else "2",
+                zipCode = stateUserAddressForm.zipCode,
+                address = stateUserAddressForm.address,
+                detailAddress = stateUserAddressForm.detailAddress,
+                nickname = stateNicknameForm.nickname,
+                preferBeverages = stateBeverageForm.beverageCheckList.mapIndexedNotNull { index, isSelected ->
+                    if (isSelected) index+1 else null
+                },
+            )
+        ).onEach{result ->
+            when(result){
+                is Resource.Success ->{
+                    if(result.data?.code == 2000){
+                        Log.e("signup-token","실행 전 : ${tokenStoreViewModel.tokens}")
+                        tokenStoreViewModel.updateAccessToken(result.data.result.accessToken)
+                        tokenStoreViewModel.updateRefreshToken(result.data.result.refreshToken)
+                        Log.e("signup-token","실행 후 : ${tokenStoreViewModel.tokens}")
+                    } else {
+                        //토큰 null임
+                    }
+                    Log.e("signup-token", "성공 : ${result.data?.result}")
+                }
+                is Resource.Error ->{
+                    Log.e("signup-token", "에러 : ${result.message}")
+                }
+                is Resource.Loading ->{
+                    Log.e("signup-token", "로딩중 : ${result.data?.result}")
+                }
+            }
+        }.launchIn(viewModelScope)
     }
-
-
 
 
     override fun onCleared() {
