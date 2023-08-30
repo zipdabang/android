@@ -33,6 +33,9 @@ fun NavGraphBuilder.RecipeNavGraph(navController: NavController) {
                 },
                 onScrapClick = { recipeId ->
 
+                },
+                onBannerClick = { keyword ->
+
                 }
             )
         }

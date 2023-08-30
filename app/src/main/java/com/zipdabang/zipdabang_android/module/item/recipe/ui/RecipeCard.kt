@@ -70,6 +70,7 @@ fun RecipeCard(
     Column(
         modifier = Modifier
             .width(160.dp)
+            .height(228.dp)
             .border(
                 width = 1.dp,
                 color = Color(0x1A262D31),
@@ -102,14 +103,14 @@ fun RecipeCard(
                 .padding(start = 4.dp, end = 4.dp, top = 4.dp, bottom = 6.dp),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            
+
             val scrapChecked = R.drawable.recipe_bookmark_checked
             val scrapNotChecked = R.drawable.recipe_bookmark_normal
             val favoriteChecked = R.drawable.recipe_favorite_checked
             val favoriteNotChecked = R.drawable.recipe_favorite_normal
             val favoriteCountIcon = R.drawable.recipe_favorite_count
             val commentCountIcon = R.drawable.recipe_comment_count
-            
+
             // date, likes, comments
             Column {
                 Text(
@@ -161,7 +162,7 @@ fun RecipeCard(
 
             // IconButtons
             Row {
-                Box(modifier = Modifier.size(24.dp)) {
+                Box(modifier = Modifier.size(26.dp)) {
                     IconToggle(
                         iconChecked = scrapChecked,
                         iconNotChecked = scrapNotChecked,
@@ -176,7 +177,7 @@ fun RecipeCard(
 
                 Spacer(modifier = Modifier.width(2.dp))
 
-                Box(modifier = Modifier.size(24.dp)) {
+                Box(modifier = Modifier.size(26.dp)) {
                     IconToggle(
                         iconChecked = favoriteChecked,
                         iconNotChecked = favoriteNotChecked,
@@ -228,6 +229,7 @@ fun RecipeCardLoading() {
     Column(
         modifier = Modifier
             .width(160.dp)
+            .height(228.dp)
             .border(
                 width = 1.dp,
                 color = Color(0x1A262D31),
@@ -271,4 +273,10 @@ fun RecipeCardPreview() {
 
         }
     )
+}
+
+@Preview
+@Composable
+fun RecipeCardLoadingPreview() {
+    RecipeCardLoading()
 }

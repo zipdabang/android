@@ -25,7 +25,8 @@ fun RecipeScreen(
     onOwnerTypeClick: (String) -> Unit,
     onRecipeClick: (Int) -> Unit,
     onLikeClick: (Int) -> Unit,
-    onScrapClick: (Int) -> Unit
+    onScrapClick: (Int) -> Unit,
+    onBannerClick: (String) -> Unit
 ){
     //drawer에 필요한 drawerState랑 scope
     val drawerState = rememberDrawerState(DrawerValue.Closed)
@@ -59,7 +60,8 @@ fun RecipeScreen(
                     onOwnerTypeClick = onOwnerTypeClick,
                     onRecipeClick = onRecipeClick,
                     onLikeClick = onLikeClick,
-                    onScrapClick = onScrapClick
+                    onScrapClick = onScrapClick,
+                    onBannerClick = onBannerClick
                 )
 
             }

@@ -42,8 +42,8 @@ fun GroupHeader(
             .padding(
                 start = 16.dp,
                 end = 26.dp,
-                top = 10.dp,
-                bottom = 10.dp
+                top = 6.dp,
+                bottom = 6.dp
             )
             .clickable(
                 interactionSource = remember {
