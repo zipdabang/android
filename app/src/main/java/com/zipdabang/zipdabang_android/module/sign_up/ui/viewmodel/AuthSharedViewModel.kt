@@ -653,7 +653,7 @@ class AuthSharedViewModel @Inject constructor(
         }.launchIn(viewModelScope)
     }
     fun postInfo(
-        //tokenStoreViewModel: ProtoDataViewModel,
+        tokenStoreViewModel: ProtoDataViewModel,
     ){
         postInfoUseCase(
             social = social,
@@ -663,8 +663,8 @@ class AuthSharedViewModel @Inject constructor(
                 agreeTermsIdList = listOf(stateTermsForm.choiceId),
                 name = stateUserInfoForm.name,
                 birth = stateUserInfoForm.birthday,
-                phoneNum = "01075572261", //stateUserInfoForm.phoneNumber,
-                gender = stateUserInfoForm.gender,
+                phoneNum = "01012345678", //stateUserInfoForm.phoneNumber,
+                gender = if (stateUserInfoForm.gender == "남") "1" else "2",
                 zipCode = stateUserAddressForm.zipCode,
                 address = stateUserAddressForm.address,
                 detailAddress = stateUserAddressForm.detailAddress,
@@ -677,30 +677,17 @@ class AuthSharedViewModel @Inject constructor(
             when(result){
                 is Resource.Success ->{
                     if(result.data?.code == 2000){
-                        //tokenStoreViewModel.updateAccessToken(result.data.result.accessToken)
-                        //tokenStoreViewModel.updateRefreshToken(result.data.result.refreshToken)
-                    } else{
-                        //토큰 null임 뭐지?
+                        Log.e("signup-token","실행 전 : ${tokenStoreViewModel.tokens}")
+                        tokenStoreViewModel.updateAccessToken(result.data.result.accessToken)
+                        tokenStoreViewModel.updateRefreshToken(result.data.result.refreshToken)
+                        Log.e("signup-token","실행 후 : ${tokenStoreViewModel.tokens}")
+                    } else {
+                        //토큰 null임
                     }
                     Log.e("signup-token", "성공 : ${result.data?.result}")
                 }
                 is Resource.Error ->{
-                    Log.e("signup-token", "에러 : ${result.message} ${social} ${InfoRequest(
-                        email = _email.value,
-                        profileUrl = _profile.value,
-                        agreeTermsIdList = listOf(stateTermsForm.choiceId),
-                        name = stateUserInfoForm.name,
-                        birth = stateUserInfoForm.birthday,
-                        phoneNum = "01075572261", //stateUserInfoForm.phoneNumber,
-                        gender = stateUserInfoForm.gender,
-                        zipCode = stateUserAddressForm.zipCode,
-                        address = stateUserAddressForm.address,
-                        detailAddress = stateUserAddressForm.detailAddress,
-                        nickname = stateNicknameForm.nickname,
-                        preferBeverages = stateBeverageForm.beverageCheckList.mapIndexedNotNull { index, isSelected ->
-                            if (isSelected) index+1 else null
-                        },
-                    )}")
+                    Log.e("signup-token", "에러 : ${result.message}")
                 }
                 is Resource.Loading ->{
                     Log.e("signup-token", "로딩중 : ${result.data?.result}")

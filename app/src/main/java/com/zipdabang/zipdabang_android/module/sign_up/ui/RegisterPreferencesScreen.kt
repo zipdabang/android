@@ -59,12 +59,13 @@ fun RegisterPreferencesScreen(
     onClickNextAfterChoose : () -> Unit,
 ) {
     val stateBeverageForm = authSharedViewModel.stateBeverageForm
-    //val viewModel = hiltViewModel<ProtoDataViewModel>()
+    //val tokenStoreViewModel = hiltViewModel<ProtoDataViewModel>()
 
     LaunchedEffect(key1 = stateBeverageForm){
         authSharedViewModel.onBeverageEvent(BeverageFormEvent.BtnChanged(true))
         authSharedViewModel.updateSocial()
     }
+
 
     Scaffold(
         modifier = Modifier
@@ -179,7 +180,6 @@ fun RegisterPreferencesScreen(
                         ),
                         style = ZipdabangandroidTheme.Typography.fourteen_300,
                         onClick={
-                            authSharedViewModel.postInfo()
                             onClickNextAfterChoose()
                         },
                     )
@@ -193,7 +193,6 @@ fun RegisterPreferencesScreen(
                 PrimaryButtonWithStatus(
                     text= stringResource(id = R.string.signup_btn_choicecomplete),
                     onClick={
-                        authSharedViewModel.postInfo()
                         onClickNext()
                     },
                     isFormFilled = stateBeverageForm.btnEnabled
