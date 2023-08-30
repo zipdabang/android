@@ -31,6 +31,7 @@ data class TermsFormState(
     val requiredFourBody : String = "",
     val isMoreToSeeRequiredFour : Boolean = true,
 
+    val choiceId : Int = 0,
     val choice : Boolean = true,
     val choiceTitle : String = "",
     val choiceBody : String = "",

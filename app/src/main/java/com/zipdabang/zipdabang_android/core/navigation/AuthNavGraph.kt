@@ -1,5 +1,6 @@
 package com.zipdabang.zipdabang_android.core.navigation
 
+import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -9,6 +10,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
+import com.zipdabang.zipdabang_android.core.data_store.proto.ProtoDataViewModel
 import com.zipdabang.zipdabang_android.module.login.ui.LoginScreen
 import com.zipdabang.zipdabang_android.module.sign_up.ui.viewmodel.AuthSharedViewModel
 import com.zipdabang.zipdabang_android.module.sign_up.ui.RegisterNicknameScreen
@@ -129,6 +131,8 @@ fun NavGraphBuilder.authNavGraph(navController: NavHostController) {
 
         composable(route =AuthScreen.RegisterPreferences.route) {navBackStackEntry ->
             val authSharedViewModel = navBackStackEntry.authSharedViewModel<AuthSharedViewModel>(navController = navController)
+            val tokenStoreViewModel = hiltViewModel<ProtoDataViewModel>()
+
             RegisterPreferencesScreen(
                 navController = navController,
                 authSharedViewModel = authSharedViewModel,
@@ -136,8 +140,13 @@ fun NavGraphBuilder.authNavGraph(navController: NavHostController) {
                     navController.popBackStack(AuthScreen.RegisterNickname.route, inclusive = false)
                 },
                 onClickNext = {
-                    navController.navigate(AuthScreen.RegisterPreferences.route)
-                    //홈으로 넘어가기
+                    authSharedViewModel.postInfo(tokenStoreViewModel)
+                    Log.e("signup-token","실행 끝 : ${tokenStoreViewModel.tokens}")
+                    navController.popBackStack(HomeScreen.Home.route, inclusive = false)
+                },
+                onClickNextAfterChoose = {
+                    authSharedViewModel.postInfo(tokenStoreViewModel)
+                    navController.popBackStack(HomeScreen.Home.route, inclusive = false)
                 }
             )
         }
