@@ -1,5 +1,6 @@
 package com.zipdabang.zipdabang_android.module.my.ui
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -13,7 +14,9 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -31,14 +34,19 @@ import com.zipdabang.zipdabang_android.ui.component.AppBarHome
 import com.zipdabang.zipdabang_android.ui.component.AppBarMy
 import com.zipdabang.zipdabang_android.ui.component.ModalDrawer
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 
 @Composable
-fun MyScreen(){
+fun MyScreen(
+    onClickLogout : () -> Unit,
+){
     //drawer에 필요한 drawerState랑 scope
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
-    //val tokenStoreViewModel = hiltViewModel<ProtoDataViewModel>()
+    val tokenStoreViewModel = hiltViewModel<ProtoDataViewModel>()
 
     ModalDrawer(
         scaffold = {
@@ -69,8 +77,15 @@ fun MyScreen(){
                                 text="로그아웃",
                                 modifier = Modifier.clickable(
                                     onClick = {
-                                        //tokenStoreViewModel.updateAccessToken("")
-                                        //tokenStoreViewModel.updateRefreshToken("")
+                                        CoroutineScope(Dispatchers.IO).launch {
+                                            tokenStoreViewModel.resetToken()
+                                            Log.e("signup-tokens","로그아웃 클릭, postJob 실행 중")
+
+                                            withContext(Dispatchers.Main){
+                                                onClickLogout()
+                                                Log.e("signup-tokens","로그아웃 클릭, onClick 실행 끝")
+                                            }
+                                        }
                                     }
                                 )
                             )
@@ -87,5 +102,7 @@ fun MyScreen(){
 @Preview
 @Composable
 fun PreviewMyScreen() {
-    MyScreen()
+    MyScreen(
+        onClickLogout = {}
+    )
 }

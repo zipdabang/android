@@ -17,11 +17,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -31,24 +27,26 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.datastore.core.DataStore
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.zipdabang.zipdabang_android.R
-import com.zipdabang.zipdabang_android.core.data_store.proto.CurrentPlatform
 import com.zipdabang.zipdabang_android.core.data_store.proto.ProtoDataViewModel
-import com.zipdabang.zipdabang_android.core.data_store.proto.Token
 import com.zipdabang.zipdabang_android.core.navigation.AuthScreen
 import com.zipdabang.zipdabang_android.module.sign_up.ui.viewmodel.AuthSharedViewModel
 import com.zipdabang.zipdabang_android.module.sign_up.ui.viewmodel.BeverageFormEvent
 import com.zipdabang.zipdabang_android.ui.component.AppBarSignUp
 import com.zipdabang.zipdabang_android.ui.component.MainAndSubTitle
-import com.zipdabang.zipdabang_android.ui.component.PrimaryButtonOutLined
 import com.zipdabang.zipdabang_android.ui.component.PrimaryButtonWithStatus
 import com.zipdabang.zipdabang_android.ui.component.RoundedButton
 import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
-import kotlinx.coroutines.flow.FlowCollector
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
+import okhttp3.internal.wait
 
 @Composable
 fun RegisterPreferencesScreen(
@@ -56,16 +54,16 @@ fun RegisterPreferencesScreen(
     authSharedViewModel: AuthSharedViewModel = hiltViewModel(), //FakeAuthSharedViewModel = provideFakeAuthSharedViewModel(),
     onClickBack : ()->Unit,
     onClickNext: ()->Unit,
-    onClickNextAfterChoose : () -> Unit,
 ) {
     val stateBeverageForm = authSharedViewModel.stateBeverageForm
-    //val tokenStoreViewModel = hiltViewModel<ProtoDataViewModel>()
+    val tokenStoreViewModel = hiltViewModel<ProtoDataViewModel>()
+    val scope = rememberCoroutineScope()
+
 
     LaunchedEffect(key1 = stateBeverageForm){
         authSharedViewModel.onBeverageEvent(BeverageFormEvent.BtnChanged(true))
         authSharedViewModel.updateSocial()
     }
-
 
     Scaffold(
         modifier = Modifier
@@ -180,7 +178,17 @@ fun RegisterPreferencesScreen(
                         ),
                         style = ZipdabangandroidTheme.Typography.fourteen_300,
                         onClick={
-                            onClickNextAfterChoose()
+                            if(!stateBeverageForm.btnEnabled){
+                                CoroutineScope(Dispatchers.IO).launch {
+                                    authSharedViewModel.postInfo(tokenStoreViewModel)
+                                    Log.e("signup-tokens","글씨 클릭, postJob 실행 중")
+
+                                    withContext(Dispatchers.Main){
+                                        onClickNext()
+                                        Log.e("signup-tokens","글씨 클릭, onClick 실행 끝")
+                                    }
+                                }
+                            }
                         },
                     )
                 }
@@ -193,7 +201,15 @@ fun RegisterPreferencesScreen(
                 PrimaryButtonWithStatus(
                     text= stringResource(id = R.string.signup_btn_choicecomplete),
                     onClick={
-                        onClickNext()
+                        CoroutineScope(Dispatchers.IO).launch {
+                            authSharedViewModel.postInfo(tokenStoreViewModel)
+                            Log.e("signup-tokens","버튼 클릭, postJob 실행 중")
+
+                            withContext(Dispatchers.Main){
+                                onClickNext()
+                                Log.e("signup-tokens","버튼 클릭, onClick 실행 끝")
+                            }
+                        }
                     },
                     isFormFilled = stateBeverageForm.btnEnabled
                 )
@@ -214,8 +230,5 @@ fun PreviewRegisterPreferencesScreen(){
         onClickNext = {
             navController.navigate(AuthScreen.RegisterPreferences.route)
         },
-        onClickNextAfterChoose = {
-
-        }
     )
 }

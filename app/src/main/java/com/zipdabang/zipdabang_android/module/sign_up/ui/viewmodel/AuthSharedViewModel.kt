@@ -70,7 +70,7 @@ class AuthSharedViewModel @Inject constructor(
         _profile.value = profile
     }
 
-    //social login platform
+
     lateinit var social : String
     suspend fun updateSocial(){
         social = dataStore.data.first().platformStatus.toString()
@@ -652,11 +652,11 @@ class AuthSharedViewModel @Inject constructor(
             }
         }.launchIn(viewModelScope)
     }
-    fun postInfo(
+    suspend fun postInfo(
         tokenStoreViewModel: ProtoDataViewModel,
     ){
         postInfoUseCase(
-            social = social,
+            social = social,//tokenDataStore.data.first().platformStatus.toString() ,//social,
             infoRequest = InfoRequest(
                 email = _email.value,
                 profileUrl = _profile.value,
@@ -677,10 +677,10 @@ class AuthSharedViewModel @Inject constructor(
             when(result){
                 is Resource.Success ->{
                     if(result.data?.code == 2000){
-                        Log.e("signup-token","실행 전 : ${tokenStoreViewModel.tokens}")
+                        Log.e("signup-token","api 실행 전 : ${tokenStoreViewModel.tokens}")
                         tokenStoreViewModel.updateAccessToken(result.data.result.accessToken)
                         tokenStoreViewModel.updateRefreshToken(result.data.result.refreshToken)
-                        Log.e("signup-token","실행 후 : ${tokenStoreViewModel.tokens}")
+                        Log.e("signup-token","api 실행 후 : ${tokenStoreViewModel.tokens}")
                     } else {
                         //토큰 null임
                     }
