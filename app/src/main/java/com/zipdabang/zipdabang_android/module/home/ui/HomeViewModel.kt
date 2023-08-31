@@ -38,7 +38,11 @@ class HomeViewModel @Inject constructor(
 
             val accessToken = datastore.data.first().accessToken ?: Constants.TOKEN_NULL
             accessToken.let {
+                Log.e("token",accessToken)
+
                 getHomeBanner(it).onEach { result ->
+                    Log.e("result",result.message.toString())
+
                     when (result) {
 
                         is HomeResource.HomeSuccess ->{
@@ -78,6 +82,8 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
 
             val accessToken = datastore.data.first().accessToken ?: Constants.TOKEN_NULL
+            Log.e("token recipe",accessToken)
+
             accessToken.let {
                 getBestRecipe(it).onEach { result ->
                     when (result) {

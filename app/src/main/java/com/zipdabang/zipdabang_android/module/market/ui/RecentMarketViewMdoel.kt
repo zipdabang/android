@@ -52,7 +52,7 @@ class RecentMarketViewMdoel @Inject constructor(
                                     isLoading = false,
                                     categoryList = result.data.result.productCategoryList,
                                     recentProductList = result.data.result.productList,
-                                    isLoading = false)
+                                    )
                             }else{
                                 Log.e("Market Api Error", result.data!!.message)
                             }

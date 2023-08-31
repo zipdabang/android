@@ -1,5 +1,6 @@
 package com.zipdabang.zipdabang_android.module.home.ui
 
+import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -61,56 +62,54 @@ fun HomeScreen(
                        modifier = Modifier
                            .padding(top = it.calculateTopPadding())
                            .verticalScroll(scrollState)
-                   ){
-                           if(bannerState.value.isLoading){
-                               TODO("shimmering effect")
-                           }else{
-                               val bannerListState= bannerState.value.bannerList
-                               val imageUrlList: List<String> = bannerListState.map { it.imageUrl }
-                               Banner(imageUrlList)
-                           }
-                       }
+                   ) {
+                            Log.d("group header", "group")
 
-                       GroupHeaderReversed(
-                           groupName = "Home_Title",
-                           formerHeaderChoco = "주간 베스트 ",
-                           latterHeaderStrawberry = "레시피",
-                           onClick = { TODO("Go TO Best Recipe") }
-                       )
-                        
-                        
-                        LazyRow(modifier = Modifier.padding(horizontal = 4.dp)){
-                            itemsIndexed(recipeState.value.recipeList){
-                                   index, item -> RecipeCard(
-                                recipeId = item.recipeId ,
-                                title = item.recipeName,
-                                user = item.owner,
-                                thumbnail = item.thumbnailUrl ,
-                                date = item.createdAt,
-                                likes = item.likes,
-                                comments = item.comments,
-                                isLikeSelected = item.isLiked,
-                                isScrapSelected = item.isScrapped,
-                                onLikeClick ={} ,
-                                onScrapClick ={} ,
-                                onItemClick = {}
-                            )
+                            if (bannerState.value.isLoading) {
+                                Log.d("isLoading", "isLoading")
+                                TODO("shimmering effect")
+                            } else {
+                                val bannerListState = bannerState.value.bannerList
+                                bannerListState.let {
+                                    val imageUrlList: List<String> =
+                                        bannerListState.map { it.imageUrl }
+                                    Banner(imageUrlList)
+                                }
                             }
 
-                            TODO("Best Product")
+
+                            GroupHeaderReversed(
+                                groupName = "Home_Title",
+                                formerHeaderChoco = "주간 베스트 ",
+                                latterHeaderStrawberry = "레시피",
+                                onClick = { }
+                            )
+
+                            if (!recipeState.value.isLoading) {
+                                LazyRow(modifier = Modifier.padding(horizontal = 4.dp)) {
+                                    itemsIndexed(recipeState.value.recipeList) { index, item ->
+                                        RecipeCard(
+                                            recipeId = item.recipeId,
+                                            title = item.recipeName,
+                                            user = item.owner,
+                                            thumbnail = item.thumbnailUrl,
+                                            date = item.createdAt,
+                                            likes = item.likes,
+                                            comments = item.comments,
+                                            isLikeSelected = item.isLiked,
+                                            isScrapSelected = item.isScrapped,
+                                            onLikeClick = {},
+                                            onScrapClick = {},
+                                            onItemClick = {}
+                                        )
+                                    }
+                                }
 
 
+                            }
 
 
-                            
                         }
-
-
-
-
-                       
-
-
 
                 }
             )

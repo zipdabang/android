@@ -1,5 +1,7 @@
 package com.zipdabang.zipdabang_android.module.main
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -20,6 +22,7 @@ import com.zipdabang.zipdabang_android.core.navigation.HomeNavGraph
 import com.zipdabang.zipdabang_android.core.navigation.MainNavGraph
 import com.zipdabang.zipdabang_android.module.bottom.ui.BottomNavigationBar
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun MainScreen(
     navController: NavHostController = rememberNavController()
