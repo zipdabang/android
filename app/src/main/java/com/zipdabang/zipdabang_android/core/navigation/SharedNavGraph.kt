@@ -4,7 +4,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
-import com.zipdabang.zipdabang_android.module.detail.recipe.RecipeDetailScreen
+import com.zipdabang.zipdabang_android.module.detail.recipe.ui.RecipeDetailScreen
 
 
 fun NavGraphBuilder.SharedNavGraph(navController: NavController){
@@ -19,7 +19,9 @@ fun NavGraphBuilder.SharedNavGraph(navController: NavController){
                 onClickProfile = { ownerId -> },
                 onClickLike = { recipeId -> },
                 onClickScrap = { recipeId -> },
-                onClickCart = { keyword -> }
+                onClickCart = { keyword -> },
+                onClickDelete = { recipeId -> },
+                onClickEdit = { recipeId -> }
             )
         }
 
