@@ -140,7 +140,10 @@ fun NavGraphBuilder.authNavGraph(navController: NavHostController) {
                     navController.popBackStack(AuthScreen.RegisterNickname.route, inclusive = false)
                 },
                 onClickNext = {
-                    navController.navigate("main/home/home")
+                    Log.e("signup-tokens", "넘어가져2")
+                    navController.navigate(MAIN_ROUTE){
+                        launchSingleTop = true
+                    }
                 }
             )
         }

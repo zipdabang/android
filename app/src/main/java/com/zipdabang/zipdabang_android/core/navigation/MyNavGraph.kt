@@ -14,7 +14,9 @@ fun NavGraphBuilder.MyNavGraph(navController: NavController) {
         composable(MyScreen.Home.route) {
             MyScreen(
                 onClickLogout = {
-                    navController.navigate(AuthScreen.SignIn.route)
+                    navController.navigate(MAIN_ROUTE){
+                        launchSingleTop = true
+                    }
                     Log.e("signup-tokens","로그아웃 클릭, onClick 실행 중")
                 }
             )

@@ -31,6 +31,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.zipdabang.zipdabang_android.R
+import com.zipdabang.zipdabang_android.common.Resource
 import com.zipdabang.zipdabang_android.core.data_store.proto.ProtoDataViewModel
 import com.zipdabang.zipdabang_android.core.navigation.AuthScreen
 import com.zipdabang.zipdabang_android.module.sign_up.ui.viewmodel.AuthSharedViewModel
@@ -179,13 +180,15 @@ fun RegisterPreferencesScreen(
                         style = ZipdabangandroidTheme.Typography.fourteen_300,
                         onClick={
                             if(!stateBeverageForm.btnEnabled){
-                                CoroutineScope(Dispatchers.IO).launch {
-                                    authSharedViewModel.postInfo(tokenStoreViewModel)
-                                    Log.e("signup-tokens","글씨 클릭, postJob 실행 중")
-
-                                    withContext(Dispatchers.Main){
+                                CoroutineScope(Dispatchers.Main).launch {
+                                    try{
+                                        Log.e("signup-tokens","api 실행 전")
+                                        authSharedViewModel.postInfo(tokenStoreViewModel)
+                                        Log.e("signup-tokens","넘어가져1")
                                         onClickNext()
-                                        Log.e("signup-tokens","글씨 클릭, onClick 실행 끝")
+                                        Log.e("signup-tokens","넘어가져3")
+                                    } catch (e:Exception){
+
                                     }
                                 }
                             }
@@ -201,13 +204,15 @@ fun RegisterPreferencesScreen(
                 PrimaryButtonWithStatus(
                     text= stringResource(id = R.string.signup_btn_choicecomplete),
                     onClick={
-                        CoroutineScope(Dispatchers.IO).launch {
-                            authSharedViewModel.postInfo(tokenStoreViewModel)
-                            Log.e("signup-tokens","버튼 클릭, postJob 실행 중")
-
-                            withContext(Dispatchers.Main){
+                        CoroutineScope(Dispatchers.Main).launch {
+                            try{
+                                //Log.e("signup-tokens","api 실행 전")
+                                authSharedViewModel.postInfo(tokenStoreViewModel)
+                                Log.e("signup-tokens","넘어가져1")
                                 onClickNext()
-                                Log.e("signup-tokens","버튼 클릭, onClick 실행 끝")
+                                Log.e("signup-tokens","넘어가져3")
+                            } catch (e:Exception){
+
                             }
                         }
                     },

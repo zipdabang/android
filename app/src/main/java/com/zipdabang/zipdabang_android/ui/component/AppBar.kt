@@ -53,9 +53,12 @@ import androidx.compose.ui.BiasAlignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.paint
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -264,7 +267,12 @@ fun AppBarMy(
 ) {
     TopAppBar(
         colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = Color.White //예은 - topAppBar containercolor 수정
+            containerColor = Color.Transparent//ZipdabangandroidTheme.Colors.Strawberry
+        ),
+        modifier = Modifier
+            .background(
+                brush = Brush.horizontalGradient(listOf(ZipdabangandroidTheme.Colors.Strawberry, ZipdabangandroidTheme.Colors.Choco)),
+                shape = RectangleShape ,
         ),
         title = {
             Box(
@@ -277,7 +285,7 @@ fun AppBarMy(
                     text = centerText,
                     fontSize = 24.sp,
                     fontFamily = FontFamily(Font(R.font.cafe24ssurroundair)),
-                    color = Color(0xFFA38F85),
+                    color = Color.White,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                     modifier = Modifier
@@ -294,7 +302,7 @@ fun AppBarMy(
                         contentDescription = "search",
                         modifier = Modifier
                             .padding(4.dp),
-                        tint = ZipdabangandroidTheme.Colors.Choco
+                        tint = Color.White
                     )
                 }
             }

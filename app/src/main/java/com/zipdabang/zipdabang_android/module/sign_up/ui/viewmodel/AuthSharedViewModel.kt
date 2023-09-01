@@ -16,6 +16,7 @@ import com.zipdabang.zipdabang_android.core.data_store.proto.ProtoRepository
 import com.zipdabang.zipdabang_android.core.data_store.proto.Token
 import com.zipdabang.zipdabang_android.module.sign_up.data.remote.AuthRequest
 import com.zipdabang.zipdabang_android.module.sign_up.data.remote.InfoRequest
+import com.zipdabang.zipdabang_android.module.sign_up.data.remote.InfoResponse
 import com.zipdabang.zipdabang_android.module.sign_up.data.remote.PhoneRequest
 import com.zipdabang.zipdabang_android.module.sign_up.domain.usecase.GetBeveragesUseCase
 import com.zipdabang.zipdabang_android.module.sign_up.domain.usecase.GetNicknameUseCase
@@ -35,6 +36,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.single
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.Calendar
@@ -77,7 +79,7 @@ class AuthSharedViewModel @Inject constructor(
     }
 
 
-    // info 글자수 제한하기, 생년월일 더 제한, 카카오 주소 api, response enum class로 옮기기, textfield 옮겨갈때마다 focusing
+    // info 글자수 제한하기, 생년월일 더 제한, response enum class로 옮기기, textfield 옮겨갈때마다 focusing
 
 
     /*TermsScreen*/
@@ -655,45 +657,56 @@ class AuthSharedViewModel @Inject constructor(
     suspend fun postInfo(
         tokenStoreViewModel: ProtoDataViewModel,
     ){
-        postInfoUseCase(
-            social = social,//tokenDataStore.data.first().platformStatus.toString() ,//social,
-            infoRequest = InfoRequest(
-                email = _email.value,
-                profileUrl = _profile.value,
-                agreeTermsIdList = listOf(stateTermsForm.choiceId),
-                name = stateUserInfoForm.name,
-                birth = stateUserInfoForm.birthday,
-                phoneNum = "01012345678", //stateUserInfoForm.phoneNumber,
-                gender = if (stateUserInfoForm.gender == "남") "1" else "2",
-                zipCode = stateUserAddressForm.zipCode,
-                address = stateUserAddressForm.address,
-                detailAddress = stateUserAddressForm.detailAddress,
-                nickname = stateNicknameForm.nickname,
-                preferBeverages = stateBeverageForm.beverageCheckList.mapIndexedNotNull { index, isSelected ->
-                    if (isSelected) index+1 else null
-                },
+        try{
+            val result = postInfoUseCase(
+                social = social, //tokenDataStore.data.first().platformStatus.toString() ,//social,
+                infoRequest = InfoRequest(
+                    email = _email.value,
+                    profileUrl = _profile.value,
+                    agreeTermsIdList = listOf(stateTermsForm.choiceId),
+                    name = stateUserInfoForm.name,
+                    birth = stateUserInfoForm.birthday,
+                    phoneNum = "01012345678", //stateUserInfoForm.phoneNumber,
+                    gender = if (stateUserInfoForm.gender == "남") "1" else "2",
+                    zipCode = stateUserAddressForm.zipCode,
+                    address = stateUserAddressForm.address,
+                    detailAddress = stateUserAddressForm.detailAddress,
+                    nickname = stateNicknameForm.nickname,
+                    preferBeverages = stateBeverageForm.beverageCheckList.mapIndexedNotNull { index, isSelected ->
+                        if (isSelected) index+1 else null
+                    },
+                )
             )
-        ).onEach{result ->
-            when(result){
-                is Resource.Success ->{
-                    if(result.data?.code == 2000){
-                        Log.e("signup-token","api 실행 전 : ${tokenStoreViewModel.tokens}")
-                        tokenStoreViewModel.updateAccessToken(result.data.result.accessToken)
-                        tokenStoreViewModel.updateRefreshToken(result.data.result.refreshToken)
-                        Log.e("signup-token","api 실행 후 : ${tokenStoreViewModel.tokens}")
-                    } else {
-                        //토큰 null임
+
+            result.collect{ result ->
+                when(result){
+                    is Resource.Success ->{
+                        if(result.data?.result != null){
+                            if(result.data?.code == 2000){
+                                //Log.e("signup-tokens","api 실행 후 : ${tokenStoreViewModel.tokens}")
+                                tokenStoreViewModel.updateAccessToken(result.data.result.accessToken)
+                                tokenStoreViewModel.updateRefreshToken(result.data.result.refreshToken)
+                                //Log.e("signup-tokens","토큰 담은 후 : ${tokenStoreViewModel.tokens}")
+                            } else {
+                                //토큰 null임
+                            }
+                        } else { //result가 null 일때
+
+                        }
+                        Log.e("signup-tokens", "성공 : ${result.data?.result}")
                     }
-                    Log.e("signup-token", "성공 : ${result.data?.result}")
+                    is Resource.Error ->{
+                        Log.e("signup-tokens", "에러 : ${result.message}")
+                    }
+                    is Resource.Loading ->{
+                        Log.e("signup-tokens", "로딩중 : ${result.data?.result}")
+                    }
                 }
-                is Resource.Error ->{
-                    Log.e("signup-token", "에러 : ${result.message}")
-                }
-                is Resource.Loading ->{
-                    Log.e("signup-token", "로딩중 : ${result.data?.result}")
-                }
+
             }
-        }.launchIn(viewModelScope)
+        } catch (e: Exception) {
+
+        }
     }
 
 
