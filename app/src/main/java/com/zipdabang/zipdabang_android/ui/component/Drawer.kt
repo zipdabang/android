@@ -147,7 +147,7 @@ fun DrawerContent(
                 }
                 Divider(
                     modifier = Modifier.fillMaxWidth(),
-                    color = ZipdabangandroidTheme.Colors.Typo.copy(0.2f),
+                    color = ZipdabangandroidTheme.Colors.Typo.copy(0.1f),
                 )
                 Box(
                     modifier = Modifier.fillMaxWidth()
@@ -196,9 +196,9 @@ fun DrawerContent(
                 }
                 Divider(
                     modifier = Modifier.fillMaxWidth(),
-                    color = ZipdabangandroidTheme.Colors.Typo.copy(0.2f),
+                    color = ZipdabangandroidTheme.Colors.Typo.copy(0.1f),
                 )
-                Box(
+                /*Box(
                     modifier = Modifier.fillMaxWidth()
                         .weight(1f)
                         .clickable(
@@ -212,7 +212,7 @@ fun DrawerContent(
                         style = ZipdabangandroidTheme.Typography.sixteen_500,
                         color = ZipdabangandroidTheme.Colors.Typo,
                     )
-                }
+                }*/
                 Box(
                     modifier = Modifier.fillMaxWidth()
                         .weight(1f)
@@ -258,6 +258,7 @@ fun DrawerContent(
                         color = ZipdabangandroidTheme.Colors.Typo,
                     )
                 }
+                Box(modifier = Modifier.fillMaxWidth().weight(1f))
             }
             //하단
             Column(

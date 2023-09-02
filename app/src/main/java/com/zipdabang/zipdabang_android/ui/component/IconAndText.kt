@@ -38,17 +38,21 @@ fun IconAndText(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
     ){
-        Icon(
-            painter = painterResource(id = iconImageVector),
-            contentDescription = "Icon",
-            tint = iconColor,
-            modifier = iconModifier,
-        )
+        Box(
+            modifier = Modifier.size(40.dp, 40.dp),
+            contentAlignment = Alignment.Center
+        ){
+            Icon(
+                painter = painterResource(id = iconImageVector),
+                contentDescription = "Icon",
+                tint = iconColor,
+                modifier = iconModifier,
+            )
+        }
         Text(
             text = text,
             color = textColor,
             style = textStyle,
-            modifier = Modifier.padding(0.dp, 0.dp, 2.dp, 0.dp)
         )
     }
 }

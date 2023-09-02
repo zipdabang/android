@@ -48,6 +48,11 @@ sealed class RecipeScreen(val route : String){
 }
 sealed class MyScreen(val route : String){
     object Home : MyScreen(route = "my/home")
+    object Like : MyScreen(route = "my/like")
+    object Scrap : MyScreen(route = "my/scrap")
+    object Myrecipe : MyScreen(route = "my/myrecipe")
+    object Shopping : MyScreen(route = "my/shopping")
+    object FriendList : MyScreen(route = "my/friendlist")
 }
 
 

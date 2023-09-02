@@ -260,25 +260,34 @@ fun AppBarSignUp(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AppBarMy(
+fun AppBarMy( //내집다방 그라데이션을 위해 특수제작했다고 생각하시면 됩니다(그렇게 수정했어요) -예은-
     endIcon: Int?,
+    startIcon: Int?,
     onClickEndIcon: () -> Unit,
+    onClickStartIcon: () -> Unit,
     centerText: String
 ) {
     TopAppBar(
         colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = Color.Transparent//ZipdabangandroidTheme.Colors.Strawberry
+            containerColor = Color.Transparent
         ),
-        modifier = Modifier
-            .background(
-                brush = Brush.horizontalGradient(listOf(ZipdabangandroidTheme.Colors.Strawberry, ZipdabangandroidTheme.Colors.Choco)),
-                shape = RectangleShape ,
-        ),
+        navigationIcon = {
+            startIcon?.let {
+                IconButton(onClick = { onClickStartIcon() }) {
+                    Icon(
+                        painter = painterResource(id = it),
+                        contentDescription = "",
+                        modifier = Modifier
+                            .padding(4.dp),
+                        tint = Color.White
+                    )
+                }
+            }
+        },
         title = {
             Box(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 32.dp),
+                    .fillMaxWidth(),
                 contentAlignment = Alignment.Center
             ) {
                 Text(
@@ -439,7 +448,9 @@ fun AppBarSignUpPreview() {
 @Composable
 fun AppBarMyPreview() {
     AppBarMy(
+        startIcon = R.drawable.ic_topbar_backbtn,
         endIcon = com.kakao.sdk.friend.R.drawable.material_ic_keyboard_arrow_left_black_24dp,
+        onClickStartIcon = { /*TODO*/ },
         onClickEndIcon = { /*TODO*/ },
         centerText = "집다방"
     )
