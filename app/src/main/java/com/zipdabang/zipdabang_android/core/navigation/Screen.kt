@@ -9,6 +9,7 @@ const val MARKET_ROUTE = "main/market"
 const val BASKET_ROUTE = "main/basket"
 const val RECIPES_ROUTE = "main/recipes"
 const val MY_ROUTE = "main/my"
+const val DRAWER_ROUTE = "main/drawer"
 const val SHARED_ROUTE = "main/shared"
 
 sealed class AuthScreen(val route: String) {
@@ -53,6 +54,18 @@ sealed class MyScreen(val route : String){
     object Myrecipe : MyScreen(route = "my/myrecipe")
     object Shopping : MyScreen(route = "my/shopping")
     object FriendList : MyScreen(route = "my/friendlist")
+}
+
+sealed class DrawerScreen(val route : String){
+    //공지사항
+    object Notice : DrawerScreen(route = "drawer/notice")
+    //FAQ
+    object FAQ : DrawerScreen(route = "drawer/faq")
+    //오류문의 및 신고
+    object Inquery : DrawerScreen(route = "drawer/inquery")
+    //회원 정보
+    object UserInfo : DrawerScreen(route = "drawer/userinfo")
+
 }
 
 
