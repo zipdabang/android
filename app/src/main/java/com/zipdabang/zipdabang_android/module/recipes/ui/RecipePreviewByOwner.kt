@@ -1,5 +1,6 @@
 package com.zipdabang.zipdabang_android.module.recipes.ui
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -36,6 +37,7 @@ fun RecipePreviewByOwner(
         modifier = Modifier
             .fillMaxWidth()
             .padding(start = 16.dp, end = 0.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         if (recipeStateList[0].isLoading) {
             items(5) {
@@ -79,6 +81,7 @@ fun RecipePreviewByOwner(
         modifier = Modifier
             .fillMaxWidth()
             .padding(start = 16.dp, end = 0.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         if (recipeStateList[1].isLoading) {
             items(5) {
@@ -123,6 +126,7 @@ fun RecipePreviewByOwner(
         modifier = Modifier
             .fillMaxWidth()
             .padding(start = 16.dp, end = 0.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         if (recipeStateList[2].isLoading) {
             items(5) {

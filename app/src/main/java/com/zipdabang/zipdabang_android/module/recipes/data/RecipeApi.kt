@@ -16,7 +16,7 @@ interface RecipeApi {
 
     // TODO 레시피 메뉴 배너
     // TODO url 수정하기
-    @GET("/banners")
+    @GET("/members/recipes/banners")
     suspend fun getRecipeBanners(
         @Header("Authorization") accessToken: String,
     ): RecipeBannerDto

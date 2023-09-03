@@ -1,5 +1,7 @@
 package com.zipdabang.zipdabang_android.module.sign_up.ui
 
+import android.webkit.WebView
+import android.webkit.WebViewClient
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -14,14 +16,18 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material.Text
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
@@ -51,6 +57,9 @@ fun RegisterUserAddressScreen(
     onClickNext: ()->Unit,
 ) {
     val stateUserAddressForm = authSharedViewModel.stateUserAddressForm
+
+    //webview
+    val webView = rememberWebView()
 
     LaunchedEffect(key1 = stateUserAddressForm){
         authSharedViewModel.onUserAddressEvent(UserAddressFormEvent.BtnChanged(true))
@@ -121,13 +130,10 @@ fun RegisterUserAddressScreen(
                                 onValueChanged = {
                                     authSharedViewModel.onUserAddressEvent(UserAddressFormEvent.ZipcodeChanged(it))
                                 },
-                                //isTried = stateUserAddressForm.zipCodeIsTried,
                                 labelValue = stringResource(id = R.string.signup_userinfo_zipcode),
                                 placeHolderValue = "",
                                 isError = stateUserAddressForm.zipCodeIsError,
-                                //isCorrect = stateUserAddressForm.zipCodeIsCorrect,
                                 errorMessage = stateUserAddressForm.zipCodeErrorMessage,
-                                //correctMessage = stateUserAddressForm.zipCodeCorrectMessage,
                                 keyboardType = KeyboardType.Number,
                                 imeAction = ImeAction.Done,
                             )
@@ -139,7 +145,8 @@ fun RegisterUserAddressScreen(
                                 borderColor =ZipdabangandroidTheme.Colors.BlackSesame,
                                 text = stringResource(id = R.string.signup_userinfo_addresssearch),
                                 onClick = {
-                                    authSharedViewModel.onUserAddressEvent(UserAddressFormEvent.ZipcodeClicked(true))
+                                    //authSharedViewModel.onUserAddressEvent(UserAddressFormEvent.ZipcodeClicked(true))
+                                    //webView
                                 }
                             )
                         }
@@ -214,8 +221,21 @@ fun RegisterUserAddressScreen(
             }
         }
     }
-
 }
+
+@Composable
+fun rememberWebView(): WebView {
+    val context = LocalContext.current
+    val webView = remember {
+        WebView(context).apply {
+            settings.javaScriptEnabled = true
+            webViewClient = WebViewClient()
+            loadUrl("https://velog.io/@godmin66")
+        }
+    }
+    return webView
+}
+
 
 @Preview
 @Composable

@@ -13,10 +13,14 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ripple.rememberRipple
@@ -53,7 +57,7 @@ fun RecipeCategory(
             ) {
                 onClick(categoryId)
             }
-            .padding(4.dp),
+            .padding(vertical = 2.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
@@ -63,15 +67,22 @@ fun RecipeCategory(
         ) {
             CircleImage(imageUrl = imageUrl, contentDescription = categoryTitle)
         }
-        Text(
-            modifier = Modifier
-                .padding(top = 2.dp),
-            text = categoryTitle,
-            fontFamily = FontFamily(Font(R.font.kopubworlddotum_medium)),
-            maxLines = 1,
-            fontSize = 14.sp,
-            color = ZipdabangandroidTheme.Colors.Typo
-        )
+        Spacer(modifier = Modifier.height(2.dp))
+        Column(
+            modifier = Modifier.height(18.dp),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                modifier = Modifier,
+                text = categoryTitle,
+                fontFamily = FontFamily(Font(R.font.kopubworlddotum_medium)),
+                maxLines = 1,
+                fontSize = 14.sp,
+                color = ZipdabangandroidTheme.Colors.Typo
+            )
+        }
+
     }
 }
 
@@ -107,25 +118,33 @@ fun RecipeCategoryLoading() {
 
     Column(
         modifier = Modifier
-            .padding(4.dp),
+            .padding(vertical = 2.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
         Box(
             modifier = Modifier
                 .size(76.dp)
-                .clip(RoundedCornerShape(100))
+                .clip(CircleShape)
         ) {
             Spacer(modifier = Modifier
+                .fillMaxSize()
                 .background(brush = brush)
             )
         }
+        Spacer(modifier = Modifier.height(2.dp))
         Box(
             modifier = Modifier
-                .padding(top = 2.dp)
-                .height(14.dp)
+                .width(76.dp)
+                .height(18.dp)
                 .background(brush = brush)
-        )
+        ) {
+            Spacer(modifier = Modifier
+                .fillMaxHeight()
+                .fillMaxWidth(0.7f)
+                .background(brush = brush)
+            )
+        }
     }
 }
 

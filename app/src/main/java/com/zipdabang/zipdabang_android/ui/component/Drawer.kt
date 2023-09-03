@@ -8,25 +8,20 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.material3.Button
 import androidx.compose.material3.Divider
 import androidx.compose.material3.DrawerDefaults
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.ModalNavigationDrawer
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -35,12 +30,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.zipdabang.zipdabang_android.R
-import com.zipdabang.zipdabang_android.module.bottom.ui.BottomNavigationBar
+import com.zipdabang.zipdabang_android.core.navigation.DrawerScreen
 import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
 
 @Composable
 fun DrawerContent(
@@ -86,10 +80,11 @@ fun DrawerContent(
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 Box(
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier
+                        .fillMaxWidth()
                         .weight(1f)
                         .clickable(
-                            onClick={ infoOnClick() }
+                            onClick = { infoOnClick() }
                         ),
                     contentAlignment = Alignment.CenterStart
                 ) {
@@ -101,10 +96,11 @@ fun DrawerContent(
                     )
                 }
                 Box(
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier
+                        .fillMaxWidth()
                         .weight(1f)
                         .clickable(
-                            onClick={ noticeOnClick() }
+                            onClick = { noticeOnClick() }
                         ),
                     contentAlignment = Alignment.CenterStart
                 ) {
@@ -116,10 +112,11 @@ fun DrawerContent(
                     )
                 }
                 Box(
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier
+                        .fillMaxWidth()
                         .weight(1f)
                         .clickable(
-                            onClick={ ToSOnClick() }
+                            onClick = { ToSOnClick() }
                         ),
                     contentAlignment = Alignment.CenterStart
                 ) {
@@ -131,10 +128,11 @@ fun DrawerContent(
                     )
                 }
                 Box(
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier
+                        .fillMaxWidth()
                         .weight(1f)
                         .clickable(
-                            onClick={ privacyAgreeOnClick() }
+                            onClick = { privacyAgreeOnClick() }
                         ),
                     contentAlignment = Alignment.CenterStart
                 ) {
@@ -147,13 +145,14 @@ fun DrawerContent(
                 }
                 Divider(
                     modifier = Modifier.fillMaxWidth(),
-                    color = ZipdabangandroidTheme.Colors.Typo.copy(0.2f),
+                    color = ZipdabangandroidTheme.Colors.Typo.copy(0.1f),
                 )
                 Box(
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier
+                        .fillMaxWidth()
                         .weight(1f)
                         .clickable(
-                            onClick={ privacyOnClick() }
+                            onClick = { privacyOnClick() }
                         ),
                     contentAlignment = Alignment.CenterStart
                 ) {
@@ -165,10 +164,11 @@ fun DrawerContent(
                     )
                 }
                 Box(
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier
+                        .fillMaxWidth()
                         .weight(1f)
                         .clickable(
-                            onClick={ FAGOnClick() }
+                            onClick = { FAGOnClick() }
                         ),
                     contentAlignment = Alignment.CenterStart
                 ) {
@@ -180,10 +180,11 @@ fun DrawerContent(
                     )
                 }
                 Box(
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier
+                        .fillMaxWidth()
                         .weight(1f)
                         .clickable(
-                            onClick={ inquiryOnClick() }
+                            onClick = { inquiryOnClick() }
                         ),
                     contentAlignment = Alignment.CenterStart
                 ) {
@@ -196,9 +197,9 @@ fun DrawerContent(
                 }
                 Divider(
                     modifier = Modifier.fillMaxWidth(),
-                    color = ZipdabangandroidTheme.Colors.Typo.copy(0.2f),
+                    color = ZipdabangandroidTheme.Colors.Typo.copy(0.1f),
                 )
-                Box(
+                /*Box(
                     modifier = Modifier.fillMaxWidth()
                         .weight(1f)
                         .clickable(
@@ -212,12 +213,13 @@ fun DrawerContent(
                         style = ZipdabangandroidTheme.Typography.sixteen_500,
                         color = ZipdabangandroidTheme.Colors.Typo,
                     )
-                }
+                }*/
                 Box(
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier
+                        .fillMaxWidth()
                         .weight(1f)
                         .clickable(
-                            onClick={ userOnClick() }
+                            onClick = { userOnClick() }
                         ),
                     contentAlignment = Alignment.CenterStart
                 ) {
@@ -229,10 +231,11 @@ fun DrawerContent(
                     )
                 }
                 Box(
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier
+                        .fillMaxWidth()
                         .weight(1f)
                         .clickable(
-                            onClick={ alarmOnClick() }
+                            onClick = { alarmOnClick() }
                         ),
                     contentAlignment = Alignment.CenterStart
                 ) {
@@ -244,10 +247,11 @@ fun DrawerContent(
                     )
                 }
                 Box(
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier
+                        .fillMaxWidth()
                         .weight(1f)
                         .clickable(
-                            onClick={ etcOnClick() }
+                            onClick = { etcOnClick() }
                         ),
                     contentAlignment = Alignment.CenterStart
                 ) {
@@ -258,6 +262,9 @@ fun DrawerContent(
                         color = ZipdabangandroidTheme.Colors.Typo,
                     )
                 }
+                Box(modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f))
             }
             //하단
             Column(
@@ -272,7 +279,9 @@ fun DrawerContent(
 
                 ){
                     Box(
-                        modifier = Modifier.fillMaxWidth().wrapContentHeight(),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .wrapContentHeight(),
                         contentAlignment = Alignment.CenterStart
                     ){
                         Text(
@@ -283,24 +292,34 @@ fun DrawerContent(
                         )
                     }
                     Row(
-                        modifier = Modifier.fillMaxWidth().wrapContentHeight(),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .wrapContentHeight(),
                         horizontalArrangement = Arrangement.Start
                     ){
                         Text(
                             text = stringResource(id = R.string.drawer_appGmail),
                             style = ZipdabangandroidTheme.Typography.twelve_300,
                             color = ZipdabangandroidTheme.Colors.Typo,
-                            modifier = Modifier.padding(16.dp, 0.dp, 16.dp, 0.dp),
+                            modifier = Modifier.padding(16.dp, 0.dp, 4.dp, 0.dp),
+                        )
+                        Text(
+                            text = "|",
+                            style = ZipdabangandroidTheme.Typography.twelve_300,
+                            color = ZipdabangandroidTheme.Colors.Typo,
+                            modifier = Modifier.padding(0.dp, 0.dp, 0.dp, 0.dp),
                         )
                         Text(
                             text = stringResource(id = R.string.drawer_appPhone),
                             style = ZipdabangandroidTheme.Typography.twelve_300,
                             color = ZipdabangandroidTheme.Colors.Typo,
-                            modifier = Modifier.padding(16.dp, 0.dp, 16.dp, 0.dp),
+                            modifier = Modifier.padding(4.dp, 0.dp, 16.dp, 0.dp),
                         )
                     }
                     Box(
-                        modifier = Modifier.fillMaxWidth().wrapContentHeight(),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .wrapContentHeight(),
                         contentAlignment = Alignment.CenterStart
                     ) {
                         Text(
@@ -313,7 +332,9 @@ fun DrawerContent(
                 }
 
                 Box(
-                    modifier = Modifier.fillMaxWidth().wrapContentHeight(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .wrapContentHeight(),
                     contentAlignment = Alignment.CenterStart
                 ) {
                     Text(
@@ -351,6 +372,7 @@ fun PreviewDrawerContent(){
 fun ModalDrawer(
     scaffold: @Composable () -> Unit,
     drawerState: DrawerState,
+    navController: NavController = rememberNavController()
 ){
     //drawer가 오른쪽에서 왼쪽으로 나오게끔 하기 위함
     //ㄴ사실 이거 오른쪽에서 왼쪽으로 글을 읽는 나라들을 위한 건데, drawer 또한 오른쪽에서 왼쪽으로 나와서 설정함
@@ -371,7 +393,7 @@ fun ModalDrawer(
                     //activityContentScope(drawerState, scope)
                     DrawerContent(
                         infoOnClick = { Log.d("drawer", "집다방 정보")},
-                        noticeOnClick = { Log.d("drawer","공지사항")},
+                        noticeOnClick = { navController.navigate(DrawerScreen.Notice.route)},
                         ToSOnClick = { Log.d("drawer","서비스 이용 약관")},
                         privacyAgreeOnClick = { Log.d("drawer","개인정보 제 3자 동의")},
                         privacyOnClick = { Log.d("drawer","개인정보 처리방침")},

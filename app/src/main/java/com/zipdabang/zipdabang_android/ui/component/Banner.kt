@@ -98,7 +98,9 @@ fun BannerLoading() {
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
-        Spacer(modifier = Modifier.fillMaxSize().background(brush))
+        Spacer(modifier = Modifier
+            .fillMaxSize()
+            .background(brush))
     }
 }
 
@@ -120,4 +122,10 @@ fun BannerPreview(){
             Banner(images)
         }
     }
+}
+
+@Preview
+@Composable
+fun BannerLoadingPreview() {
+    BannerLoading()
 }

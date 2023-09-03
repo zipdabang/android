@@ -5,5 +5,6 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class BannerImageItem(
     val imageUrl: String,
-    val order: Int
+    val order: Int,
+    val searchKeyword: String
 )

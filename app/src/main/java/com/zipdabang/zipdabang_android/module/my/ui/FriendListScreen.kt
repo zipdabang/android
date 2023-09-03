@@ -1,10 +1,10 @@
-package com.zipdabang.zipdabang_android.module.drawer.ui
+package com.zipdabang.zipdabang_android.module.my.ui
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Text
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
@@ -13,32 +13,40 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.zipdabang.zipdabang_android.R
-import com.zipdabang.zipdabang_android.ui.component.AppBarSignUp
+import com.zipdabang.zipdabang_android.ui.component.AppBarDefault
 import com.zipdabang.zipdabang_android.ui.component.ModalDrawer
+import kotlinx.coroutines.launch
 
 @Composable
-fun InfoScreen(){
-    //drawer에 필요한 drawerState랑 scope
+fun FriendListScreen(
+    onClickBack : ()->Unit
+) {
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
 
     ModalDrawer(
         scaffold = {
             Scaffold(
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier
+                    .fillMaxSize(),
                 topBar = {
-                    AppBarSignUp(
-                      navigationIcon = R.drawable.ic_topbar_backbtn,
-                      onClickNavIcon = { /*drawer로 돌아오기*/},
-                      centerText = stringResource(id = R.string.app_name)
+                    AppBarDefault(
+                        startIcon = R.drawable.ic_topbar_backbtn,
+                        endIcon = R.drawable.ic_topbar_menu,
+                        onClickStartIcon = { onClickBack() },
+                        onClickEndIcon = { scope.launch { drawerState.open() } },
+                        centerText = stringResource(id = R.string.my_friendlist)
                     )
                 },
                 containerColor = Color.White,
-                contentColor = Color.Black,
-                content = {
-                    Text(text="집다방 정보", modifier = Modifier.padding(it))
+                contentColor = Color.White,
+            ){
+                Surface(
+                    modifier = Modifier.padding(it)
+                ){
+
                 }
-            )
+            }
         },
         drawerState = drawerState
     )
@@ -46,6 +54,6 @@ fun InfoScreen(){
 
 @Preview
 @Composable
-fun PreviewInfoScreen(){
-    InfoScreen()
+fun PreviewFriendListScreen() {
+    FriendListScreen(onClickBack = {})
 }

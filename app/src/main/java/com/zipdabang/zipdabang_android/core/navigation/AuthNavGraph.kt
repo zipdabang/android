@@ -131,7 +131,7 @@ fun NavGraphBuilder.authNavGraph(navController: NavHostController) {
 
         composable(route =AuthScreen.RegisterPreferences.route) {navBackStackEntry ->
             val authSharedViewModel = navBackStackEntry.authSharedViewModel<AuthSharedViewModel>(navController = navController)
-            val tokenStoreViewModel = hiltViewModel<ProtoDataViewModel>()
+            //val tokenStoreViewModel = hiltViewModel<ProtoDataViewModel>()
 
             RegisterPreferencesScreen(
                 navController = navController,
@@ -140,13 +140,10 @@ fun NavGraphBuilder.authNavGraph(navController: NavHostController) {
                     navController.popBackStack(AuthScreen.RegisterNickname.route, inclusive = false)
                 },
                 onClickNext = {
-                    authSharedViewModel.postInfo(tokenStoreViewModel)
-                    Log.e("signup-token","실행 끝 : ${tokenStoreViewModel.tokens}")
-                    navController.popBackStack(HomeScreen.Home.route, inclusive = false)
-                },
-                onClickNextAfterChoose = {
-                    authSharedViewModel.postInfo(tokenStoreViewModel)
-                    navController.popBackStack(HomeScreen.Home.route, inclusive = false)
+                    Log.e("signup-tokens", "넘어가져2")
+                    navController.navigate(MAIN_ROUTE){
+                        launchSingleTop = true
+                    }
                 }
             )
         }

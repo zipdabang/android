@@ -1,7 +1,7 @@
 package com.zipdabang.zipdabang_android.common
 
 import androidx.compose.runtime.Composable
-import com.zipdabang.zipdabang_android.module.detail.recipe.ui.RecipeCommentPage
+import com.zipdabang.zipdabang_android.module.comment.ui.RecipeCommentPage
 import com.zipdabang.zipdabang_android.module.detail.recipe.ui.RecipeDetailState
 import com.zipdabang.zipdabang_android.module.detail.recipe.ui.RecipeInfoPage
 
