@@ -53,8 +53,7 @@ fun TermsScreen(
     onClickNext: ()->Unit,
     onClickDetailNext : (Int) -> Unit,
 ) {
-    //val stateTerms = authSharedViewModel.stateTerms //api로 받은 정보를 담아놓는 state
-    val stateTermsForm = authSharedViewModel.stateTermsForm //term check 상태를 담아놓는 state
+    val stateTermsForm = authSharedViewModel.stateTermsForm
 
     LaunchedEffect(key1 = stateTermsForm){
         authSharedViewModel.onTermsEvent(TermsFormEvent.BtnChanged(true))

@@ -20,8 +20,9 @@
     <string name="drawer_appGmail">zipdabang.app@gmail.com</string>
     <string name="drawer_appPhone">010-9855-0007</string>
     <string name="drawer_appVersion">집다방 앱 버전</string>
-    <string name="drawer_appDetail">집다방은 어쩌구 저쩌구 어쩌구 저쩌구 어쩌구 저쩌구 어쩌구 저쩌구 어쩌구 저쩌구 어쩌구 저쩌구 어쩌구 저쩌구 어쩌구 저쩌구 어쩌구 저쩌구 어쩌구 저쩌구 어쩌구 저쩌구</string>
+    <string name="drawer_appDetail">홈카페를 위한 모든 것이 여기에! 당신을 위한 단 하나의 홈카페 플랫폼입니다 :)</string>
 
+    <!--  for signup  -->
     <string name="signup">회원가입</string>
     <string name="signup_btn_termsagree">약관 동의</string>
     <string name="signup_btn_choicecomplete">선택 완료</string>
@@ -69,6 +70,17 @@
     <string name="signup_preferences_subtitle">선택 된 홈카페 취향은 홈 화면에 반영됩니다.</string>
     <string name="signup_preferences_inputlater">나중에 입력하기</string>
     <string name="signup_preferences_gotohome">(홈으로 바로 이동)</string>
+
+    <!--  for my  -->
+    <string name="my_like">좋아요</string>
+    <string name="my_scrap">스크랩</string>
+    <string name="my_myrecipe">나의 레시피</string>
+    <string name="my_shopping">쇼핑</string>
+    <string name="my_friendlist">친구 목록</string>
+    <string name="my_noticeandalarm">공지사항 및 알림</string>
+    <string name="my_what">뭐가 들어가죠</string>
+    <string name="my_logout">로그아웃</string>
+    <string name="my_myinfo">회원정보</string>
 
     <!--  for fcm  -->
     <string name="default_notification_channel_id" translatable="false">fcm_default_channel</string>
