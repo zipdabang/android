@@ -12,15 +12,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavController
 import com.zipdabang.zipdabang_android.R
 import com.zipdabang.zipdabang_android.ui.component.AppBarDefault
-import com.zipdabang.zipdabang_android.ui.component.AppBarSignUp
 import com.zipdabang.zipdabang_android.ui.component.ModalDrawer
 import kotlinx.coroutines.launch
 
 @Composable
 fun FriendListScreen(
-    onClickBack : ()->Unit
+    onClickBack : ()->Unit,
+    navController: NavController,
 ) {
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
@@ -49,12 +50,14 @@ fun FriendListScreen(
                 }
             }
         },
-        drawerState = drawerState
+        drawerState = drawerState,
+        navController = navController
     )
 }
 
+/*
 @Preview
 @Composable
 fun PreviewFriendListScreen() {
     FriendListScreen(onClickBack = {})
-}
+}*/

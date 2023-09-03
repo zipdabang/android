@@ -50,6 +50,7 @@ class MainActivity : ComponentActivity() {
     @Inject
     lateinit var tokenDataStore: DataStore<Token>
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {

@@ -12,15 +12,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavController
 import com.zipdabang.zipdabang_android.R
 import com.zipdabang.zipdabang_android.ui.component.AppBarDefault
-import com.zipdabang.zipdabang_android.ui.component.AppBarMy
-import com.zipdabang.zipdabang_android.ui.component.AppBarSignUp
 import com.zipdabang.zipdabang_android.ui.component.ModalDrawer
 import kotlinx.coroutines.launch
 
 @Composable
 fun ShoppingScreen(
+    navController: NavController,
     onClickBack : ()->Unit
 ) {
     val drawerState = rememberDrawerState(DrawerValue.Closed)
@@ -50,12 +50,14 @@ fun ShoppingScreen(
                 }
             }
         },
-        drawerState = drawerState
+        drawerState = drawerState,
+        navController = navController,
     )
 }
 
+/*
 @Preview
 @Composable
 fun PreviewShoppingScreen() {
     ShoppingScreen(onClickBack = {})
-}
+}*/

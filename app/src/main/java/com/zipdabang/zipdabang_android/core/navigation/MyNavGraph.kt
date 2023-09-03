@@ -11,7 +11,6 @@ import com.zipdabang.zipdabang_android.module.my.ui.MyScreen
 import com.zipdabang.zipdabang_android.module.my.ui.MyrecipeScreen
 import com.zipdabang.zipdabang_android.module.my.ui.ScrapScreen
 import com.zipdabang.zipdabang_android.module.my.ui.ShoppingScreen
-import com.zipdabang.zipdabang_android.module.my.ui.UserInfoScreen
 
 
 fun NavGraphBuilder.MyNavGraph(navController: NavController) {
@@ -19,6 +18,7 @@ fun NavGraphBuilder.MyNavGraph(navController: NavController) {
     navigation(startDestination = MyScreen.Home.route, route = MY_ROUTE) {
         composable(MyScreen.Home.route) {
             MyScreen(
+                navController = navController,
                 onClickBack = {
                     navController.navigate(MAIN_ROUTE){
                         launchSingleTop = true
@@ -49,7 +49,7 @@ fun NavGraphBuilder.MyNavGraph(navController: NavController) {
                     Log.e("signup-tokens","로그아웃 클릭, onClick 실행 중")
                 },
                 onClickUserInfo = {
-                    navController.navigate(MyScreen.UserInfo.route)
+                    navController.navigate(DrawerScreen.UserInfo.route)
                 }
             )
         }
@@ -70,6 +70,7 @@ fun NavGraphBuilder.MyNavGraph(navController: NavController) {
         }
         composable(MyScreen.Myrecipe.route) {
             MyrecipeScreen(
+                navController = navController,
                 onClickBack = {
                     navController.popBackStack(MyScreen.Home.route, inclusive = false)
                 }
@@ -77,6 +78,7 @@ fun NavGraphBuilder.MyNavGraph(navController: NavController) {
         }
         composable(MyScreen.Shopping.route) {
             ShoppingScreen(
+                navController = navController,
                 onClickBack = {
                     navController.popBackStack(MyScreen.Home.route, inclusive = false)
                 }
@@ -84,24 +86,10 @@ fun NavGraphBuilder.MyNavGraph(navController: NavController) {
         }
         composable(MyScreen.FriendList.route) {
             FriendListScreen(
+                navController =navController,
                 onClickBack = {
                     navController.popBackStack(MyScreen.Home.route, inclusive = false)
                 }
-            )
-        }
-        composable(MyScreen.UserInfo.route) {
-            UserInfoScreen(
-                onClickBack = {
-                    navController.popBackStack(MyScreen.Home.route, inclusive = false)
-                },
-                onClickEdit = {
-
-                },
-                onClickEditBasic = {},
-                onClickEditDetail = {},
-                onClickEditNickname = {},
-                onClickLogout = {},
-                onClickWithdraw = {}
             )
         }
     }

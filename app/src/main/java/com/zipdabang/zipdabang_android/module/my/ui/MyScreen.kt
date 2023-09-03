@@ -40,6 +40,7 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
+import androidx.navigation.NavController
 import com.zipdabang.zipdabang_android.R
 import com.zipdabang.zipdabang_android.ui.component.AppBarMy
 import com.zipdabang.zipdabang_android.ui.component.CircleImage
@@ -54,6 +55,7 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun MyScreen(
+    navController: NavController,
     onClickBack : ()->Unit,
     onClickEdit : ()->Unit,
     onClickLike : ()->Unit,
@@ -656,15 +658,17 @@ fun MyScreen(
                 },
             )
         },
-        drawerState = drawerState
+        drawerState = drawerState,
+        navController = navController,
     )
 
 }
 
-@Preview
+/*@Preview
 @Composable
 fun PreviewMyScreen() {
     MyScreen(
+        navController = ,
         onClickBack = {},
         onClickEdit = {},
         onClickLike = {},
@@ -675,4 +679,4 @@ fun PreviewMyScreen() {
         onClickLogout = {},
         onClickUserInfo = {},
     )
-}
+}*/

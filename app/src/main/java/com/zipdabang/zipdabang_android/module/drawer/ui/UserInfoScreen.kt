@@ -1,4 +1,4 @@
-package com.zipdabang.zipdabang_android.module.my.ui
+package com.zipdabang.zipdabang_android.module.drawer.ui
 
 import android.util.Log
 import androidx.compose.foundation.background
@@ -22,17 +22,14 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
@@ -468,7 +465,7 @@ fun UserInfoScreen(
                     verticalAlignment = Alignment.CenterVertically
                 ){
                     Icon(
-                        painter = painterResource(id = R.drawable.img_my_profile),
+                        painter = painterResource(id = R.drawable.ic_my_smileface),
                         contentDescription = "",
                         tint = ZipdabangandroidTheme.Colors.Strawberry,
                         modifier = Modifier
