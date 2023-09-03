@@ -53,6 +53,7 @@ sealed class MyScreen(val route : String){
     object Myrecipe : MyScreen(route = "my/myrecipe")
     object Shopping : MyScreen(route = "my/shopping")
     object FriendList : MyScreen(route = "my/friendlist")
+    object UserInfo : MyScreen(route = "my/userinfo")
 }
 
 

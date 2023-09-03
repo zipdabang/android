@@ -11,6 +11,7 @@ import com.zipdabang.zipdabang_android.module.my.ui.MyScreen
 import com.zipdabang.zipdabang_android.module.my.ui.MyrecipeScreen
 import com.zipdabang.zipdabang_android.module.my.ui.ScrapScreen
 import com.zipdabang.zipdabang_android.module.my.ui.ShoppingScreen
+import com.zipdabang.zipdabang_android.module.my.ui.UserInfoScreen
 
 
 fun NavGraphBuilder.MyNavGraph(navController: NavController) {
@@ -22,6 +23,9 @@ fun NavGraphBuilder.MyNavGraph(navController: NavController) {
                     navController.navigate(MAIN_ROUTE){
                         launchSingleTop = true
                     }
+                },
+                onClickEdit = {
+
                 },
                 onClickLike = {
                     navController.navigate(MyScreen.Like.route)
@@ -45,7 +49,7 @@ fun NavGraphBuilder.MyNavGraph(navController: NavController) {
                     Log.e("signup-tokens","로그아웃 클릭, onClick 실행 중")
                 },
                 onClickUserInfo = {
-
+                    navController.navigate(MyScreen.UserInfo.route)
                 }
             )
         }
@@ -83,6 +87,21 @@ fun NavGraphBuilder.MyNavGraph(navController: NavController) {
                 onClickBack = {
                     navController.popBackStack(MyScreen.Home.route, inclusive = false)
                 }
+            )
+        }
+        composable(MyScreen.UserInfo.route) {
+            UserInfoScreen(
+                onClickBack = {
+                    navController.popBackStack(MyScreen.Home.route, inclusive = false)
+                },
+                onClickEdit = {
+
+                },
+                onClickEditBasic = {},
+                onClickEditDetail = {},
+                onClickEditNickname = {},
+                onClickLogout = {},
+                onClickWithdraw = {}
             )
         }
     }
