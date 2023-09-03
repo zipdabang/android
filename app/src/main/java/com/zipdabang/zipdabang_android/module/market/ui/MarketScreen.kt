@@ -440,7 +440,6 @@ fun MarketScreen_Test(){
                     val RankList = listOf(list,list2,null,null,null,null)
 
                     MarketTabView(
-
                         categoryList = categoryList,
                         modifier = Modifier.padding(horizontal = 8.dp),
                         categoryRankList = RankList
