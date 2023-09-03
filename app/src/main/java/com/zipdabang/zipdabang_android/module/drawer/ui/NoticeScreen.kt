@@ -1,10 +1,8 @@
-package com.zipdabang.zipdabang_android.module.home.ui
+package com.zipdabang.zipdabang_android.module.drawer.ui
 
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Text
-import androidx.compose.material.TextButton
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.rememberDrawerState
@@ -12,16 +10,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import com.zipdabang.zipdabang_android.R
-import com.zipdabang.zipdabang_android.ui.component.AppBarHome
+import com.zipdabang.zipdabang_android.ui.component.AppBarSignUp
 import com.zipdabang.zipdabang_android.ui.component.ModalDrawer
-import kotlinx.coroutines.launch
 
 @Composable
-fun HomeScreen(
-    onGoToGuide: () -> Unit,
-    onGoToDetail: () -> Unit,
+fun NoticeScreen(
     navController: NavController
 ){
     //drawer에 필요한 drawerState랑 scope
@@ -33,32 +29,20 @@ fun HomeScreen(
             Scaffold(
                 modifier = Modifier.fillMaxSize(),
                 topBar = {
-                   AppBarHome(
-                        endIcon1 = R.drawable.ic_topbar_search,
-                        endIcon2 = R.drawable.ic_topbar_menu,
-                       onClickEndIcon1 = {},
-                        onClickEndIcon2 = { scope.launch { drawerState.open() } },
-                        centerText = "집다방"
+                    AppBarSignUp(
+                        navigationIcon = R.drawable.ic_topbar_backbtn,
+                        onClickNavIcon = { /*drawer로 돌아오기*/},
+                        centerText = stringResource(id = R.string.app_name)
                     )
                 },
                 containerColor = Color.White,
                 contentColor = Color.Black,
-                    content = {
-                    Column {
-                        Text(text = "home", modifier = Modifier.padding(it))
-                        TextButton(onClick = { onGoToGuide() }) {
-                            Text("Guide")
-                        }
-                        TextButton(onClick = { onGoToDetail() }) {
-                            Text("Detail")
-                        }
-
-                    }
+                content = {
+                    Text(text="공지사항", modifier = Modifier.padding(it))
                 }
             )
         },
         drawerState = drawerState,
         navController = navController
     )
-
 }

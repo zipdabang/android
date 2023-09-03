@@ -1,7 +1,6 @@
 package com.zipdabang.zipdabang_android.module.detail.recipe.ui
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -28,7 +27,6 @@ import com.zipdabang.zipdabang_android.ui.component.ModalDrawer
 import com.zipdabang.zipdabang_android.ui.component.Pager
 import com.zipdabang.zipdabang_android.ui.component.loadXmlDrawable
 import com.zipdabang.zipdabang_android.ui.theme.DialogBackground
-import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalPagerApi::class)
