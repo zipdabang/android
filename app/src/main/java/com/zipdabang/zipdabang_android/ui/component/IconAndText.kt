@@ -1,5 +1,6 @@
 package com.zipdabang.zipdabang_android.ui.component
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -13,6 +14,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -33,8 +36,9 @@ fun IconAndText(
     onClick : () -> Unit,
 ){
     Column(
-        modifier = Modifier.fillMaxSize()
-            .clickable{ onClick() },
+        modifier = Modifier
+            .fillMaxSize()
+            .clickable { onClick() },
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
     ){
@@ -47,6 +51,41 @@ fun IconAndText(
                 contentDescription = "Icon",
                 tint = iconColor,
                 modifier = iconModifier,
+            )
+        }
+        Text(
+            text = text,
+            color = textColor,
+            style = textStyle,
+        )
+    }
+}
+
+@Composable
+fun ImageIconAndText(
+    iconImageVector: Int,
+    iconColor : Color,
+    iconModifier : Modifier,
+    text : String,
+    textColor : Color,
+    textStyle : TextStyle,
+    onClick : () -> Unit,
+){
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .clickable { onClick() },
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ){
+        Box(
+            modifier = Modifier.size(40.dp, 40.dp),
+            contentAlignment = Alignment.Center
+        ){
+            Image(
+                modifier = iconModifier,
+                painter = painterResource(id = iconImageVector),
+                contentDescription = "",
             )
         }
         Text(

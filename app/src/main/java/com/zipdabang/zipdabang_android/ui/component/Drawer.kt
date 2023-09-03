@@ -291,13 +291,19 @@ fun DrawerContent(
                             text = stringResource(id = R.string.drawer_appGmail),
                             style = ZipdabangandroidTheme.Typography.twelve_300,
                             color = ZipdabangandroidTheme.Colors.Typo,
-                            modifier = Modifier.padding(16.dp, 0.dp, 16.dp, 0.dp),
+                            modifier = Modifier.padding(16.dp, 0.dp, 4.dp, 0.dp),
+                        )
+                        Text(
+                            text = "|",
+                            style = ZipdabangandroidTheme.Typography.twelve_300,
+                            color = ZipdabangandroidTheme.Colors.Typo,
+                            modifier = Modifier.padding(0.dp, 0.dp, 0.dp, 0.dp),
                         )
                         Text(
                             text = stringResource(id = R.string.drawer_appPhone),
                             style = ZipdabangandroidTheme.Typography.twelve_300,
                             color = ZipdabangandroidTheme.Colors.Typo,
-                            modifier = Modifier.padding(16.dp, 0.dp, 16.dp, 0.dp),
+                            modifier = Modifier.padding(4.dp, 0.dp, 16.dp, 0.dp),
                         )
                     }
                     Box(

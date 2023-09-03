@@ -20,7 +20,7 @@
     <string name="drawer_appGmail">zipdabang.app@gmail.com</string>
     <string name="drawer_appPhone">010-9855-0007</string>
     <string name="drawer_appVersion">집다방 앱 버전</string>
-    <string name="drawer_appDetail">홈카페를 위한 모든 것이 여기에! 당신을 위한 단 하나의 홈카페 플랫폼입니다:)</string>
+    <string name="drawer_appDetail">홈카페를 위한 모든 것이 여기에! 당신을 위한 단 하나의 홈카페 플랫폼입니다 :)</string>
 
     <!--  for signup  -->
     <string name="signup">회원가입</string>

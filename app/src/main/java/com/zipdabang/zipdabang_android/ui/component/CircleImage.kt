@@ -18,7 +18,6 @@ fun CircleImage(
     imageUrl: Any,
     contentDescription : String?
 ) {
-
     AsyncImage(
         model = imageUrl,
         contentDescription = contentDescription,

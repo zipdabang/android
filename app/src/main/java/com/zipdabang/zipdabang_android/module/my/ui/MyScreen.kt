@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -38,6 +39,7 @@ import androidx.compose.ui.unit.dp
 import com.zipdabang.zipdabang_android.R
 import com.zipdabang.zipdabang_android.ui.component.AppBarMy
 import com.zipdabang.zipdabang_android.ui.component.IconAndText
+import com.zipdabang.zipdabang_android.ui.component.ImageIconAndText
 import com.zipdabang.zipdabang_android.ui.component.ModalDrawer
 import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
 import kotlinx.coroutines.CoroutineScope
@@ -54,6 +56,7 @@ fun MyScreen(
     onClickShopping : ()->Unit,
     onClickFriendList : ()->Unit,
     onClickLogout : ()->Unit,
+    onClickUserInfo : () -> Unit,
 ){
     //drawer에 필요한 drawerState랑 scope
     val drawerState = rememberDrawerState(DrawerValue.Closed)
@@ -127,6 +130,7 @@ fun MyScreen(
                                 verticalAlignment = Alignment.CenterVertically,
                                 horizontalArrangement = Arrangement.Center
                             ){
+                                Spacer(modifier = Modifier.weight(0.04f))
                                 Box(
                                     modifier = Modifier.weight(0.25f)
                                 ) {
@@ -145,48 +149,49 @@ fun MyScreen(
                                 Box(
                                     modifier = Modifier.weight(0.25f)
                                 ){
-                                        IconAndText(
-                                            iconImageVector = R.drawable.ic_my_bookmark,
-                                            iconColor = ZipdabangandroidTheme.Colors.Cream,
-                                            iconModifier = Modifier.size(20.dp, 24.dp),
-                                            text = stringResource(id = R.string.my_scrap),
-                                            textColor = ZipdabangandroidTheme.Colors.Typo,
-                                            textStyle = ZipdabangandroidTheme.Typography.fourteen_500,
-                                            onClick = {
-                                                onClickScrap()
-                                            }
-                                        )
-                                    }
+                                    IconAndText(
+                                        iconImageVector = R.drawable.ic_my_bookmark,
+                                        iconColor = ZipdabangandroidTheme.Colors.Cream,
+                                        iconModifier = Modifier.size(20.dp, 24.dp),
+                                        text = stringResource(id = R.string.my_scrap),
+                                        textColor = ZipdabangandroidTheme.Colors.Typo,
+                                        textStyle = ZipdabangandroidTheme.Typography.fourteen_500,
+                                        onClick = {
+                                            onClickScrap()
+                                        }
+                                    )
+                                }
                                 Box(
                                     modifier = Modifier.weight(0.25f)
                                 ){
-                                        IconAndText(
-                                            iconImageVector = R.drawable.zipdabanglogo_white,
-                                            iconColor = Color.Transparent,
-                                            iconModifier = Modifier.size(30.dp, 30.dp),
-                                            text = stringResource(id = R.string.my_myrecipe),
-                                            textColor = ZipdabangandroidTheme.Colors.Typo,
-                                            textStyle = ZipdabangandroidTheme.Typography.fourteen_500,
-                                            onClick = {
-                                                onClickMyrecipe()
-                                            }
-                                        )
-                                    }
+                                    ImageIconAndText(
+                                        iconImageVector = R.drawable.zipdabanglogo_white,
+                                        iconColor = Color.Transparent,
+                                        iconModifier = Modifier.size(40.dp, 40.dp),
+                                        text = stringResource(id = R.string.my_myrecipe),
+                                        textColor = ZipdabangandroidTheme.Colors.Typo,
+                                        textStyle = ZipdabangandroidTheme.Typography.fourteen_500,
+                                        onClick = {
+                                            onClickMyrecipe()
+                                        }
+                                    )
+                                }
                                 Box(
                                     modifier = Modifier.weight(0.25f)
                                 ){
-                                        IconAndText(
-                                            iconImageVector = R.drawable.ic_my_shopping_cart,
-                                            iconColor = ZipdabangandroidTheme.Colors.Choco,
-                                            iconModifier = Modifier.size(30.dp, 30.dp),
-                                            text = stringResource(id = R.string.my_shopping),
-                                            textColor = ZipdabangandroidTheme.Colors.Typo,
-                                            textStyle = ZipdabangandroidTheme.Typography.fourteen_500,
-                                            onClick = {
-                                                onClickShopping()
-                                            }
-                                        )
-                                    }
+                                    IconAndText(
+                                        iconImageVector = R.drawable.ic_my_shopping_cart,
+                                        iconColor = ZipdabangandroidTheme.Colors.Choco,
+                                        iconModifier = Modifier.size(30.dp, 30.dp),
+                                        text = stringResource(id = R.string.my_shopping),
+                                        textColor = ZipdabangandroidTheme.Colors.Typo,
+                                        textStyle = ZipdabangandroidTheme.Typography.fourteen_500,
+                                        onClick = {
+                                            onClickShopping()
+                                        }
+                                    )
+                                }
+                                Spacer(modifier = Modifier.weight(0.04f))
                             }
 
                             Column(
@@ -200,6 +205,11 @@ fun MyScreen(
                                     modifier = Modifier
                                         .fillMaxWidth()
                                         .weight(1f)
+                                        .clickable(
+                                            onClick = {
+                                                onClickFriendList()
+                                            }
+                                        )
                                         .background(
                                             color = Color.White,
                                             shape = ZipdabangandroidTheme.Shapes.small
@@ -228,6 +238,7 @@ fun MyScreen(
                                 Box(
                                     modifier = Modifier
                                         .fillMaxWidth()
+                                        .clickable(onClick = {})
                                         .weight(1f)
                                         .background(
                                             color = Color.White,
@@ -304,10 +315,18 @@ fun MyScreen(
                                         }
                                     }
                                 )
+                                Text(
+                                    text = "|",
+                                    style = ZipdabangandroidTheme.Typography.twelve_300,
+                                    color = ZipdabangandroidTheme.Colors.Typo,
+                                    modifier = Modifier.padding(8.dp, 0.dp, 8.dp, 0.dp),
+                                )
                                 ClickableText(
                                     text = AnnotatedString(text = stringResource(id = R.string.my_myinfo)),
                                     style =  ZipdabangandroidTheme.Typography.fourteen_300,
-                                    onClick = {}
+                                    onClick = {
+                                        onClickUserInfo()
+                                    }
                                 )
                             }
 
@@ -331,6 +350,7 @@ fun PreviewMyScreen() {
         onClickMyrecipe = {},
         onClickShopping = {},
         onClickFriendList = {},
-        onClickLogout = {}
+        onClickLogout = {},
+        onClickUserInfo = {},
     )
 }

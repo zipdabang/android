@@ -24,7 +24,7 @@ fun NavGraphBuilder.MyNavGraph(navController: NavController) {
                     }
                 },
                 onClickLike = {
-                   navController.navigate(MyScreen.Like.route)
+                    navController.navigate(MyScreen.Like.route)
                 },
                 onClickScrap = {
                     navController.navigate(MyScreen.Scrap.route)
@@ -43,6 +43,9 @@ fun NavGraphBuilder.MyNavGraph(navController: NavController) {
                         launchSingleTop = true
                     }
                     Log.e("signup-tokens","로그아웃 클릭, onClick 실행 중")
+                },
+                onClickUserInfo = {
+
                 }
             )
         }
