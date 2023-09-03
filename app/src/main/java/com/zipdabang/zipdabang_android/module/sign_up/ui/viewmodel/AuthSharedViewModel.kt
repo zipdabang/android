@@ -77,9 +77,13 @@ class AuthSharedViewModel @Inject constructor(
     suspend fun updateSocial(){
         social = dataStore.data.first().platformStatus.toString()
     }
+    suspend fun printTokens(){
+        Log.e("signup-tokens", "토큰 출력 : accessToken ${dataStore.data.first().accessToken}")
+        Log.e("signup-tokens", "토큰 출력 : refreshToken ${dataStore.data.first().refreshToken}")
+    }
 
 
-    // info 글자수 제한하기, 생년월일 더 제한, response enum class로 옮기기, textfield 옮겨갈때마다 focusing
+    // response enum class로 옮기기
 
 
     /*TermsScreen*/
@@ -668,9 +672,9 @@ class AuthSharedViewModel @Inject constructor(
                     birth = stateUserInfoForm.birthday,
                     phoneNum = "01012345678", //stateUserInfoForm.phoneNumber,
                     gender = if (stateUserInfoForm.gender == "남") "1" else "2",
-                    zipCode = stateUserAddressForm.zipCode,
-                    address = stateUserAddressForm.address,
-                    detailAddress = stateUserAddressForm.detailAddress,
+                    //zipCode = stateUserAddressForm.zipCode,
+                    //address = stateUserAddressForm.address,
+                    //detailAddress = stateUserAddressForm.detailAddress,
                     nickname = stateNicknameForm.nickname,
                     preferBeverages = stateBeverageForm.beverageCheckList.mapIndexedNotNull { index, isSelected ->
                         if (isSelected) index+1 else null
@@ -681,19 +685,19 @@ class AuthSharedViewModel @Inject constructor(
             result.collect{ result ->
                 when(result){
                     is Resource.Success ->{
+                        Log.e("signup-tokens", "api 성공 response : ${result.data?.result}")
                         if(result.data?.result != null){
                             if(result.data?.code == 2000){
-                                //Log.e("signup-tokens","api 실행 후 : ${tokenStoreViewModel.tokens}")
                                 tokenStoreViewModel.updateAccessToken(result.data.result.accessToken)
                                 tokenStoreViewModel.updateRefreshToken(result.data.result.refreshToken)
-                                //Log.e("signup-tokens","토큰 담은 후 : ${tokenStoreViewModel.tokens}")
+                                Log.e("signup-tokens","토큰 담음 : ${tokenStoreViewModel.tokens}")
+                                printTokens() //token 출력
                             } else {
                                 //토큰 null임
                             }
                         } else { //result가 null 일때
 
                         }
-                        Log.e("signup-tokens", "성공 : ${result.data?.result}")
                     }
                     is Resource.Error ->{
                         Log.e("signup-tokens", "에러 : ${result.message}")
