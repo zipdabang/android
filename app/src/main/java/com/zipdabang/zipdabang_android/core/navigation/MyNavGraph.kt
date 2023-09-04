@@ -3,17 +3,19 @@ package com.zipdabang.zipdabang_android.core.navigation
 import android.util.Log
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.zipdabang.zipdabang_android.module.my.ui.FriendListScreen
 import com.zipdabang.zipdabang_android.module.my.ui.LikeScreen
 import com.zipdabang.zipdabang_android.module.my.ui.MyScreen
 import com.zipdabang.zipdabang_android.module.my.ui.MyrecipeScreen
+import com.zipdabang.zipdabang_android.module.my.ui.RecipeWriteScreen
 import com.zipdabang.zipdabang_android.module.my.ui.ScrapScreen
 import com.zipdabang.zipdabang_android.module.my.ui.ShoppingScreen
 
 
-fun NavGraphBuilder.MyNavGraph(navController: NavController) {
+fun NavGraphBuilder.MyNavGraph(navController: NavHostController) {
 
     navigation(startDestination = MyScreen.Home.route, route = MY_ROUTE) {
         composable(MyScreen.Home.route) {
@@ -73,6 +75,9 @@ fun NavGraphBuilder.MyNavGraph(navController: NavController) {
                 navController = navController,
                 onClickBack = {
                     navController.popBackStack(MyScreen.Home.route, inclusive = false)
+                },
+                onClickWrite = {
+                    navController.navigate(MyScreen.RecipeWrite.route)
                 }
             )
         }
@@ -89,6 +94,13 @@ fun NavGraphBuilder.MyNavGraph(navController: NavController) {
                 navController =navController,
                 onClickBack = {
                     navController.popBackStack(MyScreen.Home.route, inclusive = false)
+                }
+            )
+        }
+        composable(MyScreen.RecipeWrite.route){
+            RecipeWriteScreen(
+                onClickBack = {
+                    navController.popBackStack(MyScreen.Myrecipe.route, inclusive = false)
                 }
             )
         }

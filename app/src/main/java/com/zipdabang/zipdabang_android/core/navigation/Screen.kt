@@ -54,6 +54,7 @@ sealed class MyScreen(val route : String){
     object Myrecipe : MyScreen(route = "my/myrecipe")
     object Shopping : MyScreen(route = "my/shopping")
     object FriendList : MyScreen(route = "my/friendlist")
+    object RecipeWrite : MyScreen(route = "my/recipewrite")
 }
 
 sealed class DrawerScreen(val route : String){
@@ -67,7 +68,7 @@ sealed class DrawerScreen(val route : String){
     object UserInfo : DrawerScreen(route = "drawer/userinfo")
     object UserInfoBasic : DrawerScreen(route="drawer/userinfo/basic")
     object UserInfoDetail : DrawerScreen(route="drawer/userinfo/detail")
-    object UserInfoNickname : DrawerScreen(route="drawer/userinfo/nickname")
+    object UserInfoNickname : DrawerScreen(route="main/drawer/userinfo/nickname")
 
 }
 

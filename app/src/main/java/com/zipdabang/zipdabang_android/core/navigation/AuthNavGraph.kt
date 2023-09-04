@@ -142,7 +142,18 @@ fun NavGraphBuilder.authNavGraph(navController: NavHostController) {
                 },
                 onClickNext = {
                     Log.e("signup-tokens", "넘어가져2")
-                    navController.popBackStack(MAIN_ROUTE, inclusive = false)
+                    // 내일 myinfo에 accessToken 넣었는데 안된다, MyScreen을 위한 api를 따로 만들어주실건지, 회원정보 삭제 부탁
+
+                    // home에서 뒤로가기했을때 signup 화면이 나오면 안되는데, 지금 이게 안됨 -> 수정했는데 실험해봐야함
+                    // drawer가 열려있는 상태일때 뒤로가기를 하면 닫히도록 바꿔야함
+                    // my ui 나온거 전부 디자인하기
+                    // response enum class로 옮기기
+                    navController.navigate(MAIN_ROUTE){
+                        popUpTo(AuthScreen.SignIn.route) {
+                            inclusive = false //이 경로를 포함하지 않고 제거
+                        }
+                        launchSingleTop = true
+                    }
                 }
             )
         }
