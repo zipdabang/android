@@ -3,6 +3,8 @@ package com.zipdabang.zipdabang_android.module.my.ui
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
@@ -16,7 +18,7 @@ import com.zipdabang.zipdabang_android.ui.component.AppBarSignUp
 import com.zipdabang.zipdabang_android.ui.component.SearchBar
 
 @Composable
-fun ScrapScreen(
+fun RecipeWriteScreen(
     onClickBack : ()->Unit
 ) {
     Scaffold(
@@ -26,26 +28,28 @@ fun ScrapScreen(
             AppBarSignUp(
                 navigationIcon = R.drawable.ic_topbar_backbtn,
                 onClickNavIcon = { onClickBack() },
-                centerText = stringResource(id = R.string.my_scrap)
+                centerText = stringResource(id = R.string.my_recipewrite)
             )
         },
         containerColor = Color.White,
         contentColor = Color.White,
     ){
+        val scrollState = rememberScrollState()
         Surface(
-            modifier = Modifier.padding(it)
+            modifier = Modifier
+                .padding(it)
+                .fillMaxSize()
+                .verticalScroll(scrollState)
         ){
-            Box(
-                modifier = Modifier.padding(16.dp, 10.dp, 16.dp,0.dp)
-            ){
-                SearchBar(hintText = stringResource(id = R.string.my_searchbar_keyword))
-            }
+
         }
     }
 }
 
 @Preview
 @Composable
-fun PreviewScrapScreen() {
-    ScrapScreen(onClickBack = {})
+fun PreviewRecipeWriteScreen() {
+    RecipeWriteScreen(
+        onClickBack ={}
+    )
 }

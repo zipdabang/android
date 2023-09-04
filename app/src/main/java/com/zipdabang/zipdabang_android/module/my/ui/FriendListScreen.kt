@@ -1,5 +1,6 @@
 package com.zipdabang.zipdabang_android.module.my.ui
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.DrawerValue
@@ -12,10 +13,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.zipdabang.zipdabang_android.R
 import com.zipdabang.zipdabang_android.ui.component.AppBarDefault
 import com.zipdabang.zipdabang_android.ui.component.ModalDrawer
+import com.zipdabang.zipdabang_android.ui.component.SearchBar
 import kotlinx.coroutines.launch
 
 @Composable
@@ -46,7 +50,11 @@ fun FriendListScreen(
                 Surface(
                     modifier = Modifier.padding(it)
                 ){
-
+                    Box(
+                        modifier = Modifier.padding(16.dp, 10.dp, 16.dp,0.dp)
+                    ){
+                        SearchBar(hintText = stringResource(id = R.string.my_searchbar_person))
+                    }
                 }
             }
         },
@@ -55,9 +63,8 @@ fun FriendListScreen(
     )
 }
 
-/*
 @Preview
 @Composable
 fun PreviewFriendListScreen() {
-    FriendListScreen(onClickBack = {})
-}*/
+    FriendListScreen(navController = rememberNavController(), onClickBack = {})
+}

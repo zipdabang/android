@@ -1,22 +1,17 @@
 package com.zipdabang.zipdabang_android.module.sign_up.ui.viewmodel
 
 import android.util.Log
-import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.datastore.core.DataStore
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.zipdabang.zipdabang_android.common.Resource
 import com.zipdabang.zipdabang_android.core.data_store.proto.ProtoDataViewModel
-import com.zipdabang.zipdabang_android.core.data_store.proto.ProtoRepository
 import com.zipdabang.zipdabang_android.core.data_store.proto.Token
 import com.zipdabang.zipdabang_android.module.sign_up.data.remote.AuthRequest
 import com.zipdabang.zipdabang_android.module.sign_up.data.remote.InfoRequest
-import com.zipdabang.zipdabang_android.module.sign_up.data.remote.InfoResponse
 import com.zipdabang.zipdabang_android.module.sign_up.data.remote.PhoneRequest
 import com.zipdabang.zipdabang_android.module.sign_up.domain.usecase.GetBeveragesUseCase
 import com.zipdabang.zipdabang_android.module.sign_up.domain.usecase.GetNicknameUseCase
@@ -27,19 +22,12 @@ import com.zipdabang.zipdabang_android.module.sign_up.domain.usecase.PostPhoneSm
 import com.zipdabang.zipdabang_android.module.sign_up.domain.usecase.ValidateBirthdayUseCase
 import com.zipdabang.zipdabang_android.module.sign_up.domain.usecase.ValidateNicknameUseCase
 import com.zipdabang.zipdabang_android.module.sign_up.domain.usecase.ValidatePhoneUseCase
-import com.zipdabang.zipdabang_android.module.sign_up.domain.usecase.ValidationResult
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.single
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import java.util.Calendar
 import javax.inject.Inject
 
 @HiltViewModel
@@ -71,20 +59,6 @@ class AuthSharedViewModel @Inject constructor(
     fun updateProfile(profile: String) {
         _profile.value = profile
     }
-
-
-    lateinit var social : String
-    suspend fun updateSocial(){
-        social = dataStore.data.first().platformStatus.toString()
-    }
-    suspend fun printTokens(){
-        Log.e("signup-tokens", "토큰 출력 : accessToken ${dataStore.data.first().accessToken}")
-        Log.e("signup-tokens", "토큰 출력 : refreshToken ${dataStore.data.first().refreshToken}")
-    }
-
-
-    // response enum class로 옮기기
-
 
     /*TermsScreen*/
     var stateTermsForm by mutableStateOf(TermsFormState())
@@ -663,7 +637,7 @@ class AuthSharedViewModel @Inject constructor(
     ){
         try{
             val result = postInfoUseCase(
-                social = social, //tokenDataStore.data.first().platformStatus.toString() ,//social,
+                social = dataStore.data.first().platformStatus.toString(), //social,
                 infoRequest = InfoRequest(
                     email = _email.value,
                     profileUrl = _profile.value,
@@ -686,12 +660,14 @@ class AuthSharedViewModel @Inject constructor(
                 when(result){
                     is Resource.Success ->{
                         Log.e("signup-tokens", "api 성공 response : ${result.data?.result}")
+
                         if(result.data?.result != null){
                             if(result.data?.code == 2000){
                                 tokenStoreViewModel.updateAccessToken(result.data.result.accessToken)
                                 tokenStoreViewModel.updateRefreshToken(result.data.result.refreshToken)
-                                Log.e("signup-tokens","토큰 담음 : ${tokenStoreViewModel.tokens}")
-                                printTokens() //token 출력
+                                Log.e("signup-tokens","토큰 담음")
+                                Log.e("signup-tokens", "토큰 출력 : accessToken ${dataStore.data.first().accessToken}")
+                                Log.e("signup-tokens", "토큰 출력 : refreshToken ${dataStore.data.first().refreshToken}")
                             } else {
                                 //토큰 null임
                             }

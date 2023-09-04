@@ -19,11 +19,13 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -33,10 +35,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.zipdabang.zipdabang_android.R
+import com.zipdabang.zipdabang_android.module.drawer.ui.viewmodel.DrawerUserInfoViewModel
 import com.zipdabang.zipdabang_android.ui.component.AppBarSignUp
 import com.zipdabang.zipdabang_android.ui.component.CircleImage
 import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
@@ -46,6 +51,7 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun UserInfoScreen(
+    drawerUserInfoViewModel : DrawerUserInfoViewModel = hiltViewModel(),
     onClickBack : ()->Unit,
     onClickEdit : ()->Unit,
     onClickEditBasic : ()->Unit,
@@ -54,6 +60,8 @@ fun UserInfoScreen(
     onClickLogout : ()->Unit,
     onClickWithdraw : ()->Unit,
 ) {
+    val stateUserInfo = drawerUserInfoViewModel.stateUserInfo
+
     Scaffold(
         modifier = Modifier
             .fillMaxSize(),
@@ -91,7 +99,7 @@ fun UserInfoScreen(
                             .size(120.dp, 120.dp)
                             .clip(CircleShape)
                     ){
-                        CircleImage(imageUrl = R.drawable.img_my_profile, contentDescription = "")
+                        CircleImage(imageUrl = stateUserInfo.profileUrl, contentDescription = "")
                     }
                     Box(
                         modifier = Modifier
@@ -116,7 +124,7 @@ fun UserInfoScreen(
                     )
                 }
                 Text(
-                    text = "가입한 이메일",
+                    text = stateUserInfo.email,
                     style = ZipdabangandroidTheme.Typography.sixteen_300,
                     color = ZipdabangandroidTheme.Colors.Typo,
                     modifier = Modifier.padding(0.dp, 4.dp, 0.dp,0.dp)
@@ -190,7 +198,7 @@ fun UserInfoScreen(
                     )
                     Text(
                         modifier = Modifier.padding(8.dp, 0.dp,0.dp,0.dp),
-                        text = "이름",
+                        text = stateUserInfo.name,
                         style = ZipdabangandroidTheme.Typography.sixteen_500,
                         color = ZipdabangandroidTheme.Colors.Typo
                     )
@@ -223,7 +231,13 @@ fun UserInfoScreen(
                     )
                     Text(
                         modifier = Modifier.padding(8.dp, 0.dp,0.dp,0.dp),
-                        text = "생년월일 앞자리",
+                        text = stateUserInfo.birthday,
+                        style = ZipdabangandroidTheme.Typography.sixteen_500,
+                        color = ZipdabangandroidTheme.Colors.Typo
+                    )
+                    Text(
+                        modifier = Modifier.padding(8.dp, 0.dp,0.dp,0.dp),
+                        text = stateUserInfo.gender,
                         style = ZipdabangandroidTheme.Typography.sixteen_500,
                         color = ZipdabangandroidTheme.Colors.Typo
                     )
@@ -259,7 +273,7 @@ fun UserInfoScreen(
                     )
                     Text(
                         modifier = Modifier.padding(8.dp, 0.dp,0.dp,0.dp),
-                        text = "전화번호 (-제외)",
+                        text = stateUserInfo.phoneNumber,
                         style = ZipdabangandroidTheme.Typography.sixteen_500,
                         color = ZipdabangandroidTheme.Colors.Typo
                     )
@@ -474,11 +488,25 @@ fun UserInfoScreen(
                     )
                     Text(
                         modifier = Modifier.padding(8.dp, 0.dp,0.dp,0.dp),
-                        text = "닉네임",
+                        text = stateUserInfo.nickname,
                         style = ZipdabangandroidTheme.Typography.sixteen_500,
                         color = ZipdabangandroidTheme.Colors.Typo
                     )
                 }
+            }
+
+            // api 로딩
+            if(stateUserInfo.error.isNotBlank()){
+                androidx.compose.material.Text(
+                    text = stateUserInfo.error,
+                    color = Color.Red,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                )
+            }
+            if(stateUserInfo.isLoading) {
+                CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
             }
 
             //로그아웃 | 탈퇴하기

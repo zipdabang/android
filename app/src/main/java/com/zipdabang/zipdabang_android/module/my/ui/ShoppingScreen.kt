@@ -13,6 +13,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.zipdabang.zipdabang_android.R
 import com.zipdabang.zipdabang_android.ui.component.AppBarDefault
 import com.zipdabang.zipdabang_android.ui.component.ModalDrawer
@@ -37,7 +38,7 @@ fun ShoppingScreen(
                         endIcon = R.drawable.ic_topbar_menu,
                         onClickStartIcon = { onClickBack() },
                         onClickEndIcon = { scope.launch { drawerState.open() } },
-                        centerText = stringResource(id = R.string.my_shopping)
+                        centerText = stringResource(id = R.string.my_myshopping)
                     )
                 },
                 containerColor = Color.White,
@@ -55,9 +56,8 @@ fun ShoppingScreen(
     )
 }
 
-/*
 @Preview
 @Composable
 fun PreviewShoppingScreen() {
-    ShoppingScreen(onClickBack = {})
-}*/
+    ShoppingScreen(navController = rememberNavController(),onClickBack = {})
+}

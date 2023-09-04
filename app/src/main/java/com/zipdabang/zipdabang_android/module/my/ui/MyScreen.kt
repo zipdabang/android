@@ -42,6 +42,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.zipdabang.zipdabang_android.R
 import com.zipdabang.zipdabang_android.ui.component.AppBarMy
 import com.zipdabang.zipdabang_android.ui.component.CircleImage
@@ -665,11 +666,11 @@ fun MyScreen(
 
 }
 
-/*@Preview
+@Preview
 @Composable
 fun PreviewMyScreen() {
     MyScreen(
-        navController = ,
+        navController = rememberNavController(),
         onClickBack = {},
         onClickEdit = {},
         onClickLike = {},
@@ -680,4 +681,4 @@ fun PreviewMyScreen() {
         onClickLogout = {},
         onClickUserInfo = {},
     )
-}*/
+}

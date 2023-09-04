@@ -44,11 +44,16 @@ fun SearchBar(
     OutlinedTextField(
         value = text,
         onValueChange =  { text= it},
+        textStyle = ZipdabangandroidTheme.Typography.sixteen_300,
         modifier = Modifier
             .wrapContentHeight()
             .fillMaxWidth(),
         placeholder = {
-            Text(text = hintText)
+            Text(
+                text = hintText,
+                style = ZipdabangandroidTheme.Typography.sixteen_300,
+                color = ZipdabangandroidTheme.Colors.Typo.copy(0.5f)
+            )
         },
         trailingIcon = {
             Icon(
@@ -75,7 +80,8 @@ fun SearchBar(
             focusedContainerColor = ZipdabangandroidTheme.Colors.SubBackground,
             unfocusedContainerColor = ZipdabangandroidTheme.Colors.SubBackground,
             focusedBorderColor = SearchBorder,
-            unfocusedBorderColor = SearchBorder
+            unfocusedBorderColor = SearchBorder,
+            cursorColor = ZipdabangandroidTheme.Colors.Typo.copy(0.5f)
         )
 
         )
