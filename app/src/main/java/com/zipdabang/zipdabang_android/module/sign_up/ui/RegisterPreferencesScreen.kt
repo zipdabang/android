@@ -206,7 +206,7 @@ fun RegisterPreferencesScreen(
                     onClick={
                         CoroutineScope(Dispatchers.Main).launch {
                             try{
-                                //Log.e("signup-tokens","api 실행 전")
+                                Log.e("signup-tokens","api 실행 전")
                                 authSharedViewModel.postInfo(tokenStoreViewModel)
                                 Log.e("signup-tokens","넘어가져1")
                                 onClickNext()
