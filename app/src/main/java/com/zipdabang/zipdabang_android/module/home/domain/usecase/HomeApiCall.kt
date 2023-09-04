@@ -10,9 +10,7 @@ import java.io.IOException
 
 suspend fun <T> HomeApiCall(apiCall: suspend  () -> T) : Flow<HomeResource<T>> = flow{
     try {
-        Log.e("Api","ApiCall")
         emit(HomeResource.HomeLoading(true))
-        Log.e("Api","ApiCallLoading")
         val data = apiCall()
         emit(HomeResource.HomeSuccess(data))
     } catch (e: HttpException) {

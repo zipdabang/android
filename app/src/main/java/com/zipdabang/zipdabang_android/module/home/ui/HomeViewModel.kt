@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.datastore.core.DataStore
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.zipdabang.zipdabang_android.common.Constants
 import com.zipdabang.zipdabang_android.common.HomeResource
 import com.zipdabang.zipdabang_android.core.data_store.proto.Token
@@ -12,15 +13,15 @@ import com.zipdabang.zipdabang_android.module.home.domain.usecase.GetBestRecipe
 import com.zipdabang.zipdabang_android.module.home.domain.usecase.GetHomeBanner
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val datastore : DataStore<Token>,
     private val getHomeBanner : GetHomeBanner,
-    private  val getBestRecipe: GetBestRecipe
+    private val getBestRecipes: GetBestRecipe
 ) :ViewModel(){
 
     private val _bannerState = mutableStateOf(HomeBannerState())
@@ -34,32 +35,25 @@ class HomeViewModel @Inject constructor(
         getBestRecipe()
     }
     fun getBannerList() {
-        viewModelScope.launch {
-
-            val accessToken = datastore.data.first().accessToken ?: Constants.TOKEN_NULL
-            accessToken.let {
-                Log.e("token",accessToken)
-
-                getHomeBanner(it).onEach { result ->
-                    Log.e("result",result.message.toString())
+                getHomeBanner().onEach { result ->
+                    Log.e("BannerResult",result.message.toString())
 
                     when (result) {
-
                         is HomeResource.HomeSuccess ->{
                             if(result.data?.isSuccess == true){
                                 val bannerlist= result.data.result.bannerList
                                 _bannerState.value = HomeBannerState(
-                                    bannerList = result.data.result.bannerList,
+                                    bannerList = bannerlist,
                                     isLoading = false)
                             }else{
-                                Log.e("Market Api Error", result.data!!.message)
+                                Log.e("Home Api Error", result.data!!.message)
                             }
                         }
 
                         is HomeResource.HomeError ->{
                             _bannerState.value = HomeBannerState(
-                                error = result.data?.message ?: "An unexpected error occured",
-                                isLoading = true
+                                isError = true,
+                                error = result.message ?: "An unexpected error occured"
                             )
                         }
 
@@ -67,25 +61,19 @@ class HomeViewModel @Inject constructor(
                             _bannerState.value = HomeBannerState(isLoading = true)
                         }
 
-                    }
 
                 }
 
-            }
+            }.launchIn(viewModelScope)
 
 
-        }
+
     }
 
 
     fun getBestRecipe(){
-        viewModelScope.launch {
 
-            val accessToken = datastore.data.first().accessToken ?: Constants.TOKEN_NULL
-            Log.e("token recipe",accessToken)
-
-            accessToken.let {
-                getBestRecipe(it).onEach { result ->
+        getBestRecipes().onEach { result ->
                     when (result) {
 
                         is HomeResource.HomeSuccess ->{
@@ -94,12 +82,13 @@ class HomeViewModel @Inject constructor(
                                     recipeList = result.data.result.recipeList,
                                     isLoading = false)
                             }else{
-                                Log.e("Market Api Error", result.data!!.message)
+                                Log.e("Home Api Error", result.data!!.message)
                             }
                         }
 
                         is HomeResource.HomeError ->{
                             _recipeState.value = HomeRecipeState(
+                                isError = true,
                                 error = result.data?.message ?: "An unexpected error occured"
                             )
                         }
@@ -110,13 +99,10 @@ class HomeViewModel @Inject constructor(
 
                     }
 
-                }
+                }.launchIn(viewModelScope)
 
             }
 
 
-        }
-
-    }
 
 }

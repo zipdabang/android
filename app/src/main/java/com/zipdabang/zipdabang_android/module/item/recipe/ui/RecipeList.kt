@@ -2,9 +2,12 @@ package com.zipdabang.zipdabang_android.module.item.recipe.ui
 
 import android.util.Log
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.zipdabang.zipdabang_android.module.item.recipe.common.RecipeSubtitleState
@@ -43,6 +46,7 @@ fun RecipeList(
         modifier = modifier.fillMaxSize()
     ) {
         content()
+        Spacer(modifier = Modifier.height(6.dp))
         RecipeListContent(
             items = recipeList,
             onLikeClick = onLikeClick,

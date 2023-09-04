@@ -27,12 +27,12 @@ object HomeModule {
             .baseUrl(Constants.BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
-            .create(HomeApi :: class.java)
+            .create(HomeApi::class.java)
     }
 
     @Provides
     @Singleton
-    fun provideMarketRepository(api : HomeApi) : HomeRepository {
+    fun provideHomeRepository(api : HomeApi) : HomeRepository {
         return HomeRepositoryImpl(api)
     }
 

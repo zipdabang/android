@@ -162,6 +162,9 @@ dependencies {
 
     // for collapsing toolbar
     implementation ("me.onebone:toolbar-compose:2.3.2")
+
+    //for webview
+    implementation ("com.google.accompanist:accompanist-webview:0.24.13-rc")
 }
 
 kapt {

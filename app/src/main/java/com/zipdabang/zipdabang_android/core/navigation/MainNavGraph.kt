@@ -23,9 +23,13 @@ fun MainNavGraph(navController: NavHostController){
 
         SharedNavGraph(navController)
 
+        DrawerNavGraph(navController = navController)
+
     }
 
 }
+
+
 
 
 

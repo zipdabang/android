@@ -39,21 +39,14 @@ fun AllSubtitle() {
     ) {
         Text(
             text = AnnotatedString(
-                text = "입 안에서 ",
-                spanStyle = SpanStyle(
-                    color = ZipdabangandroidTheme.Colors.Choco,
-                    fontFamily = FontFamily(Font(R.font.kopubworlddotum_bold)),
-                    fontSize = 16.sp
-                )
-            ) + AnnotatedString(
-                text = "전체 레시피",
+                text = "전체 ",
                 spanStyle = SpanStyle(
                     color = ZipdabangandroidTheme.Colors.Strawberry,
                     fontFamily = FontFamily(Font(R.font.kopubworlddotum_bold)),
                     fontSize = 16.sp
                 )
-            )+ AnnotatedString(
-                text = "가 상큼하게 톡톡!",
+            ) + AnnotatedString(
+                text = "레시피가 모여있어요!",
                 spanStyle = SpanStyle(
                     color = ZipdabangandroidTheme.Colors.Choco,
                     fontFamily = FontFamily(Font(R.font.kopubworlddotum_bold)),
@@ -80,21 +73,21 @@ fun CoffeeSubtitle() {
     ) {
         Text(
             text = AnnotatedString(
-                text = "입 안에서 ",
+                text = "달콤 쌉사름한 ",
                 spanStyle = SpanStyle(
                     color = ZipdabangandroidTheme.Colors.Choco,
                     fontFamily = FontFamily(Font(R.font.kopubworlddotum_bold)),
                     fontSize = 16.sp
                 )
             ) + AnnotatedString(
-                text = "커피",
+                text = "커피 ",
                 spanStyle = SpanStyle(
                     color = ZipdabangandroidTheme.Colors.Strawberry,
                     fontFamily = FontFamily(Font(R.font.kopubworlddotum_bold)),
                     fontSize = 16.sp
                 )
             )+ AnnotatedString(
-                text = "가 상큼하게 톡톡!",
+                text = "한 잔 어때요?",
                 spanStyle = SpanStyle(
                     color = ZipdabangandroidTheme.Colors.Choco,
                     fontFamily = FontFamily(Font(R.font.kopubworlddotum_bold)),
@@ -121,7 +114,7 @@ fun NonCaffeineSubtitle() {
     ) {
         Text(
             text = AnnotatedString(
-                text = "입 안에서 ",
+                text = "카페인 시러시러 ",
                 spanStyle = SpanStyle(
                     color = ZipdabangandroidTheme.Colors.Choco,
                     fontFamily = FontFamily(Font(R.font.kopubworlddotum_bold)),
@@ -131,13 +124,6 @@ fun NonCaffeineSubtitle() {
                 text = "논카페인",
                 spanStyle = SpanStyle(
                     color = ZipdabangandroidTheme.Colors.Strawberry,
-                    fontFamily = FontFamily(Font(R.font.kopubworlddotum_bold)),
-                    fontSize = 16.sp
-                )
-            )+ AnnotatedString(
-                text = "가 상큼하게 톡톡!",
-                spanStyle = SpanStyle(
-                    color = ZipdabangandroidTheme.Colors.Choco,
                     fontFamily = FontFamily(Font(R.font.kopubworlddotum_bold)),
                     fontSize = 16.sp
                 )
@@ -162,23 +148,16 @@ fun TeaSubtitle() {
     ) {
         Text(
             text = AnnotatedString(
-                text = "입 안에서 ",
+                text = "나를 감싸주는 따듯한 ",
                 spanStyle = SpanStyle(
                     color = ZipdabangandroidTheme.Colors.Choco,
                     fontFamily = FontFamily(Font(R.font.kopubworlddotum_bold)),
                     fontSize = 16.sp
                 )
             ) + AnnotatedString(
-                text = "티",
+                text = "차(Tea)",
                 spanStyle = SpanStyle(
                     color = ZipdabangandroidTheme.Colors.Strawberry,
-                    fontFamily = FontFamily(Font(R.font.kopubworlddotum_bold)),
-                    fontSize = 16.sp
-                )
-            )+ AnnotatedString(
-                text = "가 상큼하게 톡톡!",
-                spanStyle = SpanStyle(
-                    color = ZipdabangandroidTheme.Colors.Choco,
                     fontFamily = FontFamily(Font(R.font.kopubworlddotum_bold)),
                     fontSize = 16.sp
                 )
@@ -244,13 +223,6 @@ fun SmoothieSubtitle() {
     ) {
         Text(
             text = AnnotatedString(
-                text = "입 안에서 ",
-                spanStyle = SpanStyle(
-                    color = ZipdabangandroidTheme.Colors.Choco,
-                    fontFamily = FontFamily(Font(R.font.kopubworlddotum_bold)),
-                    fontSize = 16.sp
-                )
-            ) + AnnotatedString(
                 text = "스무디",
                 spanStyle = SpanStyle(
                     color = ZipdabangandroidTheme.Colors.Strawberry,
@@ -258,7 +230,7 @@ fun SmoothieSubtitle() {
                     fontSize = 16.sp
                 )
             )+ AnnotatedString(
-                text = "가 상큼하게 톡톡!",
+                text = "가 주는 부드러운 행복감",
                 spanStyle = SpanStyle(
                     color = ZipdabangandroidTheme.Colors.Choco,
                     fontFamily = FontFamily(Font(R.font.kopubworlddotum_bold)),
@@ -285,23 +257,16 @@ fun FruitSubtitle() {
     ) {
         Text(
             text = AnnotatedString(
-                text = "입 안에서 ",
+                text = "자연미가 대폭발하는 ",
                 spanStyle = SpanStyle(
                     color = ZipdabangandroidTheme.Colors.Choco,
                     fontFamily = FontFamily(Font(R.font.kopubworlddotum_bold)),
                     fontSize = 16.sp
                 )
             ) + AnnotatedString(
-                text = "생과일 음료",
+                text = "과일 음료",
                 spanStyle = SpanStyle(
                     color = ZipdabangandroidTheme.Colors.Strawberry,
-                    fontFamily = FontFamily(Font(R.font.kopubworlddotum_bold)),
-                    fontSize = 16.sp
-                )
-            )+ AnnotatedString(
-                text = "가 상큼하게 톡톡!",
-                spanStyle = SpanStyle(
-                    color = ZipdabangandroidTheme.Colors.Choco,
                     fontFamily = FontFamily(Font(R.font.kopubworlddotum_bold)),
                     fontSize = 16.sp
                 )
@@ -326,21 +291,21 @@ fun WellBeingSubtitle() {
     ) {
         Text(
             text = AnnotatedString(
-                text = "입 안에서 ",
+                text = "맛까지 챙기는 ",
                 spanStyle = SpanStyle(
                     color = ZipdabangandroidTheme.Colors.Choco,
                     fontFamily = FontFamily(Font(R.font.kopubworlddotum_bold)),
                     fontSize = 16.sp
                 )
             ) + AnnotatedString(
-                text = "건강 음료",
+                text = "건강 음료 ",
                 spanStyle = SpanStyle(
                     color = ZipdabangandroidTheme.Colors.Strawberry,
                     fontFamily = FontFamily(Font(R.font.kopubworlddotum_bold)),
                     fontSize = 16.sp
                 )
             )+ AnnotatedString(
-                text = "가 상큼하게 톡톡!",
+                text = "매력에 퐁당~",
                 spanStyle = SpanStyle(
                     color = ZipdabangandroidTheme.Colors.Choco,
                     fontFamily = FontFamily(Font(R.font.kopubworlddotum_bold)),
@@ -367,21 +332,14 @@ fun EveryoneSubtitle() {
     ) {
         Text(
             text = AnnotatedString(
-                text = "입 안에서 ",
-                spanStyle = SpanStyle(
-                    color = ZipdabangandroidTheme.Colors.Choco,
-                    fontFamily = FontFamily(Font(R.font.kopubworlddotum_bold)),
-                    fontSize = 16.sp
-                )
-            ) + AnnotatedString(
-                text = "모든 사람들의 레시피",
+                text = "모든 사람들",
                 spanStyle = SpanStyle(
                     color = ZipdabangandroidTheme.Colors.Strawberry,
                     fontFamily = FontFamily(Font(R.font.kopubworlddotum_bold)),
                     fontSize = 16.sp
                 )
-            )+ AnnotatedString(
-                text = "가 상큼하게 톡톡!",
+            ) + AnnotatedString(
+                text = "의 레시피",
                 spanStyle = SpanStyle(
                     color = ZipdabangandroidTheme.Colors.Choco,
                     fontFamily = FontFamily(Font(R.font.kopubworlddotum_bold)),
@@ -408,21 +366,14 @@ fun InfluencerSubtitle() {
     ) {
         Text(
             text = AnnotatedString(
-                text = "입 안에서 ",
-                spanStyle = SpanStyle(
-                    color = ZipdabangandroidTheme.Colors.Choco,
-                    fontFamily = FontFamily(Font(R.font.kopubworlddotum_bold)),
-                    fontSize = 16.sp
-                )
-            ) + AnnotatedString(
-                text = "인플루언서의 레시피",
+                text = "인플루언서",
                 spanStyle = SpanStyle(
                     color = ZipdabangandroidTheme.Colors.Strawberry,
                     fontFamily = FontFamily(Font(R.font.kopubworlddotum_bold)),
                     fontSize = 16.sp
                 )
-            )+ AnnotatedString(
-                text = "가 상큼하게 톡톡!",
+            ) + AnnotatedString(
+                text = "의 레시피",
                 spanStyle = SpanStyle(
                     color = ZipdabangandroidTheme.Colors.Choco,
                     fontFamily = FontFamily(Font(R.font.kopubworlddotum_bold)),
@@ -449,21 +400,14 @@ fun OurSubtitle() {
     ) {
         Text(
             text = AnnotatedString(
-                text = "입 안에서 ",
-                spanStyle = SpanStyle(
-                    color = ZipdabangandroidTheme.Colors.Choco,
-                    fontFamily = FontFamily(Font(R.font.kopubworlddotum_bold)),
-                    fontSize = 16.sp
-                )
-            ) + AnnotatedString(
-                text = "우리들의 레시피",
+                text = "우리들",
                 spanStyle = SpanStyle(
                     color = ZipdabangandroidTheme.Colors.Strawberry,
                     fontFamily = FontFamily(Font(R.font.kopubworlddotum_bold)),
                     fontSize = 16.sp
                 )
-            )+ AnnotatedString(
-                text = "가 상큼하게 톡톡!",
+            ) + AnnotatedString(
+                text = "의 레시피",
                 spanStyle = SpanStyle(
                     color = ZipdabangandroidTheme.Colors.Choco,
                     fontFamily = FontFamily(Font(R.font.kopubworlddotum_bold)),

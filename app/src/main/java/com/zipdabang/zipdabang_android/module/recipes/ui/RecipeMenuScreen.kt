@@ -1,5 +1,6 @@
 package com.zipdabang.zipdabang_android.module.recipes.ui
 
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
@@ -26,6 +27,7 @@ import com.zipdabang.zipdabang_android.module.recipes.common.OwnerType
 import com.zipdabang.zipdabang_android.module.recipes.ui.state.RecipePreviewState
 import com.zipdabang.zipdabang_android.module.recipes.ui.viewmodel.RecipeMainViewModel
 import com.zipdabang.zipdabang_android.ui.component.GroupHeader
+import kotlinx.coroutines.launch
 
 @Composable
 fun RecipeMenuScreen(
@@ -34,7 +36,8 @@ fun RecipeMenuScreen(
     onOwnerTypeClick: (String) -> Unit,
     onRecipeClick: (Int) -> Unit,
     onLikeClick: (Int) -> Unit,
-    onScrapClick: (Int) -> Unit
+    onScrapClick: (Int) -> Unit,
+    onBannerClick: (String) -> Unit
 ) {
 
     val mainViewModel = hiltViewModel<RecipeMainViewModel>()
@@ -44,10 +47,21 @@ fun RecipeMenuScreen(
         mainViewModel.apply {
             // TODO 동시다발적으로 실행되도록 각 메소드마다 coroutine scope 내부에서 실행
             // TODO 배너 불러오기 추가 필요
-            getRecipeCategoryList()
-            getRecipesByOwnerType(OwnerType.ALL)
-            getRecipesByOwnerType(OwnerType.INFLUENCER)
-            getRecipesByOwnerType(OwnerType.USER)
+            scope.launch {
+                getRecipeBanners()
+            }
+            scope.launch {
+                getRecipeCategoryList()
+            }
+            scope.launch {
+                getRecipesByOwnerType(OwnerType.ALL)
+            }
+            scope.launch {
+                getRecipesByOwnerType(OwnerType.INFLUENCER)
+            }
+            scope.launch {
+                getRecipesByOwnerType(OwnerType.USER)
+            }
         }
     }
 
@@ -72,20 +86,31 @@ fun RecipeMenuScreen(
     Column(
         modifier = modifier
             .fillMaxSize()
+            .verticalScroll(rememberScrollState())
     ) {
         // TODO 레시피 배너 가져오는 url 변경하기!!
-        RecipeBanner(bannerState = bannerState)
 
-        // lazy vertical grid
+        RecipeBanner(bannerState = bannerState, onClickBanner = onBannerClick)
+
+        Spacer(modifier = Modifier.height(16.dp))
+
         RecipeCategoryList(
             categoryState = categoryState,
             onCategoryClick = onCategoryClick
         )
 
+        // lazy vertical grid
+
+
         Divider(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 12.dp)
+                .padding(
+                    start = 16.dp,
+                    end = 16.dp,
+                    top = 18.dp,
+                    bottom = 12.dp
+                )
         )
 
         // lazyrows

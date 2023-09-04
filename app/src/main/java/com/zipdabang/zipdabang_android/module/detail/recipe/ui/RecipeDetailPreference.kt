@@ -31,12 +31,15 @@ import java.text.DecimalFormat
 @Composable
 fun RecipeDetailPreference(
     recipeId: Int,
+    isOwner: Boolean,
     likes: Int,
     scraps: Int,
     isLikeChecked: Boolean,
     isScrapChecked: Boolean,
     onLikeClick: (Boolean) -> Unit,
-    onScrapClick: (Boolean) -> Unit
+    onScrapClick: (Boolean) -> Unit,
+    onDeleteClick: (Int) -> Unit,
+    onEditClick: (Int) -> Unit
 ) {
 
     val thousands = DecimalFormat("##.0K")
@@ -54,7 +57,9 @@ fun RecipeDetailPreference(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 8.dp)
+            .padding(horizontal = 8.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
     ) {
         val scrapChecked = R.drawable.recipe_bookmark_checked
         val scrapNotChecked = R.drawable.recipe_bookmark_normal
@@ -129,6 +134,16 @@ fun RecipeDetailPreference(
                 )
             }
         }
+
+        if (isOwner) {
+            RecipeManagement(
+                recipeId = recipeId,
+                deleteIcon = R.drawable.all_delete_black,
+                editIcon = R.drawable.all_edit_black,
+                onClickDelete = onDeleteClick,
+                onClickEdit = onEditClick
+            )
+        }
     }
 }
 
@@ -165,6 +180,9 @@ fun RecipeDetailPreferencePreview() {
         onScrapClick = { changed ->
             isScrapChecked = changed
             if (isScrapChecked) scraps += 1 else scraps -= 1
-        }
+        },
+        onDeleteClick = { delete -> },
+        onEditClick = { edit -> },
+        isOwner = true
     )
 }

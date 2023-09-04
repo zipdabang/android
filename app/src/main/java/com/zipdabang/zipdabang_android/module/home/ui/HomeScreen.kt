@@ -1,8 +1,11 @@
 package com.zipdabang.zipdabang_android.module.home.ui
 
 import android.util.Log
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
@@ -20,7 +23,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import com.zipdabang.zipdabang_android.R
+import com.zipdabang.zipdabang_android.module.home.data.bestrecipe.BestRecipeDto
+import com.zipdabang.zipdabang_android.module.home.data.bestrecipe.Recipe
 import com.zipdabang.zipdabang_android.module.item.recipe.ui.RecipeCard
 import com.zipdabang.zipdabang_android.ui.component.AppBarHome
 import com.zipdabang.zipdabang_android.ui.component.Banner
@@ -31,7 +37,8 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun HomeScreen(
-    viewModel: HomeViewModel= hiltViewModel()
+    navController : NavController,
+    viewModel: HomeViewModel = hiltViewModel()
 ){
     //drawer에 필요한 drawerState랑 scope
     val drawerState = rememberDrawerState(DrawerValue.Closed)
@@ -63,12 +70,22 @@ fun HomeScreen(
                            .padding(top = it.calculateTopPadding())
                            .verticalScroll(scrollState)
                    ) {
-                            Log.d("group header", "group")
 
                             if (bannerState.value.isLoading) {
-                                Log.d("isLoading", "isLoading")
-                                TODO("shimmering effect")
-                            } else {
+                           //Shimmering Effect
+                            }
+                            else if(bannerState.value.isError){
+                                val imageUrlList = emptyList<String>()
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .height(200.dp)
+                                ) {
+                                    Banner(imageUrlList)
+                                }
+                                Log.e("HomeScreen Error",bannerState.value.error)
+                            }
+                            else {
                                 val bannerListState = bannerState.value.bannerList
                                 bannerListState.let {
                                     val imageUrlList: List<String> =
@@ -85,7 +102,35 @@ fun HomeScreen(
                                 onClick = { }
                             )
 
-                            if (!recipeState.value.isLoading) {
+                            if (recipeState.value.isLoading) {
+                                //Shimmering Effect
+                            }
+                            else if(recipeState.value.isError){
+                                val recipeList = emptyList<Recipe>()
+                                LazyRow(modifier = Modifier.padding(horizontal = 4.dp)) {
+                                    itemsIndexed(recipeList) { index, item ->
+                                        RecipeCard(
+                                            recipeId = item.recipeId,
+                                            title = item.recipeName,
+                                            user = item.owner,
+                                            thumbnail = item.thumbnailUrl,
+                                            date = item.createdAt,
+                                            likes = item.likes,
+                                            comments = item.comments,
+                                            isLikeSelected = item.isLiked,
+                                            isScrapSelected = item.isScrapped,
+                                            onLikeClick = {},
+                                            onScrapClick = {},
+                                            onItemClick = {}
+                                        )
+                                    }
+                                }
+
+
+
+                                Log.e("HomeScreen Error",bannerState.value.error)
+                            }
+                            else {
                                 LazyRow(modifier = Modifier.padding(horizontal = 4.dp)) {
                                     itemsIndexed(recipeState.value.recipeList) { index, item ->
                                         RecipeCard(
@@ -114,7 +159,8 @@ fun HomeScreen(
                 }
             )
         },
-        drawerState = drawerState
+        drawerState = drawerState,
+        navController = navController
     )
 
 }
