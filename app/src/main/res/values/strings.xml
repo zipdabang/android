@@ -4,7 +4,7 @@
     <string name="zipdabang_title">집다방</string>
     <string name="zipdabang_subtitle">홈카페를 위한 모든 것이 여기에!</string>
 
-
+    <!-- for drawer-->
     <string name="drawer_info">집다방 정보</string>
     <string name="drawer_notice">공지사항</string>
     <string name="drawer_ToS">서비스 이용 약관</string>
@@ -21,6 +21,8 @@
     <string name="drawer_appPhone">010-9855-0007</string>
     <string name="drawer_appVersion">집다방 앱 버전</string>
     <string name="drawer_appDetail">홈카페를 위한 모든 것이 여기에! 당신을 위한 단 하나의 홈카페 플랫폼입니다 :)</string>
+    <string name="drawer_cancel">취소</string>
+    <string name="drawer_editdone">수정 완료</string>
 
     <!--  for signup  -->
     <string name="signup">회원가입</string>
@@ -81,6 +83,7 @@
     <string name="my_what">뭐가 들어가죠</string>
     <string name="my_logout">로그아웃</string>
     <string name="my_myinfo">회원정보</string>
+    <string name="my_myinfo_edit">회원정보 수정</string>
     <string name="my_withdraw">탈퇴하기</string>
     <string name="my_market_ing">진행중인 주문</string>
     <string name="my_market_notdeploy">준비 중인 서비스입니다.</string>
