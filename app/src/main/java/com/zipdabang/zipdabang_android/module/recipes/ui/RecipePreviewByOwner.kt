@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
@@ -49,17 +50,21 @@ fun RecipePreviewByOwner(
                     RecipeCard(
                         recipeId = it.recipeId,
                         title = it.recipeName,
-                        user = it.owner,
+                        user = it.nickname,
                         thumbnail = it.thumbnailUrl,
                         date = it.createdAt,
                         likes = it.likes,
-                        comments = it.comments,
+                        comments = it.comments ?: 0,
                         isLikeSelected = it.isLiked,
                         isScrapSelected = it.isScrapped,
                         onLikeClick = onLikeClick,
                         onScrapClick = onScrapClick,
                         onItemClick = onRecipeClick
                     )
+                }
+                
+                item {
+                    Spacer(modifier = Modifier.width(8.dp))
                 }
             }
         }
@@ -93,17 +98,21 @@ fun RecipePreviewByOwner(
                     RecipeCard(
                         recipeId = it.recipeId,
                         title = it.recipeName,
-                        user = it.owner,
+                        user = it.nickname,
                         thumbnail = it.thumbnailUrl,
                         date = it.createdAt,
                         likes = it.likes,
-                        comments = it.comments,
+                        comments = it.comments ?: 0,
                         isLikeSelected = it.isLiked,
                         isScrapSelected = it.isScrapped,
                         onLikeClick = onLikeClick,
                         onScrapClick = onScrapClick,
                         onItemClick = onRecipeClick
                     )
+                }
+
+                item {
+                    Spacer(modifier = Modifier.width(8.dp))
                 }
             }
         }
@@ -138,17 +147,21 @@ fun RecipePreviewByOwner(
                     RecipeCard(
                         recipeId = it.recipeId,
                         title = it.recipeName,
-                        user = it.owner,
+                        user = it.nickname,
                         thumbnail = it.thumbnailUrl,
                         date = it.createdAt,
                         likes = it.likes,
-                        comments = it.comments,
+                        comments = it.comments ?: 0,
                         isLikeSelected = it.isLiked,
                         isScrapSelected = it.isScrapped,
                         onLikeClick = onLikeClick,
                         onScrapClick = onScrapClick,
                         onItemClick = onRecipeClick
                     )
+                }
+
+                item {
+                    Spacer(modifier = Modifier.width(8.dp))
                 }
             }
         }

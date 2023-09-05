@@ -45,11 +45,10 @@ fun RecipeMenuScreen(
 
     LaunchedEffect(key1 = true) {
         mainViewModel.apply {
-            // TODO 동시다발적으로 실행되도록 각 메소드마다 coroutine scope 내부에서 실행
-            // TODO 배너 불러오기 추가 필요
-            scope.launch {
+            // TODO 주석 해제하기
+/*            scope.launch {
                 getRecipeBanners()
-            }
+            }*/
             scope.launch {
                 getRecipeCategoryList()
             }

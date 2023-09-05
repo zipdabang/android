@@ -11,7 +11,7 @@ import com.zipdabang.zipdabang_android.module.recipes.data.common.RecipeItem
 import com.zipdabang.zipdabang_android.module.recipes.data.local.RecipeListDao
 
 
-@Database(entities = [Category_Product::class, RemoteKeys::class, RecipeItem::class], version = 1, exportSchema = false)
+@Database(entities = [Category_Product::class, RemoteKeys::class, RecipeItem::class], version = 2, exportSchema = false)
 @TypeConverters(ListConverter::class)
 abstract class Paging3Database : RoomDatabase() {
     abstract fun CategoryDao() : MarketCategoryDao
