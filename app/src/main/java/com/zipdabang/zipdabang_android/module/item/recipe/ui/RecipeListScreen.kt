@@ -14,6 +14,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.navigation.NavController
 import com.zipdabang.zipdabang_android.R
 import com.zipdabang.zipdabang_android.module.item.recipe.common.RecipeSubtitleState
 import com.zipdabang.zipdabang_android.module.recipes.common.OwnerType
@@ -25,6 +26,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun RecipeListScreen(
     modifier: Modifier = Modifier,
+    navController: NavController,
     categoryState: RecipeSubtitleState,
     onShareClick: () -> Unit,
     onItemClick: (Int) -> Unit,
@@ -32,11 +34,18 @@ fun RecipeListScreen(
     onScrapClick: (Int) -> Unit
 ) {
 
-    Log.d("ownerType - on screen", "$categoryState")
-
     val scope = rememberCoroutineScope()
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val lazyListState = rememberLazyListState()
+
+    val type: RecipeSubtitleState by remember {
+        derivedStateOf {
+            categoryState
+        }
+    }
+
+    Log.d("ownerType - on screen", "$type")
+
     val isScrolled: Boolean by remember {
         derivedStateOf {
             // lazyList의 첫번째 아이템의 좌표가 0을 넘어서면 true
@@ -56,12 +65,7 @@ fun RecipeListScreen(
                         onClickEndIcon2 = { scope.launch { drawerState.open() } },
                         centerText = categoryState.let {
                             if (it.categoryId == -1 && it.ownerType != null) {
-                                when (it.ownerType) {
-                                    OwnerType.ALL.type -> "모든 레시피"
-                                    OwnerType.INFLUENCER.type -> "인플루언서 레시피"
-                                    OwnerType.USER.type -> "우리들의 레시피"
-                                    else -> ""
-                                }
+                                "레시피.zip"
                             } else if (it.categoryId != null && it.ownerType == null) {
                                 when (it.categoryId) {
                                     0 -> "전체"
@@ -100,7 +104,7 @@ fun RecipeListScreen(
                     onScrapClick = onScrapClick
                 ) {
                     categoryState.let {
-                        if (it.categoryId == null && it.ownerType != null) {
+                        if (it.categoryId == -1 && it.ownerType != null) {
                             when (it.ownerType) {
                                 OwnerType.ALL.type -> EveryoneSubtitle()
                                 OwnerType.INFLUENCER.type -> InfluencerSubtitle()
@@ -125,6 +129,7 @@ fun RecipeListScreen(
                 }
             }
         },
-        drawerState = drawerState
+        drawerState = drawerState,
+        navController = navController
     )
 }

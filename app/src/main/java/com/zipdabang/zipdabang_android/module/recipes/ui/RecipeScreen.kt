@@ -9,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.navigation.NavController
 import com.zipdabang.zipdabang_android.R
 import com.zipdabang.zipdabang_android.ui.component.AppBarHome
 import com.zipdabang.zipdabang_android.ui.component.ModalDrawer
@@ -16,6 +17,7 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun RecipeScreen(
+    navController: NavController,
     onCategoryClick: (Int) -> Unit,
     onOwnerTypeClick: (String) -> Unit,
     onRecipeClick: (Int) -> Unit,
@@ -61,7 +63,8 @@ fun RecipeScreen(
 
             }
         },
-        drawerState = drawerState
+        drawerState = drawerState,
+        navController = navController
     )
 
 

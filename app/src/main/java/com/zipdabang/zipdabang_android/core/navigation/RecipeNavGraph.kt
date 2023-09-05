@@ -19,10 +19,11 @@ fun NavGraphBuilder.RecipeNavGraph(navController: NavController) {
         composable(RecipeScreen.Home.route) {
             RecipeScreen(
                 onCategoryClick = { categoryId ->
+                    Log.d("type - category", "$categoryId")
                     navController.navigate(RecipeScreen.RecipeList.passQuery(category = categoryId))
                 },
                 onOwnerTypeClick = { ownerType ->
-                    Log.d("ownertype", ownerType)
+                    Log.d("type - ownertype", ownerType)
                     navController.navigate(RecipeScreen.RecipeList.passQuery(ownerType = ownerType))
                 },
                 onRecipeClick = { recipeId ->
@@ -36,7 +37,8 @@ fun NavGraphBuilder.RecipeNavGraph(navController: NavController) {
                 },
                 onBannerClick = { keyword ->
 
-                }
+                },
+                navController = navController
             )
         }
 
@@ -59,6 +61,7 @@ fun NavGraphBuilder.RecipeNavGraph(navController: NavController) {
                 ownerType =  backStackEntry.arguments?.getString("ownerType")
             )
             RecipeListScreen(
+                navController = navController,
                 categoryState = categoryState,
                 onShareClick = {
 

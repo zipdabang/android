@@ -14,15 +14,13 @@ import retrofit2.http.Query
 
 interface RecipeApi {
 
-    // TODO 레시피 메뉴 배너
-    // TODO url 수정하기
-    @GET("/members/recipes/banners")
+    @GET("members/recipes/banners")
     suspend fun getRecipeBanners(
         @Header("Authorization") accessToken: String,
     ): RecipeBannerDto
 
     // 레시피 카테고리 이미지와 타이틀
-    @GET("categories")
+    @GET("members/recipes/categories")
     suspend fun getRecipeCategory(
         @Header("Authorization") accessToken: String
     ): RecipeCategoryDto
@@ -67,7 +65,7 @@ interface RecipeApi {
     ): RecipeListDto
 
     //----------------------------------------------------------------------------------------------
-    @GET("/members/recipes/{recipeId}")
+    @GET("members/recipes/{recipeId}")
     suspend fun getRecipeDetail(
         @Header("Authorization") accessToken: String,
         @Path("recipeId") recipeId: Int
