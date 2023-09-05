@@ -17,8 +17,6 @@ import com.zipdabang.zipdabang_android.module.recipes.ui.viewmodel.RecipeListVie
 fun RecipeList(
     modifier: Modifier,
     onItemClick: (Int) -> Unit,
-    onLikeClick: (Int) -> Unit,
-    onScrapClick: (Int) -> Unit,
     category: RecipeSubtitleState,
     // 매개변수 명을 content로 해야 composable을 넣을 수 있음
     content: @Composable() () -> Unit,
@@ -49,8 +47,6 @@ fun RecipeList(
         Spacer(modifier = Modifier.height(6.dp))
         RecipeListContent(
             items = recipeList,
-            onLikeClick = onLikeClick,
-            onScrapClick = onScrapClick,
             onItemClick = onItemClick
         )
     }

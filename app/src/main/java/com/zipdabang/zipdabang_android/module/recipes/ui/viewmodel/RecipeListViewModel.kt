@@ -69,14 +69,14 @@ class RecipeListViewModel @Inject constructor(
         api 호출뿐만 아니라 db 조작 필요
         좋아요, 스크랩 여부 토글 -> 그 결과(성공/실패)에 따른 ui 반영 */
 
-    fun toggleLike(accessToken: String, recipeId: Int) {
-        toggleLikeListUseCase(accessToken, recipeId).onEach { result ->
+    fun toggleLike(recipeId: Int) {
+        toggleLikeListUseCase(recipeId).onEach { result ->
             processResult(result)
         }.launchIn(viewModelScope)
     }
 
-    fun toggleScrap(accessToken: String, recipeId: Int) {
-        toggleScrapListUseCase(accessToken, recipeId).onEach { result ->
+    fun toggleScrap(recipeId: Int) {
+        toggleScrapListUseCase(recipeId).onEach { result ->
             processResult(result)
         }.launchIn(viewModelScope)
     }

@@ -29,12 +29,6 @@ fun NavGraphBuilder.RecipeNavGraph(navController: NavController) {
                 onRecipeClick = { recipeId ->
 
                 },
-                onLikeClick = { recipeId ->
-
-                },
-                onScrapClick = { recipeId ->
-
-                },
                 onBannerClick = { keyword ->
 
                 },
@@ -67,12 +61,6 @@ fun NavGraphBuilder.RecipeNavGraph(navController: NavController) {
 
                 },
                 onItemClick = {
-
-                },
-                onLikeClick = {
-
-                },
-                onScrapClick = {
 
                 }
             )

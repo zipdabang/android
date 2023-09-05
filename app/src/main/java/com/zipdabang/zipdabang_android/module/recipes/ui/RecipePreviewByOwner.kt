@@ -11,20 +11,22 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.zipdabang.zipdabang_android.module.item.recipe.ui.RecipeCard
 import com.zipdabang.zipdabang_android.module.item.recipe.ui.RecipeCardLoading
 import com.zipdabang.zipdabang_android.module.recipes.common.OwnerType
 import com.zipdabang.zipdabang_android.module.recipes.ui.state.RecipePreviewState
+import com.zipdabang.zipdabang_android.module.recipes.ui.viewmodel.RecipeMainViewModel
 import com.zipdabang.zipdabang_android.ui.component.GroupHeader
 
 @Composable
 fun RecipePreviewByOwner(
     recipeStateList: List<RecipePreviewState>,
     onOwnerTypeClick: (String) -> Unit,
-    onLikeClick: (Int) -> Unit,
-    onScrapClick: (Int) -> Unit,
     onRecipeClick: (Int) -> Unit
 ) {
+    val mainViewModel = hiltViewModel<RecipeMainViewModel>()
+
     GroupHeader(
         groupName = OwnerType.ALL.type,
         formerHeaderStrawberry = OwnerType.ALL.title,
@@ -57,8 +59,14 @@ fun RecipePreviewByOwner(
                         comments = it.comments ?: 0,
                         isLikeSelected = it.isLiked,
                         isScrapSelected = it.isScrapped,
-                        onLikeClick = onLikeClick,
-                        onScrapClick = onScrapClick,
+                        onLikeClick = { recipeId ->
+                            mainViewModel.toggleLike(recipeId)
+                            mainViewModel.toggleLikeResult.value.isSuccessful == true
+                        },
+                        onScrapClick = { recipeId ->
+                            mainViewModel.toggleScrap(recipeId)
+                            mainViewModel.toggleScrapResult.value.isSuccessful == true
+                        },
                         onItemClick = onRecipeClick
                     )
                 }
@@ -105,8 +113,14 @@ fun RecipePreviewByOwner(
                         comments = it.comments ?: 0,
                         isLikeSelected = it.isLiked,
                         isScrapSelected = it.isScrapped,
-                        onLikeClick = onLikeClick,
-                        onScrapClick = onScrapClick,
+                        onLikeClick = { recipeId ->
+                            mainViewModel.toggleLike(recipeId)
+                            mainViewModel.toggleLikeResult.value.isSuccessful == true
+                        },
+                        onScrapClick = { recipeId ->
+                            mainViewModel.toggleScrap(recipeId)
+                            mainViewModel.toggleScrapResult.value.isSuccessful == true
+                        },
                         onItemClick = onRecipeClick
                     )
                 }
@@ -154,8 +168,14 @@ fun RecipePreviewByOwner(
                         comments = it.comments ?: 0,
                         isLikeSelected = it.isLiked,
                         isScrapSelected = it.isScrapped,
-                        onLikeClick = onLikeClick,
-                        onScrapClick = onScrapClick,
+                        onLikeClick = { recipeId ->
+                            mainViewModel.toggleLike(recipeId)
+                            mainViewModel.toggleLikeResult.value.isSuccessful == true
+                        },
+                        onScrapClick = { recipeId ->
+                            mainViewModel.toggleScrap(recipeId)
+                            mainViewModel.toggleScrapResult.value.isSuccessful == true
+                        },
                         onItemClick = onRecipeClick
                     )
                 }

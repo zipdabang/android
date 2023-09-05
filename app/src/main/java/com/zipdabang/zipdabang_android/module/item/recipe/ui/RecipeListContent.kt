@@ -10,19 +10,22 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.itemContentType
 import androidx.paging.compose.itemKey
 import com.zipdabang.zipdabang_android.module.recipes.data.common.RecipeItem
+import com.zipdabang.zipdabang_android.module.recipes.ui.viewmodel.RecipeListViewModel
 
 @Composable
 fun RecipeListContent(
     items: LazyPagingItems<RecipeItem>,
-    onLikeClick: (Int) -> Unit,
-    onScrapClick: (Int) -> Unit,
-    onItemClick: (Int) -> Unit,
+    onItemClick: (Int) -> Unit
 ) {
+
+    val viewModel = hiltViewModel<RecipeListViewModel>()
+
     Box(modifier = Modifier.fillMaxSize()) {
         Log.d("Error", items.loadState.toString())
         LazyVerticalGrid(
@@ -54,8 +57,14 @@ fun RecipeListContent(
                         comments = recipeItem.comments ?: 0,
                         isLikeSelected = recipeItem.isLiked,
                         isScrapSelected = recipeItem.isScrapped,
-                        onLikeClick = onLikeClick,
-                        onScrapClick = onScrapClick,
+                        onLikeClick = { recipeId ->
+                            viewModel.toggleLike(recipeId)
+                            viewModel.toggleLikeResult.value.isSuccessful == true
+                        },
+                        onScrapClick = { recipeId ->
+                            viewModel.toggleScrap(recipeId)
+                            viewModel.toggleScrapResult.value.isSuccessful == true
+                        },
                         onItemClick = onItemClick
                     )
                 }

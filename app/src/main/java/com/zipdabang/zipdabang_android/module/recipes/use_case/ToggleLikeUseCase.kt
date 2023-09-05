@@ -1,5 +1,6 @@
 package com.zipdabang.zipdabang_android.module.recipes.use_case
 
+import android.util.Log
 import androidx.datastore.core.DataStore
 import com.zipdabang.zipdabang_android.common.Constants.TOKEN_NULL
 import com.zipdabang.zipdabang_android.common.Resource
@@ -19,11 +20,15 @@ class ToggleLikeUseCase @Inject constructor(
     private val tokenDataStore: DataStore<Token>,
     private val repository: PreferenceToggleRepository
 ) {
+
+    companion object {
+        const val TAG = "ToggleLikeUseCase"
+    }
     operator fun invoke(
         recipeId: Int
     ): Flow<Resource<PreferenceToggle>> = flow {
         try {
-            val accessToken = tokenDataStore.data.first().accessToken ?: TOKEN_NULL
+            val accessToken = ("Bearer " + tokenDataStore.data.first().accessToken)
 
             emit(Resource.Loading())
 
@@ -39,8 +44,11 @@ class ToggleLikeUseCase @Inject constructor(
                     message = likeToggleResult.message
                 )
             )
+
+            Log.d(TAG, "like result : $likeToggleResult")
         } catch (e: HttpException) {
             emit(Resource.Error(e.localizedMessage ?: "unexpected error"))
+            Log.d(TAG, "like result : ${e.localizedMessage}")
         } catch (e: IOException) {
             emit(Resource.Error("couldn't reach server, check internet connection"))
         }

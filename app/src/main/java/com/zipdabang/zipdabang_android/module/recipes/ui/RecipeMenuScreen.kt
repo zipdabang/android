@@ -1,6 +1,7 @@
 package com.zipdabang.zipdabang_android.module.recipes.ui
 
 import androidx.compose.foundation.gestures.scrollable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
@@ -15,6 +16,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -27,6 +29,7 @@ import com.zipdabang.zipdabang_android.module.recipes.common.OwnerType
 import com.zipdabang.zipdabang_android.module.recipes.ui.state.RecipePreviewState
 import com.zipdabang.zipdabang_android.module.recipes.ui.viewmodel.RecipeMainViewModel
 import com.zipdabang.zipdabang_android.ui.component.GroupHeader
+import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
 import kotlinx.coroutines.launch
 
 @Composable
@@ -35,8 +38,6 @@ fun RecipeMenuScreen(
     onCategoryClick: (Int) -> Unit,
     onOwnerTypeClick: (String) -> Unit,
     onRecipeClick: (Int) -> Unit,
-    onLikeClick: (Int) -> Unit,
-    onScrapClick: (Int) -> Unit,
     onBannerClick: (String) -> Unit
 ) {
 
@@ -70,6 +71,9 @@ fun RecipeMenuScreen(
     val influencerRecipeState = mainViewModel.influencerRecipeState.value
     val userRecipeState = mainViewModel.userRecipeState.value
 
+    val likeToggleState = mainViewModel.toggleLikeResult.value
+    val scrapToggleState = mainViewModel.toggleScrapResult.value
+
     val recipeStateMap = mapOf(
         OwnerType.ALL to everyoneRecipeState,
         OwnerType.INFLUENCER to influencerRecipeState,
@@ -82,47 +86,54 @@ fun RecipeMenuScreen(
         userRecipeState
     )
 
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState())
-    ) {
-        // TODO 레시피 배너 가져오는 url 변경하기!!
+    Box(modifier = Modifier.fillMaxSize()) {
+        Column(
+            modifier = modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+        ) {
+            // TODO 레시피 배너 가져오는 url 변경하기!!
 
-        RecipeBanner(bannerState = bannerState, onClickBanner = onBannerClick)
+            RecipeBanner(bannerState = bannerState, onClickBanner = onBannerClick)
 
-        Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
-        RecipeCategoryList(
-            categoryState = categoryState,
-            onCategoryClick = onCategoryClick
+            RecipeCategoryList(
+                categoryState = categoryState,
+                onCategoryClick = onCategoryClick
+            )
+
+            // lazy vertical grid
+
+
+            Divider(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(
+                        start = 16.dp,
+                        end = 16.dp,
+                        top = 18.dp,
+                        bottom = 12.dp
+                    )
+            )
+
+            // lazyrows
+
+            RecipePreviewByOwner(
+                recipeStateList = recipeStateList,
+                onOwnerTypeClick = onOwnerTypeClick,
+                onRecipeClick = onRecipeClick
+            )
+
+            Spacer(modifier = Modifier.height(40.dp))
+
+        }
+    }
+
+    if (likeToggleState.isLoading || scrapToggleState.isLoading) {
+        CircularProgressIndicator(
+            modifier = Modifier.fillMaxSize(),
+            color = ZipdabangandroidTheme.Colors.Choco
         )
-
-        // lazy vertical grid
-
-
-        Divider(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(
-                    start = 16.dp,
-                    end = 16.dp,
-                    top = 18.dp,
-                    bottom = 12.dp
-                )
-        )
-
-        // lazyrows
-
-        RecipePreviewByOwner(
-            recipeStateList = recipeStateList,
-            onOwnerTypeClick = onOwnerTypeClick,
-            onLikeClick = onLikeClick,
-            onScrapClick = onScrapClick,
-            onRecipeClick = onRecipeClick
-        )
-
-        Spacer(modifier = Modifier.height(40.dp))
-
     }
 }
