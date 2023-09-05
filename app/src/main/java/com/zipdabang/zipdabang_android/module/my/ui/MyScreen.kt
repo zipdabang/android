@@ -41,9 +41,11 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.zipdabang.zipdabang_android.R
+import com.zipdabang.zipdabang_android.module.my.ui.viewmodel.MyViewModel
 import com.zipdabang.zipdabang_android.ui.component.AppBarMy
 import com.zipdabang.zipdabang_android.ui.component.CircleImage
 import com.zipdabang.zipdabang_android.ui.component.IconAndText
@@ -57,6 +59,7 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun MyScreen(
+    myViewModel : MyViewModel = hiltViewModel(),
     navController: NavController,
     onClickBack : ()->Unit,
     onClickEdit : ()->Unit,
@@ -73,6 +76,7 @@ fun MyScreen(
     val scope = rememberCoroutineScope()
     //val scaffoldState = rememberBottomSheetScaffoldState()
     //val tokenStoreViewModel = hiltViewModel<ProtoDataViewModel>()
+    val stateUserInfo = myViewModel.stateUserInfo
 
     ModalDrawer(
         scaffold = {
@@ -124,7 +128,7 @@ fun MyScreen(
                                         .size(120.dp, 120.dp)
                                         .clip(CircleShape)
                                 ){
-                                    CircleImage(imageUrl = R.drawable.img_my_profile, contentDescription = "")
+                                    CircleImage(imageUrl = stateUserInfo.profileUrl, contentDescription = "")
                                 }
                                 Box(
                                     modifier = Modifier
@@ -134,14 +138,16 @@ fun MyScreen(
                                         .border(1.dp, Color.White, CircleShape)
                                         .align(Alignment.BottomEnd)
                                         .padding(0.dp)
-                                        .clickable(onClick={onClickEdit()})
+                                        .clickable(onClick = { onClickEdit() })
                                         .zIndex(1f),
                                     content = {
                                         Icon(
                                             painter = painterResource(id = R.drawable.ic_my_edit),
                                             contentDescription = "",
                                             tint = ZipdabangandroidTheme.Colors.Typo,
-                                            modifier = Modifier.size(15.dp, 12.dp).align(Alignment.Center)
+                                            modifier = Modifier
+                                                .size(15.dp, 12.dp)
+                                                .align(Alignment.Center)
                                         )
                                     }
                                 )
@@ -151,8 +157,8 @@ fun MyScreen(
                                 verticalAlignment = Alignment.CenterVertically,
                                 modifier = Modifier.padding(0.dp,24.dp,0.dp,0.dp)
                             ){
-                                Text(text="닉네임", style=ZipdabangandroidTheme.Typography.twentytwo_700, color=Color.White)
-                                Text(text="(이름)", style=ZipdabangandroidTheme.Typography.sixteen_500, color=Color.White)
+                                Text(text=stateUserInfo.nickname, style=ZipdabangandroidTheme.Typography.twentytwo_700, color=Color.White)
+                                Text(text= "("+ stateUserInfo.name +")", style=ZipdabangandroidTheme.Typography.sixteen_500, color=Color.White)
                             }
                             Row(
                                 horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -362,7 +368,7 @@ fun MyScreen(
                                     modifier = Modifier
                                         .fillMaxWidth()
                                         .wrapContentHeight()
-                                        .padding(2.dp,0.dp,0.dp,0.dp),
+                                        .padding(2.dp, 0.dp, 0.dp, 0.dp),
                                     verticalAlignment = Alignment.CenterVertically,
                                     horizontalArrangement = Arrangement.spacedBy(4.dp)
                                 ){

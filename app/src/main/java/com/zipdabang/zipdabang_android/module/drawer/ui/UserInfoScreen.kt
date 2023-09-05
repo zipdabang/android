@@ -210,7 +210,7 @@ fun UserInfoScreen(
                         .padding(16.dp, 0.dp, 16.dp, 0.dp),
                     color = ZipdabangandroidTheme.Colors.Typo.copy(0.1f),
                 )
-                //생년월일 앞자리
+                //생년월일 앞자리랑 성별
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -218,25 +218,27 @@ fun UserInfoScreen(
                         .weight(1f)
                         .wrapContentHeight()
                         .padding(16.dp, 0.dp, 16.dp, 0.dp),
-                    horizontalArrangement = Arrangement.spacedBy(4.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ){
-                    Icon(
-                        painter = painterResource(id = R.drawable.ic_signup_birthdaycake),
-                        contentDescription = "",
-                        tint = ZipdabangandroidTheme.Colors.Strawberry,
-                        modifier = Modifier
-                            .size(22.dp, 24.dp)
-                            .padding(8.dp, 0.dp, 0.dp, 0.dp)
-                    )
+                    Row{
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_signup_birthdaycake),
+                            contentDescription = "",
+                            tint = ZipdabangandroidTheme.Colors.Strawberry,
+                            modifier = Modifier
+                                .size(22.dp, 24.dp)
+                                .padding(8.dp, 0.dp, 0.dp, 0.dp)
+                        )
+                        Text(
+                            modifier = Modifier.padding(12.dp, 0.dp,0.dp,0.dp),
+                            text = stateUserInfo.birthday,
+                            style = ZipdabangandroidTheme.Typography.sixteen_500,
+                            color = ZipdabangandroidTheme.Colors.Typo
+                        )
+                    }
                     Text(
-                        modifier = Modifier.padding(8.dp, 0.dp,0.dp,0.dp),
-                        text = stateUserInfo.birthday,
-                        style = ZipdabangandroidTheme.Typography.sixteen_500,
-                        color = ZipdabangandroidTheme.Colors.Typo
-                    )
-                    Text(
-                        modifier = Modifier.padding(8.dp, 0.dp,0.dp,0.dp),
+                        modifier = Modifier.padding(0.dp, 0.dp, 8.dp,0.dp),
                         text = stateUserInfo.gender,
                         style = ZipdabangandroidTheme.Typography.sixteen_500,
                         color = ZipdabangandroidTheme.Colors.Typo
@@ -347,7 +349,7 @@ fun UserInfoScreen(
                     )
                     Text(
                         modifier = Modifier.padding(8.dp, 0.dp,0.dp,0.dp),
-                        text = "우편번호",
+                        text = stateUserInfo.zipcode,
                         style = ZipdabangandroidTheme.Typography.sixteen_500,
                         color = ZipdabangandroidTheme.Colors.Typo
                     )
@@ -380,7 +382,7 @@ fun UserInfoScreen(
                     )
                     Text(
                         modifier = Modifier.padding(8.dp, 0.dp,0.dp,0.dp),
-                        text = "생년월일 앞자리",
+                        text = stateUserInfo.address,
                         style = ZipdabangandroidTheme.Typography.sixteen_500,
                         color = ZipdabangandroidTheme.Colors.Typo
                     )
@@ -411,7 +413,7 @@ fun UserInfoScreen(
                         .padding(8.dp, 0.dp, 0.dp, 0.dp))
                     Text(
                         modifier = Modifier.padding(8.dp, 0.dp,0.dp,0.dp),
-                        text = "상세 주소(배달 주문 시 입력 가능)",
+                        text = stateUserInfo.detailAddress,
                         style = ZipdabangandroidTheme.Typography.sixteen_500,
                         color = ZipdabangandroidTheme.Colors.Typo
                     )

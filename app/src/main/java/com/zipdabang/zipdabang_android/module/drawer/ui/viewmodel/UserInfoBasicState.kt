@@ -10,7 +10,7 @@ data class UserInfoBasicState(
     val birthdayIsError : Boolean = false,
     val birthdayIsTried : Boolean = false,
 
-    val gender : String ="남",
+    val gender : String = "여",
 
     val phoneNumber : String = "",
     val phoneNumberErrorMessage : String = "",
