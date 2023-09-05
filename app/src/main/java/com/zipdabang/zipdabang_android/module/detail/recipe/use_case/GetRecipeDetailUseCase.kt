@@ -24,7 +24,7 @@ class GetRecipeDetailUseCase @Inject constructor(
         try {
             emit(Resource.Loading())
 
-            val accessToken = tokenDataStore.data.first().accessToken ?: TOKEN_NULL
+            val accessToken = ("Bearer " + tokenDataStore.data.first().accessToken)
             val recipeDetail = recipeDetailRepository.getRecipeDetail(
                 accessToken = accessToken,
                 recipeId = recipeId

@@ -51,6 +51,9 @@ fun NavGraphBuilder.authNavGraph(navController: NavHostController) {
 
                 onLoginLater = {
                     navController.navigate(MAIN_ROUTE){
+                        popUpTo(AuthScreen.SignIn.route) {
+                            inclusive = true
+                        }
                         launchSingleTop = true
                     }
                 }

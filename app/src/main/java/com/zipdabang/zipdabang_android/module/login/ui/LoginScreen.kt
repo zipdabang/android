@@ -1,14 +1,10 @@
 package com.zipdabang.zipdabang_android.module.login.ui
 
 import android.app.Activity.RESULT_OK
-import android.content.Context
-import android.os.Build
-import android.telephony.TelephonyManager
 import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -39,7 +35,7 @@ import com.zipdabang.zipdabang_android.common.Constants.TOKEN_NULL
 import com.zipdabang.zipdabang_android.core.data_store.proto.ProtoDataViewModel
 import com.zipdabang.zipdabang_android.module.login.platform_client.GoogleAuthClient
 import com.zipdabang.zipdabang_android.module.login.platform_client.KakaoAuthClient
-import com.zipdabang.zipdabang_android.module.login.data.AuthBody
+import com.zipdabang.zipdabang_android.module.login.data.member.AuthBody
 import com.zipdabang.zipdabang_android.module.splash.ui.SplashTitle
 import com.zipdabang.zipdabang_android.ui.component.LoginButton
 import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
@@ -215,7 +211,9 @@ fun LoginScreen(
 
             Button(
                 modifier = Modifier,
-                onClick = { onLoginLater() },
+                onClick = {
+                    viewModel.getTempLoginResult(onLoginLater)
+                },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color.Transparent,
                     contentColor = ZipdabangandroidTheme.Colors.Typo

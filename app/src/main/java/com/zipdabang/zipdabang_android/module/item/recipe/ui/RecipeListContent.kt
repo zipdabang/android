@@ -47,11 +47,11 @@ fun RecipeListContent(
                     RecipeCard(
                         recipeId = recipeItem.recipeId,
                         title = recipeItem.recipeName,
-                        user = recipeItem.owner,
+                        user = recipeItem.nickname,
                         thumbnail = recipeItem.thumbnailUrl,
                         date = recipeItem.createdAt,
                         likes = recipeItem.likes,
-                        comments = recipeItem.comments,
+                        comments = recipeItem.comments ?: 0,
                         isLikeSelected = recipeItem.isLiked,
                         isScrapSelected = recipeItem.isScrapped,
                         onLikeClick = onLikeClick,

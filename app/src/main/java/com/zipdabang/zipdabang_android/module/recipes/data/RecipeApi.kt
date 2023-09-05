@@ -17,7 +17,7 @@ interface RecipeApi {
     @GET("members/recipes/banners")
     suspend fun getRecipeBanners(
         @Header("Authorization") accessToken: String,
-    ): RecipeBannerDto
+    ): RecipeBannerDto?
 
     // 레시피 카테고리 이미지와 타이틀
     @GET("members/recipes/categories")

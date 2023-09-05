@@ -1,5 +1,6 @@
 package com.zipdabang.zipdabang_android.module.recipes.ui.viewmodel
 
+import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.datastore.core.DataStore
@@ -76,6 +77,7 @@ class RecipeMainViewModel @Inject constructor(
         getRecipeBannerUseCase().onEach { result ->
             when (result) {
                 is Resource.Success -> {
+                    Log.d(TAG, "recipe banner result : $result")
                     when (result.code) {
                         ResponseCode.RESPONSE_DEFAULT.code -> {
                             result.data?.let {
@@ -124,6 +126,7 @@ class RecipeMainViewModel @Inject constructor(
         getRecipeCategoryUseCase().onEach { result ->
             when (result) {
                 is Resource.Success -> {
+                    Log.d(TAG, "recipe category result : $result")
                     result.data?.let {
                         when (it.code) {
                             ResponseCode.RESPONSE_DEFAULT.code -> {
@@ -176,6 +179,7 @@ class RecipeMainViewModel @Inject constructor(
         ).onEach { result ->
             when (result) {
                 is Resource.Success -> {
+                    Log.d(TAG, "recipe owner result : $result")
                     result.data?.let { recipePreview ->
                         when (recipePreview.code) {
                             ResponseCode.RESPONSE_DEFAULT.code -> {

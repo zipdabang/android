@@ -1,4 +1,4 @@
-package com.zipdabang.zipdabang_android.module.login.data
+package com.zipdabang.zipdabang_android.module.login.data.member
 
 import com.google.gson.annotations.SerializedName
 

@@ -9,12 +9,12 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class RecipeItem(
     val categoryId: List<Int>,
-    val comments: Int,
+    val comments: Int?,
     val createdAt: String,
     var isLiked: Boolean,
     var isScrapped: Boolean,
     var likes: Int,
-    val owner: String,
+    val nickname: String,
     @PrimaryKey(autoGenerate = false)
     val recipeId: Int,
     val recipeName: String,
