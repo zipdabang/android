@@ -10,11 +10,17 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Text
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -28,6 +34,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.zipdabang.zipdabang_android.R
 import com.zipdabang.zipdabang_android.module.drawer.ui.viewmodel.DrawerUserInfoViewModel
+import com.zipdabang.zipdabang_android.module.drawer.ui.viewmodel.UserInfoBasicEvent
 import com.zipdabang.zipdabang_android.ui.component.AppBarSignUp
 import com.zipdabang.zipdabang_android.ui.component.MainAndSubTitle
 import com.zipdabang.zipdabang_android.ui.component.PrimaryButton
@@ -37,6 +44,9 @@ import com.zipdabang.zipdabang_android.ui.component.RadioGroupHorizontal
 import com.zipdabang.zipdabang_android.ui.component.TextFieldError
 import com.zipdabang.zipdabang_android.ui.component.TextFieldErrorAndCorrect
 import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.onEach
 
 @Composable
 fun UserInfoBasicScreen(
@@ -45,9 +55,22 @@ fun UserInfoBasicScreen(
     onClickCancel : ()->Unit,
     onClickEdit : ()->Unit
 ) {
+    val stateUserInfoBasic = drawerUserInfoViewModel.stateUserInfoBasic
+    val genderList = drawerUserInfoViewModel.genderList
+    var stateGender by remember { mutableStateOf(stateUserInfoBasic.gender) }
+
+    LaunchedEffect(drawerUserInfoViewModel.remainingTime) {
+        val timer = (drawerUserInfoViewModel.remainingTime downTo 0).asFlow()
+            .onEach { delay(1000) } // 1초 지연
+            .collect { newTime ->
+                drawerUserInfoViewModel.remainingTime = newTime
+            }
+    }
+
+
     Scaffold(
         modifier = Modifier
-            .fillMaxSize(),
+        .fillMaxSize(),
         topBar = {
             AppBarSignUp(
                 navigationIcon = R.drawable.ic_topbar_backbtn,
@@ -101,14 +124,14 @@ fun UserInfoBasicScreen(
                             modifier = Modifier.weight(8.6f)
                         ){
                             TextFieldError(
-                                value = "",
+                                value = stateUserInfoBasic.name,
                                 onValueChanged = {
-                                    //authSharedViewModel.onUserInfoEvent(UserInfoFormEvent.NameChanged(it))
+                                    drawerUserInfoViewModel.onUserInfoBasicEvent(UserInfoBasicEvent.NameChanged(it))
                                 },
                                 labelValue = stringResource(id = R.string.signup_userinfo_name),
-                                placeHolderValue ="",
+                                placeHolderValue = "",
                                 isError = false ,
-                                errorMessage = "error",
+                                errorMessage = "",
                                 keyboardType = KeyboardType.Text,
                                 imeAction = ImeAction.Next,
                             )
@@ -132,17 +155,17 @@ fun UserInfoBasicScreen(
                             modifier = Modifier.weight(5.6f)
                         ){
                             TextFieldErrorAndCorrect(
-                                value = "",
+                                value = stateUserInfoBasic.birthday,
                                 onValueChanged = {
-                                    //authSharedViewModel.onUserInfoEvent(UserInfoFormEvent.BirthdayChanged(it))
+                                    drawerUserInfoViewModel.onUserInfoBasicEvent(UserInfoBasicEvent.BirthdayChanged(it))
                                 },
                                 labelValue = stringResource(id = R.string.signup_userinfo_birthday),
                                 placeHolderValue = stringResource(id = R.string.signup_userinfo_birthday_placeholder),
-                                isTried = true,//stateUserInfoForm.birthdayIsTried,
-                                isError = true,//stateUserInfoForm.birthdayIsError,
+                                isTried = stateUserInfoBasic.birthdayIsTried,
+                                isError = stateUserInfoBasic.birthdayIsError,
                                 isCorrect = false,
                                 correctMessage = "",
-                                errorMessage = "error",//stateUserInfoForm.birthdayErrorMessage,
+                                errorMessage = stateUserInfoBasic.birthdayErrorMessage,
                                 keyboardType = KeyboardType.Number,
                                 imeAction = ImeAction.Next,
                             )
@@ -152,9 +175,10 @@ fun UserInfoBasicScreen(
                             modifier = Modifier.weight(3.4f)
                         ){
                             RadioGroupHorizontal(
-                                optionList = listOf("남", "여"),//genderList,
+                                optionList = genderList,
                                 onOptionChange = {
-                                    //authSharedViewModel.onUserInfoEvent(UserInfoFormEvent.GenderChanged(it))
+                                    stateGender = it
+                                    drawerUserInfoViewModel.onUserInfoBasicEvent(UserInfoBasicEvent.GenderChanged(it))
                                 }
                             )
                         }
@@ -184,17 +208,17 @@ fun UserInfoBasicScreen(
                             modifier = Modifier.weight(5.2f)
                         ){
                             TextFieldErrorAndCorrect(
-                                value = "",//stateUserInfoForm.phoneNumber,
+                                value = stateUserInfoBasic.phoneNumber,
                                 onValueChanged = {
-                                    //authSharedViewModel.onUserInfoEvent(UserInfoFormEvent.PhoneNumberChanged(it))
+                                    drawerUserInfoViewModel.onUserInfoBasicEvent(UserInfoBasicEvent.PhoneNumberChanged(it))
                                 },
                                 labelValue = stringResource(id = R.string.signup_userinfo_phonenumber),
                                 placeHolderValue = stringResource(id = R.string.signup_userinfo_phonenumber_placeholder),
-                                isTried = true,//stateUserInfoForm.phoneNumberIsTried,
-                                isError = true,//stateUserInfoForm.phoneNumberIsError,
-                                isCorrect = false,//stateUserInfoForm.phoneNumberIsCorrect,
-                                errorMessage = "error",//stateUserInfoForm.phoneNumberErrorMessage,
-                                correctMessage = "correct",//stateUserInfoForm.phoneNumberCorrectMessage,
+                                isTried = stateUserInfoBasic.phoneNumberIsTried,
+                                isError = stateUserInfoBasic.phoneNumberIsError,
+                                isCorrect = stateUserInfoBasic.phoneNumberIsCorrect,
+                                errorMessage = stateUserInfoBasic.phoneNumberErrorMessage,
+                                correctMessage = stateUserInfoBasic.phoneNumberCorrectMessage,
                                 keyboardType = KeyboardType.Number,
                                 imeAction = ImeAction.Done,
                             )
@@ -206,7 +230,7 @@ fun UserInfoBasicScreen(
                                 borderColor = ZipdabangandroidTheme.Colors.BlackSesame,
                                 text = stringResource(id = R.string.signup_userinfo_certificatecall),
                                 onClick = {
-                                    //authSharedViewModel.onUserInfoEvent(UserInfoFormEvent.PhoneNumberClicked(true))
+                                    drawerUserInfoViewModel.onUserInfoBasicEvent(UserInfoBasicEvent.PhoneNumberClicked(true))
                                 }
                             )
                         }
@@ -223,24 +247,24 @@ fun UserInfoBasicScreen(
                             modifier = Modifier.weight(3.8f)
                         ){
                             TextFieldErrorAndCorrect(
-                                value = "인증번호",//stateUserInfoForm.authNumber,
+                                value = stateUserInfoBasic.authNumber,
                                 onValueChanged = {
-                                    //authSharedViewModel.onUserInfoEvent(UserInfoFormEvent.AuthNumberChanged(it))
+                                    drawerUserInfoViewModel.onUserInfoBasicEvent(UserInfoBasicEvent.AuthNumberChanged(it))
                                 },
-                                isTried = true,//stateUserInfoForm.authNumberIsTried,
+                                isTried = stateUserInfoBasic.authNumberIsTried,
                                 labelValue = stringResource(id = R.string.signup_userinfo_certificatenumber),
                                 placeHolderValue = "",
-                                isError = true,//stateUserInfoForm.authNumberIsError,
-                                isCorrect = false,//stateUserInfoForm.authNumberIsCorrect,
-                                errorMessage = "에러임",//stateUserInfoForm.authNumberErrorMessage,
-                                correctMessage = "마즘",//stateUserInfoForm.authNumberCorrectMessage,
+                                isError = stateUserInfoBasic.authNumberIsError,
+                                isCorrect = stateUserInfoBasic.authNumberIsCorrect,
+                                errorMessage = stateUserInfoBasic.authNumberErrorMessage,
+                                correctMessage = stateUserInfoBasic.authNumberCorrectMessage,
                                 keyboardType = KeyboardType.Number,
                                 imeAction = ImeAction.Done,
                             )
                         }
                         Text(
                             modifier = Modifier.weight(1.4f),
-                            text = "00:00", //formatTime(authSharedViewModel.remainingTime),
+                            text = formatTime(drawerUserInfoViewModel.remainingTime),
                             color = Color(0xFFB00020),
                             style = ZipdabangandroidTheme.Typography.fourteen_300,
                             textAlign = TextAlign.Center
@@ -252,13 +276,27 @@ fun UserInfoBasicScreen(
                                 borderColor = ZipdabangandroidTheme.Colors.BlackSesame,
                                 text = stringResource(id = R.string.signup_userinfo_ok),
                                 onClick = {
-                                    //authSharedViewModel.onUserInfoEvent(UserInfoFormEvent.AuthNumberClicked(true))
+                                    drawerUserInfoViewModel.onUserInfoBasicEvent(UserInfoBasicEvent.AuthNumberClicked(true))
                                 }
                             )
                         }
                     }
                 }
+                // api 로딩
+                if(stateUserInfoBasic.error.isNotBlank()){
+                    Text(
+                        text = stateUserInfoBasic.error,
+                        color = Color.Red,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                    )
+                }
+                if(stateUserInfoBasic.isLoading) {
+                    CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
+                }
             }
+
 
             Row(
                 modifier = Modifier.padding(16.dp,0.dp,16.dp, 12.dp),
@@ -290,6 +328,12 @@ fun UserInfoBasicScreen(
             }
         }
     }
+}
+
+fun formatTime(seconds: Int): String {
+    val minutes = seconds / 60
+    val remainingSeconds = seconds % 60
+    return String.format("%02d:%02d", minutes, remainingSeconds)
 }
 
 @Preview

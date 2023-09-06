@@ -10,5 +10,4 @@ sealed class UserInfoFormEvent{
     data class AuthNumberClicked(val clicked : Boolean) : UserInfoFormEvent()
     data class BtnChanged(val enabled: Boolean) : UserInfoFormEvent()
     data class ValidateChanged(val validate : Boolean) : UserInfoFormEvent()
-
 }

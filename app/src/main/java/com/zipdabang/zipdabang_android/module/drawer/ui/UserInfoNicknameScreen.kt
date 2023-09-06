@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.zipdabang.zipdabang_android.R
 import com.zipdabang.zipdabang_android.module.drawer.ui.viewmodel.DrawerUserInfoViewModel
+import com.zipdabang.zipdabang_android.module.drawer.ui.viewmodel.UserInfoNicknameEvent
 import com.zipdabang.zipdabang_android.module.sign_up.ui.viewmodel.NicknameFormEvent
 import com.zipdabang.zipdabang_android.ui.component.AppBarSignUp
 import com.zipdabang.zipdabang_android.ui.component.PrimaryButton
@@ -40,6 +41,8 @@ fun UserInfoNicknameScreen(
     onClickCancel : ()->Unit,
     onClickEdit : ()->Unit
 ) {
+    val stateUserInfoNickname = drawerUserInfoViewModel.stateUserInfoNickname
+
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
@@ -80,17 +83,17 @@ fun UserInfoNicknameScreen(
                         modifier = Modifier.weight(6.8f),
                     ){
                         TextFieldErrorAndCorrectIcon(
-                            value = "",//stateNicknameForm.nickname,
+                            value = stateUserInfoNickname.nickname,
                             onValueChanged = {
-                                //authSharedViewModel.onNicknameEvent(NicknameFormEvent.NicknameChanged(it))
+                                drawerUserInfoViewModel.onNicknameEvent(UserInfoNicknameEvent.NicknameChanged(it))
                             },
-                            isTried = true,//stateNicknameForm.isTried,
+                            isTried = stateUserInfoNickname.isTried,
                             labelValue = stringResource(id = R.string.signup_nickname),
                             placeHolderValue = stringResource(id = R.string.signup_nickname_placeholder),
-                            isError = true,//stateNicknameForm.isError,
-                            isCorrect = false,//stateNicknameForm.isSuccess,
-                            errorMessage = "error",//stateNicknameForm.errorMessage,
-                            correctMessage = "correct",//stateNicknameForm.successMessage,
+                            isError = stateUserInfoNickname.isError,
+                            isCorrect = stateUserInfoNickname.isSuccess,
+                            errorMessage = stateUserInfoNickname.errorMessage,
+                            correctMessage = stateUserInfoNickname.successMessage,
                             keyboardType = KeyboardType.Text,
                             imeAction = ImeAction.Done
                         )
@@ -104,7 +107,7 @@ fun UserInfoNicknameScreen(
                             borderColor = ZipdabangandroidTheme.Colors.BlackSesame,
                             text= stringResource(id = R.string.signup_nickname_deplicatecheck),
                             onClick= {
-                                //authSharedViewModel.onNicknameEvent(NicknameFormEvent.NicknameCliked(true))
+                                drawerUserInfoViewModel.onNicknameEvent(UserInfoNicknameEvent.NicknameCliked(true))
                             }
                         )
                     }

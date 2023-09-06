@@ -16,7 +16,13 @@ import com.zipdabang.zipdabang_android.module.my.ui.ShoppingScreen
 
 
 fun NavGraphBuilder.MyNavGraph(navController: NavHostController) {
+    // drawer가 열려있는 상태일때 뒤로가기를 하면 닫히도록 바꿔야함 -> 이거 해야됨
 
+    // 회원정보 불러오기랑 수정하기 api 되면 작업하기 -> 남여 표시 해결 그리고 수정 페이지 갈때마다 api 호출
+    // 레시피 작성 ui랑 api 개발하기
+
+    // api 연결한거 shimmering effet 쓰기
+    // response enum class로 옮기기
     navigation(startDestination = MyScreen.Home.route, route = MY_ROUTE) {
         composable(MyScreen.Home.route) {
             MyScreen(
