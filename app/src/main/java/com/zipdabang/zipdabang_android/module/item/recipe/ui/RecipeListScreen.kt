@@ -29,9 +29,7 @@ fun RecipeListScreen(
     navController: NavController,
     categoryState: RecipeSubtitleState,
     onShareClick: () -> Unit,
-    onItemClick: (Int) -> Unit,
-    onLikeClick: (Int) -> Unit,
-    onScrapClick: (Int) -> Unit
+    onItemClick: (Int) -> Unit
 ) {
 
     val scope = rememberCoroutineScope()
@@ -99,9 +97,7 @@ fun RecipeListScreen(
                 RecipeList(
                     modifier = Modifier.padding(padding),
                     onItemClick = onItemClick,
-                    category = categoryState,
-                    onLikeClick = onLikeClick,
-                    onScrapClick = onScrapClick
+                    category = categoryState
                 ) {
                     categoryState.let {
                         if (it.categoryId == -1 && it.ownerType != null) {

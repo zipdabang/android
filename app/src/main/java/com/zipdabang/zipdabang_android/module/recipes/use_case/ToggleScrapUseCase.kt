@@ -22,7 +22,7 @@ class ToggleScrapUseCase @Inject constructor(
         recipeId: Int
     ): Flow<Resource<PreferenceToggle>> = flow {
         try {
-            val accessToken = tokenDataStore.data.first().accessToken ?: TOKEN_NULL
+            val accessToken = ("Bearer " + tokenDataStore.data.first().accessToken)
 
             emit(Resource.Loading())
 
