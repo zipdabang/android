@@ -25,6 +25,12 @@ fun NavGraphBuilder.SharedNavGraph(navController: NavController){
             )
         }
 
+        composable(SharedScreen.Search.route){
+
+        }
+
+
+
     }
 
 

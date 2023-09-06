@@ -1,4 +1,4 @@
-package com.zipdabang.zipdabang_android.module.search
+package com.zipdabang.zipdabang_android.module.search.ui
 import android.util.Log
 import androidx.lifecycle.ViewModel
 

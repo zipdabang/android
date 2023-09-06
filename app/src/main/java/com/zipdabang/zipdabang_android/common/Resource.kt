@@ -27,3 +27,12 @@ sealed class MarketResource<T>(val data: T? = null, val message: String? = null)
 
     class MarketLoading<T>(isLoading: Boolean): MarketResource<T>(null)
 }
+
+sealed class SearchResource<T>(val data: T? = null, val message: String? = null) {
+    class SearchSuccess<T>(data: T): SearchResource<T>(data = data)
+
+    class SearchError<T>(message: String)
+        : SearchResource<T>(message = message)
+
+    class SearchLoading<T>(isLoading: Boolean): SearchResource<T>(null)
+}

@@ -25,5 +25,4 @@ class GetRecentUseCase  @Inject constructor(
 
     }
 
-
 }
