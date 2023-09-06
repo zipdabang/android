@@ -103,8 +103,8 @@ fun MyScreen(
                         centerText = stringResource(id = R.string.zipdabang_title)
                     )
                 },
-                containerColor =Color.Transparent,
-                contentColor =Color.Transparent,
+                containerColor = Color.Transparent,
+                contentColor = Color.Transparent,
                 content = {
                     val scrollState = rememberScrollState()
 

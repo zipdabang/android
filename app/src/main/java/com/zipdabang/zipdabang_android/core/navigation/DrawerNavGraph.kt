@@ -42,12 +42,15 @@ fun NavGraphBuilder.DrawerNavGraph(navController: NavHostController){
                 },
                 onClickEdit = {},
                 onClickEditBasic = {
+                    drawerUserInfoViewModel.onCheckedEvent()
                     navController.navigate(DrawerScreen.UserInfoBasic.route)
                 },
                 onClickEditDetail = {
+                    drawerUserInfoViewModel.onCheckedEvent()
                     navController.navigate(DrawerScreen.UserInfoDetail.route)
                 },
                 onClickEditNickname = {
+                    drawerUserInfoViewModel.onCheckedEvent()
                     navController.navigate(DrawerScreen.UserInfoNickname.route)
                 },
                 onClickLogout = {},

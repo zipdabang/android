@@ -1,4 +1,4 @@
-package com.zipdabang.zipdabang_android.module.drawer.ui.viewmodel
+package com.zipdabang.zipdabang_android.module.drawer.ui.viewmodel.userinfostate
 
 data class UserInfoBasicState(
     val isLoading : Boolean = false,
@@ -28,8 +28,8 @@ data class UserInfoBasicState(
     val authNumberIsCorrect : Boolean = false,
     val authNumberIsTried : Boolean = false,
 
-//    val btnEnabled : Boolean = false,
-//    val validate : Boolean = false,
+    val btnEnabled : Boolean = false,
+    val validate : Boolean = false,
 
     val error : String = ""
 )

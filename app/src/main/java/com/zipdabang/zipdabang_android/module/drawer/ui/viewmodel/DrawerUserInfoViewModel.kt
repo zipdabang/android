@@ -10,7 +10,23 @@ import androidx.lifecycle.viewModelScope
 import com.zipdabang.zipdabang_android.common.Constants
 import com.zipdabang.zipdabang_android.common.Resource
 import com.zipdabang.zipdabang_android.core.data_store.proto.Token
+import com.zipdabang.zipdabang_android.core.navigation.DrawerScreen
+import com.zipdabang.zipdabang_android.module.drawer.data.remote.userinfodto.UserInfoBasicRequest
+import com.zipdabang.zipdabang_android.module.drawer.data.remote.userinfodto.UserInfoDetailRequest
+import com.zipdabang.zipdabang_android.module.drawer.data.remote.userinfodto.UserInfoNicknameRequest
+import com.zipdabang.zipdabang_android.module.drawer.data.remote.userinfodto.UserInfoProfileRequest
 import com.zipdabang.zipdabang_android.module.drawer.domain.usecase.GetUserInfoUseCase
+import com.zipdabang.zipdabang_android.module.drawer.domain.usecase.PatchUserInfoBasicUseCase
+import com.zipdabang.zipdabang_android.module.drawer.domain.usecase.PatchUserInfoDetailUseCase
+import com.zipdabang.zipdabang_android.module.drawer.domain.usecase.PatchUserInfoNicknameUseCase
+import com.zipdabang.zipdabang_android.module.drawer.domain.usecase.PatchUserInfoProfileUseCase
+import com.zipdabang.zipdabang_android.module.drawer.ui.viewmodel.userinfostate.UserInfoBasicEvent
+import com.zipdabang.zipdabang_android.module.drawer.ui.viewmodel.userinfostate.UserInfoBasicState
+import com.zipdabang.zipdabang_android.module.drawer.ui.viewmodel.userinfostate.UserInfoDetailEvent
+import com.zipdabang.zipdabang_android.module.drawer.ui.viewmodel.userinfostate.UserInfoDetailState
+import com.zipdabang.zipdabang_android.module.drawer.ui.viewmodel.userinfostate.UserInfoNicknameEvent
+import com.zipdabang.zipdabang_android.module.drawer.ui.viewmodel.userinfostate.UserInfoNicknameState
+import com.zipdabang.zipdabang_android.module.drawer.ui.viewmodel.userinfostate.UserInfoState
 import com.zipdabang.zipdabang_android.module.sign_up.data.remote.AuthRequest
 import com.zipdabang.zipdabang_android.module.sign_up.data.remote.PhoneRequest
 import com.zipdabang.zipdabang_android.module.sign_up.domain.usecase.GetNicknameUseCase
@@ -19,7 +35,6 @@ import com.zipdabang.zipdabang_android.module.sign_up.domain.usecase.PostPhoneSm
 import com.zipdabang.zipdabang_android.module.sign_up.domain.usecase.ValidateBirthdayUseCase
 import com.zipdabang.zipdabang_android.module.sign_up.domain.usecase.ValidateNicknameUseCase
 import com.zipdabang.zipdabang_android.module.sign_up.domain.usecase.ValidatePhoneUseCase
-import com.zipdabang.zipdabang_android.module.sign_up.ui.viewmodel.NicknameFormState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.launchIn
@@ -33,6 +48,10 @@ class DrawerUserInfoViewModel @Inject constructor(
     private val getNicknameUseCase: GetNicknameUseCase,
     private val postPhoneSmsUseCase: PostPhoneSmsUseCase,
     private val postAuthUseCase: PostAuthUseCase,
+    private val patchUserInfoBasicUseCase: PatchUserInfoBasicUseCase,
+    private val patchUserInfoDetailUseCase: PatchUserInfoDetailUseCase,
+    private val patchUserInfoNicknameUseCase: PatchUserInfoNicknameUseCase,
+    private val patchUserInfoProfileUseCase: PatchUserInfoProfileUseCase,
     private val validateBirthdayUseCase : ValidateBirthdayUseCase = ValidateBirthdayUseCase(),
     private val validatePhoneUseCase: ValidatePhoneUseCase = ValidatePhoneUseCase(),
     private val validateNicknameUseCase: ValidateNicknameUseCase = ValidateNicknameUseCase(),
@@ -45,7 +64,6 @@ class DrawerUserInfoViewModel @Inject constructor(
     var stateUserInfoNickname by mutableStateOf(UserInfoNicknameState())
     var genderList by mutableStateOf(listOf("남", "여"))
     var remainingTime by mutableStateOf(0)
-
 
 
     /*UserInfoBasicScreen*/
@@ -110,6 +128,12 @@ class DrawerUserInfoViewModel @Inject constructor(
                     phoneNumberIsCorrect = false,
                 )
             }
+            is UserInfoBasicEvent.BtnEnabled ->{
+                updateBtnEnabledUserInfoBasic()
+            }
+            is UserInfoBasicEvent.ValidateChanged ->{
+                updateValidateUserInfoBasic()
+            }
         }
     }
     fun updateValidateBirthday() {
@@ -119,14 +143,14 @@ class DrawerUserInfoViewModel @Inject constructor(
         if(birthdayResult.successful){
             stateUserInfoBasic = stateUserInfoBasic.copy(
                 birthday = stateUserInfoBasic.birthday,
-                //validate = true,
+                validate = true,
             )
         } else {
             stateUserInfoBasic = stateUserInfoBasic.copy(
                 birthday = stateUserInfoBasic.birthday,
                 birthdayErrorMessage = birthdayResult.errorMessage,
                 birthdayIsError = true,
-                //validate = false,
+                validate = false,
             )
         }
     }
@@ -148,10 +172,65 @@ class DrawerUserInfoViewModel @Inject constructor(
             remainingTime = 0
         }
     }
+    private fun updateBtnEnabledUserInfoBasic(){
+        val isNameChanged = if(stateUserInfo.name != stateUserInfoBasic.name) true else false
+        val isBirthdayChanged = if(stateUserInfo.birthday != stateUserInfoBasic.birthday) true else false
+        val isGenderChanged = if(stateUserInfo.gender != stateUserInfoBasic.gender) true else false
+        //val isPhonenumberChanged = if(stateUserInfo.phoneNumber != stateUserInfoBasic.phoneNumber) true else false
+        val isAuthChecked = stateUserInfoBasic.authNumberIsCorrect
+
+        val isChanged = listOf(
+            isNameChanged,
+            isBirthdayChanged,
+            isGenderChanged,
+            isAuthChecked
+        ).any{ it }
+
+        if(isChanged){
+            stateUserInfoBasic = stateUserInfoBasic.copy(btnEnabled = true)
+        } else{
+            stateUserInfoBasic = stateUserInfoBasic.copy(btnEnabled = false)
+        }
+    }
+    fun updateValidateUserInfoBasic() : Boolean{
+        var isBirthdayCorrect = !stateUserInfoBasic.birthdayIsError
+
+        if (isBirthdayCorrect){
+            stateUserInfoBasic = stateUserInfoBasic.copy(validate = true)
+            return stateUserInfoBasic.validate
+        } else {
+            stateUserInfoBasic = stateUserInfoBasic.copy(validate = false)
+            return stateUserInfoBasic.validate
+        }
+
+        return stateUserInfoBasic.validate
+    }
+
+
+    /*UserInfoDetailScreen*/
+    fun onUserInfoDetailEvent(event : UserInfoDetailEvent){
+        when(event){
+            is UserInfoDetailEvent.ZipcodeChanged ->{
+                stateUserInfoDetail = stateUserInfoDetail.copy(zipCode = event.zipCode)
+            }
+            is UserInfoDetailEvent.ZipcodeClicked ->{
+                //웹뷰 띄우기
+            }
+            is UserInfoDetailEvent.AddressChanged ->{
+                stateUserInfoDetail = stateUserInfoDetail.copy(address = event.address)
+            }
+            is UserInfoDetailEvent.DetailaddressChanged ->{
+                stateUserInfoDetail = stateUserInfoDetail.copy(detailAddress = event.detailAddress)
+            }
+            is UserInfoDetailEvent.BtnEnabled ->{
+
+            }
+        }
+    }
 
 
     /*UserInfoNicknameScreen*/
-    fun onNicknameEvent(event : UserInfoNicknameEvent){
+    fun onUserInfoNicknameEvent(event : UserInfoNicknameEvent){
         when(event){
             is UserInfoNicknameEvent.NicknameChanged ->{
                 stateUserInfoNickname = stateUserInfoNickname.copy(nickname = event.nickname)
@@ -162,22 +241,59 @@ class DrawerUserInfoViewModel @Inject constructor(
                         isSuccess = false,
                         errorMessage = "",
                         successMessage = "",
+                        btnEnabled = false
                     )
                 }
             }
-            is UserInfoNicknameEvent.NicknameCliked ->{
+            is UserInfoNicknameEvent.NicknameClicked ->{
                 val nicknameResult = validateNicknameUseCase(stateUserInfoNickname.nickname)
-
                 if(nicknameResult.successful){
                     getNickname()
                 } else {
                     stateUserInfoNickname = stateUserInfoNickname.copy(
                         isTried = true,
                         isError = true,
-                        errorMessage = nicknameResult.errorMessage
+                        errorMessage = nicknameResult.errorMessage,
+                        btnEnabled = false,
                     )
                 }
             }
+            is UserInfoNicknameEvent.BtnEnabled ->{
+                stateUserInfoNickname = stateUserInfoNickname.copy(
+                    btnEnabled = false
+                )
+            }
+        }
+    }
+
+
+    /*api로 불러온 정보를 담은 state와 각 screen의 state와 매치시키는 함수*/
+    fun onCheckedEvent(){
+        if(stateUserInfo.name != stateUserInfoBasic.name){
+            stateUserInfoBasic = stateUserInfoBasic.copy(name = stateUserInfo.name)
+        }
+        if(stateUserInfo.birthday != stateUserInfoBasic.birthday){
+            stateUserInfoBasic = stateUserInfoBasic.copy(birthday = stateUserInfo.birthday)
+        }
+        if(stateUserInfo.gender != stateUserInfoBasic.gender){
+            stateUserInfoBasic = stateUserInfoBasic.copy(gender = stateUserInfo.gender)
+        }
+        if(stateUserInfo.phoneNumber != stateUserInfoBasic.phoneNumber){
+            stateUserInfoBasic = stateUserInfoBasic.copy(phoneNumber = stateUserInfo.phoneNumber)
+        }
+
+        if(stateUserInfo.zipcode != stateUserInfoDetail.zipCode){
+            stateUserInfoDetail = stateUserInfoDetail.copy(zipCode = stateUserInfo.zipcode)
+        }
+        if(stateUserInfo.address != stateUserInfoDetail.address){
+            stateUserInfoDetail = stateUserInfoDetail.copy(address = stateUserInfo.address)
+        }
+        if(stateUserInfo.detailAddress != stateUserInfoDetail.detailAddress){
+            stateUserInfoDetail = stateUserInfoDetail.copy(detailAddress = stateUserInfo.detailAddress)
+        }
+
+        if(stateUserInfo.nickname != stateUserInfoNickname.nickname){
+            stateUserInfoNickname = stateUserInfoNickname.copy(nickname = stateUserInfo.nickname)
         }
     }
 
@@ -187,7 +303,7 @@ class DrawerUserInfoViewModel @Inject constructor(
             getUserInfo()
         }
     }
-    private suspend fun getUserInfo(){
+    suspend fun getUserInfo(){
         val accessToken = "Bearer " + dataStore.data.first().accessToken ?: Constants.TOKEN_NULL
         //Log.e("drawer-userinfo-viewmodel","${accessToken}")
         getUserInfoUseCase(
@@ -382,6 +498,7 @@ class DrawerUserInfoViewModel @Inject constructor(
                             isError = false,
                             isSuccess = true,
                             successMessage = result.data?.message ?: "",
+                            btnEnabled = true
                         )
                     } else { //닉네임 불가능, 2052:닉네임 중복, 4019:형식, 4020:욕
                         stateUserInfoNickname = stateUserInfoNickname.copy(
@@ -390,6 +507,7 @@ class DrawerUserInfoViewModel @Inject constructor(
                             isSuccess = false,
                             isError = true,
                             errorMessage = result.data?.message ?: "",
+                            btnEnabled = false
                         )
                     }
                     Log.e("nickname-viewmodel","${stateUserInfoNickname}")
@@ -408,5 +526,118 @@ class DrawerUserInfoViewModel @Inject constructor(
                 }
             }
         }.launchIn(viewModelScope)
+    }
+    suspend fun patchUserInfoBasic(){
+        try{
+            val result = patchUserInfoBasicUseCase(
+                accessToken = "Bearer " +dataStore.data.first().accessToken.toString(),
+                userInfoBasic = UserInfoBasicRequest(
+                    name = stateUserInfoBasic.name,
+                    birth = stateUserInfoBasic.birthday,
+                    genderType = if(stateUserInfoBasic.gender == "여") "WOMAN" else "MAN",
+                    phoneNum = stateUserInfoBasic.phoneNumber,
+                ),
+            )
+            result.collect { result->
+                when(result){
+                    is Resource.Success ->{
+                        Log.e("nicknameedit-viewmodel","성공 : ${result.data?.status}  ${result.data?.memberId}  ${result.data?.calledAt}")
+                    }
+                    is Resource.Error ->{
+                        stateUserInfoBasic = stateUserInfoBasic.copy(error = result.message ?: "An unexpeted error occured")
+                        Log.e("nicknameedit-viewmodel","에러 :  ${result.code} ${result.message}")
+                    }
+                    is Resource.Loading ->{
+                        stateUserInfoBasic = stateUserInfoBasic.copy(isLoading = true)
+                        Log.e("nicknameedit-viewmodel","로딩중 :  ${result.code} ${result.message}")
+                    }
+                }
+            }
+            getUserInfo()
+        } catch (e: Exception) {}
+    }
+    suspend fun patchUserInfoDetail(){
+        try{
+            val result = patchUserInfoDetailUseCase(
+                accessToken = "Bearer " +dataStore.data.first().accessToken.toString(),
+                userInfoDetail = UserInfoDetailRequest(
+                    zipCode = stateUserInfoDetail.zipCode,
+                    address = stateUserInfoDetail.address,
+                    detailAddress = stateUserInfoDetail.detailAddress
+                ),
+            )
+            result.collect { result->
+                when(result){
+                    is Resource.Success ->{
+                        Log.e("nicknameedit-viewmodel","성공 : ${result.data?.status}  ${result.data?.memberId}  ${result.data?.calledAt}")
+                    }
+                    is Resource.Error ->{
+                        stateUserInfoDetail = stateUserInfoDetail.copy(error = result.message ?: "An unexpeted error occured")
+                        Log.e("nicknameedit-viewmodel","에러 :  ${result.code} ${result.message}")
+                    }
+                    is Resource.Loading ->{
+                        stateUserInfoDetail = stateUserInfoDetail.copy(isLoading = true)
+                        Log.e("nicknameedit-viewmodel","로딩중 :  ${result.code} ${result.message}")
+                    }
+                }
+            }
+            getUserInfo()
+        } catch (e: Exception) {}
+    }
+    suspend fun patchUserInfoNickname(){
+        try{
+            Log.e("nicknameedit-viewmodel","토큰, 닉네임 :  ${dataStore.data.first().accessToken.toString()} ${stateUserInfoNickname.nickname}")
+
+            val result = patchUserInfoNicknameUseCase(
+                accessToken = "Bearer " +dataStore.data.first().accessToken.toString(),
+                userInfoNickname = UserInfoNicknameRequest(stateUserInfoNickname.nickname),
+            )
+            result.collect { result->
+                when(result){
+                    is Resource.Success ->{
+                        stateUserInfoNickname = stateUserInfoNickname.copy(
+                            isTried = false,
+                            isError = false,
+                            isSuccess = false,
+                            btnEnabled = false,
+                        )
+                        Log.e("nicknameedit-viewmodel","성공 : ${result.data?.status}  ${result.data?.memberId}  ${result.data?.calledAt}")
+                    }
+                    is Resource.Error ->{
+                        stateUserInfoNickname = stateUserInfoNickname.copy(error = result.message ?: "An unexpeted error occured")
+                        Log.e("nicknameedit-viewmodel","에러 :  ${result.code} ${result.message} ${result.data?.status}  ${result.data?.memberId}  ${result.data?.calledAt}")
+                    }
+                    is Resource.Loading ->{
+                        stateUserInfoNickname = stateUserInfoNickname.copy(isLoading = true)
+                        Log.e("nicknameedit-viewmodel","로딩중 :  ${result.code} ${result.message}")
+                    }
+                }
+            }
+            getUserInfo()
+        } catch (e: Exception) {}
+    }
+    suspend fun patchUserInfoProfile(){
+        try{
+            val result = patchUserInfoProfileUseCase(
+                accessToken = "Bearer " +dataStore.data.first().accessToken.toString(),
+                userInfoProfile = UserInfoProfileRequest(newProfile = stateUserInfo.profileUrl)
+            )
+            result.collect { result->
+                when(result){
+                    is Resource.Success ->{
+                        Log.e("nicknameedit-viewmodel","성공 : ${result.data?.status}  ${result.data?.memberId}  ${result.data?.calledAt}")
+                    }
+                    is Resource.Error ->{
+                        stateUserInfo = stateUserInfo.copy(error = result.message ?: "An unexpeted error occured")
+                        Log.e("nicknameedit-viewmodel","에러 :  ${result.code} ${result.message}")
+                    }
+                    is Resource.Loading ->{
+                        stateUserInfo = stateUserInfo.copy(isLoading = true)
+                        Log.e("nicknameedit-viewmodel","로딩중 :  ${result.code} ${result.message}")
+                    }
+                }
+            }
+            getUserInfo()
+        } catch (e: Exception) {}
     }
 }
