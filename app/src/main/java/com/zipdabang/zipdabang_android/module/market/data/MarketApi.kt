@@ -9,7 +9,6 @@ import retrofit2.http.Query
 
 interface MarketApi {
 
-
     @GET("/market/recent-items")
     suspend fun getRecentItems(
         @Header("token") token : String?
