@@ -165,6 +165,9 @@ dependencies {
 
     //for webview
     implementation ("com.google.accompanist:accompanist-webview:0.24.13-rc")
+
+    //for coil
+    implementation("io.coil-kt:coil-compose:1.3.2")
 }
 
 kapt {

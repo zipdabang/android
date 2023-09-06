@@ -1,6 +1,8 @@
 package com.zipdabang.zipdabang_android.module.my.ui
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
@@ -35,12 +37,14 @@ fun RecipeWriteScreen(
         contentColor = Color.White,
     ){
         val scrollState = rememberScrollState()
-        Surface(
+
+        Column(
             modifier = Modifier
                 .padding(it)
                 .fillMaxSize()
                 .verticalScroll(scrollState)
-        ){
+                .background(Color.White)
+        ) {
 
         }
     }

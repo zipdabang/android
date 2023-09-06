@@ -10,6 +10,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -60,11 +63,14 @@ fun MyrecipeScreen(
                 containerColor = Color.White,
                 contentColor = Color.White,
             ){
-                Surface(
+                val scrollState = rememberScrollState()
+                Column(
                     modifier = Modifier
                         .padding(it)
                         .fillMaxSize()
-                ){
+                        .verticalScroll(scrollState)
+                        .background(Color.White)
+                ) {
                     Box(
                         modifier = Modifier.padding(16.dp, 10.dp, 16.dp,0.dp)
                     ){
@@ -76,6 +82,7 @@ fun MyrecipeScreen(
                     // 레시피 작성하기
                     Row(
                         verticalAlignment = Alignment.Bottom,
+                        modifier = Modifier.height(56.dp)
                     ){
                         Box(
                             modifier = Modifier

@@ -1,6 +1,7 @@
 package com.zipdabang.zipdabang_android.module.drawer.ui
 
 import android.util.Log
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -32,6 +33,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
@@ -40,6 +42,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
+import coil.compose.AsyncImage
+import coil.compose.rememberImagePainter
+import coil.transform.CircleCropTransformation
 import com.zipdabang.zipdabang_android.R
 import com.zipdabang.zipdabang_android.module.drawer.ui.viewmodel.DrawerUserInfoViewModel
 import com.zipdabang.zipdabang_android.ui.component.AppBarSignUp
@@ -283,7 +288,7 @@ fun UserInfoScreen(
             }
 
             //상세 정보
-            Column(
+            /*Column(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(240.dp)
@@ -418,7 +423,7 @@ fun UserInfoScreen(
                         color = ZipdabangandroidTheme.Colors.Typo
                     )
                 }
-            }
+            }*/
 
             //닉네임
             Column(
