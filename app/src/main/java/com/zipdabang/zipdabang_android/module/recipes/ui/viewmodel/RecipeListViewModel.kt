@@ -8,7 +8,6 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import com.zipdabang.zipdabang_android.common.Resource
 import com.zipdabang.zipdabang_android.common.ResponseCode
-import com.zipdabang.zipdabang_android.module.recipes.common.OwnerType
 import com.zipdabang.zipdabang_android.module.recipes.data.common.RecipeItem
 import com.zipdabang.zipdabang_android.module.recipes.domain.PreferenceToggle
 import com.zipdabang.zipdabang_android.module.recipes.domain.RecipeListRepository
@@ -102,13 +101,13 @@ class RecipeListViewModel @Inject constructor(
                             _errorMessage.value = ResponseCode.UNAUTHORIZED_TOKEN_UNUSUAL.message
                         }
 
-                        ResponseCode.UNAUTHORIZED_TOKEN_EXPIRED.code -> {
+                        ResponseCode.UNAUTHORIZED_ACCESS_EXPIRED.code -> {
                             _toggleScrapResult.value = PreferenceToggleState(
                                 isLoading = false,
                                 errorMessage = it.message,
                                 isSuccessful = false
                             )
-                            _errorMessage.value = ResponseCode.UNAUTHORIZED_TOKEN_EXPIRED.message
+                            _errorMessage.value = ResponseCode.UNAUTHORIZED_ACCESS_EXPIRED.message
                         }
 
                         ResponseCode.UNAUTHORIZED_TOKEN_NOT_EXISTS.code -> {
