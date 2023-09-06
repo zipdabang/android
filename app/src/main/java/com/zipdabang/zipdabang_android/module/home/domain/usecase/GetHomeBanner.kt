@@ -22,10 +22,11 @@ class GetHomeBanner @Inject constructor(
     operator fun invoke() : Flow<HomeResource<HomeBannerDto>> = flow{
 
         val accessToken = datastore.data.first().accessToken ?: Constants.TOKEN_NULL
-        Log.e("token in invoke",accessToken.toString())
+        val token = "Bearer " + accessToken
+        Log.e("token",token.toString())
         try {
             emit(HomeResource.HomeLoading(true))
-            val data = repository.getHomeBanner(accessToken)
+            val data = repository.getHomeBanner(token)
             emit(HomeResource.HomeSuccess(data))
         } catch (e: HttpException) {
             emit(HomeResource.HomeError(e.localizedMessage ?: "An unexpected error occurred"))

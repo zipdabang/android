@@ -36,12 +36,11 @@ class HomeViewModel @Inject constructor(
     }
     fun getBannerList() {
                 getHomeBanner().onEach { result ->
-                    Log.e("BannerResult",result.message.toString())
-
                     when (result) {
                         is HomeResource.HomeSuccess ->{
                             if(result.data?.isSuccess == true){
                                 val bannerlist= result.data.result.bannerList
+                                Log.e("Bannerresult",result.data.result.toString())
                                 _bannerState.value = HomeBannerState(
                                     bannerList = bannerlist,
                                     isLoading = false)
@@ -78,6 +77,7 @@ class HomeViewModel @Inject constructor(
 
                         is HomeResource.HomeSuccess ->{
                             if(result.data?.isSuccess == true){
+                                Log.e("Bannerresult",result.data.result.toString())
                                 _recipeState.value = HomeRecipeState(
                                     recipeList = result.data.result.recipeList,
                                     isLoading = false)

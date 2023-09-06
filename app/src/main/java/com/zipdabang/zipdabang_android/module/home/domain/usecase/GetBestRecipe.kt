@@ -23,9 +23,10 @@ class GetBestRecipe @Inject constructor(
     operator fun invoke() : Flow<HomeResource<BestRecipeDto>> = flow{
 
         val accessToken = datastore.data.first().accessToken ?: Constants.TOKEN_NULL
+        val token = "Bearer " + accessToken
         try {
             emit(HomeResource.HomeLoading(true))
-            val data = repository.getBestRecipes(accessToken)
+            val data = repository.getBestRecipes(token)
             emit(HomeResource.HomeSuccess(data))
         } catch (e: HttpException) {
             emit(HomeResource.HomeError(e.localizedMessage ?: "An unexpected error occurred"))
