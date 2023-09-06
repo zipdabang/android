@@ -21,6 +21,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.zipdabang.zipdabang_android.R
 import com.zipdabang.zipdabang_android.module.search.ui.SearchViewModel
 import com.zipdabang.zipdabang_android.ui.theme.NavBlack
@@ -29,10 +30,11 @@ import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
 
 @Composable
 fun SearchBar(
-    searchViewModel: SearchViewModel = SearchViewModel(),
-    hintText : String
-){
+    viewModel: SearchViewModel = hiltViewModel(),
+    hintText : String,
+    ){
     var text by remember { mutableStateOf("") }
+
     OutlinedTextField(
         value = text,
         onValueChange =  { text= it},
@@ -54,7 +56,7 @@ fun SearchBar(
                 contentDescription = null,
                 modifier = Modifier
                     .noRippleClickable {
-                        searchViewModel.log(text)
+                        viewModel.getSearchList(text)
                     }
             )
 
@@ -65,7 +67,7 @@ fun SearchBar(
         ),
         keyboardActions = KeyboardActions(
             onSearch ={
-            searchViewModel.log(text)
+                viewModel.getSearchList(text)
             }
         ),
         shape = ZipdabangandroidTheme.Shapes.small,
@@ -92,5 +94,5 @@ inline fun Modifier.noRippleClickable(crossinline onClick: ()->Unit): Modifier =
 @Preview(showBackground = true)
 @Composable
 fun SearchPreview(){
-    SearchBar(hintText="찾는 상품을 검색해보세요")
+   // SearchBar(hintText="찾는 상품을 검색해보세요")
 }

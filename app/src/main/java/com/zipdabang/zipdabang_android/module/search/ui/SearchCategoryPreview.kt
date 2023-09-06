@@ -1,5 +1,6 @@
 package com.zipdabang.zipdabang_android.module.search.ui
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
@@ -23,33 +24,38 @@ fun SearchCategoryPreview(
 
     Column(
         modifier = Modifier.padding(horizontal = 16.dp)
-    ){
+    ) {
 
         SearchPreviewHeader(groupName = title, onClick = {})
         Spacer(modifier = Modifier.height(5.dp))
-        LazyRow(
-            modifier = Modifier.padding(horizontal = 4.dp)
-        ) {
+        if (previewList.isEmpty()) {
+            NoSearchResult()
+        } else {
+            LazyRow(
+                modifier = Modifier.padding(horizontal = 4.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
 
-            items(previewList.size) {
-                RecipeCard(
-                    recipeId =previewList[it].recipeId,
-                    title =previewList[it].recipeName,
-                    user =previewList[it].nickname,
-                    thumbnail =previewList[it].thumbnailUrl,
-                    date =previewList[it].createdAt,
-                    likes =previewList[it].likes,
-                    comments =previewList[it].comments,
-                    isLikeSelected =previewList[it].isLiked,
-                    isScrapSelected =previewList[it].isScrapped,
-                    onLikeClick = { TODO() },
-                    onScrapClick ={ TODO() },
-                    onItemClick ={}
-                )
+                items(previewList.size) {
+                    RecipeCard(
+                        recipeId = previewList[it].recipeId,
+                        title = previewList[it].recipeName,
+                        user = previewList[it].nickname,
+                        thumbnail = previewList[it].thumbnailUrl,
+                        date = previewList[it].createdAt,
+                        likes = previewList[it].likes,
+                        comments = previewList[it].comments,
+                        isLikeSelected = previewList[it].isLiked,
+                        isScrapSelected = previewList[it].isScrapped,
+                        onLikeClick = { TODO() },
+                        onScrapClick = { TODO() },
+                        onItemClick = {}
+                    )
+                }
             }
+
+
         }
-
-
     }
 
 

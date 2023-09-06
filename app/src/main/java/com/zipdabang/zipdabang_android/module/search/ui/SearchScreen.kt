@@ -1,5 +1,6 @@
 package com.zipdabang.zipdabang_android.module.search.ui
 
+import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -19,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.zipdabang.zipdabang_android.R
 import com.zipdabang.zipdabang_android.module.search.data.SearchCategory
+import com.zipdabang.zipdabang_android.module.search.data.dto.SearchCategoryList
 
 @Composable
 fun SearchScreen(
@@ -26,8 +28,11 @@ fun SearchScreen(
 ) {
     val scrollState = rememberScrollState()
 
+    val searchState= searchViewModel.searchState
+
     Column(
-        modifier = Modifier.padding(top = 24.dp)
+        modifier = Modifier
+            .padding(top = 24.dp)
             .verticalScroll(scrollState),
     ) {
         Row(
@@ -45,17 +50,32 @@ fun SearchScreen(
             Box(
                 Modifier.weight(7f)
             ) {
-                com.zipdabang.zipdabang_android.ui.component.SearchBar(hintText = "찾는 레시피가 있으신가요?")
+                com.zipdabang.zipdabang_android.ui.component.SearchBar(hintText = "찾는 레시피가 있으신가요?", viewModel = searchViewModel)
             }
         }
+        var categoryList : List<SearchCategoryList> = emptyList()
 
-        val categoryList = SearchCategory.values()
+        val categoryTitleList = SearchCategory.values()
 
-        categoryList.forEach{
+        if(searchState.value.isLoading){
+            //shimmering
+        }else if(searchState.value.isError){
+            Box(Modifier.height(60.dp)){
 
+            }
+            Log.e("SearchScreen Error",searchState.value.error)
 
+        }else{
+            categoryList = searchState.value.searchList
+
+            categoryList.forEachIndexed{
+                index, item ->
+                SearchCategoryPreview(title = categoryTitleList[index].categoryName, previewList = categoryList[index].recipeList)
+            }
 
         }
+
+
 
 
 

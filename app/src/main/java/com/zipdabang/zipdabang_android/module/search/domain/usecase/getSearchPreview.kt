@@ -1,5 +1,6 @@
 package com.zipdabang.zipdabang_android.module.search.domain.usecase
 
+import android.util.Log
 import androidx.datastore.core.DataStore
 import com.zipdabang.zipdabang_android.common.MarketResource
 import com.zipdabang.zipdabang_android.common.SearchResource
@@ -25,6 +26,7 @@ class GetSearchPreviewUseCase @Inject constructor(
         try{
             emit(SearchResource.SearchLoading(true))
             val accessToken = ("Bearer " + tokenDataStore.data.first().accessToken)
+            Log.e("token",accessToken)
             val data = repository.getSearchPreview(accessToken,keyword)!!
             emit(SearchResource.SearchSuccess(data))
         } catch (e : HttpException){
