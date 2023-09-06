@@ -46,10 +46,9 @@ fun RecipeMenuScreen(
 
     LaunchedEffect(key1 = true) {
         mainViewModel.apply {
-            // TODO 주석 해제하기
-/*            scope.launch {
+            scope.launch {
                 getRecipeBanners()
-            }*/
+            }
             scope.launch {
                 getRecipeCategoryList()
             }
