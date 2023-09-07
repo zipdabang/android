@@ -365,9 +365,13 @@ fun TextFieldForContent(
             singleLine = singleLine,
             maxLines = maxLines,
             colors = TextFieldDefaults.colors(
-                cursorColor = ZipdabangandroidTheme.Colors.Typo,  //쓸때 커서
-                unfocusedIndicatorColor = ZipdabangandroidTheme.Colors.Typo.copy(0.2f),
+                cursorColor = ZipdabangandroidTheme.Colors.Typo.copy(0.5f),
+                errorCursorColor = Color.Red,
                 focusedIndicatorColor = ZipdabangandroidTheme.Colors.Typo.copy(0.2f),
+                unfocusedIndicatorColor = ZipdabangandroidTheme.Colors.Typo.copy(0.2f),
+                focusedContainerColor = ZipdabangandroidTheme.Colors.Typo.copy(0.2f),
+                unfocusedContainerColor = ZipdabangandroidTheme.Colors.Typo.copy(0.2f),
+                errorContainerColor = Color.Red,
             ),
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Text,

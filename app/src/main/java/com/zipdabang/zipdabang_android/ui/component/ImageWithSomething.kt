@@ -109,10 +109,11 @@ fun PreviewImageWithIcon(){
 //10번 -> 완성, icon size 설정 필요.
 @Composable
 fun ImageWithIconAndText(
-    imageUrl : Int,
     addImageClick : () -> Unit, //image add할때 클릭이벤트
     deleteImageClick : () -> Unit, //image delete할때 클릭이벤트
+    imageUrl : String,
     iconImageVector : Int,
+    iconTint : Color,
     iconModifier : Modifier,
     text : String,
     textStyle : TextStyle,
@@ -125,7 +126,7 @@ fun ImageWithIconAndText(
             .background(color = Color(0xFFF7F6F6)),
         contentAlignment = Alignment.Center,
     ){
-        if (imageUrl != 0){
+        if (imageUrl != ""){
             AsyncImage(
                 model = imageUrl,
                 contentDescription = null,
@@ -159,10 +160,11 @@ fun ImageWithIconAndText(
                 Icon(
                     painter = painterResource(id = iconImageVector),
                     contentDescription = "Icon",
-                    tint = ZipdabangandroidTheme.Colors.Typo.copy(0.5f),
+                    tint = iconTint, //ZipdabangandroidTheme.Colors.Typo.copy(0.5f),
                     modifier = iconModifier
                 )
                 Text(
+                    modifier = Modifier.padding(0.dp,4.dp, 0.dp,0.dp),
                     text = text,
                     style = textStyle,
                     color = textColor,
@@ -176,7 +178,7 @@ fun ImageWithIconAndText(
 @Preview
 @Composable
 fun PreviewImageWithIconAndText(){
-    var imageState by remember { mutableStateOf(0) }
+    var imageState by remember { mutableStateOf("") }
 
     Box(
         modifier = Modifier.size(104.dp)
@@ -184,12 +186,13 @@ fun PreviewImageWithIconAndText(){
         ImageWithIconAndText(
             imageUrl = imageState,
             addImageClick={/* 카메라 접근해서 이미지 불러오기 */
-                                imageState = androidx.core.R.drawable.notification_bg_normal
-                          },
+                //imageState =
+            },
             deleteImageClick={/* 이미지 삭제하기 */
-                                imageState = 0
-                             },
-            iconImageVector = R.drawable.zipdabanglogo_white,
+                //imageState =
+            },
+            iconImageVector = R.drawable.ic_topbar_backbtn,
+            iconTint = ZipdabangandroidTheme.Colors.Typo.copy(0.5f),
             iconModifier = Modifier.size(30.dp),
             text = "파일 첨부",
             textStyle = ZipdabangandroidTheme.Typography.sixteen_500,

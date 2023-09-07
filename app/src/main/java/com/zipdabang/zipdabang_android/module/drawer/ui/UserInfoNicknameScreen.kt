@@ -14,7 +14,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -26,10 +25,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.zipdabang.zipdabang_android.R
 import com.zipdabang.zipdabang_android.module.drawer.ui.viewmodel.DrawerUserInfoViewModel
-import com.zipdabang.zipdabang_android.module.drawer.ui.viewmodel.userinfostate.UserInfoBasicEvent
-import com.zipdabang.zipdabang_android.module.drawer.ui.viewmodel.userinfostate.UserInfoNicknameEvent
+import com.zipdabang.zipdabang_android.module.drawer.ui.viewmodel.userinfo.UserInfoNicknameEvent
 import com.zipdabang.zipdabang_android.ui.component.AppBarSignUp
-import com.zipdabang.zipdabang_android.ui.component.PrimaryButton
 import com.zipdabang.zipdabang_android.ui.component.PrimaryButtonOutLined
 import com.zipdabang.zipdabang_android.ui.component.PrimaryButtonWithStatus
 import com.zipdabang.zipdabang_android.ui.component.TextFieldErrorAndCorrectIcon

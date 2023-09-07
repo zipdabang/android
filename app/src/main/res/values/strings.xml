@@ -97,6 +97,23 @@
     <string name="my_save">임시저장</string>
     <string name="my_addnewrecipe">새로운 레시피 추가하기</string>
     <string name="my_recipewrite">레시피 작성</string>
+    <string name="my_recipewrite_thumbnail_upload">레시피 대표 사진 등록하기</string>
+    <string name="my_recipewrite_title">레시피 제목</string>
+    <string name="my_recipewrite_title_hint">레시피 제목 (최대 20자)</string>
+    <string name="my_recipewrite_time">소요 시간</string>
+    <string name="my_recipewrite_intro">레시피 한 줄 소개</string>
+    <string name="my_recipewrite_intro_hint">레시피 한 줄 소개 (최대 100자)</string>
+    <string name="my_recipewrite_ingredient">재료</string>
+    <string name="my_recipewrite_unit">단위</string>
+    <string name="my_recipewrite_milk">우유</string>
+    <string name="my_recipewrite_hundredmilli">ex) 100ml</string>
+    <string name="my_recipewrite_step">레시피 순서</string>
+    <string name="my_recipewrite_step_hint">레시피를 만드는 Step 을 설명해 주세요.\n(최대 200자)</string>
+    <string name="my_recipewrite_recipetip">레시피 Tip!</string>
+    <string name="my_recipewrite_recipetip_hint">레시피를 만들 때 주의해야 할 사항이나 맛있게 만드는 팁을 작성해 주세요. (최대 200자)</string>
+    <string name="my_recipewrite_save">임시저장</string>
+    <string name="my_recipewrite_writedone">작성 완료</string>
+
 
 
     <!--  for fcm  -->
