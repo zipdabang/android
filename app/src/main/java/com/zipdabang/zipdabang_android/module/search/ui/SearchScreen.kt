@@ -18,18 +18,20 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import com.zipdabang.zipdabang_android.R
 import com.zipdabang.zipdabang_android.module.search.data.SearchCategory
-import com.zipdabang.zipdabang_android.module.search.data.dto.SearchCategoryList
+import com.zipdabang.zipdabang_android.module.search.data.dto.searchpreview.SearchCategoryList
 
 @Composable
 fun SearchScreen(
+    navController: NavController,
    searchViewModel: SearchViewModel = hiltViewModel()
+
 ) {
     val scrollState = rememberScrollState()
 
     val searchState= searchViewModel.searchState
-
     Column(
         modifier = Modifier
             .padding(top = 24.dp)
@@ -70,7 +72,7 @@ fun SearchScreen(
 
             categoryList.forEachIndexed{
                 index, item ->
-                SearchCategoryPreview(title = categoryTitleList[index].categoryName, previewList = categoryList[index].recipeList)
+                SearchCategoryPreview(title = categoryTitleList[index].categoryName, previewList = categoryList[index].recipeList,navController)
             }
 
         }
@@ -92,6 +94,6 @@ fun SearchScreen(
 @Preview
 @Composable
 fun SearchPreview(){
-    SearchScreen()
+   // SearchScreen()
 }
 

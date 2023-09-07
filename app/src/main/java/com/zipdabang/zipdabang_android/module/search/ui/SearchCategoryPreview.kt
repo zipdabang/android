@@ -6,19 +6,21 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
+import com.zipdabang.zipdabang_android.core.navigation.SharedScreen
 import com.zipdabang.zipdabang_android.module.item.recipe.ui.RecipeCard
 import com.zipdabang.zipdabang_android.module.recipes.ui.viewmodel.RecipeMainViewModel
-import com.zipdabang.zipdabang_android.module.search.data.dto.SearchRecipe
+import com.zipdabang.zipdabang_android.module.search.data.dto.common.SearchRecipe
 
 @Composable
 fun SearchCategoryPreview(
     title : String,
-    previewList : List<SearchRecipe>
+    previewList : List<SearchRecipe>,
+    navController: NavController
 ){
    val mainViewModel = hiltViewModel<RecipeMainViewModel>()
 
@@ -26,7 +28,7 @@ fun SearchCategoryPreview(
         modifier = Modifier.padding(horizontal = 16.dp)
     ) {
 
-        SearchPreviewHeader(groupName = title, onClick = {})
+        SearchPreviewHeader(groupName = title, onClick = {navController.navigate(SharedScreen.SearchRecipeCategory.route)})
         Spacer(modifier = Modifier.height(5.dp))
         if (previewList.isEmpty()) {
             NoSearchResult()

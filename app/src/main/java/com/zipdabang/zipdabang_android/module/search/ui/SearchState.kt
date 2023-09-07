@@ -1,7 +1,6 @@
 package com.zipdabang.zipdabang_android.module.search.ui
 
-import com.zipdabang.zipdabang_android.module.home.data.banner.BannerDto
-import com.zipdabang.zipdabang_android.module.search.data.dto.SearchCategoryList
+import com.zipdabang.zipdabang_android.module.search.data.dto.searchpreview.SearchCategoryList
 
 data class SearchState(
     val isLoading: Boolean = false,

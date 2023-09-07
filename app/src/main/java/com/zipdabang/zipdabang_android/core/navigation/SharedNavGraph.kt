@@ -5,6 +5,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.zipdabang.zipdabang_android.module.detail.recipe.ui.RecipeDetailScreen
+import com.zipdabang.zipdabang_android.module.search.ui.SearchCategoryScreen
 import com.zipdabang.zipdabang_android.module.search.ui.SearchScreen
 
 
@@ -27,7 +28,11 @@ fun NavGraphBuilder.SharedNavGraph(navController: NavController){
         }
 
         composable(SharedScreen.Search.route){
-            SearchScreen()
+            SearchScreen(navController)
+        }
+
+        composable(SharedScreen.SearchRecipeCategory.route){
+            SearchCategoryScreen()
         }
 
 

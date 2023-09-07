@@ -2,11 +2,9 @@ package com.zipdabang.zipdabang_android.module.search.domain.usecase
 
 import android.util.Log
 import androidx.datastore.core.DataStore
-import com.zipdabang.zipdabang_android.common.MarketResource
 import com.zipdabang.zipdabang_android.common.SearchResource
 import com.zipdabang.zipdabang_android.core.data_store.proto.Token
-import com.zipdabang.zipdabang_android.module.market.data.marketMain.RecentDto
-import com.zipdabang.zipdabang_android.module.search.data.dto.SearchDto
+import com.zipdabang.zipdabang_android.module.search.data.dto.searchpreview.SearchDto
 import com.zipdabang.zipdabang_android.module.search.domain.SearchRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
