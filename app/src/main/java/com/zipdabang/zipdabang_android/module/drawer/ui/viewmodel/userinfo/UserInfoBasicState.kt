@@ -1,4 +1,4 @@
-package com.zipdabang.zipdabang_android.module.drawer.ui.viewmodel.userinfostate
+package com.zipdabang.zipdabang_android.module.drawer.ui.viewmodel.userinfo
 
 data class UserInfoBasicState(
     val isLoading : Boolean = false,

@@ -1,6 +1,4 @@
-package com.zipdabang.zipdabang_android.module.drawer.ui.viewmodel.userinfostate
-
-import com.zipdabang.zipdabang_android.module.sign_up.ui.viewmodel.UserInfoFormEvent
+package com.zipdabang.zipdabang_android.module.drawer.ui.viewmodel.userinfo
 
 sealed class UserInfoBasicEvent{
     data class NameChanged(val name : String) : UserInfoBasicEvent()

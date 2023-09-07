@@ -1,6 +1,4 @@
-package com.zipdabang.zipdabang_android.module.drawer.ui.viewmodel.userinfostate
-
-import com.zipdabang.zipdabang_android.module.sign_up.ui.viewmodel.UserAddressFormEvent
+package com.zipdabang.zipdabang_android.module.drawer.ui.viewmodel.userinfo
 
 sealed class UserInfoDetailEvent{
     data class ZipcodeChanged(val zipCode : String) : UserInfoDetailEvent()
