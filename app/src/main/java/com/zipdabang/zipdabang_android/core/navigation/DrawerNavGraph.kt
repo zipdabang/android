@@ -21,6 +21,7 @@ import com.zipdabang.zipdabang_android.module.drawer.ui.NoticeScreen
 import com.zipdabang.zipdabang_android.module.drawer.ui.UserInfoBasicScreen
 import com.zipdabang.zipdabang_android.module.drawer.ui.UserInfoDetailScreen
 import com.zipdabang.zipdabang_android.module.drawer.ui.UserInfoNicknameScreen
+import com.zipdabang.zipdabang_android.module.drawer.ui.UserInfoPreferencesScreen
 import com.zipdabang.zipdabang_android.module.drawer.ui.UserInfoScreen
 import com.zipdabang.zipdabang_android.module.drawer.ui.viewmodel.DrawerUserInfoViewModel
 
@@ -52,6 +53,10 @@ fun NavGraphBuilder.DrawerNavGraph(navController: NavHostController){
                 onClickEditNickname = {
                     drawerUserInfoViewModel.onCheckedEvent()
                     navController.navigate(DrawerScreen.UserInfoNickname.route)
+                },
+                onClickEditPreferences = {
+                    drawerUserInfoViewModel.onCheckedEvent()
+                    navController.navigate(DrawerScreen.UserInfoPreferences.route)
                 },
                 onClickLogout = {},
                 onClickWithdraw = {}
@@ -99,6 +104,24 @@ fun NavGraphBuilder.DrawerNavGraph(navController: NavHostController){
                 .drawerUserInfoViewModel<DrawerUserInfoViewModel>(navController = navController)
 
             UserInfoNicknameScreen(
+                drawerUserInfoViewModel = drawerUserInfoViewModel,
+                onClickBack = {
+                    navController.popBackStack(DrawerScreen.UserInfo.route, inclusive = false)
+                },
+                onClickCancel = {
+                    navController.popBackStack(DrawerScreen.UserInfo.route, inclusive = false)
+                },
+                onClickEdit = {
+                    navController.popBackStack(DrawerScreen.UserInfo.route, inclusive = false)
+                }
+            )
+        }
+
+        composable(DrawerScreen.UserInfoPreferences.route){navBackStackEntry ->
+            val drawerUserInfoViewModel = navBackStackEntry
+                .drawerUserInfoViewModel<DrawerUserInfoViewModel>(navController = navController)
+
+            UserInfoPreferencesScreen(
                 drawerUserInfoViewModel = drawerUserInfoViewModel,
                 onClickBack = {
                     navController.popBackStack(DrawerScreen.UserInfo.route, inclusive = false)

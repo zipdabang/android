@@ -69,6 +69,8 @@ sealed class DrawerScreen(val route : String){
     object UserInfoBasic : DrawerScreen(route="drawer/userinfo/basic")
     object UserInfoDetail : DrawerScreen(route="drawer/userinfo/detail")
     object UserInfoNickname : DrawerScreen(route="main/drawer/userinfo/nickname")
+    object UserInfoPreferences : DrawerScreen(route="main/drawer/userinfo/preferences")
+    object UserInfoProfile : DrawerScreen(route="main/drawer/userinfo/profile")
 
 }
 
