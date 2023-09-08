@@ -14,9 +14,16 @@ import com.zipdabang.zipdabang_android.module.search.ui.SearchScreen
 
 fun NavGraphBuilder.SharedNavGraph(navController: NavController){
 
-
-    navigation(startDestination = SharedScreen.DetailRecipe.route,route = SHARED_ROUTE){
-        composable(SharedScreen.DetailRecipe.route){ backStackEntry ->
+    navigation(
+        startDestination = SharedScreen.DetailRecipe.route,
+        route = SHARED_ROUTE
+    ){
+        composable(
+            route = SharedScreen.DetailRecipe.route,
+            arguments = listOf(
+                navArgument(name = "recipeId") { type = NavType.IntType }
+            )
+        ) { backStackEntry ->
             RecipeDetailScreen(
                 navController = navController,
                 recipeId = backStackEntry.arguments?.getInt("recipeId"),
@@ -26,7 +33,9 @@ fun NavGraphBuilder.SharedNavGraph(navController: NavController){
                 onClickScrap = { recipeId -> },
                 onClickCart = { keyword -> },
                 onClickDelete = { recipeId -> },
-                onClickEdit = { recipeId -> }
+                onClickEdit = { recipeId -> },
+                onClickBlock = { userId -> },
+                onClickReport = { recipeId -> }
             )
         }
 
