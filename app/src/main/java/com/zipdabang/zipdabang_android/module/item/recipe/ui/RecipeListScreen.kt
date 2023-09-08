@@ -19,6 +19,7 @@ import com.zipdabang.zipdabang_android.R
 import com.zipdabang.zipdabang_android.module.item.recipe.common.RecipeSubtitleState
 import com.zipdabang.zipdabang_android.module.recipes.common.OwnerType
 import com.zipdabang.zipdabang_android.ui.component.AppBarHome
+import com.zipdabang.zipdabang_android.ui.component.AppBarWithFullFunction
 import com.zipdabang.zipdabang_android.ui.component.FloatingActionButton
 import com.zipdabang.zipdabang_android.ui.component.ModalDrawer
 import kotlinx.coroutines.launch
@@ -28,6 +29,7 @@ fun RecipeListScreen(
     modifier: Modifier = Modifier,
     navController: NavController,
     categoryState: RecipeSubtitleState,
+    onBackClick: () -> Unit,
     onShareClick: () -> Unit,
     onItemClick: (Int) -> Unit
 ) {
@@ -56,9 +58,11 @@ fun RecipeListScreen(
             Scaffold(
                 modifier = modifier.fillMaxSize(),
                 topBar = {
-                    AppBarHome(
+                    AppBarWithFullFunction(
+                        startIcon = R.drawable.ic_topbar_backbtn,
                         endIcon1 = R.drawable.ic_topbar_search,
                         endIcon2 = R.drawable.ic_topbar_menu,
+                        onClickStartIcon = onBackClick,
                         onClickEndIcon1 = {},
                         onClickEndIcon2 = { scope.launch { drawerState.open() } },
                         centerText = categoryState.let {
