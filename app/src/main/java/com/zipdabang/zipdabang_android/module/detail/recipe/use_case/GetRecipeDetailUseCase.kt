@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.datastore.core.DataStore
 import com.zipdabang.zipdabang_android.common.Resource
 import com.zipdabang.zipdabang_android.common.ResponseCode
+import com.zipdabang.zipdabang_android.core.AccessToken
 import com.zipdabang.zipdabang_android.core.data_store.proto.Token
 import com.zipdabang.zipdabang_android.module.detail.recipe.domain.RecipeDetailDomain
 import com.zipdabang.zipdabang_android.module.detail.recipe.domain.RecipeDetailRepository
@@ -18,7 +19,7 @@ import javax.inject.Inject
 
 class GetRecipeDetailUseCase @Inject constructor(
     private val recipeDetailRepository: RecipeDetailRepository,
-    private val tokenDataStore: DataStore<Token>
+    private val tokenDataStore: DataStore<Token>,
 ){
 
     companion object {

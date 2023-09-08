@@ -20,7 +20,13 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import okhttp3.Interceptor
@@ -29,7 +35,10 @@ import okhttp3.OkHttpClient
 import okhttp3.Response
 import retrofit2.Retrofit
 import java.util.concurrent.TimeUnit
+import javax.inject.Qualifier
 import javax.inject.Singleton
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -117,4 +126,30 @@ object AppModule {
             .addConverterFactory(json.asConverterFactory(contentType))
             .build()
     }
+
+/*    @OptIn(ExperimentalCoroutinesApi::class)
+    @Provides
+    @Singleton
+    @AccessToken
+    fun provideAccessToken(
+        dataStore: DataStore<Token>
+    ): String {
+        lateinit var result: String
+
+        val accessToken = CoroutineScope(Dispatchers.IO).async {
+            "Bearer ${dataStore.data.first().accessToken}"
+        }
+
+        accessToken.invokeOnCompletion {
+            if (it == null) {
+                result = accessToken.getCompleted()
+            }
+        }
+
+        return result
+    }*/
 }
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class AccessToken
