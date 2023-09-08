@@ -29,11 +29,6 @@ fun RecipeList(
             viewModel.getRecipeListByOwnerType(
                 ownerType = category.ownerType
             ).collectAsLazyPagingItems()
-        } else if (category.categoryId != null && category.ownerType == null) {
-            Log.d("RecipeList", "category")
-            viewModel.getRecipeListByCategory(
-                categoryId = category.categoryId
-            ).collectAsLazyPagingItems()
         } else {
             viewModel.getRecipeListByCategory(
                 categoryId = category.categoryId!!
@@ -43,11 +38,10 @@ fun RecipeList(
     Column(
         modifier = modifier.fillMaxSize()
     ) {
-        content()
-        Spacer(modifier = Modifier.height(6.dp))
         RecipeListContent(
             items = recipeList,
-            onItemClick = onItemClick
+            onItemClick = onItemClick,
+            content = content
         )
     }
 }

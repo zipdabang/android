@@ -62,6 +62,9 @@ fun NavGraphBuilder.RecipeNavGraph(navController: NavController) {
                 },
                 onItemClick = {
 
+                },
+                onBackClick = {
+                    navController.popBackStack()
                 }
             )
         }

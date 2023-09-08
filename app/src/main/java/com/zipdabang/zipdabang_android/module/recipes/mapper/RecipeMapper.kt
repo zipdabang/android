@@ -2,6 +2,8 @@ package com.zipdabang.zipdabang_android.module.recipes.mapper
 
 import com.zipdabang.zipdabang_android.module.recipes.data.banner.RecipeBannerDto
 import com.zipdabang.zipdabang_android.module.recipes.data.category.RecipeCategoryDto
+import com.zipdabang.zipdabang_android.module.recipes.data.common.RecipeItem
+import com.zipdabang.zipdabang_android.module.recipes.data.local.RecipeItemEntity
 import com.zipdabang.zipdabang_android.module.recipes.data.preference.PreferenceResultDto
 import com.zipdabang.zipdabang_android.module.recipes.data.preview.RecipePreviewItemsDto
 import com.zipdabang.zipdabang_android.module.recipes.data.recipe_list.RecipeListDto
@@ -42,7 +44,7 @@ fun RecipeListDto.toRecipePreview(): RecipePreview {
         code = code,
         isSuccessful = isSuccess,
         message = message,
-        recipeList = result.recipeList
+        recipeList = result?.recipeList
     )
 }
 
@@ -52,5 +54,37 @@ fun RecipeBannerDto.toRecipeBanner(): RecipeBanner {
         isSuccessful = isSuccess,
         message = message,
         recipeBanners = result.bannerList
+    )
+}
+
+fun RecipeItem.toRecipeItemEntity(): RecipeItemEntity {
+    return RecipeItemEntity(
+        categoryId = categoryId,
+        comments = comments,
+        createdAt = createdAt,
+        isLiked = isLiked,
+        isScrapped = isScrapped,
+        likes = likes,
+        nickname = nickname,
+        recipeId = recipeId,
+        recipeName = recipeName,
+        scraps = scraps,
+        thumbnailUrl = thumbnailUrl
+    )
+}
+
+fun RecipeItemEntity.toRecipeItem(): RecipeItem {
+    return RecipeItem(
+        categoryId = categoryId,
+        comments = comments,
+        createdAt = createdAt,
+        isLiked = isLiked,
+        isScrapped = isScrapped,
+        likes = likes,
+        nickname = nickname,
+        recipeId = recipeId,
+        recipeName = recipeName,
+        scraps = scraps,
+        thumbnailUrl = thumbnailUrl
     )
 }

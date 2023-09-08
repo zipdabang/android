@@ -12,10 +12,7 @@ import com.zipdabang.zipdabang_android.module.recipes.data.RecipeApi
 import javax.inject.Inject
 
 @OptIn(ExperimentalPagingApi::class)
-abstract class RecipeMediator<V: Any>(
-    private val recipeApi: RecipeApi,
-    private val database: Paging3Database
-): RemoteMediator<Int, V>() {
+abstract class RecipeMediator<V: Any>(): RemoteMediator<Int, V>() {
     override suspend fun load(loadType: LoadType, state: PagingState<Int, V>): MediatorResult {
         return try {
             val currentPage = when (loadType) {

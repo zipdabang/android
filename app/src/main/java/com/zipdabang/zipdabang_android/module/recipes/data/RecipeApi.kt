@@ -54,7 +54,7 @@ interface RecipeApi {
         @Query("writtenby") ownerType: String,
         @Query("order") order: String,
         @Query("pageIndex") pageIndex: Int
-    ): RecipeListDto
+    ): RecipeListDto?
 
     @GET("members/recipes/categories/{categoryId}")
     suspend fun getRecipeListByCategory(
