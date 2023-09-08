@@ -165,7 +165,13 @@ fun MyScreen(
                                 verticalAlignment = Alignment.CenterVertically
                             ){
                                 Icon(painter = painterResource(id = R.drawable.ic_my_heart), contentDescription = "", tint = Color.White, modifier = Modifier.size(15.dp, 12.dp))
-                                Text(text="커피 논카페인", style=ZipdabangandroidTheme.Typography.sixteen_500, color=Color.White)
+                                for(category in stateMyUserInfo.categoryList){
+                                    Text(
+                                        text = category,
+                                        style = ZipdabangandroidTheme.Typography.sixteen_500,
+                                        color = Color.White,
+                                    )
+                                }
                             }
                         }
 
@@ -315,7 +321,7 @@ fun MyScreen(
                                         horizontalArrangement = Arrangement.SpaceBetween,
                                     ){
                                         Text(
-                                            text = stringResource(id = R.string.my_noticeandalarm),
+                                            text = stringResource(id = R.string.my_noticeandevent),
                                             style = ZipdabangandroidTheme.Typography.fourteen_500,
                                             color = ZipdabangandroidTheme.Colors.Typo
                                         )
@@ -344,7 +350,7 @@ fun MyScreen(
                                         horizontalArrangement = Arrangement.SpaceBetween,
                                     ){
                                         Text(
-                                            text = stringResource(id = R.string.my_what),
+                                            text = stringResource(id = R.string.my_alarm),
                                             style = ZipdabangandroidTheme.Typography.fourteen_500,
                                             color = ZipdabangandroidTheme.Colors.Typo
                                         )
