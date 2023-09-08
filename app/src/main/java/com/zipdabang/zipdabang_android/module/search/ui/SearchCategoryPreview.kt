@@ -20,7 +20,7 @@ import com.zipdabang.zipdabang_android.module.search.data.dto.common.SearchRecip
 fun SearchCategoryPreview(
     title : String,
     previewList : List<SearchRecipe>,
-    navController: NavController
+    onClick : () -> Unit
 ){
    val mainViewModel = hiltViewModel<RecipeMainViewModel>()
 
@@ -28,7 +28,7 @@ fun SearchCategoryPreview(
         modifier = Modifier.padding(horizontal = 16.dp)
     ) {
 
-        SearchPreviewHeader(groupName = title, onClick = {navController.navigate(SharedScreen.SearchRecipeCategory.route)})
+        SearchPreviewHeader(groupName = title, onClick = onClick )
         Spacer(modifier = Modifier.height(5.dp))
         if (previewList.isEmpty()) {
             NoSearchResult()

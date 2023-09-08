@@ -27,8 +27,14 @@ class SearchViewModel @Inject constructor(
     val searchState = _searchState
 
 
-    fun getSearchList(searchText: String) {
-        getSearchUseCase(searchText).onEach { result ->
+    private var _searchText= mutableStateOf("")
+    var searchText= _searchText
+
+
+
+    fun getSearchList() {
+        Log.e("getSearchList","get")
+        getSearchUseCase(searchText.value).onEach { result ->
             when (result) {
                 is SearchResource.SearchSuccess -> {
                     if (result.data?.isSuccess == true) {

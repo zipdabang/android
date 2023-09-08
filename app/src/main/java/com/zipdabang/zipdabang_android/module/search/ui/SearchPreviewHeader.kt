@@ -30,7 +30,7 @@ import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
 fun SearchPreviewHeader(
     modifier: Modifier = Modifier,
     groupName: String,
-    onClick: (String) -> Unit
+    onClick: () -> Unit
 ) {
     Row(
         modifier = modifier
@@ -47,7 +47,7 @@ fun SearchPreviewHeader(
                 },
                 indication = rememberRipple()
             ) {
-                onClick(groupName)
+                onClick()
             },
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically

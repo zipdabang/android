@@ -12,6 +12,10 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
@@ -20,16 +24,19 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.zipdabang.zipdabang_android.R
+import com.zipdabang.zipdabang_android.core.navigation.SharedScreen
 import com.zipdabang.zipdabang_android.module.search.data.SearchCategory
 import com.zipdabang.zipdabang_android.module.search.data.dto.searchpreview.SearchCategoryList
 
 @Composable
 fun SearchScreen(
     navController: NavController,
-   searchViewModel: SearchViewModel = hiltViewModel()
+    searchViewModel: SearchViewModel = hiltViewModel()
 
 ) {
     val scrollState = rememberScrollState()
+
+    var keyword = searchViewModel.searchText.value
 
     val searchState= searchViewModel.searchState
     Column(
@@ -52,7 +59,7 @@ fun SearchScreen(
             Box(
                 Modifier.weight(7f)
             ) {
-                com.zipdabang.zipdabang_android.ui.component.SearchBar(hintText = "찾는 레시피가 있으신가요?", viewModel = searchViewModel)
+                com.zipdabang.zipdabang_android.ui.component.SearchBar(hintText = "찾는 레시피가 있으신가요?", keyword = keyword, viewModel = searchViewModel, getText = {it-> keyword= it})
             }
         }
         var categoryList : List<SearchCategoryList> = emptyList()
@@ -72,7 +79,13 @@ fun SearchScreen(
 
             categoryList.forEachIndexed{
                 index, item ->
-                SearchCategoryPreview(title = categoryTitleList[index].categoryName, previewList = categoryList[index].recipeList,navController)
+                SearchCategoryPreview(
+                    title = categoryTitleList[index].categoryName,
+                    previewList = categoryList[index].recipeList,
+                    onClick = { navController.navigate(SharedScreen.SearchRecipeCategory.passQuery(categoryId = index+1, keyword= keyword)){
+                        launchSingleTop = true
+                    } }
+                    )
             }
 
         }

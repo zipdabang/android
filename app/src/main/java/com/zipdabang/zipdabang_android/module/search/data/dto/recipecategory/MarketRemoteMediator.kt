@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.lifecycle.viewModelScope
 import androidx.paging.ExperimentalPagingApi
+import androidx.paging.LoadState.Loading.endOfPaginationReached
 import androidx.paging.LoadType
 import androidx.paging.PagingState
 import androidx.paging.RemoteMediator
@@ -19,6 +20,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
@@ -46,6 +48,7 @@ class SearchRecipeCategoryMediator @Inject constructor(
         {
             val currentPage = when (loadType) {
                 LoadType.REFRESH -> {
+                    Log.e("Refresh","refresh")
                     val remoteKeys = getRemoteKeyClosestToCurrentPosition(state)
                     remoteKeys?.nextPage?.minus(1) ?: 1
                 }
@@ -76,14 +79,22 @@ class SearchRecipeCategoryMediator @Inject constructor(
                         accessToken = accessToken, pageIndex = currentPage,
                         keyWord = searchText, categoryId = categoryId
                     )
-                    if(!response.isSuccess){
+                     if(response.result == null ){
+                         CategoryDao.deleteItems()
+                         RemoteKeyDao.deleteRemoteKeys()
+                         delay(1000)
+                         MediatorResult.Success(endOfPaginationReached = true)
+                     }
+
+
+            if(!response.isSuccess){
                         Log.e("Error in SearchCategoryMediator", response.message)
                     }
 
-                val endOfPaginationReached = response.result.isLast
+            val endOfPaginationReached = response.result!!.isLast
 
-                val prevPage = if(currentPage == 1) null else currentPage
-                val nextPage = if(endOfPaginationReached) null else currentPage
+            val prevPage = if(currentPage == 1) null else currentPage -1
+            val nextPage = if(endOfPaginationReached) null else currentPage + 1
 
                 paging3Database.withTransaction {
                     if(loadType == LoadType.REFRESH){

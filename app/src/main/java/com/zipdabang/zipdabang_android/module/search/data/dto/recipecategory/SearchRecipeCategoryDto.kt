@@ -4,5 +4,5 @@ data class SearchRecipeCategoryDto(
     val code: Int,
     val isSuccess: Boolean,
     val message: String,
-    val result: SearchCategoryResult
+    val result: SearchCategoryResult?
 )

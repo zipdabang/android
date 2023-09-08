@@ -1,5 +1,6 @@
 package com.zipdabang.zipdabang_android.ui.component
 
+import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -31,9 +32,17 @@ import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
 @Composable
 fun SearchBar(
     viewModel: SearchViewModel = hiltViewModel(),
+    keyword: String = "",
     hintText : String,
+    getText : (String) -> Unit ={ }
     ){
-    var text by remember { mutableStateOf("") }
+
+
+
+    var text by remember { mutableStateOf(keyword) }
+
+
+
 
     OutlinedTextField(
         value = text,
@@ -56,7 +65,9 @@ fun SearchBar(
                 contentDescription = null,
                 modifier = Modifier
                     .noRippleClickable {
-                        viewModel.getSearchList(text)
+                        viewModel.searchText.value= text
+                        viewModel.getSearchList()
+                        getText(text)
                     }
             )
 
@@ -67,7 +78,9 @@ fun SearchBar(
         ),
         keyboardActions = KeyboardActions(
             onSearch ={
-                viewModel.getSearchList(text)
+                viewModel.searchText.value= text
+                viewModel.getSearchList()
+                getText(text)
             }
         ),
         shape = ZipdabangandroidTheme.Shapes.small,

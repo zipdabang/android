@@ -19,6 +19,7 @@ class PagingSearchRepository @Inject constructor(
     private val tokenDataStore : DataStore<Token>
 ){
     fun getAllItems(categoryId: Int,keyword: String): Flow<PagingData<SearchRecipe>> {
+
        val pagingSourceFactory = { paging3Database.SearchRecipeDao().getAllItem()}
         return Pager(
             config = PagingConfig(pageSize = 10),
