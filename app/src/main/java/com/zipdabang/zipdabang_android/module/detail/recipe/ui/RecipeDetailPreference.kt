@@ -19,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -57,7 +58,11 @@ fun RecipeDetailPreference(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 8.dp),
+            .padding(
+                start = 16.dp,
+                end = 16.dp,
+                bottom = 16.dp
+            ),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -72,8 +77,7 @@ fun RecipeDetailPreference(
             // like
             Row(
                 modifier = Modifier
-                    .padding(6.dp)
-                    .width(88.dp),
+                    .width(80.dp),
                 verticalAlignment = Alignment.Bottom
             ) {
                 Box(modifier = Modifier.size(30.dp)) {
@@ -90,7 +94,7 @@ fun RecipeDetailPreference(
                 Spacer(modifier = Modifier.width(4.dp))
 
                 Text(
-                    modifier = Modifier.padding(top = 4.dp),
+                    modifier = Modifier.padding(top = 4.dp).width(60.dp),
                     text = likeString,
                     style = TextStyle(
                         fontSize = 18.sp,
@@ -104,8 +108,7 @@ fun RecipeDetailPreference(
 
             // scrap
             Row(
-                modifier = Modifier
-                    .padding(6.dp),
+                modifier = Modifier,
                 verticalAlignment = Alignment.Bottom
             ) {
                 Box(modifier = Modifier.size(30.dp)) {

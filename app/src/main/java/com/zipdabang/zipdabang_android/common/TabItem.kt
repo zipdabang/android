@@ -12,7 +12,7 @@ sealed class TabItem(val tabTitle: String, val screen: ComposableFun) {
         private val recipeDetailState: RecipeDetailState,
         private val onClickCart: (String) -> Unit
     ): TabItem(
-        tabTitle = "레시피",
+        tabTitle = "상세 정보",
         screen = { RecipeInfoPage(recipeDetailState, onClickCart) }
     )
     class Comment(val comments: Int)

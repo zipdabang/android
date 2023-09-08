@@ -1,5 +1,6 @@
 package com.zipdabang.zipdabang_android.module.detail.recipe.ui
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -12,7 +13,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.zipdabang.zipdabang_android.ui.theme.DialogBackground
 
 @Composable
 fun RecipeInfoPage(
@@ -29,9 +32,12 @@ fun RecipeInfoPage(
             onClickCart = onClickCart
         )
 
-        Divider(modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 20.dp)
+        Divider(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 20.dp)
+                .height(1.dp),
+            color = Color(0x1A262D31)
         )
 
         RecipeSteps(
@@ -43,5 +49,12 @@ fun RecipeInfoPage(
         )
 
         RecipeTip(recipeTip = recipeDetailState.recipeDetailData?.recipeInfo?.recipeTip ?: "")
+
+
+        Spacer(
+            modifier = Modifier
+                .height(60.dp)
+        )
+
     }
 }

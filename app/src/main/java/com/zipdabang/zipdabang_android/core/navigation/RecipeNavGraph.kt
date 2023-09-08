@@ -60,8 +60,12 @@ fun NavGraphBuilder.RecipeNavGraph(navController: NavController) {
                 onShareClick = {
 
                 },
-                onItemClick = {
-
+                onItemClick = { recipeId ->
+                    navController.navigate(
+                        route = SharedScreen.DetailRecipe.passRecipeId(recipeId)
+                    ) {
+                        launchSingleTop = true
+                    }
                 },
                 onBackClick = {
                     navController.popBackStack()
