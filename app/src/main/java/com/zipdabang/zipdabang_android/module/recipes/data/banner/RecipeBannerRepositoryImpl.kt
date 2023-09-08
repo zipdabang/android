@@ -6,7 +6,7 @@ import com.zipdabang.zipdabang_android.module.recipes.domain.RecipeBannerReposit
 class RecipeBannerRepositoryImpl(
     private val recipeApi: RecipeApi
 ): RecipeBannerRepository {
-    override suspend fun getRecipeBanners(accessToken: String): RecipeBannerDto {
+    override suspend fun getRecipeBanners(accessToken: String): RecipeBannerDto? {
         return recipeApi.getRecipeBanners(accessToken)
     }
 }

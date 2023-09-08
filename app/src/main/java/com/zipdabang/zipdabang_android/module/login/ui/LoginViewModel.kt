@@ -3,22 +3,28 @@ package com.zipdabang.zipdabang_android.module.login.ui
 import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
+import androidx.datastore.core.DataStore
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.zipdabang.zipdabang_android.common.Constants
 import com.zipdabang.zipdabang_android.common.Resource
 import com.zipdabang.zipdabang_android.core.data_store.proto.CurrentPlatform
 import com.zipdabang.zipdabang_android.core.data_store.proto.ProtoDataViewModel
-import com.zipdabang.zipdabang_android.module.login.data.AuthBody
+import com.zipdabang.zipdabang_android.core.data_store.proto.Token
+import com.zipdabang.zipdabang_android.module.login.data.member.AuthBody
 import com.zipdabang.zipdabang_android.module.login.use_case.GetAuthResultUseCase
+import com.zipdabang.zipdabang_android.module.login.use_case.GetTempLoginResultUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor (
-    private val getAuthResultUseCase: GetAuthResultUseCase
+    private val getAuthResultUseCase: GetAuthResultUseCase,
+    private val getTempLoginResultUseCase: GetTempLoginResultUseCase,
+    private val tokenDataStore: DataStore<Token>
 ) : ViewModel() {
     companion object {
         const val TAG = "LoginViewModel"
@@ -26,6 +32,9 @@ class LoginViewModel @Inject constructor (
 
     private val _state = mutableStateOf(AuthState())
     val state: State<AuthState> = _state
+
+    private val _tempLoginState = mutableStateOf(TempLoginState())
+    val tempLoginState = _tempLoginState
 
     fun getAuthResult(
         body: AuthBody,
@@ -98,6 +107,53 @@ class LoginViewModel @Inject constructor (
                     // 첫 번째 방출되는 것 처리
                     _state.value = AuthState(isLoading = true)
                     Log.d(TAG, "loading ${state}")
+                }
+            }
+        }.launchIn(viewModelScope)
+    }
+
+    fun getTempLoginResult(
+        onLoginLater: () -> Unit
+    ) {
+        getTempLoginResultUseCase().onEach { result ->
+            when (result) {
+                is Resource.Loading -> {
+                    Log.d(TAG, "temp login loading")
+
+                    _tempLoginState.value = TempLoginState(
+                        isLoading = true
+                    )
+                }
+                is Resource.Success -> {
+                    Log.d(TAG, "temp login result : $result")
+                    _tempLoginState.value = TempLoginState(
+                        isLoading = false,
+                        accessToken = result.data?.accessToken,
+                        errorMessage = null
+                    )
+
+                    val accessToken = tempLoginState.value.accessToken
+                    Log.d(TAG, "temp login access token : $accessToken")
+
+                    if (accessToken != null) {
+                        tokenDataStore.updateData {
+                            it.copy(
+                                accessToken = accessToken,
+                                platformStatus = CurrentPlatform.TEMP
+                            )
+                        }
+
+                        Log.d(TAG, "temp login successful")
+                        Log.d(TAG, "access token stored : ${tokenDataStore.data.first().accessToken}")
+
+                        onLoginLater()
+                    }
+                }
+                is Resource.Error -> {
+                    _tempLoginState.value = TempLoginState(
+                        isLoading = false,
+                        errorMessage = result.message
+                    )
                 }
             }
         }.launchIn(viewModelScope)

@@ -26,6 +26,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.Icon
 import androidx.compose.material.ripple.rememberRipple
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -62,8 +63,8 @@ fun RecipeCard(
     comments: Int,
     isLikeSelected: Boolean,
     isScrapSelected: Boolean,
-    onLikeClick: (Int) -> Unit,
-    onScrapClick: (Int) -> Unit,
+    onLikeClick: (Int) -> Boolean,
+    onScrapClick: (Int) -> Boolean,
     // id
     onItemClick: (Int) -> Unit
 ) {
@@ -168,8 +169,9 @@ fun RecipeCard(
                         iconNotChecked = scrapNotChecked,
                         checked = isScrapSelected,
                         onClick = { isScrapSelected ->
-                            !isScrapSelected
-                            onScrapClick(recipeId)
+                            val result = onScrapClick(recipeId)
+                            if (result) !isScrapSelected
+
                         },
                         checkedColor = ZipdabangandroidTheme.Colors.Cream
                     )
@@ -183,8 +185,8 @@ fun RecipeCard(
                         iconNotChecked = favoriteNotChecked,
                         checked = isLikeSelected,
                         onClick = { isLikeSelected ->
-                            !isLikeSelected
-                            onLikeClick(recipeId)
+                            val result = onLikeClick(recipeId)
+                            if (result) !isLikeSelected
                         },
                         checkedColor = ZipdabangandroidTheme.Colors.Strawberry
                     )
@@ -265,9 +267,11 @@ fun RecipeCardPreview() {
         isScrapSelected = scrap,
         onLikeClick = { state ->
             like = !like
+            true
         },
         onScrapClick = { state ->
             scrap = !scrap
+            true
         },
         onItemClick = { recipeId ->
 

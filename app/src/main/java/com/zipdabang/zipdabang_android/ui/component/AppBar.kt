@@ -153,6 +153,83 @@ fun AppBarHome(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
+fun AppBarWithFullFunction(
+    startIcon: Int?,
+    endIcon1: Int?,
+    endIcon2: Int?,
+    onClickStartIcon: () -> Unit,
+    onClickEndIcon1: () -> Unit,
+    onClickEndIcon2: () -> Unit,
+    centerText: String
+) {
+    TopAppBar(
+        colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = Color.White //예은 - topAppBar containercolor 수정
+        ),
+        title = {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 48.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = centerText,
+                    fontSize = 24.sp,
+                    fontFamily = FontFamily(Font(R.font.cafe24ssurroundair)),
+                    color = Color(0xFFA38F85),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier
+                        .padding(top = 4.dp, bottom = 2.dp),
+                    textAlign = TextAlign.Center
+                )
+            }
+        },
+        navigationIcon = {
+            startIcon?.let {
+                IconButton(onClick = { onClickStartIcon() }) {
+                    Icon(
+                        painter = painterResource(id = it),
+                        contentDescription = "",
+                        modifier = Modifier
+                            .padding(4.dp),
+                        tint = ZipdabangandroidTheme.Colors.Choco
+                    )
+                }
+            }
+        },
+        actions = {
+            endIcon1?.let {
+                IconButton(onClick = { onClickEndIcon1() }) {
+                    Icon(
+                        painter = painterResource(id = endIcon1),
+                        contentDescription = "search",
+                        modifier = Modifier
+                            .padding(4.dp),
+                        tint = ZipdabangandroidTheme.Colors.Choco
+                    )
+                }
+            }
+
+            endIcon2?.let {
+                IconButton(onClick = { onClickEndIcon2() }) {
+                    Icon(
+                        painter = painterResource(id = endIcon2),
+                        contentDescription = "menu",
+                        modifier = Modifier
+                            .padding(4.dp),
+                        tint = ZipdabangandroidTheme.Colors.Choco
+                    )
+                }
+            }
+
+        }
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
 fun AppBarDefault(
     startIcon: Int?,
     endIcon: Int?,
@@ -409,6 +486,19 @@ fun AppBarCollapsing(
     }
 }
 
+@Preview
+@Composable
+fun AppBarWithFullFunctionPreview() {
+    AppBarWithFullFunction(
+        startIcon = R.drawable.ic_topbar_backbtn,
+        endIcon1 = R.drawable.ic_topbar_search,
+        endIcon2 = R.drawable.ic_topbar_menu,
+        onClickStartIcon = { /*TODO*/ },
+        onClickEndIcon1 = { /*TODO*/ },
+        onClickEndIcon2 = { /*TODO*/ },
+        centerText = "레시피.zip"
+    )
+}
 
 @Preview
 @Composable
@@ -481,3 +571,4 @@ fun loadXmlDrawable(@DrawableRes resId: Int): ImageBitmap? =
         LocalContext.current,
         resId
     )?.toBitmap()?.asImageBitmap()
+

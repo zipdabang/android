@@ -54,6 +54,7 @@ sealed class MyScreen(val route : String){
     object Myrecipe : MyScreen(route = "my/myrecipe")
     object Shopping : MyScreen(route = "my/shopping")
     object FriendList : MyScreen(route = "my/friendlist")
+    object RecipeWrite : MyScreen(route = "my/recipewrite")
 }
 
 sealed class DrawerScreen(val route : String){
@@ -65,10 +66,22 @@ sealed class DrawerScreen(val route : String){
     object Inquery : DrawerScreen(route = "drawer/inquery")
     //회원 정보
     object UserInfo : DrawerScreen(route = "drawer/userinfo")
+    object UserInfoBasic : DrawerScreen(route="drawer/userinfo/basic")
+    object UserInfoDetail : DrawerScreen(route="drawer/userinfo/detail")
+    object UserInfoNickname : DrawerScreen(route="main/drawer/userinfo/nickname")
 
 }
 
 
 sealed class SharedScreen(val route : String){
     object DetailRecipe : SharedScreen(route = "shared/detail/{recipeId}")
+    object Search : SharedScreen(route = "shared/search")
+
+    object SearchRecipeCategory : SharedScreen(route = "shared/search?categoryId={categoryId}&keyword={keyword}"){
+        fun passQuery(categoryId : Int?, keyword: String?) : String{
+            return "shared/search?categoryId=$categoryId&keyword=$keyword"
+        }
+    }
+
+
 }

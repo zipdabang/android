@@ -1,14 +1,13 @@
 package com.zipdabang.zipdabang_android.module.recipes.ui.viewmodel
 
+import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
-import androidx.datastore.core.DataStore
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.zipdabang.zipdabang_android.common.Resource
 import com.zipdabang.zipdabang_android.common.ResponseCode
-import com.zipdabang.zipdabang_android.core.data_store.proto.Token
 import com.zipdabang.zipdabang_android.module.recipes.common.OwnerType
 import com.zipdabang.zipdabang_android.module.recipes.ui.state.PreferenceToggleState
 import com.zipdabang.zipdabang_android.module.recipes.ui.state.RecipeBannerState
@@ -20,7 +19,6 @@ import com.zipdabang.zipdabang_android.module.recipes.use_case.GetRecipePreviewU
 import com.zipdabang.zipdabang_android.module.recipes.use_case.ToggleLikeUseCase
 import com.zipdabang.zipdabang_android.module.recipes.use_case.ToggleScrapUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
@@ -76,6 +74,7 @@ class RecipeMainViewModel @Inject constructor(
         getRecipeBannerUseCase().onEach { result ->
             when (result) {
                 is Resource.Success -> {
+                    Log.d(TAG, "recipe banner result : $result")
                     when (result.code) {
                         ResponseCode.RESPONSE_DEFAULT.code -> {
                             result.data?.let {
@@ -124,6 +123,7 @@ class RecipeMainViewModel @Inject constructor(
         getRecipeCategoryUseCase().onEach { result ->
             when (result) {
                 is Resource.Success -> {
+                    Log.d(TAG, "recipe category result : $result")
                     result.data?.let {
                         when (it.code) {
                             ResponseCode.RESPONSE_DEFAULT.code -> {
@@ -176,6 +176,7 @@ class RecipeMainViewModel @Inject constructor(
         ).onEach { result ->
             when (result) {
                 is Resource.Success -> {
+                    Log.d(TAG, "recipe owner result : $result")
                     result.data?.let { recipePreview ->
                         when (recipePreview.code) {
                             ResponseCode.RESPONSE_DEFAULT.code -> {
@@ -259,13 +260,13 @@ class RecipeMainViewModel @Inject constructor(
                                 _errorMessage.value = ResponseCode.UNAUTHORIZED_TOKEN_UNUSUAL.message
                             }
 
-                            ResponseCode.UNAUTHORIZED_TOKEN_EXPIRED.code -> {
+                            ResponseCode.UNAUTHORIZED_ACCESS_EXPIRED.code -> {
                                 _toggleLikeResult.value = PreferenceToggleState(
                                     isLoading = false,
                                     errorMessage = it.message,
                                     isSuccessful = false
                                 )
-                                _errorMessage.value = ResponseCode.UNAUTHORIZED_TOKEN_EXPIRED.message
+                                _errorMessage.value = ResponseCode.UNAUTHORIZED_ACCESS_EXPIRED.message
                             }
 
                             ResponseCode.UNAUTHORIZED_TOKEN_NOT_EXISTS.code -> {
@@ -347,13 +348,13 @@ class RecipeMainViewModel @Inject constructor(
                                 _errorMessage.value = ResponseCode.UNAUTHORIZED_TOKEN_UNUSUAL.message
                             }
 
-                            ResponseCode.UNAUTHORIZED_TOKEN_EXPIRED.code -> {
+                            ResponseCode.UNAUTHORIZED_ACCESS_EXPIRED.code -> {
                                 _toggleScrapResult.value = PreferenceToggleState(
                                     isLoading = false,
                                     errorMessage = it.message,
                                     isSuccessful = false
                                 )
-                                _errorMessage.value = ResponseCode.UNAUTHORIZED_TOKEN_EXPIRED.message
+                                _errorMessage.value = ResponseCode.UNAUTHORIZED_ACCESS_EXPIRED.message
                             }
 
                             ResponseCode.UNAUTHORIZED_TOKEN_NOT_EXISTS.code -> {

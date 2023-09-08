@@ -5,6 +5,8 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.core.DataStoreFactory
 import androidx.datastore.dataStoreFile
 import androidx.room.Room
+import androidx.room.migration.Migration
+import androidx.sqlite.db.SupportSQLiteDatabase
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import com.zipdabang.zipdabang_android.common.Constants
 import com.zipdabang.zipdabang_android.common.Constants.PAGING3_DATABASE
@@ -18,10 +20,13 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.flow.first
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
+import okhttp3.Interceptor
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
+import okhttp3.Response
 import retrofit2.Retrofit
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
@@ -55,17 +60,39 @@ object AppModule {
     fun provideDatabase(
         @ApplicationContext context: Context
     ): Paging3Database {
-        return Room.databaseBuilder(
-            context,
-            Paging3Database::class.java,
-            PAGING3_DATABASE
-        ).build()
+/*        val MIGRATION_1_2 = object: Migration(1,2) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                //만약, 테이블이 추가 되었다면 어떤 테이블이 추가 되었는지 알려주는 query문장이 필요
+                database.execSQL("CREATE TABLE 'recipe_item_table' ('categoryId' INTEGER, 'comments' INTEGER, 'createdAt' TEXT, 'isLiked' INTEGER, 'isScrapped' INTEGER, 'likes' INTEGER, 'nickname' TEXT, 'recipeName' TEXT, 'scraps' INTEGER, 'thumbnailUrl' TEXT " + "PRIMARY KEY('recipeId'))")
+            }
+        }*/
+
+        return Room
+            .databaseBuilder(
+                context,
+                Paging3Database::class.java,
+                PAGING3_DATABASE
+            )
+            .fallbackToDestructiveMigration()
+//            .addMigrations(MIGRATION_1_2)
+            .build()
     }
 
     @Provides
     @Singleton // have a singleton...
-    fun provideHttpClient(): OkHttpClient {
+    fun provideHttpClient(
+        tokenDataStore: DataStore<Token>
+    ): OkHttpClient {
+
+        // val accessToken = tokenDataStore.data.first().accessToken
+
         return OkHttpClient.Builder()
+/*            .addInterceptor(Interceptor { chain ->
+                val newRequest = chain.request().newBuilder()
+                    .addHeader("Authorization", )
+                    .build()
+                chain.proceed(newRequest);
+            })*/
             .readTimeout(15, TimeUnit.SECONDS)
             .connectTimeout(15, TimeUnit.SECONDS)
             .build()

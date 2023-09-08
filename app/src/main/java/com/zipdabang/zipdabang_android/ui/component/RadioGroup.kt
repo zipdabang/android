@@ -34,11 +34,12 @@ import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
 
 @Composable
 fun RadioGroupHorizontal(
+    selectedIndex : Int,
     optionList: List<String>,
     onOptionChange: (String) -> Unit
 ) {
     var selectedOption by remember {
-        mutableStateOf(optionList[0])
+        mutableStateOf(optionList[selectedIndex])
     }
 
     Row(
@@ -145,7 +146,7 @@ fun RadioGroupVertical(
 @Preview(showBackground = true)
 @Composable
 fun RadioGroupHorizontalPreview() {
-    RadioGroupHorizontal(optionList = listOf("카드", "현금", "수표"), onOptionChange = {})
+    RadioGroupHorizontal(selectedIndex = 0, optionList = listOf("카드", "현금", "수표"), onOptionChange = {})
 }
 
 @Preview(showBackground = true)

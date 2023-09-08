@@ -41,7 +41,7 @@ fun GroupHeader(
             .fillMaxWidth()
             .padding(
                 start = 16.dp,
-                end = 26.dp,
+                end = 16.dp,
                 top = 6.dp,
                 bottom = 6.dp
             )
@@ -101,7 +101,7 @@ fun GroupHeaderReversed(
             .fillMaxWidth()
             .padding(
                 start = 16.dp,
-                end = 26.dp,
+                end = 16.dp,
                 top = 10.dp,
                 bottom = 10.dp
             )

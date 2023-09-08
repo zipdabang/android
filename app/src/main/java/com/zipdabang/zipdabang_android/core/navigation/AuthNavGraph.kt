@@ -51,6 +51,9 @@ fun NavGraphBuilder.authNavGraph(navController: NavHostController) {
 
                 onLoginLater = {
                     navController.navigate(MAIN_ROUTE){
+                        popUpTo(AuthScreen.SignIn.route) {
+                            inclusive = true
+                        }
                         launchSingleTop = true
                     }
                 }
@@ -96,12 +99,13 @@ fun NavGraphBuilder.authNavGraph(navController: NavHostController) {
                     navController.popBackStack(AuthScreen.Terms.route, inclusive = false)
                 },
                 onClickNext = {
-                    navController.navigate(AuthScreen.RegisterUserAddress.route)
+                    navController.navigate(AuthScreen.RegisterNickname.route)
                 }
             )
         }
 
-        composable(route =AuthScreen.RegisterUserAddress.route) {navBackStackEntry ->
+        // 상세 주소
+        /*composable(route =AuthScreen.RegisterUserAddress.route) {navBackStackEntry ->
             val authSharedViewModel = navBackStackEntry.authSharedViewModel<AuthSharedViewModel>(navController = navController)
             RegisterUserAddressScreen(
                 navController = navController,
@@ -113,7 +117,7 @@ fun NavGraphBuilder.authNavGraph(navController: NavHostController) {
                     navController.navigate(AuthScreen.RegisterNickname.route)
                 }
             )
-        }
+        }*/
 
         composable(route =AuthScreen.RegisterNickname.route) {navBackStackEntry ->
             val authSharedViewModel = navBackStackEntry.authSharedViewModel<AuthSharedViewModel>(navController = navController)
@@ -121,7 +125,7 @@ fun NavGraphBuilder.authNavGraph(navController: NavHostController) {
                 navController = navController,
                 authSharedViewModel = authSharedViewModel,
                 onClickBack = {
-                    navController.popBackStack(AuthScreen.RegisterUserAddress.route, inclusive = false)
+                    navController.popBackStack(AuthScreen.RegisterUserInfo.route, inclusive = false)
                 },
                 onClickNext = {
                     navController.navigate(AuthScreen.RegisterPreferences.route)
@@ -142,6 +146,9 @@ fun NavGraphBuilder.authNavGraph(navController: NavHostController) {
                 onClickNext = {
                     Log.e("signup-tokens", "넘어가져2")
                     navController.navigate(MAIN_ROUTE){
+                        popUpTo(AuthScreen.SignIn.route) {
+                            inclusive = false //이 경로를 포함하지 않고 제거
+                        }
                         launchSingleTop = true
                     }
                 }

@@ -17,8 +17,6 @@ import com.zipdabang.zipdabang_android.module.recipes.ui.viewmodel.RecipeListVie
 fun RecipeList(
     modifier: Modifier,
     onItemClick: (Int) -> Unit,
-    onLikeClick: (Int) -> Unit,
-    onScrapClick: (Int) -> Unit,
     category: RecipeSubtitleState,
     // 매개변수 명을 content로 해야 composable을 넣을 수 있음
     content: @Composable() () -> Unit,
@@ -31,11 +29,6 @@ fun RecipeList(
             viewModel.getRecipeListByOwnerType(
                 ownerType = category.ownerType
             ).collectAsLazyPagingItems()
-        } else if (category.categoryId != null && category.ownerType == null) {
-            Log.d("RecipeList", "category")
-            viewModel.getRecipeListByCategory(
-                categoryId = category.categoryId
-            ).collectAsLazyPagingItems()
         } else {
             viewModel.getRecipeListByCategory(
                 categoryId = category.categoryId!!
@@ -45,13 +38,10 @@ fun RecipeList(
     Column(
         modifier = modifier.fillMaxSize()
     ) {
-        content()
-        Spacer(modifier = Modifier.height(6.dp))
         RecipeListContent(
             items = recipeList,
-            onLikeClick = onLikeClick,
-            onScrapClick = onScrapClick,
-            onItemClick = onItemClick
+            onItemClick = onItemClick,
+            content = content
         )
     }
 }

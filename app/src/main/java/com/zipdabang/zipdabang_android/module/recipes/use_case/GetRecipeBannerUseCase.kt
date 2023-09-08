@@ -20,23 +20,26 @@ class GetRecipeBannerUseCase @Inject constructor(
     private val recipeBannerRepository: RecipeBannerRepository
 ) {
     operator fun invoke(): Flow<Resource<List<BannerImageItem>>> = flow {
-        val accessToken = tokenDataStore.data.first().accessToken ?: TOKEN_NULL
+        val accessToken = ("Bearer " + tokenDataStore.data.first().accessToken)
         try {
             emit(Resource.Loading())
-            val bannerData = recipeBannerRepository.getRecipeBanners(accessToken).toRecipeBanner()
-            if (bannerData.isSuccessful) {
-                bannerData.recipeBanners?.let {
-                    emit(
-                        Resource.Success(
-                            data = it,
-                            code = bannerData.code,
-                            message = bannerData.message
+            val bannerData = recipeBannerRepository.getRecipeBanners(accessToken)?.toRecipeBanner()
+            bannerData?.let {
+                if (bannerData.isSuccessful) {
+                    bannerData.recipeBanners?.let {
+                        emit(
+                            Resource.Success(
+                                data = it,
+                                code = bannerData.code,
+                                message = bannerData.message
+                            )
                         )
-                    )
+                    }
+                } else {
+                    emit(Resource.Error(message = bannerData.message))
                 }
-            } else {
-                emit(Resource.Error(message = bannerData.message))
             }
+
         } catch (e: HttpException) {
             emit(Resource.Error(message = e.message ?: "unexpected http error"))
         } catch (e: IOException) {

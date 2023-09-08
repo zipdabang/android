@@ -15,17 +15,7 @@ class GetRecentUseCase  @Inject constructor(
 ) {
 
     operator fun invoke(token : String) : Flow<MarketResource<RecentDto>> = flow {
-        try{
-            emit(MarketResource.MarketLoading(true))
-            val data = repository.getRecentItmes(token)
-            emit(MarketResource.MarketSuccess(data))
-    } catch (e : HttpException){
-        emit(MarketResource.MarketError(e.localizedMessage ?: "An unexpected error occured"))
-        } catch(e : IOException){
-            emit(MarketResource.MarketError("Couldn't reach server. Check your internal code"))
-        }
-
+         MarketApiCall { repository.getRecentItmes(token) }
     }
-
 
 }

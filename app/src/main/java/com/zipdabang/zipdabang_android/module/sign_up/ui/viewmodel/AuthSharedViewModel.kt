@@ -1,22 +1,17 @@
 package com.zipdabang.zipdabang_android.module.sign_up.ui.viewmodel
 
 import android.util.Log
-import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.datastore.core.DataStore
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.zipdabang.zipdabang_android.common.Resource
 import com.zipdabang.zipdabang_android.core.data_store.proto.ProtoDataViewModel
-import com.zipdabang.zipdabang_android.core.data_store.proto.ProtoRepository
 import com.zipdabang.zipdabang_android.core.data_store.proto.Token
 import com.zipdabang.zipdabang_android.module.sign_up.data.remote.AuthRequest
 import com.zipdabang.zipdabang_android.module.sign_up.data.remote.InfoRequest
-import com.zipdabang.zipdabang_android.module.sign_up.data.remote.InfoResponse
 import com.zipdabang.zipdabang_android.module.sign_up.data.remote.PhoneRequest
 import com.zipdabang.zipdabang_android.module.sign_up.domain.usecase.GetBeveragesUseCase
 import com.zipdabang.zipdabang_android.module.sign_up.domain.usecase.GetNicknameUseCase
@@ -27,19 +22,12 @@ import com.zipdabang.zipdabang_android.module.sign_up.domain.usecase.PostPhoneSm
 import com.zipdabang.zipdabang_android.module.sign_up.domain.usecase.ValidateBirthdayUseCase
 import com.zipdabang.zipdabang_android.module.sign_up.domain.usecase.ValidateNicknameUseCase
 import com.zipdabang.zipdabang_android.module.sign_up.domain.usecase.ValidatePhoneUseCase
-import com.zipdabang.zipdabang_android.module.sign_up.domain.usecase.ValidationResult
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.single
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import java.util.Calendar
 import javax.inject.Inject
 
 @HiltViewModel
@@ -71,16 +59,6 @@ class AuthSharedViewModel @Inject constructor(
     fun updateProfile(profile: String) {
         _profile.value = profile
     }
-
-
-    lateinit var social : String
-    suspend fun updateSocial(){
-        social = dataStore.data.first().platformStatus.toString()
-    }
-
-
-    // info 글자수 제한하기, 생년월일 더 제한, response enum class로 옮기기, textfield 옮겨갈때마다 focusing
-
 
     /*TermsScreen*/
     var stateTermsForm by mutableStateOf(TermsFormState())
@@ -659,7 +637,7 @@ class AuthSharedViewModel @Inject constructor(
     ){
         try{
             val result = postInfoUseCase(
-                social = social, //tokenDataStore.data.first().platformStatus.toString() ,//social,
+                social = dataStore.data.first().platformStatus.toString(), //social,
                 infoRequest = InfoRequest(
                     email = _email.value,
                     profileUrl = _profile.value,
@@ -668,9 +646,9 @@ class AuthSharedViewModel @Inject constructor(
                     birth = stateUserInfoForm.birthday,
                     phoneNum = "01012345678", //stateUserInfoForm.phoneNumber,
                     gender = if (stateUserInfoForm.gender == "남") "1" else "2",
-                    zipCode = stateUserAddressForm.zipCode,
-                    address = stateUserAddressForm.address,
-                    detailAddress = stateUserAddressForm.detailAddress,
+                    //zipCode = stateUserAddressForm.zipCode,
+                    //address = stateUserAddressForm.address,
+                    //detailAddress = stateUserAddressForm.detailAddress,
                     nickname = stateNicknameForm.nickname,
                     preferBeverages = stateBeverageForm.beverageCheckList.mapIndexedNotNull { index, isSelected ->
                         if (isSelected) index+1 else null
@@ -681,19 +659,21 @@ class AuthSharedViewModel @Inject constructor(
             result.collect{ result ->
                 when(result){
                     is Resource.Success ->{
+                        Log.e("signup-tokens", "api 성공 response : ${result.data?.result}")
+
                         if(result.data?.result != null){
                             if(result.data?.code == 2000){
-                                //Log.e("signup-tokens","api 실행 후 : ${tokenStoreViewModel.tokens}")
                                 tokenStoreViewModel.updateAccessToken(result.data.result.accessToken)
                                 tokenStoreViewModel.updateRefreshToken(result.data.result.refreshToken)
-                                //Log.e("signup-tokens","토큰 담은 후 : ${tokenStoreViewModel.tokens}")
+                                Log.e("signup-tokens","토큰 담음")
+                                Log.e("signup-tokens", "토큰 출력 : accessToken ${dataStore.data.first().accessToken}")
+                                Log.e("signup-tokens", "토큰 출력 : refreshToken ${dataStore.data.first().refreshToken}")
                             } else {
                                 //토큰 null임
                             }
                         } else { //result가 null 일때
 
                         }
-                        Log.e("signup-tokens", "성공 : ${result.data?.result}")
                     }
                     is Resource.Error ->{
                         Log.e("signup-tokens", "에러 : ${result.message}")
