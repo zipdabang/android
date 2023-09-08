@@ -2,29 +2,19 @@ package com.zipdabang.zipdabang_android.module.search.data.dto.recipecategory
 
 import android.util.Log
 import androidx.datastore.core.DataStore
-import androidx.lifecycle.viewModelScope
 import androidx.paging.ExperimentalPagingApi
-import androidx.paging.LoadState.Loading.endOfPaginationReached
 import androidx.paging.LoadType
 import androidx.paging.PagingState
 import androidx.paging.RemoteMediator
 import androidx.room.withTransaction
 import com.zipdabang.zipdabang_android.core.Paging3Database
-import com.zipdabang.zipdabang_android.core.data_store.proto.ProtoRepository
 import com.zipdabang.zipdabang_android.core.data_store.proto.Token
 import com.zipdabang.zipdabang_android.core.remotekey.RemoteKeys
-import com.zipdabang.zipdabang_android.module.market.data.MarketApi
 import com.zipdabang.zipdabang_android.module.search.data.SearchApi
 import com.zipdabang.zipdabang_android.module.search.data.dto.common.SearchRecipe
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.launch
 import java.lang.Exception
 import javax.inject.Inject
 

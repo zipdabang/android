@@ -59,7 +59,7 @@ fun SearchScreen(
             Box(
                 Modifier.weight(7f)
             ) {
-                com.zipdabang.zipdabang_android.ui.component.SearchBar(hintText = "찾는 레시피가 있으신가요?", keyword = keyword, viewModel = searchViewModel, getText = {it-> keyword= it})
+                com.zipdabang.zipdabang_android.ui.component.SearchBar(hintText = "찾는 레시피가 있으신가요?", keyword = keyword, viewModel = searchViewModel)
             }
         }
         var categoryList : List<SearchCategoryList> = emptyList()
