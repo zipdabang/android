@@ -8,5 +8,5 @@ data class RecipeListDto(
     val code: Int,
     val isSuccess: Boolean,
     val message: String,
-    val result: RecipeListResult
+    val result: RecipeListResult?
 )

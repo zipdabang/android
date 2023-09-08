@@ -1,91 +1,132 @@
 package com.zipdabang.zipdabang_android.module.recipes.domain.mediator
 
-import android.content.Context
+import android.util.Log
 import androidx.datastore.core.DataStore
+import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadType
 import androidx.paging.PagingState
+import androidx.paging.RemoteMediator
 import androidx.room.withTransaction
-import com.zipdabang.zipdabang_android.common.Constants.TOKEN_NULL
 import com.zipdabang.zipdabang_android.core.Paging3Database
 import com.zipdabang.zipdabang_android.core.data_store.proto.Token
 import com.zipdabang.zipdabang_android.core.remotekey.RemoteKeys
-import com.zipdabang.zipdabang_android.module.recipes.common.RecipeListSort
 import com.zipdabang.zipdabang_android.module.recipes.data.RecipeApi
 import com.zipdabang.zipdabang_android.module.recipes.data.common.RecipeItem
-import dagger.assisted.Assisted
-import dagger.assisted.AssistedFactory
-import dagger.assisted.AssistedInject
-import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.flow.collect
+import com.zipdabang.zipdabang_android.module.recipes.data.local.RecipeItemEntity
+import com.zipdabang.zipdabang_android.module.recipes.mapper.toRecipeItemEntity
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.map
-import javax.inject.Inject
 
+@OptIn(ExperimentalPagingApi::class)
 class CategoryRecipeListMediator(
     private val recipeApi: RecipeApi,
     private val database: Paging3Database,
     private val datastore: DataStore<Token>,
     private val categoryId: Int,
     private val orderBy: String
-): RecipeMediator<RecipeItem>(recipeApi, database) {
+): RemoteMediator<Int, RecipeItemEntity>() {
 
     private val recipeListDao = database.recipeListDao()
     private val remoteKeyDao = database.RemoteKeyDao()
 
-    override suspend fun getResponse(loadType: LoadType, currentPage: Int) {
-
-        val accessToken = datastore.data.first().accessToken ?: TOKEN_NULL
-
-        val response = recipeApi.getRecipeListByCategory(
-            accessToken = accessToken,
-            categoryId = categoryId,
-            order = orderBy,
-            pageIndex = currentPage
-        ).result.recipeList
-
-        val endOfPaginationReached = response.isEmpty()
-
-        val prevPage = if (currentPage == 1) null else currentPage - 1
-        val nextPage = if (endOfPaginationReached) null else currentPage + 1
-
-        database.withTransaction {
-            if (loadType == LoadType.REFRESH) {
-                recipeListDao.deleteAllRecipes()
-                remoteKeyDao.deleteRemoteKeys()
+    override suspend fun load(
+        loadType: LoadType,
+        state: PagingState<Int, RecipeItemEntity>
+    ): MediatorResult {
+        return try {
+            val currentPage = when (loadType) {
+                LoadType.REFRESH -> {
+                    Log.d("RecipeList - Mediator", "${state.anchorPosition}")
+                    val remoteKeys = getRemoteKeyClosestToCurrentPosition(state)
+                    Log.d("RecipeList - Mediator", "loadtype - refresh, remoteKeys : $remoteKeys")
+                    remoteKeys?.nextPage?.minus(1) ?: 1
+                }
+                LoadType.PREPEND -> {
+                    val remoteKeys = getRemoteKeyForFirstItem(state)
+                    val prevPage = remoteKeys?.prevPage ?: return MediatorResult.Success(endOfPaginationReached = remoteKeys != null)
+                    Log.d("RecipeList - Mediator", "loadtype - prepend")
+                    prevPage
+                }
+                LoadType.APPEND -> {
+                    val remoteKeys = getRemoteKeyForLastItem(state)
+                    val nextPage = remoteKeys?.nextPage ?: return MediatorResult.Success(endOfPaginationReached = remoteKeys != null)
+                    Log.d("RecipeList - Mediator", "loadtype - append")
+                    nextPage
+                }
             }
 
-            val keys = response.map { recipeItem ->
-                RemoteKeys(
-                    id = recipeItem.recipeId,
-                    prevPage = prevPage,
-                    nextPage = nextPage
-                )
+            val accessToken = ("Bearer " + datastore.data.first().accessToken)
+            Log.d("RecipeList - mediator", "accessToken : $accessToken")
+
+            val response = recipeApi.getRecipeListByCategory(
+                accessToken = accessToken,
+                categoryId = categoryId,
+                order = orderBy,
+                pageIndex = currentPage
+            ).result?.recipeList?.map {
+                it.toRecipeItemEntity()
+            } ?: emptyList()
+
+            Log.d("RecipeList - mediator", "current page $currentPage")
+
+            val endOfPaginationReached = response.isEmpty()
+
+            val prevPage = if (currentPage == 1) null else currentPage - 1
+            val nextPage = if (endOfPaginationReached) null else currentPage + 1
+
+            database.withTransaction {
+                Log.d("RecipeList - Mediator", "database transaction entered")
+                if (loadType == LoadType.REFRESH) {
+                    Log.d("RecipeList - Mediator", "load type is refresh")
+                    recipeListDao.deleteAllRecipes()
+                    remoteKeyDao.deleteRemoteKeys()
+                }
+
+                recipeListDao.addRecipes(recipes = response)
+
+                Log.d("RecipeList - Mediator", "response size in database ${response?.size}")
+
+                val keys = response.map { recipeItem ->
+                    val itemId = recipeListDao.getItemIdByRecipeId(recipeItem.recipeId)
+                    RemoteKeys(
+                        id = itemId,
+                        prevPage = prevPage,
+                        nextPage = nextPage
+                    )
+                }
+                Log.d("RecipeList - Mediator", "key size in database ${keys.size}")
+
+                remoteKeyDao.addAllRemoteKeys(remoteKeys = keys)
+
+                Log.d("RecipeList - Mediator", "database transaction ended")
             }
-            remoteKeyDao.addAllRemoteKeys(remoteKeys = keys)
-            recipeListDao.addRecipes(recipes = response)
+
+            MediatorResult.Success(endOfPaginationReached = endOfPaginationReached)
+        } catch (e: Exception) {
+            Log.d("RecipeList - mediator", "error occured : ${e.message} ${e.cause}")
+            return MediatorResult.Error(e)
         }
     }
 
-    override suspend fun getRemoteKeyForLastItem(state: PagingState<Int, RecipeItem>): RemoteKeys? {
+    private suspend fun getRemoteKeyForLastItem(state: PagingState<Int, RecipeItemEntity>): RemoteKeys? {
         return state.pages.lastOrNull {
             it.data.isNotEmpty()
-        }?.data?.lastOrNull() ?.let { unsplashImage ->
-            remoteKeyDao.getRemoteKeys(id = unsplashImage.recipeId)
+        }?.data?.lastOrNull() ?.let { recipeItem ->
+            remoteKeyDao.getRemoteKeys(id = recipeItem.itemId)
         }
     }
 
-    override suspend fun getRemoteKeyForFirstItem(state: PagingState<Int, RecipeItem>): RemoteKeys? {
+    private suspend fun getRemoteKeyForFirstItem(state: PagingState<Int, RecipeItemEntity>): RemoteKeys? {
         return state.pages.firstOrNull {
             it.data.isNotEmpty()
-        }?.data?.firstOrNull()?.let { unsplashImage ->
-            remoteKeyDao.getRemoteKeys(id = unsplashImage.recipeId)
+        }?.data?.firstOrNull()?.let { recipeItem ->
+            remoteKeyDao.getRemoteKeys(id = recipeItem.itemId)
         }
     }
 
-    override suspend fun getRemoteKeyClosestToCurrentPosition(state: PagingState<Int, RecipeItem>): RemoteKeys? {
+    private suspend fun getRemoteKeyClosestToCurrentPosition(state: PagingState<Int, RecipeItemEntity>): RemoteKeys? {
         return state.anchorPosition?.let { position ->
-            state.closestItemToPosition(position)?.recipeId?.let { recipeId ->
-                remoteKeyDao.getRemoteKeys(id = recipeId)
+            state.closestItemToPosition(position)?.itemId?.let { itemId ->
+                remoteKeyDao.getRemoteKeys(id = itemId)
             }
         }
     }

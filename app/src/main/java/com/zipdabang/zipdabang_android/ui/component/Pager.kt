@@ -40,7 +40,7 @@ fun Pager(
         modifier = Modifier.fillMaxSize()
     ) {
         Column(
-            modifier = Modifier.fillMaxWidth().padding(horizontal = 52.dp)
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 40.dp)
         ) {
             Tabs(tabs = tabsList, pagerState = pagerState)
         }

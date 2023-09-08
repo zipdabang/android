@@ -5,7 +5,7 @@ import androidx.room.PrimaryKey
 import com.zipdabang.zipdabang_android.common.Constants.RECIPE_ITEM_TABLE
 import kotlinx.serialization.Serializable
 
-@Entity(tableName = RECIPE_ITEM_TABLE)
+
 @Serializable
 data class RecipeItem(
     val categoryId: List<Int>,
@@ -15,7 +15,6 @@ data class RecipeItem(
     var isScrapped: Boolean,
     var likes: Int,
     val nickname: String,
-    @PrimaryKey(autoGenerate = false)
     val recipeId: Int,
     val recipeName: String,
     var scraps: Int,

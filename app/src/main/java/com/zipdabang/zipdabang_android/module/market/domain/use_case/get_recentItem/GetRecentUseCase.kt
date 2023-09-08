@@ -16,5 +16,4 @@ class GetRecentUseCase  @Inject constructor(
          MarketApiCall { repository.getRecentItmes(token) }
     }
 
-
 }

@@ -16,6 +16,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
@@ -131,7 +132,11 @@ fun IngredientItem(
                 }
             }
         }
-        Divider(modifier = Modifier.fillMaxWidth())
+        Divider(
+            modifier = Modifier.fillMaxWidth()
+                .height(1.dp),
+            color = Color(0x1A262D31)
+        )
     }
 }
 

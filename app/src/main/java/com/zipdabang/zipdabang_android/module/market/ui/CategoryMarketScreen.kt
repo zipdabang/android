@@ -94,7 +94,7 @@ fun CategoryMarketScreen(
                                 modifier = Modifier.padding(horizontal = 8.dp)
                             ) {
 
-                                SearchBar(hintText = "찾는 상품을 검색해보세요")
+                             //   SearchBar(hintText = "찾는 상품을 검색해보세요")
 
                                 if (title != null) {
                                     Text(
