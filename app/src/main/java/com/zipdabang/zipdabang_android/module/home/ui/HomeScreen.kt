@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.zipdabang.zipdabang_android.R
+import com.zipdabang.zipdabang_android.core.navigation.SharedScreen
 import com.zipdabang.zipdabang_android.module.home.data.bestrecipe.BestRecipeDto
 import com.zipdabang.zipdabang_android.module.home.data.bestrecipe.Recipe
 import com.zipdabang.zipdabang_android.module.item.recipe.ui.RecipeCard
@@ -55,7 +56,7 @@ fun HomeScreen(
                    AppBarHome(
                         endIcon1 = R.drawable.ic_topbar_search,
                         endIcon2 = R.drawable.ic_topbar_menu,
-                       onClickEndIcon1 = {},
+                       onClickEndIcon1 = {navController.navigate(SharedScreen.Search.route)},
                         onClickEndIcon2 = { scope.launch { drawerState.open() } },
                         centerText = "집다방"
                     )
@@ -119,12 +120,8 @@ fun HomeScreen(
                                             comments = item.comments,
                                             isLikeSelected = item.isLiked,
                                             isScrapSelected = item.isScrapped,
-                                            onLikeClick = {
-                                                 true // 예은 임시로 해둠
-                                            },
-                                            onScrapClick = {
-                                                 true // 예은 임시로 해둠
-                                            },
+                                            onLikeClick = { TODO() },
+                                            onScrapClick = { TODO() },
                                             onItemClick = {}
                                         )
                                     }

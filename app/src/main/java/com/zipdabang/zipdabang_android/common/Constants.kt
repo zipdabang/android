@@ -18,6 +18,8 @@ object Constants {
     const val REMOTE_KEY_DATABASE = "remote_key_table"
     //----------------------------------------------------------------------------------------------
     const val RECIPE_ITEM_TABLE = "recipe_item_table"
+    //----------------------------------------------------------------------------------------------
+    const val SEARCH_RECIPE_TABLE = "search_recipe_table"
 
 
     const val ITEMS_PER_PAGE = 10
