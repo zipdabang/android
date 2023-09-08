@@ -94,7 +94,7 @@ fun RecipeWriteScreen(
                     value = "",
                     onValueChanged = { newText, maxLength ->
                         if(newText.length <= maxLength){
-                            //textState = newText
+                            //textState = newTextfr
                         }
                     },
                     singleLine = true,
