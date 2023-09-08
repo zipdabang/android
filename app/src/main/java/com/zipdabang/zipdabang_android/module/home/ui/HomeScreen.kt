@@ -144,8 +144,12 @@ fun HomeScreen(
                                             comments = item.comments,
                                             isLikeSelected = item.isLiked,
                                             isScrapSelected = item.isScrapped,
-                                            onLikeClick = { TODO() },
-                                            onScrapClick = { TODO() },
+                                            onLikeClick = {
+                                                true // 예은 임시로 해둠
+                                            },
+                                            onScrapClick = {
+                                                true // 예은 임시로 해둠
+                                            },
                                             onItemClick = {}
                                         )
                                     }

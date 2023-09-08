@@ -1,7 +1,6 @@
 package com.zipdabang.zipdabang_android.module.detail.recipe.use_case
 
 import androidx.datastore.core.DataStore
-import com.zipdabang.zipdabang_android.common.Constants.TOKEN_NULL
 import com.zipdabang.zipdabang_android.common.Resource
 import com.zipdabang.zipdabang_android.common.ResponseCode
 import com.zipdabang.zipdabang_android.core.data_store.proto.Token
@@ -65,10 +64,10 @@ class GetRecipeDetailUseCase @Inject constructor(
                 )
             }
 
-            ResponseCode.UNAUTHORIZED_TOKEN_EXPIRED.code -> {
+            ResponseCode.UNAUTHORIZED_ACCESS_EXPIRED.code -> {
                 emit(
                     Resource.Error(
-                        message = ResponseCode.UNAUTHORIZED_TOKEN_EXPIRED.message
+                        message = ResponseCode.UNAUTHORIZED_ACCESS_EXPIRED.message
                     )
                 )
             }

@@ -76,7 +76,7 @@ fun MyScreen(
     val scope = rememberCoroutineScope()
     //val scaffoldState = rememberBottomSheetScaffoldState()
     //val tokenStoreViewModel = hiltViewModel<ProtoDataViewModel>()
-    val stateUserInfo = myViewModel.stateUserInfo
+    val stateMyUserInfo = myViewModel.stateMyUserInfo
 
     ModalDrawer(
         scaffold = {
@@ -103,8 +103,8 @@ fun MyScreen(
                         centerText = stringResource(id = R.string.zipdabang_title)
                     )
                 },
-                containerColor =Color.Transparent,
-                contentColor =Color.Transparent,
+                containerColor = Color.Transparent,
+                contentColor = Color.Transparent,
                 content = {
                     val scrollState = rememberScrollState()
 
@@ -128,7 +128,7 @@ fun MyScreen(
                                         .size(120.dp, 120.dp)
                                         .clip(CircleShape)
                                 ){
-                                    CircleImage(imageUrl = stateUserInfo.profileUrl, contentDescription = "")
+                                    CircleImage(imageUrl = stateMyUserInfo.profileUrl, contentDescription = "")
                                 }
                                 Box(
                                     modifier = Modifier
@@ -157,8 +157,8 @@ fun MyScreen(
                                 verticalAlignment = Alignment.CenterVertically,
                                 modifier = Modifier.padding(0.dp,24.dp,0.dp,0.dp)
                             ){
-                                Text(text=stateUserInfo.nickname, style=ZipdabangandroidTheme.Typography.twentytwo_700, color=Color.White)
-                                Text(text= "("+ stateUserInfo.name +")", style=ZipdabangandroidTheme.Typography.sixteen_500, color=Color.White)
+                                Text(text=stateMyUserInfo.nickname, style=ZipdabangandroidTheme.Typography.twentytwo_700, color=Color.White)
+                                Text(text= "("+ stateMyUserInfo.name +")", style=ZipdabangandroidTheme.Typography.sixteen_500, color=Color.White)
                             }
                             Row(
                                 horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -429,240 +429,6 @@ fun MyScreen(
 
                         }
                     }
-
-                    /*BottomSheetScaffold(
-                        modifier = Modifier
-                            .fillMaxSize(),
-                        scaffoldState = scaffoldState,
-                        sheetPeekHeight = 320.dp,
-                        sheetShadowElevation = 16.dp,
-                        sheetContainerColor = ZipdabangandroidTheme.Colors.SubBackground,
-                        sheetContentColor = ZipdabangandroidTheme.Colors.SubBackground,
-                        sheetContent = {
-                            //프로필 하단 부분
-                            Column(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .background(ZipdabangandroidTheme.Colors.SubBackground),
-                                verticalArrangement = Arrangement.Center
-                            ){
-                                Row(
-                                    modifier = Modifier
-                                        .height(120.dp)
-                                        .fillMaxWidth()
-                                        .padding(16.dp, 0.dp, 16.dp, 16.dp)
-                                        .background(
-                                            color = Color.White,
-                                            shape = ZipdabangandroidTheme.Shapes.small
-                                        ),
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.Center
-                                ){
-                                    Spacer(modifier = Modifier.weight(0.02f))
-                                    Box(
-                                        modifier = Modifier.weight(0.25f)
-                                    ) {
-                                        IconAndText(
-                                            iconImageVector = R.drawable.ic_my_favorite,
-                                            iconColor = ZipdabangandroidTheme.Colors.Strawberry,
-                                            iconModifier = Modifier.size(30.dp, 26.dp),
-                                            text = stringResource(id = R.string.my_like),
-                                            textColor = ZipdabangandroidTheme.Colors.Typo,
-                                            textStyle = ZipdabangandroidTheme.Typography.fourteen_500,
-                                            onClick = {
-                                                onClickLike()
-                                            }
-                                        )
-                                    }
-                                    Box(
-                                        modifier = Modifier.weight(0.25f)
-                                    ){
-                                        IconAndText(
-                                            iconImageVector = R.drawable.ic_my_bookmark,
-                                            iconColor = ZipdabangandroidTheme.Colors.Cream,
-                                            iconModifier = Modifier.size(20.dp, 24.dp),
-                                            text = stringResource(id = R.string.my_scrap),
-                                            textColor = ZipdabangandroidTheme.Colors.Typo,
-                                            textStyle = ZipdabangandroidTheme.Typography.fourteen_500,
-                                            onClick = {
-                                                onClickScrap()
-                                            }
-                                        )
-                                    }
-                                    Box(
-                                        modifier = Modifier.weight(0.25f)
-                                    ){
-                                        ImageIconAndText(
-                                            iconImageVector = R.drawable.zipdabanglogo_white,
-                                            iconColor = Color.Transparent,
-                                            iconModifier = Modifier.size(40.dp, 40.dp),
-                                            text = stringResource(id = R.string.my_myrecipe),
-                                            textColor = ZipdabangandroidTheme.Colors.Typo,
-                                            textStyle = ZipdabangandroidTheme.Typography.fourteen_500,
-                                            onClick = {
-                                                onClickMyrecipe()
-                                            }
-                                        )
-                                    }
-                                    Box(
-                                        modifier = Modifier.weight(0.25f)
-                                    ){
-                                        IconAndText(
-                                            iconImageVector = R.drawable.ic_my_shopping_cart,
-                                            iconColor = ZipdabangandroidTheme.Colors.Choco,
-                                            iconModifier = Modifier.size(30.dp, 30.dp),
-                                            text = stringResource(id = R.string.my_shopping),
-                                            textColor = ZipdabangandroidTheme.Colors.Typo,
-                                            textStyle = ZipdabangandroidTheme.Typography.fourteen_500,
-                                            onClick = {
-                                                onClickShopping()
-                                            }
-                                        )
-                                    }
-                                    Spacer(modifier = Modifier.weight(0.02f))
-                                }
-
-                                Column(
-                                    modifier = Modifier
-                                        .height(172.dp)
-                                        .fillMaxWidth()
-                                        .padding(16.dp, 0.dp, 16.dp, 0.dp),
-                                    verticalArrangement = Arrangement.spacedBy(8.dp)
-                                ){
-                                    Box(
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .weight(1f)
-                                            .clickable(
-                                                onClick = {
-                                                    onClickFriendList()
-                                                },
-                                            )
-                                            .background(
-                                                color = Color.White,
-                                                shape = ZipdabangandroidTheme.Shapes.small
-                                            ),
-                                        contentAlignment = Alignment.Center
-                                    ){
-                                        Row(
-                                            modifier = Modifier
-                                                .fillMaxWidth()
-                                                .padding(16.dp, 0.dp, 16.dp, 0.dp),
-                                            verticalAlignment = Alignment.CenterVertically,
-                                            horizontalArrangement = Arrangement.SpaceBetween,
-                                        ){
-                                            Text(
-                                                text = stringResource(id = R.string.my_friendlist),
-                                                style = ZipdabangandroidTheme.Typography.fourteen_500,
-                                                color = ZipdabangandroidTheme.Colors.Typo
-                                            )
-                                            Text(
-                                                text = "0",
-                                                style =ZipdabangandroidTheme.Typography.fourteen_500,
-                                                color = ZipdabangandroidTheme.Colors.Typo
-                                            )
-                                        }
-                                    }
-                                    Box(
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .clickable(onClick = {})
-                                            .weight(1f)
-                                            .background(
-                                                color = Color.White,
-                                                shape = ZipdabangandroidTheme.Shapes.small
-                                            ),
-                                        contentAlignment = Alignment.Center
-                                    ){
-                                        Row(
-                                            modifier = Modifier
-                                                .fillMaxWidth()
-                                                .padding(16.dp, 0.dp, 16.dp, 0.dp),
-                                            verticalAlignment = Alignment.CenterVertically,
-                                            horizontalArrangement = Arrangement.SpaceBetween,
-                                        ){
-                                            Text(
-                                                text = stringResource(id = R.string.my_noticeandalarm),
-                                                style = ZipdabangandroidTheme.Typography.fourteen_500,
-                                                color = ZipdabangandroidTheme.Colors.Typo
-                                            )
-                                            Text(
-                                                text = "0",
-                                                style =ZipdabangandroidTheme.Typography.fourteen_500,
-                                                color = ZipdabangandroidTheme.Colors.Typo
-                                            )
-                                        }
-                                    }
-                                    Box(
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .weight(1f)
-                                            .background(
-                                                color = Color.White,
-                                                shape = ZipdabangandroidTheme.Shapes.small
-                                            ),
-                                        contentAlignment = Alignment.Center
-                                    ){
-                                        Row(
-                                            modifier = Modifier
-                                                .fillMaxWidth()
-                                                .padding(16.dp, 0.dp, 16.dp, 0.dp),
-                                            verticalAlignment = Alignment.CenterVertically,
-                                            horizontalArrangement = Arrangement.SpaceBetween,
-                                        ){
-                                            Text(
-                                                text = stringResource(id = R.string.my_what),
-                                                style = ZipdabangandroidTheme.Typography.fourteen_500,
-                                                color = ZipdabangandroidTheme.Colors.Typo
-                                            )
-                                            Text(
-                                                text = "0",
-                                                style =ZipdabangandroidTheme.Typography.fourteen_500,
-                                                color = ZipdabangandroidTheme.Colors.Typo
-                                            )
-                                        }
-                                    }
-                                }
-
-                                Row(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(16.dp, 60.dp, 16.dp, 32.dp),
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.Center
-                                ){
-                                    ClickableText(
-                                        text = AnnotatedString(text = stringResource(id = R.string.my_logout)),
-                                        style =  ZipdabangandroidTheme.Typography.fourteen_300,
-                                        onClick = {
-                                            CoroutineScope(Dispatchers.Main).launch {
-                                                //tokenStoreViewModel.resetToken()
-                                                Log.e("signup-tokens","로그아웃 클릭, postJob 실행 중")
-                                                onClickLogout()
-                                                Log.e("signup-tokens","로그아웃 클릭, onClick 실행 끝")
-                                            }
-                                        }
-                                    )
-                                    Text(
-                                        text = "|",
-                                        style = ZipdabangandroidTheme.Typography.twelve_300,
-                                        color = ZipdabangandroidTheme.Colors.Typo,
-                                        modifier = Modifier.padding(8.dp, 0.dp, 8.dp, 0.dp),
-                                    )
-                                    ClickableText(
-                                        text = AnnotatedString(text = stringResource(id = R.string.my_myinfo)),
-                                        style =  ZipdabangandroidTheme.Typography.fourteen_300,
-                                        onClick = {
-                                            onClickUserInfo()
-                                        }
-                                    )
-                                }
-
-                            }
-                        }
-                    ) {
-                        Spacer(modifier = Modifier.padding(it))
-                    }*/
                 },
             )
         },

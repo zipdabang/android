@@ -17,10 +17,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -34,19 +30,21 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.zipdabang.zipdabang_android.R
 import com.zipdabang.zipdabang_android.module.drawer.ui.viewmodel.DrawerUserInfoViewModel
-import com.zipdabang.zipdabang_android.module.drawer.ui.viewmodel.UserInfoBasicEvent
+import com.zipdabang.zipdabang_android.module.drawer.ui.viewmodel.userinfo.UserInfoBasicEvent
 import com.zipdabang.zipdabang_android.ui.component.AppBarSignUp
 import com.zipdabang.zipdabang_android.ui.component.MainAndSubTitle
-import com.zipdabang.zipdabang_android.ui.component.PrimaryButton
 import com.zipdabang.zipdabang_android.ui.component.PrimaryButtonOutLined
 import com.zipdabang.zipdabang_android.ui.component.PrimaryButtonWithStatus
 import com.zipdabang.zipdabang_android.ui.component.RadioGroupHorizontal
 import com.zipdabang.zipdabang_android.ui.component.TextFieldError
 import com.zipdabang.zipdabang_android.ui.component.TextFieldErrorAndCorrect
 import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 
 @Composable
 fun UserInfoBasicScreen(
@@ -57,7 +55,6 @@ fun UserInfoBasicScreen(
 ) {
     val stateUserInfoBasic = drawerUserInfoViewModel.stateUserInfoBasic
     val genderList = drawerUserInfoViewModel.genderList
-    var stateGender by remember { mutableStateOf(stateUserInfoBasic.gender) }
 
     LaunchedEffect(drawerUserInfoViewModel.remainingTime) {
         val timer = (drawerUserInfoViewModel.remainingTime downTo 0).asFlow()
@@ -65,6 +62,10 @@ fun UserInfoBasicScreen(
             .collect { newTime ->
                 drawerUserInfoViewModel.remainingTime = newTime
             }
+    }
+
+    LaunchedEffect(stateUserInfoBasic){
+        drawerUserInfoViewModel.onUserInfoBasicEvent(UserInfoBasicEvent.BtnEnabled(true))
     }
 
 
@@ -175,9 +176,9 @@ fun UserInfoBasicScreen(
                             modifier = Modifier.weight(3.4f)
                         ){
                             RadioGroupHorizontal(
+                                selectedIndex = if(stateUserInfoBasic.gender == "여") 1 else 0,
                                 optionList = genderList,
                                 onOptionChange = {
-                                    stateGender = it
                                     drawerUserInfoViewModel.onUserInfoBasicEvent(UserInfoBasicEvent.GenderChanged(it))
                                 }
                             )
@@ -317,11 +318,20 @@ fun UserInfoBasicScreen(
                 Box(
                     modifier = Modifier.weight(1f)
                 ){
-                    PrimaryButton(
-                        backgroundColor = ZipdabangandroidTheme.Colors.Strawberry,
+                    PrimaryButtonWithStatus(
+                        isFormFilled = stateUserInfoBasic.btnEnabled,
                         text= stringResource(id = R.string.drawer_editdone),
                         onClick={
-                            onClickEdit()
+                            drawerUserInfoViewModel.updateValidateBirthday()
+
+                            if(drawerUserInfoViewModel.updateValidateUserInfoBasic()){
+                                CoroutineScope(Dispatchers.Main).launch{
+                                    drawerUserInfoViewModel.patchUserInfoBasic()
+                                    onClickEdit()
+                                }
+                            } else {
+                                drawerUserInfoViewModel.onUserInfoBasicEvent(UserInfoBasicEvent.ValidateChanged(true))
+                            }
                         },
                     )
                 }

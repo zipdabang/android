@@ -181,6 +181,7 @@ fun RegisterUserInfoScreen(
                             modifier = Modifier.weight(3.4f)
                         ){
                             RadioGroupHorizontal(
+                                selectedIndex = 0,
                                 optionList = genderList,
                                 onOptionChange = {
                                     authSharedViewModel.onUserInfoEvent(UserInfoFormEvent.GenderChanged(it))

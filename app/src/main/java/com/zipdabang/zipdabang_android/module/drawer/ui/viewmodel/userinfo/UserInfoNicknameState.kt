@@ -1,4 +1,4 @@
-package com.zipdabang.zipdabang_android.module.drawer.ui.viewmodel
+package com.zipdabang.zipdabang_android.module.drawer.ui.viewmodel.userinfo
 
 data class UserInfoNicknameState(
     val isLoading : Boolean = false,
@@ -9,7 +9,7 @@ data class UserInfoNicknameState(
     val isSuccess : Boolean = false,
     val errorMessage : String = "",
     val successMessage : String = "",
-//    val btnEnabled : Boolean = false,
+    val btnEnabled : Boolean = false,
 
     val error : String = ""
 )

@@ -1,7 +1,12 @@
 package com.zipdabang.zipdabang_android.module.drawer.data.repository
 
 import com.zipdabang.zipdabang_android.module.drawer.data.remote.DrawerApi
-import com.zipdabang.zipdabang_android.module.drawer.data.remote.UserInfoResponse
+import com.zipdabang.zipdabang_android.module.drawer.data.remote.userinfodto.UserInfoBasicRequest
+import com.zipdabang.zipdabang_android.module.drawer.data.remote.userinfodto.UserInfoDetailRequest
+import com.zipdabang.zipdabang_android.module.drawer.data.remote.userinfodto.UserInfoEditResponse
+import com.zipdabang.zipdabang_android.module.drawer.data.remote.userinfodto.UserInfoNicknameRequest
+import com.zipdabang.zipdabang_android.module.drawer.data.remote.userinfodto.UserInfoProfileRequest
+import com.zipdabang.zipdabang_android.module.drawer.data.remote.userinfodto.UserInfoResponse
 import com.zipdabang.zipdabang_android.module.drawer.domain.repository.DrawerRepository
 import com.zipdabang.zipdabang_android.module.sign_up.data.remote.AuthRequest
 import com.zipdabang.zipdabang_android.module.sign_up.data.remote.AuthResponse
@@ -26,6 +31,34 @@ class DrawerRepositoryImpl @Inject constructor(
 
     override suspend fun postPhoneAuth(authRequest: AuthRequest): AuthResponse {
        return api.postPhoneAuth(authRequest = authRequest)
+    }
+
+    override suspend fun patchUserInfoProfile(
+        accessToken: String,
+        userInfoProfile: UserInfoProfileRequest
+    ): UserInfoEditResponse {
+        return api.patchUserInfoProfile(accessToken = accessToken, userInfoProfile =userInfoProfile)
+    }
+
+    override suspend fun patchUserInfoBasic(
+        accessToken: String,
+        userInfoBasic: UserInfoBasicRequest
+    ): UserInfoEditResponse {
+        return api.patchUserInfoBasic(accessToken = accessToken, userInfoBasic =userInfoBasic)
+    }
+
+    override suspend fun patchUserInfoDetail(
+        accessToken: String,
+        userInfoDetail: UserInfoDetailRequest
+    ): UserInfoEditResponse {
+        return api.patchUserInfoDetail(accessToken = accessToken, userInfoDetail = userInfoDetail)
+    }
+
+    override suspend fun patchUserInfoNickname(
+        accessToken: String,
+        userInfoNickname: UserInfoNicknameRequest
+    ): UserInfoEditResponse {
+        return api.patchUserInfoNickname(accessToken = accessToken, userInfoNickname = userInfoNickname)
     }
 
 }

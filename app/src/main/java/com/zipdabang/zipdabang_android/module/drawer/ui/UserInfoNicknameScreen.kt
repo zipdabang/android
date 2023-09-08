@@ -25,14 +25,15 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.zipdabang.zipdabang_android.R
 import com.zipdabang.zipdabang_android.module.drawer.ui.viewmodel.DrawerUserInfoViewModel
-import com.zipdabang.zipdabang_android.module.drawer.ui.viewmodel.UserInfoNicknameEvent
-import com.zipdabang.zipdabang_android.module.sign_up.ui.viewmodel.NicknameFormEvent
+import com.zipdabang.zipdabang_android.module.drawer.ui.viewmodel.userinfo.UserInfoNicknameEvent
 import com.zipdabang.zipdabang_android.ui.component.AppBarSignUp
-import com.zipdabang.zipdabang_android.ui.component.PrimaryButton
 import com.zipdabang.zipdabang_android.ui.component.PrimaryButtonOutLined
 import com.zipdabang.zipdabang_android.ui.component.PrimaryButtonWithStatus
 import com.zipdabang.zipdabang_android.ui.component.TextFieldErrorAndCorrectIcon
 import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 @Composable
 fun UserInfoNicknameScreen(
@@ -49,7 +50,7 @@ fun UserInfoNicknameScreen(
             AppBarSignUp(
                 navigationIcon = R.drawable.ic_topbar_backbtn,
                 onClickNavIcon = { onClickBack() },
-                centerText = stringResource(id = R.string.signup)
+                centerText = stringResource(id = R.string.my_myinfo_edit)
             )
         }
     ) {
@@ -85,7 +86,7 @@ fun UserInfoNicknameScreen(
                         TextFieldErrorAndCorrectIcon(
                             value = stateUserInfoNickname.nickname,
                             onValueChanged = {
-                                drawerUserInfoViewModel.onNicknameEvent(UserInfoNicknameEvent.NicknameChanged(it))
+                                drawerUserInfoViewModel.onUserInfoNicknameEvent(UserInfoNicknameEvent.NicknameChanged(it))
                             },
                             isTried = stateUserInfoNickname.isTried,
                             labelValue = stringResource(id = R.string.signup_nickname),
@@ -107,7 +108,7 @@ fun UserInfoNicknameScreen(
                             borderColor = ZipdabangandroidTheme.Colors.BlackSesame,
                             text= stringResource(id = R.string.signup_nickname_deplicatecheck),
                             onClick= {
-                                drawerUserInfoViewModel.onNicknameEvent(UserInfoNicknameEvent.NicknameCliked(true))
+                                drawerUserInfoViewModel.onUserInfoNicknameEvent(UserInfoNicknameEvent.NicknameClicked(true))
                             }
                         )
                     }
@@ -133,11 +134,18 @@ fun UserInfoNicknameScreen(
                 Box(
                     modifier = Modifier.weight(1f)
                 ){
-                    PrimaryButton(
-                        backgroundColor = ZipdabangandroidTheme.Colors.Strawberry,
+                    PrimaryButtonWithStatus(
+                        isFormFilled = stateUserInfoNickname.btnEnabled,
                         text= stringResource(id = R.string.drawer_editdone),
                         onClick={
-                            onClickEdit()
+                            if(stateUserInfoNickname.isSuccess){
+                                CoroutineScope(Dispatchers.Main).launch{
+                                    drawerUserInfoViewModel.patchUserInfoNickname()
+                                    onClickEdit()
+                                }
+                            } else {
+                                drawerUserInfoViewModel.onUserInfoNicknameEvent(UserInfoNicknameEvent.BtnEnabled(true))
+                            }
                         },
                     )
                 }
