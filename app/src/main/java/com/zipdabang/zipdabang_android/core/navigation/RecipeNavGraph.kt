@@ -64,12 +64,7 @@ fun NavGraphBuilder.RecipeNavGraph(navController: NavController) {
 
                 },
                 onBackClick = {
-                    navController.navigate(RecipeScreen.Home.route) {
-                        popUpTo(RecipeScreen.RecipeList.route) {
-                            inclusive = true
-                        }
-                        launchSingleTop = true
-                    }
+                    navController.popBackStack()
                 }
             )
         }

@@ -44,7 +44,7 @@ class RecipeListRepositoryImpl(
     override fun getRecipeListByOwnerType(
         ownerType: String,
         orderBy: String,
-    ): Flow<PagingData<RecipeItem>> {
+    ): Pager<Int, RecipeItemEntity> {
         val pagingSourceFactory = {
             database.recipeListDao().getAllRecipes()
         }
@@ -59,11 +59,7 @@ class RecipeListRepositoryImpl(
                 orderBy = orderBy
             ),
             pagingSourceFactory = pagingSourceFactory
-        ).flow.map { pagingData ->
-            pagingData.map {
-                it.toRecipeItem()
-            }
-        }
+        )
     }
 
     @OptIn(ExperimentalPagingApi::class)

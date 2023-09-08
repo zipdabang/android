@@ -10,8 +10,10 @@ import androidx.paging.Pager
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.map
+import androidx.room.withTransaction
 import com.zipdabang.zipdabang_android.common.Resource
 import com.zipdabang.zipdabang_android.common.ResponseCode
+import com.zipdabang.zipdabang_android.core.Paging3Database
 import com.zipdabang.zipdabang_android.module.recipes.data.common.RecipeItem
 import com.zipdabang.zipdabang_android.module.recipes.domain.PreferenceToggle
 import com.zipdabang.zipdabang_android.module.recipes.domain.RecipeListRepository
@@ -24,6 +26,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -31,7 +34,8 @@ class RecipeListViewModel @Inject constructor(
     private val recipeListRepository: RecipeListRepository,
     private val toggleLikeListUseCase: ToggleLikeListUseCase,
     private val toggleScrapListUseCase: ToggleScrapListUseCase,
-    private val savedState: SavedStateHandle
+    private val savedState: SavedStateHandle,
+    private val database: Paging3Database
 ) : ViewModel() {
 
     companion object {
@@ -75,10 +79,15 @@ class RecipeListViewModel @Inject constructor(
         ownerType: String,
         orderBy: String = "latest"
     ): Flow<PagingData<RecipeItem>> {
-        return recipeListRepository.getRecipeListByOwnerType(
-            ownerType = ownerType,
-            orderBy = orderBy
-        )
+        return recipeListRepository
+            .getRecipeListByOwnerType(
+                ownerType = ownerType,
+                orderBy = orderBy
+            )
+            .flow
+            .map { pagingData ->
+                pagingData.map { it.toRecipeItem() }
+        }.cachedIn(viewModelScope)
     }
 
     /* TODO 리스트 아이템에서 좋아요/스크랩 변경 발생 시 동작
@@ -181,5 +190,15 @@ class RecipeListViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    fun deleteAllRecipes() {
+        viewModelScope.launch {
+            database.withTransaction {
+                database.recipeListDao().deleteAllRecipes()
+                database.RemoteKeyDao().deleteRemoteKeys()
+            }
+        }
+
     }
 }

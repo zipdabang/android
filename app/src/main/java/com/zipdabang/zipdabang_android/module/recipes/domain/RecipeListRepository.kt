@@ -16,7 +16,7 @@ interface RecipeListRepository {
     fun getRecipeListByOwnerType(
         ownerType: String,
         orderBy: String,
-    ): Flow<PagingData<RecipeItem>>
+    ): Pager<Int, RecipeItemEntity>
 
     fun getRecipeListByCategory(
         categoryId: Int,
