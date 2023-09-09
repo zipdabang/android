@@ -1,6 +1,7 @@
 package com.zipdabang.zipdabang_android.core
 
 import android.content.Context
+import android.util.DisplayMetrics
 import androidx.datastore.core.DataStore
 import androidx.datastore.core.DataStoreFactory
 import androidx.datastore.dataStoreFile
@@ -127,6 +128,23 @@ object AppModule {
             .build()
     }
 
+    @Provides
+    @Singleton
+    @DeviceHeight
+    fun provideDeviceHeight(
+        @ApplicationContext appContext: Context
+    ): Float {
+        fun px2dp(px: Int, context: Context): Float {
+            return px / ((context.resources.displayMetrics.densityDpi.toFloat()) / DisplayMetrics.DENSITY_DEFAULT)
+        }
+
+        val display = appContext.resources.displayMetrics
+        val deviceWidth = display?.widthPixels
+        val deviceHeight = display.heightPixels
+
+        return px2dp(deviceHeight, appContext)
+    }
+
 /*    @OptIn(ExperimentalCoroutinesApi::class)
     @Provides
     @Singleton
@@ -152,4 +170,4 @@ object AppModule {
 
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
-annotation class AccessToken
+annotation class DeviceHeight

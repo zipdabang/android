@@ -6,7 +6,7 @@ import com.zipdabang.zipdabang_android.module.comment.data.remote.PostCommentCon
 import com.zipdabang.zipdabang_android.module.comment.data.remote.PostCommentDto
 
 interface RecipeCommentRepository {
-    suspend fun getRecipeComments(recipeId: Int): Pager<Int, RecipeCommentEntity>
+    fun getRecipeComments(recipeId: Int): Pager<Int, RecipeCommentEntity>
 
     suspend fun postRecipeComment(accessToken: String, recipeId: Int, commentBody: PostCommentContent): PostCommentDto
 }

@@ -417,6 +417,7 @@ fun AppBarCollapsing(
     imageUrl: String,
     onClickStartIcon: () -> Unit,
     onClickEndIcon: () -> Unit,
+    deviceHeight: Float,
     content: @Composable () -> Unit
 ) {
     val state = rememberCollapsingToolbarScaffoldState()
@@ -711,6 +712,7 @@ fun AppBarCollapsingPreview() {
         imageUrl = "https://github.com/kmkim2689/jetpack-compose-practice/assets/101035437/2bb0c4ab-e42b-4697-87c6-2fbe3c836cd7",
         onClickStartIcon = { /*TODO*/ },
         onClickEndIcon = { /*TODO*/ },
+        deviceHeight = 202.2f
     ) {
         LazyColumn(modifier = Modifier.fillMaxSize()) {
             items(100) {

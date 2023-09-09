@@ -61,6 +61,8 @@ class RecipeCommentListMediator(
                 it.toRecipeCommentEntity()
             } ?: emptyList()
 
+            Log.d("comments list", "$response")
+
             val endOfPaginationReached = response.isEmpty()
 
             val prevPage = if (currentPage == 1) null else currentPage - 1
@@ -75,7 +77,8 @@ class RecipeCommentListMediator(
                 recipeCommentDao.addComments(comments = response)
 
                 val keys = response.map { commentItem ->
-                    val itemId = recipeCommentDao.getItemIdByRecipeId(commentItem.commentId)
+                    Log.d("commentItem id", "${commentItem.commentId}")
+                    val itemId = recipeCommentDao.getItemIdByCommentId(commentItem.commentId)
                     RemoteKeys(
                         id = itemId,
                         prevPage = prevPage,
@@ -84,11 +87,12 @@ class RecipeCommentListMediator(
                 }
 
                 remoteKeyDao.addAllRemoteKeys(remoteKeys = keys)
-
             }
 
             MediatorResult.Success(endOfPaginationReached = endOfPaginationReached)
-        } catch (e: Exception) {
+        }
+        catch (e: Exception) {
+            Log.d("comment list - mediator", "${e.message}")
             return MediatorResult.Error(e)
         }
     }

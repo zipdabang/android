@@ -2,6 +2,7 @@ package com.zipdabang.zipdabang_android.module.comment.use_case
 
 import androidx.datastore.core.DataStore
 import com.zipdabang.zipdabang_android.common.Resource
+import com.zipdabang.zipdabang_android.common.ResponseCode
 import com.zipdabang.zipdabang_android.core.data_store.proto.Token
 import com.zipdabang.zipdabang_android.module.comment.data.remote.PostCommentContent
 import com.zipdabang.zipdabang_android.module.comment.domain.PostResult
@@ -19,7 +20,7 @@ class PostCommentUseCase @Inject constructor(
 ) {
     operator fun invoke(
         recipeId: Int, commentBody: PostCommentContent
-    ) = flow<Resource<PostResult>> {
+    ) = flow {
         try {
             val accessToken = ("Bearer " + tokenDataStore.data.first().accessToken)
 
@@ -29,18 +30,36 @@ class PostCommentUseCase @Inject constructor(
                 .postRecipeComment(accessToken, recipeId, commentBody)
                 .toPostResult()
 
-            // TODO 코드에 따른 분기처리 하기
-            emit(Resource.Success(
-                data = response,
-                code = response.code,
-                message = response.message ?: "unexpected error"
-            ))
+            
+
+            val emitData = emitSubmitResult(response)
+
+            emit(emitData)
 
         } catch (e: HttpException) {
             emit(Resource.Error(e.message ?: "unexpected http error"))
         } catch (e: IOException) {
             emit(Resource.Error(e.message ?: "unexpected io error"))
 
+        }
+    }
+
+    private fun emitSubmitResult(
+        response: PostResult
+    ): Resource<PostResult> {
+        return when (response.code) {
+            ResponseCode.RESPONSE_DEFAULT.code -> {
+                Resource.Success(
+                    data = response,
+                    code = response.code,
+                    message = response.message
+                )
+            }
+            else -> {
+                Resource.Error(
+                    message = response.message
+                )
+            }
         }
     }
 }

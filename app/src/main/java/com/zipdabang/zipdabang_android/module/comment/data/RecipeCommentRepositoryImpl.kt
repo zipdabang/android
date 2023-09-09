@@ -14,6 +14,9 @@ import com.zipdabang.zipdabang_android.module.comment.domain.RecipeCommentListMe
 import com.zipdabang.zipdabang_android.module.comment.domain.RecipeCommentRepository
 import com.zipdabang.zipdabang_android.module.recipes.data.RecipeApi
 import com.zipdabang.zipdabang_android.module.recipes.domain.mediator.CategoryRecipeListMediator
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class RecipeCommentRepositoryImpl @Inject constructor(
@@ -22,7 +25,7 @@ class RecipeCommentRepositoryImpl @Inject constructor(
     private val dataStore: DataStore<Token>,
 ): RecipeCommentRepository {
     @OptIn(ExperimentalPagingApi::class)
-    override suspend fun getRecipeComments(recipeId: Int): Pager<Int, RecipeCommentEntity> {
+    override fun getRecipeComments(recipeId: Int): Pager<Int, RecipeCommentEntity> {
         val pagingSourceFactory = {
             database.recipeCommentDao().getAllComments()
         }

@@ -25,5 +25,5 @@ interface RecipeCommentDao {
     suspend fun updateComment(comment: RecipeCommentEntity)
 
     @Query("SELECT itemId FROM comment_item_table WHERE commentId=:commentId")
-    suspend fun getItemIdByRecipeId(commentId: Int): Int
+    suspend fun getItemIdByCommentId(commentId: Int): Int
 }

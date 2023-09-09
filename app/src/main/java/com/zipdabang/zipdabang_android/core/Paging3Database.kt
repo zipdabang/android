@@ -21,7 +21,7 @@ import com.zipdabang.zipdabang_android.module.search.domain.SearchDao
         RecipeItemEntity::class, SearchRecipe::class,
         RecipeCommentEntity::class
     ],
-    version = 5, exportSchema = false)
+    version = 7, exportSchema = false)
 @TypeConverters(ListConverter::class)
 abstract class Paging3Database : RoomDatabase() {
     abstract fun CategoryDao() : MarketCategoryDao

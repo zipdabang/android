@@ -123,5 +123,7 @@
     <string name="fcm_message">FCM Message</string>
     <!-- for market -->
     <string name="market_recent">내가 최근 봤던 아이템</string>
+    <string name="btn_register_comment">등록</string>
+    <string name="placeholder_comment">댓글 쓰기 (최대 100자)</string>
 
 </resources>

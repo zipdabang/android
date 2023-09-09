@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.material.TabRow
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRowDefaults
@@ -31,22 +32,24 @@ import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalPagerApi::class)
-@Composable
-fun Pager(
+fun LazyListScope.Pager(
     tabsList: List<TabItem>,
-    pagerState: PagerState
+    pagerState: PagerState,
+    deviceHeight: Float
 ) {
-    Column(
-        modifier = Modifier.fillMaxSize()
-    ) {
+    item {
         Column(
-            modifier = Modifier.fillMaxWidth().padding(horizontal = 40.dp)
+            // TODO 디바이스 가로 길이 가져오기
+            modifier = Modifier.fillMaxWidth().height(500.dp)
         ) {
-            Tabs(tabs = tabsList, pagerState = pagerState)
+            Column(
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 40.dp)
+            ) {
+                Tabs(tabs = tabsList, pagerState = pagerState)
+            }
+
+            TabContent(tabs = tabsList, pagerState = pagerState)
         }
-
-        TabContent(tabs = tabsList, pagerState = pagerState)
-
     }
 }
 
@@ -106,6 +109,7 @@ fun TabContent(
 }
 
 
+/*
 @OptIn(ExperimentalPagerApi::class)
 @Preview
 @Composable
@@ -120,4 +124,4 @@ fun PagerPreview() {
         Pager(tabsList = tabsList, pagerState = pagerState)
     }
 
-}
+}*/

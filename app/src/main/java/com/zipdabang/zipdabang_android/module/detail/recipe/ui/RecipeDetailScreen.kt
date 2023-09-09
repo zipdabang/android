@@ -46,7 +46,11 @@ fun RecipeDetailScreen(
     onClickScrap: (Int) -> Unit,
     onClickCart: (String) -> Unit,
     onClickDelete: (Int) -> Unit,
-    onClickEdit: (Int) -> Unit
+    onClickEdit: (Int) -> Unit,
+    onClickCommentReport: (Int) -> Unit,
+    onClickCommentBlock: (Int) -> Unit,
+    onClickCommentEdit: (Int) -> Unit,
+    onClickCommentDelete: (Int) -> Unit
 ){
 
     Log.d("RecipeDetail", "$recipeId")
@@ -82,6 +86,8 @@ fun RecipeDetailScreen(
         mutableStateOf(recipeDetailState.recipeDetailData?.recipeInfo?.scraps)
     }
 
+    val pagerState = rememberPagerState()
+
     AppBarCollapsing(
         startIcon = loadXmlDrawable(resId = R.drawable.recipe_arrow_left),
         endIcon = loadXmlDrawable(resId = R.drawable.recipe_more_white),
@@ -89,7 +95,8 @@ fun RecipeDetailScreen(
         onClickStartIcon = onClickBackIcon,
         onClickEndIcon = {
 
-        }
+        },
+        deviceHeight = viewModel.getDeviceHeight()
     ) {
         LazyColumn(
             modifier = Modifier
@@ -147,19 +154,22 @@ fun RecipeDetailScreen(
                 )
             }
 
-            item {
-                val pagerState = rememberPagerState()
+            Pager(
+                tabsList = listOf(
+                    TabItem.RecipeInfo(recipeDetailState, onClickCart),
+                    TabItem.Comment(
+                        comments = recipeDetailState.recipeDetailData?.recipeInfo?.comments ?: 0,
+                        recipeId = recipeId ?: -1,
+                        onClickReport = onClickCommentReport,
+                        onClickBlock = onClickCommentBlock,
+                        onClickDelete = onClickCommentDelete,
+                        onClickEdit = onClickCommentEdit
+                    )
+                ),
+                pagerState = pagerState,
+                deviceHeight = viewModel.getDeviceHeight()
+            )
 
-                Pager(
-                    tabsList = listOf(
-                        TabItem.RecipeInfo(recipeDetailState, onClickCart),
-                        TabItem.Comment(
-                            recipeDetailState.recipeDetailData?.recipeInfo?.comments ?: 0
-                        )
-                    ),
-                    pagerState = pagerState
-                )
-            }
         }
     }
 }
