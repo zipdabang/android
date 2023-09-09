@@ -29,8 +29,6 @@ fun AllSubtitle() {
         modifier = Modifier
             .fillMaxWidth()
             .padding(
-                start = 16.dp,
-                end = 26.dp,
                 top = 10.dp,
                 bottom = 10.dp
             ),
@@ -63,8 +61,6 @@ fun CoffeeSubtitle() {
         modifier = Modifier
             .fillMaxWidth()
             .padding(
-                start = 16.dp,
-                end = 26.dp,
                 top = 10.dp,
                 bottom = 10.dp
             ),
@@ -104,8 +100,6 @@ fun NonCaffeineSubtitle() {
         modifier = Modifier
             .fillMaxWidth()
             .padding(
-                start = 16.dp,
-                end = 26.dp,
                 top = 10.dp,
                 bottom = 10.dp
             ),
@@ -138,8 +132,6 @@ fun TeaSubtitle() {
         modifier = Modifier
             .fillMaxWidth()
             .padding(
-                start = 16.dp,
-                end = 26.dp,
                 top = 10.dp,
                 bottom = 10.dp
             ),
@@ -172,8 +164,6 @@ fun AdeSubtitle() {
         modifier = Modifier
             .fillMaxWidth()
             .padding(
-                start = 16.dp,
-                end = 26.dp,
                 top = 10.dp,
                 bottom = 10.dp
             ),
@@ -213,8 +203,6 @@ fun SmoothieSubtitle() {
         modifier = Modifier
             .fillMaxWidth()
             .padding(
-                start = 16.dp,
-                end = 26.dp,
                 top = 10.dp,
                 bottom = 10.dp
             ),
@@ -247,8 +235,6 @@ fun FruitSubtitle() {
         modifier = Modifier
             .fillMaxWidth()
             .padding(
-                start = 16.dp,
-                end = 26.dp,
                 top = 10.dp,
                 bottom = 10.dp
             ),
@@ -281,8 +267,6 @@ fun WellBeingSubtitle() {
         modifier = Modifier
             .fillMaxWidth()
             .padding(
-                start = 16.dp,
-                end = 26.dp,
                 top = 10.dp,
                 bottom = 10.dp
             ),
@@ -322,8 +306,6 @@ fun EveryoneSubtitle() {
         modifier = Modifier
             .fillMaxWidth()
             .padding(
-                start = 16.dp,
-                end = 26.dp,
                 top = 10.dp,
                 bottom = 10.dp
             ),
@@ -356,8 +338,6 @@ fun InfluencerSubtitle() {
         modifier = Modifier
             .fillMaxWidth()
             .padding(
-                start = 16.dp,
-                end = 26.dp,
                 top = 10.dp,
                 bottom = 10.dp
             ),
@@ -390,8 +370,6 @@ fun OurSubtitle() {
         modifier = Modifier
             .fillMaxWidth()
             .padding(
-                start = 16.dp,
-                end = 26.dp,
                 top = 10.dp,
                 bottom = 10.dp
             ),

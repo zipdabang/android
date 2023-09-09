@@ -23,6 +23,11 @@
     <string name="drawer_appDetail">홈카페를 위한 모든 것이 여기에! 당신을 위한 단 하나의 홈카페 플랫폼입니다 :)</string>
     <string name="drawer_cancel">취소</string>
     <string name="drawer_editdone">수정 완료</string>
+    <string name="drawer_choosedone">선택 완료</string>
+    <string name="drawer_preferbeverages">선호하는 음료</string>
+    <string name="drawer_editpreferbeverage">선호음료 수정</string>
+    <string name="drawer_pick_prefer_beverage">선호하는 카페 음료 목록을 골라주세요</string>
+    <string name="drawer_pick_prefer_beverage_detail">선호하는 카페 음료 개발에 노력하겠습니다!</string>
 
     <!--  for signup  -->
     <string name="signup">회원가입</string>
@@ -80,8 +85,8 @@
     <string name="my_shopping">쇼핑</string>
     <string name="my_myshopping">나의 쇼핑</string>
     <string name="my_friendlist">친구 목록</string>
-    <string name="my_noticeandalarm">공지사항 및 알림</string>
-    <string name="my_what">뭐가 들어가죠</string>
+    <string name="my_noticeandevent">공지사항 및 이벤트</string>
+    <string name="my_alarm">알림</string>
     <string name="my_logout">로그아웃</string>
     <string name="my_myinfo">회원정보</string>
     <string name="my_myinfo_edit">회원정보 수정</string>

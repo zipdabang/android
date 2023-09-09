@@ -7,7 +7,7 @@ data class UserInfoState(
     val profileUrl : String = "",
     val name : String = "",
     val birthday : String = "",
-    val gender : String ="남",
+    val gender : String = "",
     val phoneNumber : String = "",
     val nickname : String = "",
     val zipcode : String = "우편번호",

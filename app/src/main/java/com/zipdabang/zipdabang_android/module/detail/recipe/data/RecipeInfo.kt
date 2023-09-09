@@ -4,7 +4,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class RecipeInfo(
-    val ownerImage: String,
+    val ownerImage: String?,
     val categoryId: List<Int>,
     val comments: Int,
     val createdAt: String,

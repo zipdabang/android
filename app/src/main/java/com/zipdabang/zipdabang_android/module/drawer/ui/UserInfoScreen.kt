@@ -62,6 +62,7 @@ fun UserInfoScreen(
     onClickEditBasic : ()->Unit,
     onClickEditDetail : ()->Unit,
     onClickEditNickname : ()->Unit,
+    onClickEditPreferences : ()->Unit,
     onClickLogout : ()->Unit,
     onClickWithdraw : ()->Unit,
 ) {
@@ -502,6 +503,83 @@ fun UserInfoScreen(
                 }
             }
 
+            //선호하는 음료
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(128.dp)
+                    .padding(16.dp, 0.dp, 16.dp, 20.dp)
+                    .background(
+                        color = Color.Transparent,
+                        shape = ZipdabangandroidTheme.Shapes.small,
+                    )
+                    .shadow(
+                        elevation = 2.dp,
+                    ),
+            ){
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(
+                            brush = Brush.horizontalGradient(
+                                colors = listOf(
+                                    ZipdabangandroidTheme.Colors.Strawberry,
+                                    ZipdabangandroidTheme.Colors.Cream
+                                )
+                            ),
+                            shape = ZipdabangandroidTheme.Shapes.smallRoundedTop,
+                        )
+                        .weight(1f)
+                        .wrapContentHeight()
+                        .padding(16.dp, 0.dp, 16.dp, 0.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ){
+                    Text(
+                        text = stringResource(id = R.string.drawer_preferbeverages),
+                        style = ZipdabangandroidTheme.Typography.sixteen_700,
+                        color = Color.White
+                    )
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_my_edit),
+                        contentDescription = "",
+                        tint = Color.White,
+                        modifier = Modifier
+                            .size(16.dp, 16.dp)
+                            .clickable(onClick = { onClickEditPreferences() })
+                    )
+                }
+                //선호하는 음료
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(
+                            color = Color.White,
+                            shape = ZipdabangandroidTheme.Shapes.smallRoundedBottom
+                        )
+                        .weight(1f)
+                        .wrapContentHeight()
+                        .padding(16.dp, 0.dp, 16.dp, 0.dp),
+                    horizontalArrangement = Arrangement.spacedBy(4.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ){
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_my_heart),
+                        contentDescription = "",
+                        tint = ZipdabangandroidTheme.Colors.Strawberry,
+                        modifier = Modifier
+                            .size(26.dp, 24.dp)
+                            .padding(8.dp, 0.dp, 0.dp, 0.dp)
+                    )
+                    Text(
+                        modifier = Modifier.padding(8.dp, 0.dp,0.dp,0.dp),
+                        text = stateUserInfo.nickname,
+                        style = ZipdabangandroidTheme.Typography.sixteen_500,
+                        color = ZipdabangandroidTheme.Colors.Typo
+                    )
+                }
+            }
+
             // api 로딩
             if(stateUserInfo.error.isNotBlank()){
                 androidx.compose.material.Text(
@@ -563,6 +641,7 @@ fun PreviewUserInfoScrren() {
         onClickEditBasic = {},
         onClickEditDetail = {},
         onClickEditNickname = {},
+        onClickEditPreferences = {},
         onClickLogout = {},
         onClickWithdraw = {}
     )

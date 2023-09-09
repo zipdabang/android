@@ -89,7 +89,7 @@ fun RecipeStepItem(
         ) {
             Text(
                 modifier = Modifier.weight(1f),
-                text = "Step ${step.stepNum}.",
+                text = "Step ${step.stepNum}. ",
                 style = TextStyle(
                     fontSize = 16.sp,
                     fontFamily = FontFamily(Font(R.font.kopubworlddotum_medium)),

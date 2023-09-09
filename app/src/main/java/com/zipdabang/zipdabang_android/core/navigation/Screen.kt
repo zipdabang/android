@@ -69,12 +69,18 @@ sealed class DrawerScreen(val route : String){
     object UserInfoBasic : DrawerScreen(route="drawer/userinfo/basic")
     object UserInfoDetail : DrawerScreen(route="drawer/userinfo/detail")
     object UserInfoNickname : DrawerScreen(route="main/drawer/userinfo/nickname")
+    object UserInfoPreferences : DrawerScreen(route="main/drawer/userinfo/preferences")
+    object UserInfoProfile : DrawerScreen(route="main/drawer/userinfo/profile")
 
 }
 
 
 sealed class SharedScreen(val route : String){
-    object DetailRecipe : SharedScreen(route = "shared/detail/{recipeId}")
+    object DetailRecipe : SharedScreen(route = "shared/detail/{recipeId}") {
+        fun passRecipeId(recipeId: Int): String{
+            return "shared/detail/$recipeId"
+        }
+    }
     object Search : SharedScreen(route = "shared/search")
 
     object SearchRecipeCategory : SharedScreen(route = "shared/search?categoryId={categoryId}&keyword={keyword}"){
