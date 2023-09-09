@@ -2,13 +2,13 @@ package com.zipdabang.zipdabang_android.module.detail.recipe.ui
 
 import android.util.Log
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.DrawerValue
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
@@ -27,11 +27,9 @@ import com.google.accompanist.pager.rememberPagerState
 import com.zipdabang.zipdabang_android.R
 import com.zipdabang.zipdabang_android.common.TabItem
 import com.zipdabang.zipdabang_android.ui.component.AppBarCollapsing
-import com.zipdabang.zipdabang_android.ui.component.ModalDrawer
 import com.zipdabang.zipdabang_android.ui.component.Pager
 import com.zipdabang.zipdabang_android.ui.component.loadXmlDrawable
 import com.zipdabang.zipdabang_android.ui.theme.DialogBackground
-import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
@@ -46,7 +44,11 @@ fun RecipeDetailScreen(
     onClickScrap: (Int) -> Unit,
     onClickCart: (String) -> Unit,
     onClickDelete: (Int) -> Unit,
-    onClickEdit: (Int) -> Unit
+    onClickEdit: (Int) -> Unit,
+    onClickCommentReport: (Int) -> Unit,
+    onClickCommentBlock: (Int) -> Unit,
+    onClickCommentEdit: (Int) -> Unit,
+    onClickCommentDelete: (Int) -> Unit
 ){
 
     Log.d("RecipeDetail", "$recipeId")
@@ -82,6 +84,8 @@ fun RecipeDetailScreen(
         mutableStateOf(recipeDetailState.recipeDetailData?.recipeInfo?.scraps)
     }
 
+    val pagerState = rememberPagerState()
+
     AppBarCollapsing(
         startIcon = loadXmlDrawable(resId = R.drawable.recipe_arrow_left),
         endIcon = loadXmlDrawable(resId = R.drawable.recipe_more_white),
@@ -89,12 +93,14 @@ fun RecipeDetailScreen(
         onClickStartIcon = onClickBackIcon,
         onClickEndIcon = {
 
-        }
+        },
+        deviceSize = viewModel.getDeviceSize()
     ) {
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
         ) {
+
             item {
                 RecipeIntro(
                     profileUrl = recipeDetailState.recipeDetailData?.profileUrl ?: "null",
@@ -147,19 +153,22 @@ fun RecipeDetailScreen(
                 )
             }
 
-            item {
-                val pagerState = rememberPagerState()
+            Pager(
+                tabsList = listOf(
+                    TabItem.RecipeInfo(recipeDetailState, onClickCart),
+                    TabItem.Comment(
+                        comments = recipeDetailState.recipeDetailData?.recipeInfo?.comments ?: 0,
+                        recipeId = recipeId ?: -1,
+                        onClickReport = onClickCommentReport,
+                        onClickBlock = onClickCommentBlock,
+                        onClickDelete = onClickCommentDelete,
+                        onClickEdit = onClickCommentEdit
+                    )
+                ),
+                pagerState = pagerState,
+                deviceSize = viewModel.getDeviceSize()
+            )
 
-                Pager(
-                    tabsList = listOf(
-                        TabItem.RecipeInfo(recipeDetailState, onClickCart),
-                        TabItem.Comment(
-                            recipeDetailState.recipeDetailData?.recipeInfo?.comments ?: 0
-                        )
-                    ),
-                    pagerState = pagerState
-                )
-            }
         }
     }
 }

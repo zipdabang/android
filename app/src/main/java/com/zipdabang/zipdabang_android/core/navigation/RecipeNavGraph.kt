@@ -20,14 +20,22 @@ fun NavGraphBuilder.RecipeNavGraph(navController: NavController) {
             RecipeScreen(
                 onCategoryClick = { categoryId ->
                     Log.d("type - category", "$categoryId")
-                    navController.navigate(RecipeScreen.RecipeList.passQuery(category = categoryId))
+                    navController.navigate(RecipeScreen.RecipeList.passQuery(category = categoryId)) {
+                        launchSingleTop = true
+                    }
                 },
                 onOwnerTypeClick = { ownerType ->
                     Log.d("type - ownertype", ownerType)
-                    navController.navigate(RecipeScreen.RecipeList.passQuery(ownerType = ownerType))
+                    navController.navigate(RecipeScreen.RecipeList.passQuery(ownerType = ownerType)) {
+                        launchSingleTop = true
+                    }
                 },
                 onRecipeClick = { recipeId ->
-
+                    navController.navigate(
+                        route = SharedScreen.DetailRecipe.passRecipeId(recipeId)
+                    ) {
+                        launchSingleTop = true
+                    }
                 },
                 onBannerClick = { keyword ->
 

@@ -18,7 +18,7 @@ import javax.inject.Inject
 
 class GetRecipeDetailUseCase @Inject constructor(
     private val recipeDetailRepository: RecipeDetailRepository,
-    private val tokenDataStore: DataStore<Token>
+    private val tokenDataStore: DataStore<Token>,
 ){
 
     companion object {

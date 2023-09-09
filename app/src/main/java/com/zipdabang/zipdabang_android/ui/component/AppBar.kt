@@ -96,6 +96,7 @@ import androidx.core.graphics.drawable.toBitmap
 import coil.compose.AsyncImage
 import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.zipdabang.zipdabang_android.R
+import com.zipdabang.zipdabang_android.module.detail.recipe.ui.DeviceScreenSize
 import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
 import me.onebone.toolbar.CollapsingToolbarScaffold
 import me.onebone.toolbar.ScrollStrategy
@@ -417,6 +418,7 @@ fun AppBarCollapsing(
     imageUrl: String,
     onClickStartIcon: () -> Unit,
     onClickEndIcon: () -> Unit,
+    deviceSize: DeviceScreenSize,
     content: @Composable () -> Unit
 ) {
     val state = rememberCollapsingToolbarScaffoldState()
@@ -711,6 +713,7 @@ fun AppBarCollapsingPreview() {
         imageUrl = "https://github.com/kmkim2689/jetpack-compose-practice/assets/101035437/2bb0c4ab-e42b-4697-87c6-2fbe3c836cd7",
         onClickStartIcon = { /*TODO*/ },
         onClickEndIcon = { /*TODO*/ },
+        deviceSize = DeviceScreenSize(1f, 1f)
     ) {
         LazyColumn(modifier = Modifier.fillMaxSize()) {
             items(100) {

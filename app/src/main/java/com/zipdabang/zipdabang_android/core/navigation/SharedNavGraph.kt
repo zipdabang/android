@@ -35,7 +35,11 @@ fun NavGraphBuilder.SharedNavGraph(navController: NavController){
                 onClickDelete = { recipeId -> },
                 onClickEdit = { recipeId -> },
                 onClickBlock = { userId -> },
-                onClickReport = { recipeId -> }
+                onClickReport = { recipeId -> },
+                onClickCommentBlock = { recipeId -> },
+                onClickCommentReport = { recipeId -> },
+                onClickCommentDelete = { recipeId -> },
+                onClickCommentEdit = { recipeId -> },
             )
         }
 

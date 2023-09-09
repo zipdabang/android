@@ -6,6 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.zipdabang.zipdabang_android.common.Resource
+import com.zipdabang.zipdabang_android.core.DeviceSize
 import com.zipdabang.zipdabang_android.module.detail.recipe.use_case.GetRecipeDetailUseCase
 import com.zipdabang.zipdabang_android.module.recipes.ui.state.PreferenceToggleState
 import com.zipdabang.zipdabang_android.module.recipes.use_case.ToggleLikeUseCase
@@ -19,7 +20,8 @@ import javax.inject.Inject
 class RecipeDetailViewModel @Inject constructor(
     private val getRecipeDataUseCase: GetRecipeDetailUseCase,
     private val toggleLikeUseCase: ToggleLikeUseCase,
-    private val toggleScrapUseCase: ToggleScrapUseCase
+    private val toggleScrapUseCase: ToggleScrapUseCase,
+    @DeviceSize private val deviceSize: DeviceScreenSize
 ) : ViewModel() {
 
     companion object {
@@ -115,5 +117,9 @@ class RecipeDetailViewModel @Inject constructor(
                 }
             }
         }.launchIn(viewModelScope)
+    }
+
+    fun getDeviceSize(): DeviceScreenSize {
+        return deviceSize
     }
 }
