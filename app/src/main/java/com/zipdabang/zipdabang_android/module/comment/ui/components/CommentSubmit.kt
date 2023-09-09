@@ -27,19 +27,23 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.zipdabang.zipdabang_android.R
 import com.zipdabang.zipdabang_android.module.comment.data.remote.PostCommentContent
 import com.zipdabang.zipdabang_android.module.comment.ui.RecipeCommentState
+import com.zipdabang.zipdabang_android.module.comment.ui.RecipeCommentViewModel
 import com.zipdabang.zipdabang_android.ui.component.CircleImage
 import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
 
 @Composable
 fun CommentSubmit(
+    isLoading: Boolean,
     profileUrl: String,
-    onClickSubmit: (Int, PostCommentContent) -> Unit,
     recipeId: Int,
     placeHolder: String
 ) {
+
+    val viewModel = hiltViewModel<RecipeCommentViewModel>()
 
     var text by rememberSaveable {
         mutableStateOf("")
@@ -63,6 +67,7 @@ fun CommentSubmit(
         Spacer(modifier = Modifier.width(8.dp))
 
         CommentTextField(
+            isLoading = isLoading,
             recipeId = recipeId,
             value = text,
             onValueChange = { changedValue ->
@@ -70,7 +75,10 @@ fun CommentSubmit(
                     text = changedValue
                 }
             },
-            onSubmit = onClickSubmit,
+            onSubmit = { recipeId, content ->
+                viewModel.postComment(recipeId, content)
+                text = ""
+            },
             isFulfilled = isFulfilled,
             placeHolder = placeHolder
         )
@@ -82,8 +90,8 @@ fun CommentSubmit(
 fun CommentSubmitPreview() {
     CommentSubmit(
         profileUrl = "https://github.com/kmkim2689/flow-practice/assets/101035437/56eeb15a-f5e3-4b8e-8b5d-993d82d54c5a",
-        onClickSubmit = { id, content -> },
         recipeId = 1,
-        placeHolder = "Asdf"
+        placeHolder = "Asdf",
+        isLoading = true
     )
 }

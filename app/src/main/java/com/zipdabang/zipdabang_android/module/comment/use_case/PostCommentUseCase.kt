@@ -30,7 +30,6 @@ class PostCommentUseCase @Inject constructor(
                 .postRecipeComment(accessToken, recipeId, commentBody)
                 .toPostResult()
 
-            
 
             val emitData = emitSubmitResult(response)
 

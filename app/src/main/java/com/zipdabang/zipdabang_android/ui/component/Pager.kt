@@ -1,7 +1,6 @@
 package com.zipdabang.zipdabang_android.ui.component
 
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -16,18 +15,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontStyle
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.PagerState
 import com.google.accompanist.pager.pagerTabIndicatorOffset
-import com.google.accompanist.pager.rememberPagerState
 import com.zipdabang.zipdabang_android.R
 import com.zipdabang.zipdabang_android.common.TabItem
-import com.zipdabang.zipdabang_android.module.detail.recipe.ui.RecipeDetailState
+import com.zipdabang.zipdabang_android.module.detail.recipe.ui.DeviceScreenSize
 import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
 import kotlinx.coroutines.launch
 
@@ -35,12 +31,13 @@ import kotlinx.coroutines.launch
 fun LazyListScope.Pager(
     tabsList: List<TabItem>,
     pagerState: PagerState,
-    deviceHeight: Float
+    deviceSize: DeviceScreenSize
 ) {
     item {
         Column(
-            // TODO 디바이스 가로 길이 가져오기
-            modifier = Modifier.fillMaxWidth().height(500.dp)
+            modifier = Modifier
+                .fillMaxWidth()
+                .height((deviceSize.height - (deviceSize.width / 2 + 70)).dp)
         ) {
             Column(
                 modifier = Modifier.fillMaxWidth().padding(horizontal = 40.dp)

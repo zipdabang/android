@@ -2,6 +2,7 @@ package com.zipdabang.zipdabang_android.module.comment.data.local
 
 import androidx.paging.PagingSource
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
@@ -26,4 +27,7 @@ interface RecipeCommentDao {
 
     @Query("SELECT itemId FROM comment_item_table WHERE commentId=:commentId")
     suspend fun getItemIdByCommentId(commentId: Int): Int
+
+    @Query("DELETE FROM comment_item_table WHERE commentId=:commentId")
+    suspend fun deleteComment(commentId: Int)
 }

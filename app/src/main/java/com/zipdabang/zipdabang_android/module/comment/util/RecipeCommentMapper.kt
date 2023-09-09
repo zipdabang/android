@@ -33,6 +33,19 @@ fun RecipeCommentEntity.toRecipeCommentState(): RecipeCommentState {
     )
 }
 
+fun RecipeCommentState.toRecipeCommentEntity(): RecipeCommentEntity {
+    return RecipeCommentEntity(
+        itemId = 0,
+        content = content,
+        createdAt = createdAt,
+        isOwner = isOwner,
+        ownerImage = ownerImage,
+        ownerNickname = ownerNickname,
+        commentId = commentId,
+        ownerId = ownerId
+    )
+}
+
 fun PostCommentDto.toPostResult(): PostResult {
     return PostResult(
         code = code,

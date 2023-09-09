@@ -8,5 +8,8 @@ import com.zipdabang.zipdabang_android.module.comment.data.remote.PostCommentDto
 interface RecipeCommentRepository {
     fun getRecipeComments(recipeId: Int): Pager<Int, RecipeCommentEntity>
 
-    suspend fun postRecipeComment(accessToken: String, recipeId: Int, commentBody: PostCommentContent): PostCommentDto
+    suspend fun postRecipeComment(
+        accessToken: String, recipeId: Int, commentBody: PostCommentContent
+    ): PostCommentDto
+
 }

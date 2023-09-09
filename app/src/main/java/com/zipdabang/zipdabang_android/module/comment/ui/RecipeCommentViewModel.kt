@@ -7,7 +7,6 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.map
 import com.zipdabang.zipdabang_android.common.Resource
-import com.zipdabang.zipdabang_android.core.DeviceHeight
 import com.zipdabang.zipdabang_android.core.Paging3Database
 import com.zipdabang.zipdabang_android.module.comment.data.remote.PostCommentContent
 import com.zipdabang.zipdabang_android.module.comment.domain.RecipeCommentRepository
@@ -26,8 +25,7 @@ import javax.inject.Inject
 class RecipeCommentViewModel @Inject constructor(
     private val postCommentUseCase: PostCommentUseCase,
     private val database: Paging3Database,
-    private val repository: RecipeCommentRepository,
-    @DeviceHeight private val deviceHeight: Float
+    private val repository: RecipeCommentRepository
 ): ViewModel() {
 
     companion object {
@@ -87,13 +85,7 @@ class RecipeCommentViewModel @Inject constructor(
                     )
                 }
             }
-
-
-
         }.launchIn(viewModelScope)
     }
 
-    fun getDeviceHeight(): Float {
-        return deviceHeight
-    }
 }

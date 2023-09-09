@@ -16,6 +16,7 @@ import com.zipdabang.zipdabang_android.core.data_store.proto.ProtoRepository
 import com.zipdabang.zipdabang_android.core.data_store.proto.ProtoRepositoryImpl
 import com.zipdabang.zipdabang_android.core.data_store.proto.ProtoSerializer
 import com.zipdabang.zipdabang_android.core.data_store.proto.Token
+import com.zipdabang.zipdabang_android.module.detail.recipe.ui.DeviceScreenSize
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -130,19 +131,19 @@ object AppModule {
 
     @Provides
     @Singleton
-    @DeviceHeight
-    fun provideDeviceHeight(
+    @DeviceSize
+    fun provideDeviceSize(
         @ApplicationContext appContext: Context
-    ): Float {
+    ): DeviceScreenSize {
         fun px2dp(px: Int, context: Context): Float {
             return px / ((context.resources.displayMetrics.densityDpi.toFloat()) / DisplayMetrics.DENSITY_DEFAULT)
         }
 
         val display = appContext.resources.displayMetrics
-        val deviceWidth = display?.widthPixels
-        val deviceHeight = display.heightPixels
+        val deviceWidth = px2dp(display.widthPixels, appContext)
+        val deviceHeight = px2dp(display.heightPixels, appContext)
 
-        return px2dp(deviceHeight, appContext)
+        return DeviceScreenSize(deviceWidth, deviceHeight)
     }
 
 /*    @OptIn(ExperimentalCoroutinesApi::class)
@@ -167,6 +168,10 @@ object AppModule {
         return result
     }*/
 }
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class DeviceSize
 
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
