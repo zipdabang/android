@@ -37,12 +37,7 @@ fun SearchBar(
     getText : (String) -> Unit ={ }
     ){
 
-
-
     var text by remember { mutableStateOf(keyword) }
-
-
-
 
     OutlinedTextField(
         value = text,
