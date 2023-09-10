@@ -1,5 +1,6 @@
 package com.zipdabang.zipdabang_android.module.item.recipe.ui
 
+import android.util.Log
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
@@ -63,8 +64,8 @@ fun RecipeCard(
     comments: Int,
     isLikeSelected: Boolean,
     isScrapSelected: Boolean,
-    onLikeClick: (Int) -> Boolean,
-    onScrapClick: (Int) -> Boolean,
+    onLikeClick: (Int) -> Unit,
+    onScrapClick: (Int) -> Unit,
     // id
     onItemClick: (Int) -> Unit
 ) {
@@ -168,10 +169,8 @@ fun RecipeCard(
                         iconChecked = scrapChecked,
                         iconNotChecked = scrapNotChecked,
                         checked = isScrapSelected,
-                        onClick = { isScrapSelected ->
-                            val result = onScrapClick(recipeId)
-                            if (result) !isScrapSelected
-
+                        onClick = {
+                            onScrapClick(recipeId)
                         },
                         checkedColor = ZipdabangandroidTheme.Colors.Cream
                     )
@@ -184,9 +183,8 @@ fun RecipeCard(
                         iconChecked = favoriteChecked,
                         iconNotChecked = favoriteNotChecked,
                         checked = isLikeSelected,
-                        onClick = { isLikeSelected ->
-                            val result = onLikeClick(recipeId)
-                            if (result) !isLikeSelected
+                        onClick = {
+                            onLikeClick(recipeId)
                         },
                         checkedColor = ZipdabangandroidTheme.Colors.Strawberry
                     )
@@ -265,9 +263,8 @@ fun RecipeCardPreview() {
         comments = 10,
         isLikeSelected = like,
         isScrapSelected = scrap,
-        onLikeClick = { state ->
+        onLikeClick = { state->
             like = !like
-            true
         },
         onScrapClick = { state ->
             scrap = !scrap

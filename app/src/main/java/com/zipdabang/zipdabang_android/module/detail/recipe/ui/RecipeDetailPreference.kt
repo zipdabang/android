@@ -8,8 +8,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -26,7 +28,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.zipdabang.zipdabang_android.R
 import com.zipdabang.zipdabang_android.module.item.recipe.ui.IconToggle
+import com.zipdabang.zipdabang_android.module.recipes.ui.state.PreferenceToggleState
 import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import java.text.DecimalFormat
 
 @Composable
@@ -40,7 +46,9 @@ fun RecipeDetailPreference(
     onLikeClick: (Boolean) -> Unit,
     onScrapClick: (Boolean) -> Unit,
     onDeleteClick: (Int) -> Unit,
-    onEditClick: (Int) -> Unit
+    onEditClick: (Int) -> Unit,
+    likeStateFlow: StateFlow<PreferenceToggleState>,
+    scrapStateFlow: StateFlow<PreferenceToggleState>,
 ) {
 
     val thousands = DecimalFormat("##.0K")
@@ -81,20 +89,26 @@ fun RecipeDetailPreference(
                 verticalAlignment = Alignment.Bottom
             ) {
                 Box(modifier = Modifier.size(30.dp)) {
-                    IconToggle(
-                        iconChecked = favoriteChecked,
-                        iconNotChecked = favoriteNotChecked,
-                        checked = isLikeChecked,
-                        onClick = onLikeClick,
-                        checkedColor = ZipdabangandroidTheme.Colors.Strawberry
-                    )
+                    if (likeStateFlow.collectAsState().value.isLoading) {
+                        CircularProgressIndicator(color = ZipdabangandroidTheme.Colors.Strawberry)
+                    } else {
+                        IconToggle(
+                            iconChecked = favoriteChecked,
+                            iconNotChecked = favoriteNotChecked,
+                            checked = isLikeChecked,
+                            onClick = onLikeClick,
+                            checkedColor = ZipdabangandroidTheme.Colors.Strawberry
+                        )
+                    }
                 }
 
 
                 Spacer(modifier = Modifier.width(4.dp))
 
                 Text(
-                    modifier = Modifier.padding(top = 4.dp).width(60.dp),
+                    modifier = Modifier
+                        .padding(top = 4.dp)
+                        .width(60.dp),
                     text = likeString,
                     style = TextStyle(
                         fontSize = 18.sp,
@@ -112,13 +126,17 @@ fun RecipeDetailPreference(
                 verticalAlignment = Alignment.Bottom
             ) {
                 Box(modifier = Modifier.size(30.dp)) {
-                    IconToggle(
-                        iconChecked = scrapChecked,
-                        iconNotChecked = scrapNotChecked,
-                        checked = isScrapChecked,
-                        onClick = onScrapClick,
-                        checkedColor = ZipdabangandroidTheme.Colors.Cream
-                    )
+                    if (scrapStateFlow.collectAsState().value.isLoading) {
+                        CircularProgressIndicator(color = ZipdabangandroidTheme.Colors.Strawberry)
+                    } else {
+                        IconToggle(
+                            iconChecked = scrapChecked,
+                            iconNotChecked = scrapNotChecked,
+                            checked = isScrapChecked,
+                            onClick = onScrapClick,
+                            checkedColor = ZipdabangandroidTheme.Colors.Cream
+                        )
+                    }
                 }
 
 
@@ -186,6 +204,8 @@ fun RecipeDetailPreferencePreview() {
         },
         onDeleteClick = { delete -> },
         onEditClick = { edit -> },
-        isOwner = true
+        isOwner = true,
+        likeStateFlow = MutableStateFlow(PreferenceToggleState()).asStateFlow(),
+        scrapStateFlow = MutableStateFlow(PreferenceToggleState()).asStateFlow(),
     )
 }

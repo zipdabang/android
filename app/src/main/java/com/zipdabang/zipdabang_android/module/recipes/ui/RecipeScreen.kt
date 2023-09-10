@@ -6,11 +6,15 @@ import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.zipdabang.zipdabang_android.R
+import com.zipdabang.zipdabang_android.module.recipes.common.OwnerType
+import com.zipdabang.zipdabang_android.module.recipes.ui.viewmodel.RecipeMainViewModel
 import com.zipdabang.zipdabang_android.ui.component.AppBarHome
 import com.zipdabang.zipdabang_android.ui.component.ModalDrawer
 import kotlinx.coroutines.launch
@@ -22,10 +26,26 @@ fun RecipeScreen(
     onOwnerTypeClick: (String) -> Unit,
     onRecipeClick: (Int) -> Unit,
     onBannerClick: (String) -> Unit
-){
-    //drawer에 필요한 drawerState랑 scope
+) {
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
+
+    val viewModel = hiltViewModel<RecipeMainViewModel>()
+
+    val banners = viewModel.banners.value
+    val categories = viewModel.categoryList.value
+    val everyoneRecipe = viewModel.everyRecipeState.value
+    val influencerRecipe = viewModel.influencerRecipeState.value
+    val userRecipe = viewModel.userRecipeState.value
+
+    val likeState = viewModel.toggleLikeResult
+    val scrapState = viewModel.toggleScrapResult
+
+    val recipeMapByOwnerType = mapOf(
+        OwnerType.ALL to everyoneRecipe,
+        OwnerType.INFLUENCER to influencerRecipe,
+        OwnerType.USER to userRecipe
+    )
 
     ModalDrawer(
         scaffold = {
@@ -42,26 +62,28 @@ fun RecipeScreen(
                 },
                 containerColor = Color.White,
                 contentColor = Color.Black,
-//                floatingActionButton =
             ) { padding ->
-                // scaffoldpadding parameter 미사용 시, 화면이 앱바를 고려하지 않고 맨 위에 붙어서 나와서
-                // 화면이 앱바에 가려짐
-
-                // val scrollState = rememberScrollState()
-
                 RecipeMenuScreen(
                     modifier = Modifier.padding(padding),
                     onCategoryClick = onCategoryClick,
                     onOwnerTypeClick = onOwnerTypeClick,
                     onRecipeClick = onRecipeClick,
-                    onBannerClick = onBannerClick
+                    onBannerClick = onBannerClick,
+                    onLikeClick = { recipeId ->
+                        viewModel.toggleLike(recipeId = recipeId)
+                    },
+                    onScrapClick = { recipeId ->
+                        viewModel.toggleScrap(recipeId = recipeId)
+                    },
+                    banners = banners,
+                    categories = categories,
+                    recipeMapByOwnerType = recipeMapByOwnerType,
+                    likeState = likeState,
+                    scrapState = scrapState
                 )
-
             }
         },
         drawerState = drawerState,
         navController = navController
     )
-
-
 }

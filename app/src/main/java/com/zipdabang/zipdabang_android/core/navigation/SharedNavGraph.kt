@@ -29,8 +29,6 @@ fun NavGraphBuilder.SharedNavGraph(navController: NavController){
                 recipeId = backStackEntry.arguments?.getInt("recipeId"),
                 onClickBackIcon = {},
                 onClickProfile = { ownerId -> },
-                onClickLike = { recipeId -> },
-                onClickScrap = { recipeId -> },
                 onClickCart = { keyword -> },
                 onClickDelete = { recipeId -> },
                 onClickEdit = { recipeId -> },

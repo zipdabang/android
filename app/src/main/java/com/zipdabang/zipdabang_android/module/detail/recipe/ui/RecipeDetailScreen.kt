@@ -2,7 +2,6 @@ package com.zipdabang.zipdabang_android.module.detail.recipe.ui
 
 import android.util.Log
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -11,6 +10,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -26,6 +26,7 @@ import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.rememberPagerState
 import com.zipdabang.zipdabang_android.R
 import com.zipdabang.zipdabang_android.common.TabItem
+import com.zipdabang.zipdabang_android.common.TogglePreferenceException
 import com.zipdabang.zipdabang_android.ui.component.AppBarCollapsing
 import com.zipdabang.zipdabang_android.ui.component.Pager
 import com.zipdabang.zipdabang_android.ui.component.loadXmlDrawable
@@ -40,8 +41,6 @@ fun RecipeDetailScreen(
     onClickProfile: (Int) -> Unit,
     onClickReport: (Int) -> Unit,
     onClickBlock: (Int) -> Unit,
-    onClickLike: (Int) -> Unit,
-    onClickScrap: (Int) -> Unit,
     onClickCart: (String) -> Unit,
     onClickDelete: (Int) -> Unit,
     onClickEdit: (Int) -> Unit,
@@ -65,23 +64,33 @@ fun RecipeDetailScreen(
     val recipeDetailState by remember {
         derivedStateOf { viewModel.recipeDetailState.value }
     }
-    val toggleLikeState = viewModel.toggleLikeState.value
-    val toggleScrapState = viewModel.toggleScrapState.value
+
+    val toggleLikeState = viewModel.toggleLikeState
+    val toggleScrapState = viewModel.toggleScrapState
+
+    if (toggleLikeState.collectAsState().value.errorMessage != null
+        || toggleScrapState.collectAsState().value.errorMessage != null) {
+        throw TogglePreferenceException
+    }
 
     var isLikeChecked by rememberSaveable {
-        mutableStateOf(recipeDetailState.recipeDetailData?.recipeInfo?.isLiked)
+        mutableStateOf(
+            recipeDetailState.recipeDetailData?.recipeInfo?.isLiked ?: false
+        )
     }
 
     var isScrapChecked by rememberSaveable {
-        mutableStateOf(recipeDetailState.recipeDetailData?.recipeInfo?.isScrapped)
+        mutableStateOf(
+            recipeDetailState.recipeDetailData?.recipeInfo?.isScrapped ?: false
+        )
     }
 
     var likes by rememberSaveable {
-        mutableStateOf(recipeDetailState.recipeDetailData?.recipeInfo?.likes)
+        mutableStateOf(recipeDetailState.recipeDetailData?.recipeInfo?.likes ?: 0)
     }
 
     var scraps by rememberSaveable {
-        mutableStateOf(recipeDetailState.recipeDetailData?.recipeInfo?.scraps)
+        mutableStateOf(recipeDetailState.recipeDetailData?.recipeInfo?.scraps ?: 0)
     }
 
     val pagerState = rememberPagerState()
@@ -116,27 +125,39 @@ fun RecipeDetailScreen(
                     RecipeDetailPreference(
                         recipeId = it.recipeId,
                         isOwner = recipeDetailState.recipeDetailData!!.isOwner ?: false,
-                        likes = it.likes,
-                        scraps = it.scraps,
-                        isLikeChecked = it.isLiked,
-                        isScrapChecked = it.isScrapped,
+                        likes = likes,
+                        scraps = scraps,
+                        isLikeChecked = isLikeChecked,
+                        isScrapChecked = isScrapChecked,
+                        likeStateFlow = toggleLikeState,
+                        scrapStateFlow = toggleScrapState,
                         onLikeClick = { changedState ->
-                            viewModel.toggleLike(it.recipeId)
-                            // TODO state에 따른 분기처리
-                            isLikeChecked = changedState
-                            likes =
-                                if (isLikeChecked as Boolean) likes?.plus(1)
-                                else likes?.minus(1)
-                            onClickLike(it.recipeId)
+                            try {
+                                viewModel.toggleLike(it.recipeId)
+                                it.isLiked = !it.isLiked
+                                isLikeChecked = it.isLiked
+                                it.likes = if (isLikeChecked) it.likes + 1
+                                else it.likes - 1
+                                likes = it.likes
+                            } catch (e: Exception) {
+                                Log.d("RecipeDetail", "${e.message}")
+                            } catch (e: java.lang.Exception) {
+                                Log.d("RecipeDetail", "${e.message}")
+                            }
                         },
                         onScrapClick = { changedState ->
-                            viewModel.toggleScrap(it.recipeId)
-                            // TODO state에 따른 분기처리
-                            isScrapChecked = changedState
-                            scraps =
-                                if (isScrapChecked as Boolean) scraps?.plus(1)
-                                else scraps?.minus(1)
-                            onClickScrap(it.recipeId)
+                            try {
+                                viewModel.toggleScrap(it.recipeId)
+                                it.isScrapped = changedState
+                                isScrapChecked = it.isScrapped
+                                it.scraps = if (isScrapChecked) it.scraps + 1
+                                else it.scraps - 1
+                                scraps = it.scraps
+                            } catch (e: Exception) {
+                                Log.d("RecipeDetail", "${e.message}")
+                            } catch (e: java.lang.Exception) {
+                                Log.d("RecipeDetail", "${e.message}")
+                            }
                         },
                         onDeleteClick = onClickDelete,
                         onEditClick = onClickEdit
