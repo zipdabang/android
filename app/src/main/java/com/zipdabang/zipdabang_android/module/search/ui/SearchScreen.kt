@@ -12,10 +12,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
@@ -81,11 +77,17 @@ fun SearchScreen(
                 index, item ->
                 SearchCategoryPreview(
                     title = categoryTitleList[index].categoryName,
-                    previewList = categoryList[index].recipeList,
-                    onClick = { navController.navigate(SharedScreen.SearchRecipeCategory.passQuery(categoryId = index+1, keyword= keyword)){
+                    previewList = categoryList[index].recipeList
+                ) {
+                    navController.navigate(
+                        SharedScreen.SearchRecipeCategory.passQuery(
+                            categoryId = index + 1,
+                            keyword = keyword
+                        )
+                    ) {
                         launchSingleTop = true
-                    } }
-                    )
+                    }
+                }
             }
 
         }

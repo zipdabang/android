@@ -1,6 +1,7 @@
 package com.zipdabang.zipdabang_android.module.search.data.dto.recipecategory
 
 import android.util.Log
+import androidx.compose.animation.rememberSplineBasedDecay
 import androidx.datastore.core.DataStore
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadType
@@ -64,6 +65,7 @@ class SearchRecipeCategoryMediator @Inject constructor(
 
 
             val accessToken = ("Bearer " + tokenDataStore.data.first().accessToken)
+            val responseMapList = mutableListOf<SearchRecipe>()
 
                  val response = searchApi.getSearchRecipeCategory(
                         accessToken = accessToken, pageIndex = currentPage,
@@ -74,6 +76,28 @@ class SearchRecipeCategoryMediator @Inject constructor(
                          RemoteKeyDao.deleteRemoteKeys()
                          delay(1000)
                          MediatorResult.Success(endOfPaginationReached = true)
+                     }else{
+                         val responseList = response.result.recipeList
+
+                         responseList.forEachIndexed { index, searchRecipes ->
+                             responseMapList.add(SearchRecipe(
+                                 index = index,
+                                 categoryId = searchRecipes.categoryId,
+                                 comments = searchRecipes.comments,
+                                 createdAt = searchRecipes.createdAt,
+                                 isLiked = searchRecipes.isLiked,
+                                 isScrapped = searchRecipes.isScrapped,
+                                 likes = searchRecipes.likes,
+                                 nickname = searchRecipes.nickname,
+                                 recipeId = searchRecipes.recipeId,
+                                 recipeName = searchRecipes.recipeName,
+                                 scraps = searchRecipes.scraps,
+                                 thumbnailUrl = searchRecipes.thumbnailUrl
+                             ))
+
+                         }
+
+
                      }
 
 
@@ -99,7 +123,7 @@ class SearchRecipeCategoryMediator @Inject constructor(
                         )
                     }
                     RemoteKeyDao.addAllRemoteKeys(remoteKeys = keys)
-                    CategoryDao.addItems(items = response.result.recipeList)
+                    CategoryDao.addItems(items = responseMapList)
 
                 }
 
