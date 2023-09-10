@@ -19,6 +19,8 @@ import com.zipdabang.zipdabang_android.module.recipes.use_case.GetRecipePreviewU
 import com.zipdabang.zipdabang_android.module.recipes.use_case.ToggleLikeUseCase
 import com.zipdabang.zipdabang_android.module.recipes.use_case.ToggleScrapUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
@@ -53,12 +55,12 @@ class RecipeMainViewModel @Inject constructor(
     private val _userRecipeState = mutableStateOf(RecipePreviewState())
     val userRecipeState: State<RecipePreviewState> = _userRecipeState
 
-    private val _toggleLikeResult = mutableStateOf(PreferenceToggleState())
-    val toggleLikeResult: State<PreferenceToggleState>
+    private val _toggleLikeResult = MutableStateFlow(PreferenceToggleState())
+    val toggleLikeResult: StateFlow<PreferenceToggleState>
         get() = _toggleLikeResult
 
-    private val _toggleScrapResult = mutableStateOf(PreferenceToggleState())
-    val toggleScrapResult: State<PreferenceToggleState>
+    private val _toggleScrapResult = MutableStateFlow(PreferenceToggleState())
+    val toggleScrapResult: StateFlow<PreferenceToggleState>
         get() = _toggleScrapResult
 
     private val _errorMessage = mutableStateOf("")
@@ -69,6 +71,14 @@ class RecipeMainViewModel @Inject constructor(
         OwnerType.INFLUENCER to _influencerRecipeState,
         OwnerType.USER to _userRecipeState
     )
+
+    init {
+        getRecipeBanners()
+        getRecipeCategoryList()
+        getRecipesByOwnerType(OwnerType.ALL)
+        getRecipesByOwnerType(OwnerType.INFLUENCER)
+        getRecipesByOwnerType(OwnerType.USER)
+    }
 
     fun getRecipeBanners() {
         getRecipeBannerUseCase().onEach { result ->
@@ -243,6 +253,7 @@ class RecipeMainViewModel @Inject constructor(
             result.data?.let {
                 when (result) {
                     is Resource.Success -> {
+                        Log.d(TAG, "$it")
                         when (it.code) {
                             ResponseCode.RESPONSE_DEFAULT.code -> {
                                 _toggleLikeResult.value = PreferenceToggleState(
@@ -308,6 +319,8 @@ class RecipeMainViewModel @Inject constructor(
                     }
 
                     is Resource.Error -> {
+                        Log.d(TAG, "$it")
+
                         _toggleLikeResult.value = PreferenceToggleState(
                             isLoading = false,
                             errorMessage = it.message,
@@ -317,6 +330,8 @@ class RecipeMainViewModel @Inject constructor(
                     }
 
                     is Resource.Loading -> {
+                        Log.d(TAG, "$it")
+
                         _toggleLikeResult.value = PreferenceToggleState(
                             isLoading = true
                         )

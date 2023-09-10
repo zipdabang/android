@@ -1,32 +1,47 @@
 package com.zipdabang.zipdabang_android.module.detail.recipe.ui
 
+import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.zipdabang.zipdabang_android.common.Resource
+import com.zipdabang.zipdabang_android.core.DeviceSize
+import com.zipdabang.zipdabang_android.module.detail.recipe.common.DeviceScreenSize
 import com.zipdabang.zipdabang_android.module.detail.recipe.use_case.GetRecipeDetailUseCase
 import com.zipdabang.zipdabang_android.module.recipes.ui.state.PreferenceToggleState
 import com.zipdabang.zipdabang_android.module.recipes.use_case.ToggleLikeUseCase
 import com.zipdabang.zipdabang_android.module.recipes.use_case.ToggleScrapUseCase
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
 
+@HiltViewModel
 class RecipeDetailViewModel @Inject constructor(
     private val getRecipeDataUseCase: GetRecipeDetailUseCase,
     private val toggleLikeUseCase: ToggleLikeUseCase,
-    private val toggleScrapUseCase: ToggleScrapUseCase
+    private val toggleScrapUseCase: ToggleScrapUseCase,
+    @DeviceSize private val deviceSize: DeviceScreenSize
 ) : ViewModel() {
+
+    companion object {
+        const val TAG = "RecipeDetailViewModel"
+    }
 
     private val _recipeDetailState = mutableStateOf(RecipeDetailState())
     val recipeDetailState: State<RecipeDetailState> = _recipeDetailState
 
-    private val _toggleLikeState = mutableStateOf(PreferenceToggleState())
-    val toggleLikeState: State<PreferenceToggleState> = _toggleLikeState
+    private val _toggleLikeState = MutableStateFlow(PreferenceToggleState())
+    val toggleLikeState: StateFlow<PreferenceToggleState> = _toggleLikeState
 
-    private val _toggleScrapState = mutableStateOf(PreferenceToggleState())
-    val toggleScrapState: State<PreferenceToggleState> = _toggleScrapState
+    private val _toggleScrapState = MutableStateFlow(PreferenceToggleState())
+    val toggleScrapState: StateFlow<PreferenceToggleState> = _toggleScrapState
 
     fun getRecipeDetail(recipeId: Int) {
+        Log.d(TAG, "get recipe detail start")
         getRecipeDataUseCase(recipeId).onEach { result ->
             result.data?.let {
                 when (result) {
@@ -49,7 +64,7 @@ class RecipeDetailViewModel @Inject constructor(
                     }
                 }
             }
-        }
+        }.launchIn(viewModelScope)
     }
 
     fun toggleLike(recipeId: Int) {
@@ -76,7 +91,7 @@ class RecipeDetailViewModel @Inject constructor(
                     }
                 }
             }
-        }
+        }.launchIn(viewModelScope)
     }
 
     fun toggleScrap(recipeId: Int) {
@@ -104,6 +119,10 @@ class RecipeDetailViewModel @Inject constructor(
                     }
                 }
             }
-        }
+        }.launchIn(viewModelScope)
+    }
+
+    fun getDeviceSize(): DeviceScreenSize {
+        return deviceSize
     }
 }

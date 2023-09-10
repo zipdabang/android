@@ -25,15 +25,19 @@ import com.zipdabang.zipdabang_android.module.drawer.ui.viewmodel.userinfo.UserI
 import com.zipdabang.zipdabang_android.module.drawer.ui.viewmodel.userinfo.UserInfoDetailState
 import com.zipdabang.zipdabang_android.module.drawer.ui.viewmodel.userinfo.UserInfoNicknameEvent
 import com.zipdabang.zipdabang_android.module.drawer.ui.viewmodel.userinfo.UserInfoNicknameState
+import com.zipdabang.zipdabang_android.module.drawer.ui.viewmodel.userinfo.UserInfoPreferencesEvent
+import com.zipdabang.zipdabang_android.module.drawer.ui.viewmodel.userinfo.UserInfoPreferencesState
 import com.zipdabang.zipdabang_android.module.drawer.ui.viewmodel.userinfo.UserInfoState
 import com.zipdabang.zipdabang_android.module.sign_up.data.remote.AuthRequest
 import com.zipdabang.zipdabang_android.module.sign_up.data.remote.PhoneRequest
+import com.zipdabang.zipdabang_android.module.sign_up.domain.usecase.GetBeveragesUseCase
 import com.zipdabang.zipdabang_android.module.sign_up.domain.usecase.GetNicknameUseCase
 import com.zipdabang.zipdabang_android.module.sign_up.domain.usecase.PostAuthUseCase
 import com.zipdabang.zipdabang_android.module.sign_up.domain.usecase.PostPhoneSmsUseCase
 import com.zipdabang.zipdabang_android.module.sign_up.domain.usecase.ValidateBirthdayUseCase
 import com.zipdabang.zipdabang_android.module.sign_up.domain.usecase.ValidateNicknameUseCase
 import com.zipdabang.zipdabang_android.module.sign_up.domain.usecase.ValidatePhoneUseCase
+import com.zipdabang.zipdabang_android.module.sign_up.ui.viewmodel.BeverageFormState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.launchIn
@@ -45,6 +49,7 @@ import javax.inject.Inject
 class DrawerUserInfoViewModel @Inject constructor(
     private val getUserInfoUseCase: GetUserInfoUseCase,
     private val getNicknameUseCase: GetNicknameUseCase,
+    private val getBeveragesUseCase: GetBeveragesUseCase,
     private val postPhoneSmsUseCase: PostPhoneSmsUseCase,
     private val postAuthUseCase: PostAuthUseCase,
     private val patchUserInfoBasicUseCase: PatchUserInfoBasicUseCase,
@@ -61,6 +66,7 @@ class DrawerUserInfoViewModel @Inject constructor(
     var stateUserInfoBasic by mutableStateOf(UserInfoBasicState())
     var stateUserInfoDetail by mutableStateOf(UserInfoDetailState())
     var stateUserInfoNickname by mutableStateOf(UserInfoNicknameState())
+    var stateUserInfoPreferences by mutableStateOf(UserInfoPreferencesState())
     var genderList by mutableStateOf(listOf("남", "여"))
     var remainingTime by mutableStateOf(0)
 
@@ -265,6 +271,24 @@ class DrawerUserInfoViewModel @Inject constructor(
         }
     }
 
+    /*UserInfoPreferencesScreen*/
+    fun onUserInfoPreferencesEvent(event : UserInfoPreferencesEvent){
+        when (event){
+            is UserInfoPreferencesEvent.BeverageCheckListChanged ->{
+                val updatedCheckList = stateUserInfoPreferences.beverageCheckList.toMutableList().apply {
+                    set(event.index, event.checked)
+                }
+                stateUserInfoPreferences = stateUserInfoPreferences.copy(beverageCheckList = updatedCheckList)
+            }
+            is UserInfoPreferencesEvent.BtnEnabled -> {
+                updateBtnEnabledPreferences()
+            }
+        }
+    }
+    private fun updateBtnEnabledPreferences(){
+        //만약 stateUserInfo.preferList != staeUserInfoPreferences.preferList이면 btnenabled 되게하자
+    }
+
 
     /*api로 불러온 정보를 담은 state와 각 screen의 state와 매치시키는 함수*/
     fun onCheckedEvent(){
@@ -294,6 +318,8 @@ class DrawerUserInfoViewModel @Inject constructor(
         if(stateUserInfo.nickname != stateUserInfoNickname.nickname){
             stateUserInfoNickname = stateUserInfoNickname.copy(nickname = stateUserInfo.nickname)
         }
+
+        // 선호 음료 != 현재 선호 음료
     }
 
 
@@ -301,6 +327,7 @@ class DrawerUserInfoViewModel @Inject constructor(
         viewModelScope.launch {
             getUserInfo()
         }
+        getBeverages()
     }
     suspend fun getUserInfo(){
         val accessToken = "Bearer " + dataStore.data.first().accessToken ?: Constants.TOKEN_NULL
@@ -316,7 +343,8 @@ class DrawerUserInfoViewModel @Inject constructor(
                         profileUrl = result.data?.profileUrl ?: "",
                         name = result.data?.memberBasicInfoDto?.name ?: "",
                         birthday = result.data?.memberBasicInfoDto?.birth ?: "",
-                        gender =  if(result.data?.memberBasicInfoDto?.genderType == "WOMAN") "여" else "남",
+                        gender =  if(result.data?.memberBasicInfoDto?.genderType == "WOMAN") "여"
+                        else if(result.data?.memberBasicInfoDto?.genderType == "MAN") "남" else "",
                         phoneNumber = result.data?.memberBasicInfoDto?.phoneNum ?: "",
                         zipcode = result.data?.memberDetailInfoDto?.zipCode ?: "",
                         address = result.data?.memberDetailInfoDto?.address ?: "",
@@ -327,7 +355,8 @@ class DrawerUserInfoViewModel @Inject constructor(
                         isLoading = false,
                         name = result.data?.memberBasicInfoDto?.name ?: "",
                         birthday = result.data?.memberBasicInfoDto?.birth ?: "",
-                        gender =  if(result.data?.memberBasicInfoDto?.genderType == "WOMAN") "여" else "남",
+                        gender =  if(result.data?.memberBasicInfoDto?.genderType == "WOMAN") "여"
+                        else if(result.data?.memberBasicInfoDto?.genderType == "MAN") "남" else "",
                         phoneNumber = result.data?.memberBasicInfoDto?.phoneNum ?: "",
                     )
                     stateUserInfoDetail = stateUserInfoDetail.copy(
@@ -522,6 +551,29 @@ class DrawerUserInfoViewModel @Inject constructor(
                         isLoading = true,
                         nickname = stateUserInfoNickname.nickname
                     )
+                }
+            }
+        }.launchIn(viewModelScope)
+    }
+    private fun getBeverages(){
+        getBeveragesUseCase().onEach {result ->
+            when(result){
+                is Resource.Success ->{
+                    stateUserInfoPreferences = stateUserInfoPreferences.copy(
+                        isLoading= false,
+                        beverageList = result.data?.beverageCategoryList ?: emptyList(),
+                        size = result.data?.size ?: 0,
+                        beverageCheckList = List(result.data?.size ?: 0) { false }
+                    )
+                    Log.e("preferences-viewmodel", "성공 ${result.data?.beverageCategoryList}")
+                }
+                is Resource.Error ->{
+                    stateUserInfoPreferences = stateUserInfoPreferences.copy(error = result.message ?: "An unexpeted error occured")
+                    Log.e("preferences-viewmodel", "에러")
+                }
+                is Resource.Loading ->{
+                    stateUserInfoPreferences = stateUserInfoPreferences.copy(isLoading = true)
+                    Log.e("preferences-viewmodel", "로딩중")
                 }
             }
         }.launchIn(viewModelScope)

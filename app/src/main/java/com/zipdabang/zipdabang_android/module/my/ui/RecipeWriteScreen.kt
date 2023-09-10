@@ -69,7 +69,7 @@ fun RecipeWriteScreen(
 
                     },
                     imageUrl = "",
-                    iconImageVector = R.drawable.ic_my_recipewrite_camera,
+                    iconImageVector = R.drawable.ic_my_recipewrtie_camera,
                     iconTint = ZipdabangandroidTheme.Colors.Typo,
                     iconModifier = Modifier.size(27.dp, 24.dp),
                     text = stringResource(id = R.string.my_recipewrite_thumbnail_upload),
@@ -94,7 +94,7 @@ fun RecipeWriteScreen(
                     value = "",
                     onValueChanged = { newText, maxLength ->
                         if(newText.length <= maxLength){
-                            //textState = newText
+                            //textState = newTextfr
                         }
                     },
                     singleLine = true,

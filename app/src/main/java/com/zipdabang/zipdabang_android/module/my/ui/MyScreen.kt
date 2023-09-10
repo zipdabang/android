@@ -146,7 +146,7 @@ fun MyScreen(
                                             contentDescription = "",
                                             tint = ZipdabangandroidTheme.Colors.Typo,
                                             modifier = Modifier
-                                                .size(15.dp, 12.dp)
+                                                .size(24.dp, 24.dp)
                                                 .align(Alignment.Center)
                                         )
                                     }
@@ -165,7 +165,13 @@ fun MyScreen(
                                 verticalAlignment = Alignment.CenterVertically
                             ){
                                 Icon(painter = painterResource(id = R.drawable.ic_my_heart), contentDescription = "", tint = Color.White, modifier = Modifier.size(15.dp, 12.dp))
-                                Text(text="커피 논카페인", style=ZipdabangandroidTheme.Typography.sixteen_500, color=Color.White)
+                                for(category in stateMyUserInfo.categoryList){
+                                    Text(
+                                        text = category,
+                                        style = ZipdabangandroidTheme.Typography.sixteen_500,
+                                        color = Color.White,
+                                    )
+                                }
                             }
                         }
 
@@ -213,7 +219,7 @@ fun MyScreen(
                                     IconAndText(
                                         iconImageVector = R.drawable.ic_my_bookmark,
                                         iconColor = ZipdabangandroidTheme.Colors.Cream,
-                                        iconModifier = Modifier.size(20.dp, 24.dp),
+                                        iconModifier = Modifier.size(22.dp, 26.dp),
                                         text = stringResource(id = R.string.my_scrap),
                                         textColor = ZipdabangandroidTheme.Colors.Typo,
                                         textStyle = ZipdabangandroidTheme.Typography.fourteen_500,
@@ -241,9 +247,9 @@ fun MyScreen(
                                     modifier = Modifier.weight(0.25f)
                                 ){
                                     IconAndText(
-                                        iconImageVector = R.drawable.ic_my_shopping_cart,
+                                        iconImageVector = R.drawable.ic_my_shoppingcart,
                                         iconColor = ZipdabangandroidTheme.Colors.Choco,
-                                        iconModifier = Modifier.size(30.dp, 30.dp),
+                                        iconModifier = Modifier.size(40.dp, 40.dp),
                                         text = stringResource(id = R.string.my_shopping),
                                         textColor = ZipdabangandroidTheme.Colors.Typo,
                                         textStyle = ZipdabangandroidTheme.Typography.fourteen_500,
@@ -315,7 +321,7 @@ fun MyScreen(
                                         horizontalArrangement = Arrangement.SpaceBetween,
                                     ){
                                         Text(
-                                            text = stringResource(id = R.string.my_noticeandalarm),
+                                            text = stringResource(id = R.string.my_noticeandevent),
                                             style = ZipdabangandroidTheme.Typography.fourteen_500,
                                             color = ZipdabangandroidTheme.Colors.Typo
                                         )
@@ -344,7 +350,7 @@ fun MyScreen(
                                         horizontalArrangement = Arrangement.SpaceBetween,
                                     ){
                                         Text(
-                                            text = stringResource(id = R.string.my_what),
+                                            text = stringResource(id = R.string.my_alarm),
                                             style = ZipdabangandroidTheme.Typography.fourteen_500,
                                             color = ZipdabangandroidTheme.Colors.Typo
                                         )

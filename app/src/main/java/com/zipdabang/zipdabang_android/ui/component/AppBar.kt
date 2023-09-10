@@ -1,93 +1,58 @@
 package com.zipdabang.zipdabang_android.ui.component
 
-import android.content.Context
-import android.util.DisplayMetrics
 import androidx.annotation.DrawableRes
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.KeyboardArrowLeft
-import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.rounded.AccountBox
-import androidx.compose.material.icons.rounded.Settings
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.LargeTopAppBar
-import androidx.compose.material3.LocalContentColor
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.Stable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.mapSaver
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
-import androidx.compose.runtime.structuralEqualityPolicy
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.BiasAlignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.paint
-import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.platform.rememberNestedScrollInteropConnection
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.lerp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
 import coil.compose.AsyncImage
-import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.zipdabang.zipdabang_android.R
+import com.zipdabang.zipdabang_android.module.detail.recipe.common.DeviceScreenSize
 import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
 import me.onebone.toolbar.CollapsingToolbarScaffold
 import me.onebone.toolbar.ScrollStrategy
 import me.onebone.toolbar.rememberCollapsingToolbarScaffoldState
-import kotlin.math.roundToInt
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -404,6 +369,7 @@ fun AppBarCollapsing(
     imageUrl: String,
     onClickStartIcon: () -> Unit,
     onClickEndIcon: () -> Unit,
+    deviceSize: DeviceScreenSize,
     content: @Composable () -> Unit
 ) {
     val state = rememberCollapsingToolbarScaffoldState()
@@ -414,7 +380,9 @@ fun AppBarCollapsing(
         scrollStrategy = ScrollStrategy.ExitUntilCollapsed,
         toolbar = {
 
-            val size = (70+(300-10) * state.toolbarState.progress).dp
+            val size by remember {
+                mutableStateOf((300-10) * state.toolbarState.progress + 70)
+            }
 
             /*val display = applicationContext.resources?.displayMetrics
             val deviceWidth = display?.widthPixels
@@ -425,7 +393,7 @@ fun AppBarCollapsing(
             AsyncImage(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(size),
+                    .height(size.dp),
                 model = imageUrl,
                 contentDescription = "thumbnail",
                 contentScale = ContentScale.Crop,
@@ -435,7 +403,8 @@ fun AppBarCollapsing(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(color = Color.White)
+                    .height(size.dp)
+                    .alpha(state.toolbarState.progress)
             ) {
 
             }
@@ -454,8 +423,9 @@ fun AppBarCollapsing(
                         bitmap = startIcon,
                         contentDescription = "search",
                         modifier = Modifier
-                            .padding(4.dp),
-                        tint = Color.White
+                            .padding(4.dp)
+                            .alpha(1f),
+                        tint = if (state.toolbarState.progress > 0) Color.White else Color.Gray
                     )
                 }
             }
@@ -475,8 +445,9 @@ fun AppBarCollapsing(
                         bitmap = endIcon,
                         contentDescription = "search",
                         modifier = Modifier
-                            .padding(4.dp),
-                        tint = Color.White
+                            .padding(4.dp)
+                            .alpha(1f),
+                        tint = if (state.toolbarState.progress > 0) Color.White else Color.Gray
                     )
                 }
             }
@@ -484,6 +455,144 @@ fun AppBarCollapsing(
     ) {
         content()
     }
+}
+
+@Composable
+fun CollapsingAppbar(
+    modifier: Modifier = Modifier,
+    scrollState: ScrollState,
+    startIcon: ImageBitmap?,
+    endIcon: ImageBitmap?,
+    imageUrl: String,
+    onClickStartIcon: () -> Unit,
+    onClickEndIcon: () -> Unit,
+) {
+    var headerHeightPx = 360f
+    var toolbarHeightPx = 72f
+
+    Box(modifier = modifier) {
+
+        ToolbarHeader(scroll = scrollState, imageUrl = imageUrl, headerHeightPx = headerHeightPx)
+        PageBody(scroll = scrollState)
+        ToolbarBody(
+            navigationIcon = startIcon,
+            scroll = scrollState,
+            headerHeightPx = headerHeightPx,
+            toolbarHeightPx = toolbarHeightPx,
+            actionIcon = endIcon,
+            onClickNavigationIcon = onClickStartIcon,
+            onClickActionIcon = onClickEndIcon)
+    }
+}
+
+@Composable
+fun ToolbarHeader(
+    scroll: ScrollState,
+    headerHeightPx: Float,
+    modifier: Modifier = Modifier,
+    imageUrl: String
+) {
+    Box(modifier = modifier
+        .height(360.dp)
+        .graphicsLayer {
+            translationY = -scroll.value.toFloat() / 2f
+            alpha = (-1f / headerHeightPx) * scroll.value + 1
+        }) {
+        AsyncImage(
+            modifier = Modifier
+                .fillMaxWidth(),
+            model = imageUrl,
+            contentDescription = "thumbnail",
+            contentScale = ContentScale.Crop
+        )
+    }
+}
+
+@Composable
+fun PageBody(
+    modifier: Modifier = Modifier,
+    scroll: ScrollState
+) {
+    Column(
+        modifier = modifier
+            .verticalScroll(scroll)
+            .fillMaxWidth(),
+    ) {
+        // TODO height => same with the height of header
+        Spacer(modifier = Modifier)
+        Column {
+
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ToolbarBody(
+    modifier: Modifier = Modifier,
+    scroll: ScrollState,
+    navigationIcon: ImageBitmap?,
+    actionIcon: ImageBitmap?,
+    onClickNavigationIcon: () -> Unit,
+    onClickActionIcon: () -> Unit,
+    headerHeightPx: Float,
+    toolbarHeightPx: Float
+) {
+    val toolbarBottomOffset by remember {
+        mutableStateOf(headerHeightPx - toolbarHeightPx)
+    }
+
+    val showToolbar by remember {
+        derivedStateOf {
+            scroll.value > toolbarBottomOffset
+        }
+    }
+
+    AnimatedVisibility(
+        visible = showToolbar,
+        enter = fadeIn(animationSpec = tween(300)),
+        exit = fadeOut(animationSpec = tween(300))
+    ) {
+        TopAppBar(
+            modifier = modifier.background(ZipdabangandroidTheme.Colors.MainBackground),
+            navigationIcon = {
+                navigationIcon?.let {
+                    IconButton(
+                        modifier = Modifier
+                            .padding(8.dp),
+                        onClick = { onClickNavigationIcon() }
+                    ) {
+                        Icon(
+                            bitmap = it,
+                            contentDescription = "exit",
+                            modifier = Modifier
+                                .padding(4.dp),
+                            tint = Color.White
+                        )
+                    }
+                }
+            },
+            actions = {
+                actionIcon?.let {
+                    IconButton(
+                        modifier = Modifier
+                            .padding(8.dp),
+                        onClick = { onClickActionIcon() }
+                    ) {
+                        Icon(
+                            bitmap = it,
+                            contentDescription = "menu",
+                            modifier = Modifier
+                                .padding(4.dp),
+                            tint = Color.White
+                        )
+                    }
+                }
+            },
+            title = {}
+        )
+    }
+
 }
 
 @Preview
@@ -555,6 +664,7 @@ fun AppBarCollapsingPreview() {
         imageUrl = "https://github.com/kmkim2689/jetpack-compose-practice/assets/101035437/2bb0c4ab-e42b-4697-87c6-2fbe3c836cd7",
         onClickStartIcon = { /*TODO*/ },
         onClickEndIcon = { /*TODO*/ },
+        deviceSize = DeviceScreenSize(1f, 1f)
     ) {
         LazyColumn(modifier = Modifier.fillMaxSize()) {
             items(100) {

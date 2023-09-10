@@ -1,5 +1,6 @@
 package com.zipdabang.zipdabang_android.module.detail.recipe.use_case
 
+import android.util.Log
 import androidx.datastore.core.DataStore
 import com.zipdabang.zipdabang_android.common.Resource
 import com.zipdabang.zipdabang_android.common.ResponseCode
@@ -17,8 +18,13 @@ import javax.inject.Inject
 
 class GetRecipeDetailUseCase @Inject constructor(
     private val recipeDetailRepository: RecipeDetailRepository,
-    private val tokenDataStore: DataStore<Token>
+    private val tokenDataStore: DataStore<Token>,
 ){
+
+    companion object {
+        const val TAG = "GetRecipeDetailUseCase"
+    }
+
     operator fun invoke(recipeId: Int): Flow<Resource<RecipeDetailDomain>> = flow {
         try {
             emit(Resource.Loading())
@@ -30,6 +36,8 @@ class GetRecipeDetailUseCase @Inject constructor(
             ).toRecipeDetailDomain()
 
             emitDataByResponseCode(recipeDetail)
+
+            Log.d(TAG, "recipeDetail : $recipeDetail")
 
         } catch (e: HttpException) {
             emit(Resource.Error(

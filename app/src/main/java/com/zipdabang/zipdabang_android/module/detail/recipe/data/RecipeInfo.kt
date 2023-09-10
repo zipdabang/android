@@ -4,19 +4,19 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class RecipeInfo(
-    val ownerImage: String,
+    val ownerImage: String?,
     val categoryId: List<Int>,
     val comments: Int,
     val createdAt: String,
     val intro: String,
-    val isLiked: Boolean,
-    val isScrapped: Boolean,
-    val likes: Int,
+    var isLiked: Boolean,
+    var isScrapped: Boolean,
+    var likes: Int,
     val nickname: String,
     val recipeId: Int,
     val recipeName: String,
     val recipeTip: String,
-    val scraps: Int,
+    var scraps: Int,
     val thumbnailUrl: String,
     val time: String
 )
