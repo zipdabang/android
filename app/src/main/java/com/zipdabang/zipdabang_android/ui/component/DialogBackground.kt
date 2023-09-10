@@ -28,6 +28,9 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -573,7 +576,73 @@ fun CustomDialogSelectCategory(
 
     }
 }
+@Composable
+fun CustomMarketReady(
+    setShowDialog: (Boolean) -> Unit,
+    onCheckClick: () -> Unit,
+) {
 
+    Dialog(onDismissRequest = { setShowDialog(false) }) {
+        Surface(
+            shape = ZipdabangandroidTheme.Shapes.small,
+            color = DialogBackground,
+            modifier = Modifier.size(width = 328.dp, height = 500.dp)
+        ) {
+
+            Column(
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+
+                Column(
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier
+                        .padding(start = 40.dp, end = 40.dp, top = 18.dp, bottom = 8.dp)
+                )
+                {
+                    Text(
+                        text = "현재 준비 중인 서비스에요!",
+                        style = TextStyle(
+                            fontSize = 24.sp,
+                            fontFamily = FontFamily(Font(R.font.s)),
+                            fontWeight = FontWeight(900),
+                            color = Color(0xFF867768),
+                            textAlign = TextAlign.Center,
+                        )
+                    )
+                    Spacer(modifier = Modifier.height(10.dp))
+                    Text(
+                        text = "레시피의 카테고리를 선택해주세요",
+                        textAlign = TextAlign.Center,
+                        color = NavBlack,
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight(400)
+                    )
+
+                }
+
+                Spacer(modifier = Modifier.height(10.dp))
+
+                TextButton(
+                    enabled= true,
+                    shape = RectangleShape,
+                    onClick = { onCheckClick }
+                ) {
+                    Text(
+                        text = "선택 완료",
+                        color = NavBlack,
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight(700)
+                    )
+
+                }
+            }
+
+        }
+
+    }
+}
 
 @Preview
 @Composable
