@@ -100,6 +100,7 @@ class SearchRecipeCategoryMediator @Inject constructor(
                     }
                     RemoteKeyDao.addAllRemoteKeys(remoteKeys = keys)
                     CategoryDao.addItems(items = response.result.recipeList)
+
                 }
 
                 MediatorResult.Success(endOfPaginationReached = endOfPaginationReached)

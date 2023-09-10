@@ -14,6 +14,9 @@ interface SearchDao {
     @Query("SELECT * FROM search_recipe_table")
     fun getAllItem() : PagingSource<Int, SearchRecipe>
 
+    @Query("SELECT recipeId FROM search_recipe_table")
+    fun getAllId() : Int
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun addItems(items : List<SearchRecipe>)
 
