@@ -41,9 +41,9 @@ fun GroupHeader(
             .fillMaxWidth()
             .padding(
                 start = 16.dp,
-                end = 26.dp,
-                top = 10.dp,
-                bottom = 10.dp
+                end = 16.dp,
+                top = 6.dp,
+                bottom = 6.dp
             )
             .clickable(
                 interactionSource = remember {
@@ -65,14 +65,14 @@ fun GroupHeader(
                     text = formerHeaderStrawberry,
                     spanStyle = SpanStyle(
                         color = ZipdabangandroidTheme.Colors.Strawberry,
-                        fontFamily = FontFamily(Font(R.font.cafe24ssurroundair)),
+                        fontFamily = FontFamily(Font(R.font.kopubworlddotum_bold)),
                         fontSize = 16.sp
                     )
                 ) + AnnotatedString(
                     text = latterHeaderChoco,
                     spanStyle = SpanStyle(
                         color = ZipdabangandroidTheme.Colors.Choco,
-                        fontFamily = FontFamily(Font(R.font.cafe24ssurroundair)),
+                        fontFamily = FontFamily(Font(R.font.kopubworlddotum_bold)),
                         fontSize = 16.sp
                     )
                 )
@@ -101,7 +101,7 @@ fun GroupHeaderReversed(
             .fillMaxWidth()
             .padding(
                 start = 16.dp,
-                end = 26.dp,
+                end = 16.dp,
                 top = 10.dp,
                 bottom = 10.dp
             )
@@ -125,14 +125,14 @@ fun GroupHeaderReversed(
                     text = formerHeaderChoco,
                     spanStyle = SpanStyle(
                         color = ZipdabangandroidTheme.Colors.Choco,
-                        fontFamily = FontFamily(Font(R.font.cafe24ssurroundair)),
+                        fontFamily = FontFamily(Font(R.font.kopubworlddotum_bold)),
                         fontSize = 16.sp
                     )
                 ) + AnnotatedString(
                     text = latterHeaderStrawberry,
                     spanStyle = SpanStyle(
                         color = ZipdabangandroidTheme.Colors.Strawberry,
-                        fontFamily = FontFamily(Font(R.font.cafe24ssurroundair)),
+                        fontFamily = FontFamily(Font(R.font.kopubworlddotum_bold)),
                         fontSize = 16.sp
                     )
                 )

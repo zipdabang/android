@@ -4,7 +4,7 @@
     <string name="zipdabang_title">집다방</string>
     <string name="zipdabang_subtitle">홈카페를 위한 모든 것이 여기에!</string>
 
-
+    <!-- for drawer-->
     <string name="drawer_info">집다방 정보</string>
     <string name="drawer_notice">공지사항</string>
     <string name="drawer_ToS">서비스 이용 약관</string>
@@ -20,9 +20,19 @@
     <string name="drawer_appGmail">zipdabang.app@gmail.com</string>
     <string name="drawer_appPhone">010-9855-0007</string>
     <string name="drawer_appVersion">집다방 앱 버전</string>
-    <string name="drawer_appDetail">집다방은 어쩌구 저쩌구 어쩌구 저쩌구 어쩌구 저쩌구 어쩌구 저쩌구 어쩌구 저쩌구 어쩌구 저쩌구 어쩌구 저쩌구 어쩌구 저쩌구 어쩌구 저쩌구 어쩌구 저쩌구 어쩌구 저쩌구</string>
+    <string name="drawer_appDetail">홈카페를 위한 모든 것이 여기에! 당신을 위한 단 하나의 홈카페 플랫폼입니다 :)</string>
+    <string name="drawer_cancel">취소</string>
+    <string name="drawer_editdone">수정 완료</string>
+    <string name="drawer_choosedone">선택 완료</string>
+    <string name="drawer_preferbeverages">선호하는 음료</string>
+    <string name="drawer_edit_userinfobasic">기본 정보 수정</string>
+    <string name="drawer_edit_userinfodetail">상세 정보 수정</string>
+    <string name="drawer_edit_userinfonickname">닉네임 수정</string>
+    <string name="drawer_edit_preferbeverage">선호 음료 수정</string>
+    <string name="drawer_pick_prefer_beverage">선호하는 카페 음료 목록을 골라주세요</string>
+    <string name="drawer_pick_prefer_beverage_detail">선호하는 카페 음료 개발에 노력하겠습니다!</string>
 
-
+    <!--  for signup  -->
     <string name="signup">회원가입</string>
     <string name="signup_btn_termsagree">약관 동의</string>
     <string name="signup_btn_choicecomplete">선택 완료</string>
@@ -50,7 +60,10 @@
     <string name="signup_userinfo_address">주소</string>
     <string name="signup_userinfo_detailaddress">상세 주소</string>
     <string name="signup_userinfo_detailaddress_placeholder">상세 주소 (배달 주문 시 입력 가능)</string>
-    <string name="signup_userinfo_birthday_notformed">생년월일 형식에 맞지 않습니다.</string>
+    <string name="signup_userinfo_birthday_notformed">생년월일 형식에 맞지 않습니다</string>
+    <string name="signup_userinfo_birthday_notsix">생년월일 6자리를 입력해주세요</string>
+    <string name="signup_userinfo_birthday_underfifteen">만 15세 미만은 가입이 불가해요</string>
+    <string name="signup_userinfo_phonenumber_notformed">전화번호를 정확히 입력해주세요</string>
     <string name="signup_userinfo_phonenumber_notcertificate">인증 번호 불일치</string>
     <string name="signup_userinfo_phonenumber_certificate">인증 완료</string>
     <string name="signup_nickname_maintitle_zipdabang">집다방</string>
@@ -68,6 +81,49 @@
     <string name="signup_preferences_inputlater">나중에 입력하기</string>
     <string name="signup_preferences_gotohome">(홈으로 바로 이동)</string>
 
+    <!--  for my  -->
+    <string name="my_like">좋아요</string>
+    <string name="my_scrap">스크랩</string>
+    <string name="my_myrecipe">나의 레시피</string>
+    <string name="my_shopping">쇼핑</string>
+    <string name="my_myshopping">나의 쇼핑</string>
+    <string name="my_friendlist">친구 목록</string>
+    <string name="my_noticeandevent">공지사항 및 이벤트</string>
+    <string name="my_alarm">알림</string>
+    <string name="my_logout">로그아웃</string>
+    <string name="my_myinfo">회원정보</string>
+    <string name="my_myinfo_edit">회원정보 수정</string>
+    <string name="my_withdraw">탈퇴하기</string>
+    <string name="my_market_ing">진행중인 주문</string>
+    <string name="my_market_notdeploy">준비 중인 서비스입니다.</string>
+    <string name="my_searchbar_keyword">찾는 키워드를 검색해보세요.</string>
+    <string name="my_searchbar_person">찾는 사람을 검색해보세요.</string>
+    <string name="my_searchbar_search">찾아보기</string>
+    <string name="my_follow">팔로우</string>
+    <string name="my_following">팔로잉</string>
+    <string name="my_upload">업로드</string>
+    <string name="my_save">임시저장</string>
+    <string name="my_addnewrecipe">새로운 레시피 추가하기</string>
+    <string name="my_recipewrite">레시피 작성</string>
+    <string name="my_recipewrite_thumbnail_upload">레시피 대표 사진 등록하기</string>
+    <string name="my_recipewrite_title">레시피 제목</string>
+    <string name="my_recipewrite_title_hint">레시피 제목 (최대 20자)</string>
+    <string name="my_recipewrite_time">소요 시간</string>
+    <string name="my_recipewrite_intro">레시피 한 줄 소개</string>
+    <string name="my_recipewrite_intro_hint">레시피 한 줄 소개 (최대 100자)</string>
+    <string name="my_recipewrite_ingredient">재료</string>
+    <string name="my_recipewrite_unit">단위</string>
+    <string name="my_recipewrite_milk">우유</string>
+    <string name="my_recipewrite_hundredmilli">ex) 100ml</string>
+    <string name="my_recipewrite_step">레시피 순서</string>
+    <string name="my_recipewrite_step_hint">레시피를 만드는 Step 을 설명해 주세요.\n(최대 200자)</string>
+    <string name="my_recipewrite_recipetip">레시피 Tip!</string>
+    <string name="my_recipewrite_recipetip_hint">레시피를 만들 때 주의해야 할 사항이나 맛있게 만드는 팁을 작성해 주세요. (최대 200자)</string>
+    <string name="my_recipewrite_save">임시저장</string>
+    <string name="my_recipewrite_writedone">작성 완료</string>
+
+
+
     <!--  for fcm  -->
     <string name="default_notification_channel_id" translatable="false">fcm_default_channel</string>
     <string name="default_notification_channel_name" translatable="true">Zipdabang</string>
@@ -75,5 +131,8 @@
     <string name="fcm_message">FCM Message</string>
     <!-- for market -->
     <string name="market_recent">내가 최근 봤던 아이템</string>
+    <string name="btn_register_comment">등록</string>
+    <string name="placeholder_comment">댓글 쓰기 (최대 100자)</string>
+    <string name="group_header_recipe_of">의 레시피</string>
 
 </resources>

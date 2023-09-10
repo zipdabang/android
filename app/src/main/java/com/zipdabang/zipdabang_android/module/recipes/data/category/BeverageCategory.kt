@@ -6,5 +6,5 @@ import kotlinx.serialization.Serializable
 data class BeverageCategory(
     val categoryName: String,
     val id: Int,
-    val imageUrl: String
+    val imageUrl: String?
 )

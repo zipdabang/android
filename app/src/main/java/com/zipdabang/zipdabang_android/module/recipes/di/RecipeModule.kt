@@ -3,11 +3,17 @@ package com.zipdabang.zipdabang_android.module.recipes.di
 import androidx.datastore.core.DataStore
 import com.zipdabang.zipdabang_android.core.Paging3Database
 import com.zipdabang.zipdabang_android.core.data_store.proto.Token
+import com.zipdabang.zipdabang_android.module.comment.data.RecipeCommentRepositoryImpl
+import com.zipdabang.zipdabang_android.module.comment.domain.RecipeCommentRepository
+import com.zipdabang.zipdabang_android.module.detail.recipe.data.RecipeDetailRepositoryImpl
+import com.zipdabang.zipdabang_android.module.detail.recipe.domain.RecipeDetailRepository
 import com.zipdabang.zipdabang_android.module.recipes.data.RecipeApi
+import com.zipdabang.zipdabang_android.module.recipes.data.banner.RecipeBannerRepositoryImpl
 import com.zipdabang.zipdabang_android.module.recipes.data.category.RecipeCategoryRepositoryImpl
 import com.zipdabang.zipdabang_android.module.recipes.data.preference.PreferenceToggleRepositoryImpl
 import com.zipdabang.zipdabang_android.module.recipes.data.common.RecipeListRepositoryImpl
 import com.zipdabang.zipdabang_android.module.recipes.domain.PreferenceToggleRepository
+import com.zipdabang.zipdabang_android.module.recipes.domain.RecipeBannerRepository
 import com.zipdabang.zipdabang_android.module.recipes.domain.RecipeCategoryRepository
 import com.zipdabang.zipdabang_android.module.recipes.domain.RecipeListRepository
 import com.zipdabang.zipdabang_android.module.recipes.domain.mediator.CategoryRecipeListMediator
@@ -51,4 +57,29 @@ object RecipeModule {
         return PreferenceToggleRepositoryImpl(recipeApi)
     }
 
+    @Provides
+    @Singleton
+    fun provideRecipeBannerRepository(
+        recipeApi: RecipeApi
+    ): RecipeBannerRepository {
+        return RecipeBannerRepositoryImpl(recipeApi)
+    }
+
+    @Provides
+    @Singleton
+    fun provideRecipeDetailRepository(
+        recipeApi: RecipeApi
+    ): RecipeDetailRepository {
+        return RecipeDetailRepositoryImpl(recipeApi)
+    }
+
+    @Provides
+    @Singleton
+    fun provideRecipeCommentRepository(
+        database: Paging3Database,
+        recipeApi: RecipeApi,
+        dataStore: DataStore<Token>,
+    ): RecipeCommentRepository {
+        return RecipeCommentRepositoryImpl(database, recipeApi, dataStore)
+    }
 }

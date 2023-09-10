@@ -1,10 +1,14 @@
 package com.zipdabang.zipdabang_android.module.recipes.use_case
 
+import androidx.datastore.core.DataStore
+import com.zipdabang.zipdabang_android.common.Constants.TOKEN_NULL
 import com.zipdabang.zipdabang_android.common.Resource
+import com.zipdabang.zipdabang_android.core.data_store.proto.Token
 import com.zipdabang.zipdabang_android.module.recipes.domain.PreferenceToggle
 import com.zipdabang.zipdabang_android.module.recipes.domain.RecipeListRepository
 import com.zipdabang.zipdabang_android.module.recipes.mapper.toPreferenceToggle
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import retrofit2.HttpException
 import java.io.IOException
@@ -12,12 +16,13 @@ import java.lang.Exception
 import javax.inject.Inject
 
 class ToggleLikeListUseCase @Inject constructor(
-    private val recipeListRepository: RecipeListRepository
+    private val recipeListRepository: RecipeListRepository,
+    private val tokenDataStore: DataStore<Token>
 ) {
-    operator fun invoke(
-        accessToken: String, recipeId: Int
-    ): Flow<Resource<PreferenceToggle>> = flow {
+    operator fun invoke(recipeId: Int): Flow<Resource<PreferenceToggle>> = flow {
         try {
+            val accessToken = ("Bearer " + tokenDataStore.data.first().accessToken)
+
             emit(Resource.Loading())
             val remoteResult = recipeListRepository
                 .toggleLikeRemote(accessToken = accessToken, recipeId = recipeId)

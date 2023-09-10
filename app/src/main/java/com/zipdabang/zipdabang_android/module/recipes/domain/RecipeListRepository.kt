@@ -1,8 +1,10 @@
 package com.zipdabang.zipdabang_android.module.recipes.domain
 
+import androidx.paging.Pager
 import androidx.paging.PagingData
 import com.zipdabang.zipdabang_android.module.recipes.common.OwnerType
 import com.zipdabang.zipdabang_android.module.recipes.data.common.RecipeItem
+import com.zipdabang.zipdabang_android.module.recipes.data.local.RecipeItemEntity
 import com.zipdabang.zipdabang_android.module.recipes.data.preference.PreferenceResultDto
 import com.zipdabang.zipdabang_android.module.recipes.data.preview.RecipePreviewItemsDto
 import com.zipdabang.zipdabang_android.module.recipes.data.recipe_list.RecipeListDto
@@ -12,14 +14,14 @@ interface RecipeListRepository {
     suspend fun getRecipePreviewList(accessToken: String, ownerType: String): RecipePreviewItemsDto
 
     fun getRecipeListByOwnerType(
-        ownerType: OwnerType,
+        ownerType: String,
         orderBy: String,
-    ): Flow<PagingData<RecipeItem>>
+    ): Pager<Int, RecipeItemEntity>
 
     fun getRecipeListByCategory(
         categoryId: Int,
         orderBy: String
-    ): Flow<PagingData<RecipeItem>>
+    ): Pager<Int, RecipeItemEntity>
 
     suspend fun toggleLikeRemote(
         accessToken: String,

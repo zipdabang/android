@@ -2,7 +2,7 @@ package com.zipdabang.zipdabang_android.module.login.use_case
 
 import com.zipdabang.zipdabang_android.common.Resource
 import com.zipdabang.zipdabang_android.common.ResponseCode
-import com.zipdabang.zipdabang_android.module.login.data.AuthBody
+import com.zipdabang.zipdabang_android.module.login.data.member.AuthBody
 import com.zipdabang.zipdabang_android.module.login.domain.Auth
 import com.zipdabang.zipdabang_android.module.login.domain.AuthRepository
 import com.zipdabang.zipdabang_android.module.login.mapper.toAuth

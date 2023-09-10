@@ -1,24 +1,34 @@
 package com.zipdabang.zipdabang_android.module.recipes.ui.viewmodel
 
+import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.Pager
 import androidx.paging.PagingData
+import androidx.paging.cachedIn
+import androidx.paging.map
+import androidx.room.withTransaction
 import com.zipdabang.zipdabang_android.common.Resource
 import com.zipdabang.zipdabang_android.common.ResponseCode
-import com.zipdabang.zipdabang_android.module.recipes.common.OwnerType
+import com.zipdabang.zipdabang_android.core.Paging3Database
 import com.zipdabang.zipdabang_android.module.recipes.data.common.RecipeItem
 import com.zipdabang.zipdabang_android.module.recipes.domain.PreferenceToggle
 import com.zipdabang.zipdabang_android.module.recipes.domain.RecipeListRepository
+import com.zipdabang.zipdabang_android.module.recipes.mapper.toRecipeItem
 import com.zipdabang.zipdabang_android.module.recipes.ui.state.PreferenceToggleState
 import com.zipdabang.zipdabang_android.module.recipes.use_case.ToggleLikeListUseCase
 import com.zipdabang.zipdabang_android.module.recipes.use_case.ToggleScrapListUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -26,15 +36,20 @@ class RecipeListViewModel @Inject constructor(
     private val recipeListRepository: RecipeListRepository,
     private val toggleLikeListUseCase: ToggleLikeListUseCase,
     private val toggleScrapListUseCase: ToggleScrapListUseCase,
-    private val savedState: SavedStateHandle
+    private val savedState: SavedStateHandle,
+    private val database: Paging3Database
 ) : ViewModel() {
 
-    private val _toggleLikeResult = mutableStateOf(PreferenceToggleState())
-    val toggleLikeResult: State<PreferenceToggleState>
+    companion object {
+        const val TAG = "RecipeListViewModel"
+    }
+
+    private val _toggleLikeResult = MutableStateFlow(PreferenceToggleState())
+    val toggleLikeResult: StateFlow<PreferenceToggleState>
         get() = _toggleLikeResult
 
-    private val _toggleScrapResult = mutableStateOf(PreferenceToggleState())
-    val toggleScrapResult: State<PreferenceToggleState>
+    private val _toggleScrapResult = MutableStateFlow(PreferenceToggleState())
+    val toggleScrapResult: StateFlow<PreferenceToggleState>
         get() = _toggleScrapResult
 
     private val _errorMessage = mutableStateOf("")
@@ -47,36 +62,48 @@ class RecipeListViewModel @Inject constructor(
 
     fun getRecipeListByCategory(
         categoryId: Int,
-        orderBy: String
+        orderBy: String = "latest"
     ): Flow<PagingData<RecipeItem>> {
         return recipeListRepository.getRecipeListByCategory(
             categoryId = categoryId,
             orderBy = orderBy
         )
+            .flow
+            .map { pagingData ->
+            pagingData.map {
+                Log.d(TAG, "$it")
+                it.toRecipeItem()
+            }
+        }.cachedIn(viewModelScope)
     }
 
     fun getRecipeListByOwnerType(
-        ownerType: OwnerType,
-        orderBy: String
+        ownerType: String,
+        orderBy: String = "latest"
     ): Flow<PagingData<RecipeItem>> {
-        return recipeListRepository.getRecipeListByOwnerType(
-            ownerType = ownerType,
-            orderBy = orderBy
-        )
+        return recipeListRepository
+            .getRecipeListByOwnerType(
+                ownerType = ownerType,
+                orderBy = orderBy
+            )
+            .flow
+            .map { pagingData ->
+                pagingData.map { it.toRecipeItem() }
+        }.cachedIn(viewModelScope)
     }
 
     /* TODO 리스트 아이템에서 좋아요/스크랩 변경 발생 시 동작
         api 호출뿐만 아니라 db 조작 필요
         좋아요, 스크랩 여부 토글 -> 그 결과(성공/실패)에 따른 ui 반영 */
 
-    fun toggleLike(accessToken: String, recipeId: Int) {
-        toggleLikeListUseCase(accessToken, recipeId).onEach { result ->
+    fun toggleLike(recipeId: Int) {
+        toggleLikeListUseCase(recipeId).onEach { result ->
             processResult(result)
         }.launchIn(viewModelScope)
     }
 
-    fun toggleScrap(accessToken: String, recipeId: Int) {
-        toggleScrapListUseCase(accessToken, recipeId).onEach { result ->
+    fun toggleScrap(recipeId: Int) {
+        toggleScrapListUseCase(recipeId).onEach { result ->
             processResult(result)
         }.launchIn(viewModelScope)
     }
@@ -102,13 +129,13 @@ class RecipeListViewModel @Inject constructor(
                             _errorMessage.value = ResponseCode.UNAUTHORIZED_TOKEN_UNUSUAL.message
                         }
 
-                        ResponseCode.UNAUTHORIZED_TOKEN_EXPIRED.code -> {
+                        ResponseCode.UNAUTHORIZED_ACCESS_EXPIRED.code -> {
                             _toggleScrapResult.value = PreferenceToggleState(
                                 isLoading = false,
                                 errorMessage = it.message,
                                 isSuccessful = false
                             )
-                            _errorMessage.value = ResponseCode.UNAUTHORIZED_TOKEN_EXPIRED.message
+                            _errorMessage.value = ResponseCode.UNAUTHORIZED_ACCESS_EXPIRED.message
                         }
 
                         ResponseCode.UNAUTHORIZED_TOKEN_NOT_EXISTS.code -> {
@@ -165,5 +192,15 @@ class RecipeListViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    fun deleteAllRecipes() {
+        viewModelScope.launch {
+            database.withTransaction {
+                database.recipeListDao().deleteAllRecipes()
+                database.RemoteKeyDao().deleteRemoteKeys()
+            }
+        }
+
     }
 }

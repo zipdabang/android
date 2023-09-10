@@ -14,7 +14,7 @@ fun NavGraphBuilder.HomeNavGraph(navController: NavController){
 
     navigation(startDestination = HomeScreen.Home.route,route = HOME_ROUTE){
         composable(HomeScreen.Home.route){
-            HomeScreen({},{})
+            HomeScreen(navController)
         }
         composable(HomeScreen.Guide.route){
             GuideScreen()

@@ -1,16 +1,19 @@
 package com.zipdabang.zipdabang_android.module.recipes.data.common
 
+import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
+import androidx.paging.map
 import androidx.room.util.copy
 import com.zipdabang.zipdabang_android.common.Constants.ITEMS_PER_PAGE
 import com.zipdabang.zipdabang_android.core.Paging3Database
 import com.zipdabang.zipdabang_android.core.data_store.proto.Token
 import com.zipdabang.zipdabang_android.module.recipes.common.OwnerType
 import com.zipdabang.zipdabang_android.module.recipes.data.RecipeApi
+import com.zipdabang.zipdabang_android.module.recipes.data.local.RecipeItemEntity
 import com.zipdabang.zipdabang_android.module.recipes.data.preference.PreferenceResultDto
 import com.zipdabang.zipdabang_android.module.recipes.data.preference.PreferenceToggleResult
 import com.zipdabang.zipdabang_android.module.recipes.data.preview.RecipePreviewItemsDto
@@ -18,7 +21,9 @@ import com.zipdabang.zipdabang_android.module.recipes.data.recipe_list.RecipeLis
 import com.zipdabang.zipdabang_android.module.recipes.domain.RecipeListRepository
 import com.zipdabang.zipdabang_android.module.recipes.domain.mediator.CategoryRecipeListMediator
 import com.zipdabang.zipdabang_android.module.recipes.domain.mediator.OwnerTypeRecipeListMediator
+import com.zipdabang.zipdabang_android.module.recipes.mapper.toRecipeItem
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 
 class RecipeListRepositoryImpl(
     private val recipeApi: RecipeApi,
@@ -37,9 +42,9 @@ class RecipeListRepositoryImpl(
 
     @OptIn(ExperimentalPagingApi::class)
     override fun getRecipeListByOwnerType(
-        ownerType: OwnerType,
+        ownerType: String,
         orderBy: String,
-    ): Flow<PagingData<RecipeItem>> {
+    ): Pager<Int, RecipeItemEntity> {
         val pagingSourceFactory = {
             database.recipeListDao().getAllRecipes()
         }
@@ -54,14 +59,17 @@ class RecipeListRepositoryImpl(
                 orderBy = orderBy
             ),
             pagingSourceFactory = pagingSourceFactory
-        ).flow
+        )
     }
 
     @OptIn(ExperimentalPagingApi::class)
     override fun getRecipeListByCategory(
         categoryId: Int,
         orderBy: String
-    ): Flow<PagingData<RecipeItem>> {
+    ): Pager<Int, RecipeItemEntity> {
+
+        Log.d("RecipeList - repository", "${database.recipeListDao().getAllRecipes()}")
+
         val pagingSourceFactory = {
             database.recipeListDao().getAllRecipes()
         }
@@ -76,7 +84,7 @@ class RecipeListRepositoryImpl(
                 orderBy = orderBy
             ),
             pagingSourceFactory = pagingSourceFactory
-        ).flow
+        )
     }
 
     override suspend fun toggleLikeRemote(
@@ -94,6 +102,11 @@ class RecipeListRepositoryImpl(
             val recipeItem = database.recipeListDao().getRecipeItemById(recipeId)
             recipeItem?.let {
                 it.isLiked = !it.isLiked
+                if (it.isLiked) {
+                    it.likes += 1
+                } else {
+                    it.likes -= 1
+                }
                 database.recipeListDao().updateRecipe(it)
             }
             preferencesResultDto
@@ -121,6 +134,11 @@ class RecipeListRepositoryImpl(
             val recipeItem = database.recipeListDao().getRecipeItemById(recipeId)
             recipeItem?.let {
                 it.isScrapped = !it.isScrapped
+                if (it.isScrapped) {
+                    it.scraps += 1
+                } else {
+                    it.scraps -= 1
+                }
                 database.recipeListDao().updateRecipe(it)
             }
             preferencesResultDto

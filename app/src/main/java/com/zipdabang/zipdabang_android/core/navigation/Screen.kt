@@ -9,6 +9,7 @@ const val MARKET_ROUTE = "main/market"
 const val BASKET_ROUTE = "main/basket"
 const val RECIPES_ROUTE = "main/recipes"
 const val MY_ROUTE = "main/my"
+const val DRAWER_ROUTE = "main/drawer"
 const val SHARED_ROUTE = "main/shared"
 
 sealed class AuthScreen(val route: String) {
@@ -40,12 +41,53 @@ sealed class BasketScreen(val route : String){
 }
 sealed class RecipeScreen(val route : String){
     object Home : RecipeScreen(route = "recipes/home")
+    object RecipeList: RecipeScreen("recipes/list?category={category}&ownerType={ownerType}") {
+        fun passQuery(category: Int? = null, ownerType: String? = null): String {
+            return "recipes/list?category=$category&ownerType=$ownerType"
+        }
+    }
 }
 sealed class MyScreen(val route : String){
     object Home : MyScreen(route = "my/home")
+    object Like : MyScreen(route = "my/like")
+    object Scrap : MyScreen(route = "my/scrap")
+    object Myrecipe : MyScreen(route = "my/myrecipe")
+    object Shopping : MyScreen(route = "my/shopping")
+    object FriendList : MyScreen(route = "my/friendlist")
+    object RecipeWrite : MyScreen(route = "my/recipewrite")
+}
+
+sealed class DrawerScreen(val route : String){
+    //공지사항
+    object Notice : DrawerScreen(route = "drawer/notice")
+    //FAQ
+    object FAQ : DrawerScreen(route = "drawer/faq")
+    //오류문의 및 신고
+    object Inquery : DrawerScreen(route = "drawer/inquery")
+    //회원 정보
+    object UserInfo : DrawerScreen(route = "drawer/userinfo")
+    object UserInfoBasic : DrawerScreen(route="drawer/userinfo/basic")
+    object UserInfoDetail : DrawerScreen(route="drawer/userinfo/detail")
+    object UserInfoNickname : DrawerScreen(route="main/drawer/userinfo/nickname")
+    object UserInfoPreferences : DrawerScreen(route="main/drawer/userinfo/preferences")
+    object UserInfoProfile : DrawerScreen(route="main/drawer/userinfo/profile")
+
 }
 
 
 sealed class SharedScreen(val route : String){
-    object DetailRecipe : SharedScreen(route = "shared/detail")
+    object DetailRecipe : SharedScreen(route = "shared/detail/{recipeId}") {
+        fun passRecipeId(recipeId: Int): String{
+            return "shared/detail/$recipeId"
+        }
+    }
+    object Search : SharedScreen(route = "shared/search")
+
+    object SearchRecipeCategory : SharedScreen(route = "shared/search?categoryId={categoryId}&keyword={keyword}"){
+        fun passQuery(categoryId : Int?, keyword: String?) : String{
+            return "shared/search?categoryId=$categoryId&keyword=$keyword"
+        }
+    }
+
+
 }

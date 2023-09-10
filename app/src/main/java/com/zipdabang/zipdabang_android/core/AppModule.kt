@@ -1,6 +1,7 @@
 package com.zipdabang.zipdabang_android.core
 
 import android.content.Context
+import android.util.DisplayMetrics
 import androidx.datastore.core.DataStore
 import androidx.datastore.core.DataStoreFactory
 import androidx.datastore.dataStoreFile
@@ -13,6 +14,7 @@ import com.zipdabang.zipdabang_android.core.data_store.proto.ProtoRepository
 import com.zipdabang.zipdabang_android.core.data_store.proto.ProtoRepositoryImpl
 import com.zipdabang.zipdabang_android.core.data_store.proto.ProtoSerializer
 import com.zipdabang.zipdabang_android.core.data_store.proto.Token
+import com.zipdabang.zipdabang_android.module.detail.recipe.common.DeviceScreenSize
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -24,6 +26,7 @@ import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import java.util.concurrent.TimeUnit
+import javax.inject.Qualifier
 import javax.inject.Singleton
 
 @Module
@@ -55,17 +58,39 @@ object AppModule {
     fun provideDatabase(
         @ApplicationContext context: Context
     ): Paging3Database {
-        return Room.databaseBuilder(
-            context,
-            Paging3Database::class.java,
-            PAGING3_DATABASE
-        ).build()
+/*        val MIGRATION_1_2 = object: Migration(1,2) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                //만약, 테이블이 추가 되었다면 어떤 테이블이 추가 되었는지 알려주는 query문장이 필요
+                database.execSQL("CREATE TABLE 'recipe_item_table' ('categoryId' INTEGER, 'comments' INTEGER, 'createdAt' TEXT, 'isLiked' INTEGER, 'isScrapped' INTEGER, 'likes' INTEGER, 'nickname' TEXT, 'recipeName' TEXT, 'scraps' INTEGER, 'thumbnailUrl' TEXT " + "PRIMARY KEY('recipeId'))")
+            }
+        }*/
+
+        return Room
+            .databaseBuilder(
+                context,
+                Paging3Database::class.java,
+                PAGING3_DATABASE
+            )
+            .fallbackToDestructiveMigration()
+//            .addMigrations(MIGRATION_1_2)
+            .build()
     }
 
     @Provides
     @Singleton // have a singleton...
-    fun provideHttpClient(): OkHttpClient {
+    fun provideHttpClient(
+        tokenDataStore: DataStore<Token>
+    ): OkHttpClient {
+
+        // val accessToken = tokenDataStore.data.first().accessToken
+
         return OkHttpClient.Builder()
+/*            .addInterceptor(Interceptor { chain ->
+                val newRequest = chain.request().newBuilder()
+                    .addHeader("Authorization", )
+                    .build()
+                chain.proceed(newRequest);
+            })*/
             .readTimeout(15, TimeUnit.SECONDS)
             .connectTimeout(15, TimeUnit.SECONDS)
             .build()
@@ -80,6 +105,7 @@ object AppModule {
             // specifies whether encounters of unknown properties in the input JSON should be ignored,
             // instead of exception(SerializationException)
             ignoreUnknownKeys = true
+            coerceInputValues = true
         }
         return Retrofit.Builder()
             .baseUrl(BASE_URL)
@@ -89,4 +115,51 @@ object AppModule {
             .addConverterFactory(json.asConverterFactory(contentType))
             .build()
     }
+
+    @Provides
+    @Singleton
+    @DeviceSize
+    fun provideDeviceSize(
+        @ApplicationContext appContext: Context
+    ): DeviceScreenSize {
+        fun px2dp(px: Int, context: Context): Float {
+            return px / ((context.resources.displayMetrics.densityDpi.toFloat()) / DisplayMetrics.DENSITY_DEFAULT)
+        }
+
+        val display = appContext.resources.displayMetrics
+        val deviceWidth = px2dp(display.widthPixels, appContext)
+        val deviceHeight = px2dp(display.heightPixels, appContext)
+
+        return DeviceScreenSize(deviceWidth, deviceHeight)
+    }
+
+/*    @OptIn(ExperimentalCoroutinesApi::class)
+    @Provides
+    @Singleton
+    @AccessToken
+    fun provideAccessToken(
+        dataStore: DataStore<Token>
+    ): String {
+        lateinit var result: String
+
+        val accessToken = CoroutineScope(Dispatchers.IO).async {
+            "Bearer ${dataStore.data.first().accessToken}"
+        }
+
+        accessToken.invokeOnCompletion {
+            if (it == null) {
+                result = accessToken.getCompleted()
+            }
+        }
+
+        return result
+    }*/
 }
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class DeviceSize
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class DeviceHeight

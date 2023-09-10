@@ -213,7 +213,6 @@ fun MarketScreen_Test(){
     val images = listOf(
         "https://menu.moneys.co.kr/moneyweek/thumb/2019/07/04/06/2019070409188047775_1.jpg/dims/thumbnail/620/optimize/",
         "http://www.econovill.com/news/photo/201504/241659_32000_5414.jpg",
-        "https://file.newswire.co.kr/data/datafile2/thumb_480/2019/06/3554238800_20190620153646_2171882603.jpg"
     )
     var selectedTabIndex by remember {
         mutableStateOf(0)

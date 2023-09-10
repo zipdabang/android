@@ -1,5 +1,7 @@
 package com.zipdabang.zipdabang_android.module.sign_up.ui
 
+import android.webkit.WebView
+import android.webkit.WebViewClient
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -14,13 +16,18 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material.Text
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
@@ -33,11 +40,13 @@ import androidx.navigation.compose.rememberNavController
 import com.zipdabang.zipdabang_android.R
 import com.zipdabang.zipdabang_android.core.navigation.AuthScreen
 import com.zipdabang.zipdabang_android.module.sign_up.ui.viewmodel.AuthSharedViewModel
+import com.zipdabang.zipdabang_android.module.sign_up.ui.viewmodel.UserAddressFormEvent
 import com.zipdabang.zipdabang_android.ui.component.AppBarSignUp
 import com.zipdabang.zipdabang_android.ui.component.MainAndSubTitle
 import com.zipdabang.zipdabang_android.ui.component.PrimaryButtonOutLined
 import com.zipdabang.zipdabang_android.ui.component.PrimaryButtonWithStatus
-import com.zipdabang.zipdabang_android.ui.component.TextFieldBasic
+import com.zipdabang.zipdabang_android.ui.component.TextFieldError
+import com.zipdabang.zipdabang_android.ui.component.TextFieldErrorAndCorrect
 import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
 
 @Composable
@@ -47,9 +56,14 @@ fun RegisterUserAddressScreen(
     onClickBack: ()->Unit,
     onClickNext: ()->Unit,
 ) {
-    val stateZipcodeValue by authSharedViewModel.stateZipcodeValue.collectAsState()
-    val stateAddressValue by authSharedViewModel.stateAddressValue.collectAsState()
-    val stateDetailaddressValue by authSharedViewModel.stateDetailaddressValue.collectAsState()
+    val stateUserAddressForm = authSharedViewModel.stateUserAddressForm
+
+    //webview
+    val webView = rememberWebView()
+
+    LaunchedEffect(key1 = stateUserAddressForm){
+        authSharedViewModel.onUserAddressEvent(UserAddressFormEvent.BtnChanged(true))
+    }
 
     Scaffold(
         modifier = Modifier
@@ -105,21 +119,21 @@ fun RegisterUserAddressScreen(
                             contentDescription = "Icon",
                             tint = ZipdabangandroidTheme.Colors.Choco,
                             modifier = Modifier
-                                .size(12.dp)
-                                .weight(1.2f),
+                                .size(24.dp)
+                                .weight(1.4f),
                         )
                         Box(
-                            modifier = Modifier.weight(5.4f)
+                            modifier = Modifier.weight(5.2f)
                         ){
-                            TextFieldBasic(
-                                value = stateZipcodeValue,
+                            TextFieldError(
+                                value = stateUserAddressForm.zipCode,
                                 onValueChanged = {
-                                    authSharedViewModel.updateZipcode(it)
+                                    authSharedViewModel.onUserAddressEvent(UserAddressFormEvent.ZipcodeChanged(it))
                                 },
                                 labelValue = stringResource(id = R.string.signup_userinfo_zipcode),
                                 placeHolderValue = "",
-                                onError = { return@TextFieldBasic false } ,
-                                errorMessage = "아직 배송 지원 불가 지역입니다",
+                                isError = stateUserAddressForm.zipCodeIsError,
+                                errorMessage = stateUserAddressForm.zipCodeErrorMessage,
                                 keyboardType = KeyboardType.Number,
                                 imeAction = ImeAction.Done,
                             )
@@ -131,7 +145,8 @@ fun RegisterUserAddressScreen(
                                 borderColor =ZipdabangandroidTheme.Colors.BlackSesame,
                                 text = stringResource(id = R.string.signup_userinfo_addresssearch),
                                 onClick = {
-
+                                    //authSharedViewModel.onUserAddressEvent(UserAddressFormEvent.ZipcodeClicked(true))
+                                    //webView
                                 }
                             )
                         }
@@ -146,20 +161,20 @@ fun RegisterUserAddressScreen(
                             contentDescription = "Icon",
                             tint = ZipdabangandroidTheme.Colors.Choco,
                             modifier = Modifier
-                                .size(16.dp)
-                                .weight(1.2f),
+                                .size(24.dp)
+                                .weight(1.4f),
                         )
                         Box(
-                            modifier = Modifier.weight(8.8f)
+                            modifier = Modifier.weight(8.6f)
                         ){
-                            TextFieldBasic(
-                                value = stateAddressValue,
+                            TextFieldError(
+                                value = stateUserAddressForm.address,
                                 onValueChanged = {
-                                    authSharedViewModel.updateAddress(it)
+                                    authSharedViewModel.onUserAddressEvent(UserAddressFormEvent.AddressChanged(it))
                                 },
                                 labelValue = stringResource(id = R.string.signup_userinfo_address),
                                 placeHolderValue = "",
-                                onError = { return@TextFieldBasic false } ,
+                                isError = false ,
                                 errorMessage = "",
                                 keyboardType = KeyboardType.Text,
                                 imeAction = ImeAction.Next,
@@ -172,19 +187,19 @@ fun RegisterUserAddressScreen(
                         verticalAlignment = Alignment.CenterVertically
                     ){
                         Spacer(
-                            modifier = Modifier.weight(1.2f)
+                            modifier = Modifier.weight(1.4f)
                         )
                         Box(
-                            modifier = Modifier.weight(8.8f)
+                            modifier = Modifier.weight(8.6f)
                         ){
-                            TextFieldBasic(
-                                value = stateDetailaddressValue,
+                            TextFieldError(
+                                value = stateUserAddressForm.detailAddress,
                                 onValueChanged = {
-                                    authSharedViewModel.updateDetailaddres(it)
+                                    authSharedViewModel.onUserAddressEvent(UserAddressFormEvent.DetailaddressChanged(it))
                                 },
                                 labelValue = stringResource(id = R.string.signup_userinfo_detailaddress),
                                 placeHolderValue = stringResource(id = R.string.signup_userinfo_detailaddress_placeholder),
-                                onError = { return@TextFieldBasic false } ,
+                                isError = false ,
                                 errorMessage = "",
                                 keyboardType = KeyboardType.Text,
                                 imeAction = ImeAction.Done,
@@ -201,13 +216,26 @@ fun RegisterUserAddressScreen(
                 PrimaryButtonWithStatus(
                     text= stringResource(id = R.string.signup_btn_inputdone),
                     onClick={ onClickNext() },
-                    isFormFilled = true //stateTermsValidate
+                    isFormFilled = stateUserAddressForm.btnEnabled
                 )
             }
         }
     }
-
 }
+
+@Composable
+fun rememberWebView(): WebView {
+    val context = LocalContext.current
+    val webView = remember {
+        WebView(context).apply {
+            settings.javaScriptEnabled = true
+            webViewClient = WebViewClient()
+            loadUrl("https://velog.io/@godmin66")
+        }
+    }
+    return webView
+}
+
 
 @Preview
 @Composable

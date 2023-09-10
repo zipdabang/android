@@ -16,11 +16,8 @@ import androidx.compose.material.Text
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -34,26 +31,39 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.zipdabang.zipdabang_android.R
+import com.zipdabang.zipdabang_android.common.Resource
+import com.zipdabang.zipdabang_android.core.data_store.proto.ProtoDataViewModel
 import com.zipdabang.zipdabang_android.core.navigation.AuthScreen
 import com.zipdabang.zipdabang_android.module.sign_up.ui.viewmodel.AuthSharedViewModel
+import com.zipdabang.zipdabang_android.module.sign_up.ui.viewmodel.BeverageFormEvent
 import com.zipdabang.zipdabang_android.ui.component.AppBarSignUp
 import com.zipdabang.zipdabang_android.ui.component.MainAndSubTitle
-import com.zipdabang.zipdabang_android.ui.component.PrimaryButtonOutLined
 import com.zipdabang.zipdabang_android.ui.component.PrimaryButtonWithStatus
 import com.zipdabang.zipdabang_android.ui.component.RoundedButton
 import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
+import okhttp3.internal.wait
 
 @Composable
 fun RegisterPreferencesScreen(
     navController: NavHostController,
-    authSharedViewModel: AuthSharedViewModel = hiltViewModel(), //FakeAuthSharedViewModel = provideFakeAuthSharedViewModel(),
+    authSharedViewModel: AuthSharedViewModel = hiltViewModel(),
     onClickBack : ()->Unit,
     onClickNext: ()->Unit,
 ) {
-    val state = authSharedViewModel.statePreferences.value
-    val stateBeverageList by authSharedViewModel.stateBeverageList.collectAsState()
-    val statePreferencesValidate by authSharedViewModel.statePreferencesValidate.collectAsState()
-    //Log.e("preferences-screen", "${stateBeverageList}")
+    val stateBeverageForm = authSharedViewModel.stateBeverageForm
+    val tokenStoreViewModel = hiltViewModel<ProtoDataViewModel>()
+    val scope = rememberCoroutineScope()
+
+
+    LaunchedEffect(key1 = stateBeverageForm){
+        authSharedViewModel.onBeverageEvent(BeverageFormEvent.BtnChanged(true))
+    }
 
     Scaffold(
         modifier = Modifier
@@ -100,7 +110,7 @@ fun RegisterPreferencesScreen(
                             subTextColor =  ZipdabangandroidTheme.Colors.Typo
                         )
 
-                        val chunkedBeverageList = state.beverageList.chunked(3)
+                        val chunkedBeverageList = stateBeverageForm.beverageList.chunked(3)
                         Column(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -119,26 +129,26 @@ fun RegisterPreferencesScreen(
                                 ) {
                                     for (preference in chunk) {
                                         RoundedButton(
-                                            imageUrl = preference.imageUrl,
+                                            imageUrl = R.drawable.ic_topbar_backbtn, //preference.imageUrl,
                                             buttonText = preference.categoryName,
-                                            isClicked = stateBeverageList[index],
+                                            isClicked = stateBeverageForm.beverageCheckList[index],
                                             isClickedChange = { selectedClicked ->
-                                                authSharedViewModel.updateBeverageList(preference.id-1 , selectedClicked)
+                                                authSharedViewModel.onBeverageEvent(BeverageFormEvent.BeverageCheckListChanged(preference.id-1 ,selectedClicked))
                                             }
                                         )
                                         index ++
                                     }
                                 }
                             }
-                            if (state.error.isNotBlank()) {
+                            if (stateBeverageForm.error.isNotBlank()) {
                                 Text(
-                                    text = state.error,
+                                    text = stateBeverageForm.error,
                                     color = Color.Red,
                                     textAlign = TextAlign.Center,
                                     modifier = Modifier.fillMaxWidth()
                                 )
                             }
-                            if (state.isLoading) {
+                            if (stateBeverageForm.isLoading) {
                                 CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
                             }
                         }
@@ -167,19 +177,44 @@ fun RegisterPreferencesScreen(
                             ),
                         ),
                         style = ZipdabangandroidTheme.Typography.fourteen_300,
-                        onClick={  },
+                        onClick={
+                            if(!stateBeverageForm.btnEnabled){
+                                CoroutineScope(Dispatchers.Main).launch {
+                                    try{
+                                        Log.e("signup-tokens","api 실행 전")
+                                        authSharedViewModel.postInfo(tokenStoreViewModel)
+                                        Log.e("signup-tokens","넘어가져1")
+                                        onClickNext()
+                                        Log.e("signup-tokens","넘어가져3")
+                                    } catch (e:Exception){
+
+                                    }
+                                }
+                            }
+                        },
                     )
                 }
             }
-
+            //하단 버튼
             Box(
                 contentAlignment = Alignment.BottomCenter,
                 modifier = Modifier.padding(16.dp,0.dp,16.dp, 12.dp)
             ){
                 PrimaryButtonWithStatus(
                     text= stringResource(id = R.string.signup_btn_choicecomplete),
-                    onClick={ onClickNext() },
-                    isFormFilled = statePreferencesValidate
+                    onClick={
+                        CoroutineScope(Dispatchers.Main).launch {
+                            try{
+                                authSharedViewModel.postInfo(tokenStoreViewModel)
+                                Log.e("signup-tokens","넘어가져1")
+                                onClickNext()
+                                Log.e("signup-tokens","넘어가져3")
+                            } catch (e:Exception){
+
+                            }
+                        }
+                    },
+                    isFormFilled = stateBeverageForm.btnEnabled
                 )
             }
         }
@@ -197,6 +232,6 @@ fun PreviewRegisterPreferencesScreen(){
         },
         onClickNext = {
             navController.navigate(AuthScreen.RegisterPreferences.route)
-        }
+        },
     )
 }

@@ -5,6 +5,7 @@ import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Context
 import android.provider.Settings
 import android.telephony.TelephonyManager
@@ -50,6 +51,7 @@ class MainActivity : ComponentActivity() {
     @Inject
     lateinit var tokenDataStore: DataStore<Token>
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -70,6 +72,7 @@ class MainActivity : ComponentActivity() {
     }
 
 
+    @SuppressLint("HardwareIds")
     private suspend fun registerDeviceNumber() {
         CoroutineScope(Dispatchers.IO).launch {
             // snapshot of the token
@@ -80,7 +83,7 @@ class MainActivity : ComponentActivity() {
 
             if (deviceNumber == null) {
                 Log.d(TAG, "deviceNumber is null, get uuid")
-                val uuid = UUID.randomUUID().toString()
+                val uuid = Settings.Secure.getString(contentResolver, Settings.Secure.ANDROID_ID)
                 Log.d(TAG, "datastore deviceNumber is null, this uuid is to be into the datastore : $uuid")
                 tokenDataStore.updateData { tokens ->
                     tokens.copy(

@@ -150,8 +150,24 @@ dependencies {
     implementation ("androidx.room:room-ktx:2.5.2")
     implementation ("androidx.room:room-paging:2.5.2")
 
+    // paging
+    implementation ("androidx.paging:paging-compose:3.2.0")
+    implementation ("androidx.paging:paging-runtime-ktx:3.2.0")
 
     implementation("com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:0.8.0")
+
+    // viewpager
+    implementation ("com.google.accompanist:accompanist-pager:0.23.0")
+    implementation ("com.google.accompanist:accompanist-pager-indicators:0.23.0")
+
+    // for collapsing toolbar
+    implementation ("me.onebone:toolbar-compose:2.3.2")
+
+    //for webview
+    implementation ("com.google.accompanist:accompanist-webview:0.24.13-rc")
+
+    //for coil
+    implementation("io.coil-kt:coil-compose:1.3.2")
 }
 
 kapt {

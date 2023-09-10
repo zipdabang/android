@@ -1,9 +1,15 @@
 package com.zipdabang.zipdabang_android.module.recipes.data
 
+import com.zipdabang.zipdabang_android.module.comment.data.remote.PostCommentContent
+import com.zipdabang.zipdabang_android.module.comment.data.remote.PostCommentDto
+import com.zipdabang.zipdabang_android.module.comment.data.remote.RecipeCommentDto
+import com.zipdabang.zipdabang_android.module.detail.recipe.data.RecipeDetailDto
+import com.zipdabang.zipdabang_android.module.recipes.data.banner.RecipeBannerDto
 import com.zipdabang.zipdabang_android.module.recipes.data.category.RecipeCategoryDto
 import com.zipdabang.zipdabang_android.module.recipes.data.preference.PreferenceResultDto
 import com.zipdabang.zipdabang_android.module.recipes.data.preview.RecipePreviewItemsDto
 import com.zipdabang.zipdabang_android.module.recipes.data.recipe_list.RecipeListDto
+import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.POST
@@ -12,11 +18,13 @@ import retrofit2.http.Query
 
 interface RecipeApi {
 
-    // TODO 레시피 메뉴 배너
-
+    @GET("members/recipes/banners")
+    suspend fun getRecipeBanners(
+        @Header("Authorization") accessToken: String,
+    ): RecipeBannerDto?
 
     // 레시피 카테고리 이미지와 타이틀
-    @GET("categories")
+    @GET("members/recipes/categories")
     suspend fun getRecipeCategory(
         @Header("Authorization") accessToken: String
     ): RecipeCategoryDto
@@ -50,7 +58,7 @@ interface RecipeApi {
         @Query("writtenby") ownerType: String,
         @Query("order") order: String,
         @Query("pageIndex") pageIndex: Int
-    ): RecipeListDto
+    ): RecipeListDto?
 
     @GET("members/recipes/categories/{categoryId}")
     suspend fun getRecipeListByCategory(
@@ -59,4 +67,26 @@ interface RecipeApi {
         @Query("order") order: String,
         @Query("pageIndex") pageIndex: Int
     ): RecipeListDto
+
+    //----------------------------------------------------------------------------------------------
+    @GET("members/recipes/{recipeId}")
+    suspend fun getRecipeDetail(
+        @Header("Authorization") accessToken: String,
+        @Path("recipeId") recipeId: Int
+    ): RecipeDetailDto
+
+    // ---------------------------------------------------------------------------------------------
+    @GET("members/recipes/{recipeId}/comments")
+    suspend fun getRecipeComments(
+        @Header("Authorization") accessToken: String,
+        @Path("recipeId") recipeId: Int,
+        @Query("pageIndex") pageIndex: Int
+    ): RecipeCommentDto
+
+    @POST("members/recipes/{recipeId}/comments")
+    suspend fun submitRecipeComment(
+        @Header("Authorization") accessToken: String,
+        @Path("recipeId") recipeId: Int,
+        @Body content: PostCommentContent
+    ): PostCommentDto
 }
