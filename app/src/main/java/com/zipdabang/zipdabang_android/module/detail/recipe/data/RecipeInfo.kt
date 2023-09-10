@@ -9,14 +9,14 @@ data class RecipeInfo(
     val comments: Int,
     val createdAt: String,
     val intro: String,
-    val isLiked: Boolean,
-    val isScrapped: Boolean,
-    val likes: Int,
+    var isLiked: Boolean,
+    var isScrapped: Boolean,
+    var likes: Int,
     val nickname: String,
     val recipeId: Int,
     val recipeName: String,
     val recipeTip: String,
-    val scraps: Int,
+    var scraps: Int,
     val thumbnailUrl: String,
     val time: String
 )

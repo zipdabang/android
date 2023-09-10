@@ -38,21 +38,19 @@ fun RecipeCategoryList(
             repeat(8) {
                 RecipeCategoryLoading()
             }
-            /*            items(count = 6) {
-                            RecipeCategoryLoading()
-                        }*/
         } else {
             categoryItems?.let { categoryList ->
                 categoryList.forEach {
                     com.zipdabang.zipdabang_android.module.item.recipe.ui.RecipeCategory(
                         categoryTitle = it.categoryName,
                         categoryId = it.id,
-                        imageUrl = it.imageUrl ?: "null",
+                        imageUrl = it.imageUrl ?: "",
                         onClick = onCategoryClick
                     )
                 }
             }
         }
+        
         if (categoryState.errorMessage != null) {
 
         }
