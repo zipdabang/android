@@ -1,11 +1,15 @@
 package com.zipdabang.zipdabang_android.module.recipes.data
 
+import com.zipdabang.zipdabang_android.module.comment.data.remote.PostCommentContent
+import com.zipdabang.zipdabang_android.module.comment.data.remote.PostCommentDto
+import com.zipdabang.zipdabang_android.module.comment.data.remote.RecipeCommentDto
 import com.zipdabang.zipdabang_android.module.detail.recipe.data.RecipeDetailDto
 import com.zipdabang.zipdabang_android.module.recipes.data.banner.RecipeBannerDto
 import com.zipdabang.zipdabang_android.module.recipes.data.category.RecipeCategoryDto
 import com.zipdabang.zipdabang_android.module.recipes.data.preference.PreferenceResultDto
 import com.zipdabang.zipdabang_android.module.recipes.data.preview.RecipePreviewItemsDto
 import com.zipdabang.zipdabang_android.module.recipes.data.recipe_list.RecipeListDto
+import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.POST
@@ -70,4 +74,19 @@ interface RecipeApi {
         @Header("Authorization") accessToken: String,
         @Path("recipeId") recipeId: Int
     ): RecipeDetailDto
+
+    // ---------------------------------------------------------------------------------------------
+    @GET("members/recipes/{recipeId}/comments")
+    suspend fun getRecipeComments(
+        @Header("Authorization") accessToken: String,
+        @Path("recipeId") recipeId: Int,
+        @Query("pageIndex") pageIndex: Int
+    ): RecipeCommentDto
+
+    @POST("members/recipes/{recipeId}/comments")
+    suspend fun submitRecipeComment(
+        @Header("Authorization") accessToken: String,
+        @Path("recipeId") recipeId: Int,
+        @Body content: PostCommentContent
+    ): PostCommentDto
 }

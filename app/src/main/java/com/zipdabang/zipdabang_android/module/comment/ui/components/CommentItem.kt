@@ -25,19 +25,26 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.zipdabang.zipdabang_android.R
+import com.zipdabang.zipdabang_android.module.comment.ui.RecipeCommentState
 import com.zipdabang.zipdabang_android.ui.component.CircleImage
 import com.zipdabang.zipdabang_android.ui.theme.DialogGray
 import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
 
 @Composable
 fun CommentItem(
-
+    commentItem: RecipeCommentState,
+    onClickReport: (Int) -> Unit,
+    onClickBlock: (Int) -> Unit,
+    onClickEdit: (Int) -> Unit,
+    onClickDelete: (Int) -> Unit
 ) {
     Row(
         modifier = Modifier.fillMaxWidth()
     ) {
         Box(modifier = Modifier.size(32.dp)) {
-            CircleImage(imageUrl = { TODO() }, contentDescription = "profile image")
+            CircleImage(
+                imageUrl = commentItem.ownerImage, contentDescription = "profile image"
+            )
         }
 
         Spacer(modifier = Modifier.width(12.dp))
@@ -55,7 +62,7 @@ fun CommentItem(
             ) {
                 Column {
                     Text(
-                        text = "TODO()",
+                        text = commentItem.ownerNickname,
                         style = TextStyle(
                             fontSize = 12.sp,
                             fontFamily = FontFamily(Font(R.font.kopubworlddotum_medium)),
@@ -66,7 +73,7 @@ fun CommentItem(
                     )
 
                     Text(
-                        text = "TODO()",
+                        text = commentItem.createdAt,
                         style = TextStyle(
                             fontSize = 10.sp,
                             fontFamily = FontFamily(Font(R.font.kopubworlddotum_light)),
@@ -80,7 +87,11 @@ fun CommentItem(
                 IconButton(
                     modifier = Modifier.size(18.dp),
                     onClick = {
-                        TODO("Owner 여부에 따라 메뉴 다르게 구현")
+                        if (commentItem.isOwner) {
+
+                        } else {
+
+                        }
                     }
                 ) {
                     Icon(
@@ -95,7 +106,7 @@ fun CommentItem(
 
             Text(
                 modifier = Modifier.fillMaxWidth(),
-                text = "TODO()TODO()TODO()TODO()TODO()TODO()TODO()",
+                text = commentItem.content,
                 style = TextStyle(
                     fontSize = 16.sp,
                     fontFamily = FontFamily(Font(R.font.kopubworlddotum_light)),
@@ -108,8 +119,14 @@ fun CommentItem(
     }
 }
 
+/*
 @Preview(showBackground = true)
 @Composable
 fun CommentItemPreview() {
-    CommentItem()
-}
+    CommentItem(
+        RecipeCommentState(
+            "", "",
+            true, "", "",
+            1, 1)
+    )
+}*/

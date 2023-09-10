@@ -23,6 +23,8 @@ import com.zipdabang.zipdabang_android.module.recipes.use_case.ToggleLikeListUse
 import com.zipdabang.zipdabang_android.module.recipes.use_case.ToggleScrapListUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
@@ -42,12 +44,12 @@ class RecipeListViewModel @Inject constructor(
         const val TAG = "RecipeListViewModel"
     }
 
-    private val _toggleLikeResult = mutableStateOf(PreferenceToggleState())
-    val toggleLikeResult: State<PreferenceToggleState>
+    private val _toggleLikeResult = MutableStateFlow(PreferenceToggleState())
+    val toggleLikeResult: StateFlow<PreferenceToggleState>
         get() = _toggleLikeResult
 
-    private val _toggleScrapResult = mutableStateOf(PreferenceToggleState())
-    val toggleScrapResult: State<PreferenceToggleState>
+    private val _toggleScrapResult = MutableStateFlow(PreferenceToggleState())
+    val toggleScrapResult: StateFlow<PreferenceToggleState>
         get() = _toggleScrapResult
 
     private val _errorMessage = mutableStateOf("")

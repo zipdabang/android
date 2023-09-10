@@ -343,7 +343,8 @@ class DrawerUserInfoViewModel @Inject constructor(
                         profileUrl = result.data?.profileUrl ?: "",
                         name = result.data?.memberBasicInfoDto?.name ?: "",
                         birthday = result.data?.memberBasicInfoDto?.birth ?: "",
-                        gender =  if(result.data?.memberBasicInfoDto?.genderType == "WOMAN") "여" else "남",
+                        gender =  if(result.data?.memberBasicInfoDto?.genderType == "WOMAN") "여"
+                        else if(result.data?.memberBasicInfoDto?.genderType == "MAN") "남" else "",
                         phoneNumber = result.data?.memberBasicInfoDto?.phoneNum ?: "",
                         zipcode = result.data?.memberDetailInfoDto?.zipCode ?: "",
                         address = result.data?.memberDetailInfoDto?.address ?: "",
@@ -354,7 +355,8 @@ class DrawerUserInfoViewModel @Inject constructor(
                         isLoading = false,
                         name = result.data?.memberBasicInfoDto?.name ?: "",
                         birthday = result.data?.memberBasicInfoDto?.birth ?: "",
-                        gender =  if(result.data?.memberBasicInfoDto?.genderType == "WOMAN") "여" else "남",
+                        gender =  if(result.data?.memberBasicInfoDto?.genderType == "WOMAN") "여"
+                        else if(result.data?.memberBasicInfoDto?.genderType == "MAN") "남" else "",
                         phoneNumber = result.data?.memberBasicInfoDto?.phoneNum ?: "",
                     )
                     stateUserInfoDetail = stateUserInfoDetail.copy(

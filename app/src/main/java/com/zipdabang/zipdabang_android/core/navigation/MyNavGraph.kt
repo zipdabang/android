@@ -19,11 +19,11 @@ fun NavGraphBuilder.MyNavGraph(navController: NavHostController) {
     // drawer가 열려있는 상태일때 뒤로가기를 하면 닫히도록 바꿔야함 -> 이거 해야됨
 
     // 레시피 작성 개발하기 !!!!!
-    // 로그아웃 분기처리 !!!!!
     // 알럿창 적용하기 !!!!!
-
-    // api shimmering effet 쓰기
     // 회원가입 제어 수정하기 : 생일, textfield 글자수 제한
+    // api shimmering effet 쓰기
+
+    // 로그아웃 분기처리 -> 이건 토큰 관련 문제 해결되고 나서 가능할듯
     // response enum class로 옮기기
 
     navigation(startDestination = MyScreen.Home.route, route = MY_ROUTE) {

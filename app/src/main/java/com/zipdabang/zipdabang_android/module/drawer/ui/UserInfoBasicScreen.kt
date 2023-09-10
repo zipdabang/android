@@ -76,7 +76,7 @@ fun UserInfoBasicScreen(
             AppBarSignUp(
                 navigationIcon = R.drawable.ic_topbar_backbtn,
                 onClickNavIcon = { onClickBack() },
-                centerText = stringResource(id = R.string.my_myinfo_edit)
+                centerText = stringResource(id = R.string.drawer_edit_userinfobasic)
             )
         }
     ) {
@@ -116,9 +116,9 @@ fun UserInfoBasicScreen(
                         Icon(
                             painter = painterResource(id = R.drawable.ic_signup_name),
                             contentDescription = "Icon",
-                            tint = ZipdabangandroidTheme.Colors.Choco,
+                            tint = ZipdabangandroidTheme.Colors.Typo,
                             modifier = Modifier
-                                .size(16.dp)
+                                .size(24.dp)
                                 .weight(1.4f),
                         )
                         Box(
@@ -147,9 +147,9 @@ fun UserInfoBasicScreen(
                         Icon(
                             painter = painterResource(id = R.drawable.ic_signup_birthdaycake),
                             contentDescription = "Icon",
-                            tint = ZipdabangandroidTheme.Colors.Choco,
+                            tint = ZipdabangandroidTheme.Colors.Typo,
                             modifier = Modifier
-                                .size(16.dp)
+                                .size(24.dp)
                                 .weight(1.4f),
                         )
                         Box(
@@ -200,9 +200,9 @@ fun UserInfoBasicScreen(
                         Icon(
                             painter = painterResource(id = R.drawable.ic_signup_phone),
                             contentDescription = "Icon",
-                            tint = ZipdabangandroidTheme.Colors.Choco,
+                            tint = ZipdabangandroidTheme.Colors.Typo,
                             modifier = Modifier
-                                .size(16.dp)
+                                .size(24.dp)
                                 .weight(1.4f),
                         )
                         Box(
