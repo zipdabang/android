@@ -2,7 +2,6 @@ package com.zipdabang.zipdabang_android.ui.component
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -10,28 +9,26 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Done
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
 
@@ -332,53 +329,59 @@ fun PreviewTextField(){
 }
 
 
-
-
-
-//textfield -> 글쓰기 같은 곳에 쓰임
+//textfield - for content -> 하현이가 맘껏 고치면서 쓰면 될듯
 @Composable
 fun TextFieldForContent(
     value : String,
-    onValueChanged : (String, Int) -> Unit,
+    onValueChanged: (String, Int) -> Unit,
+    placeholderValue: String,
+   //errorMessage : String,
     singleLine: Boolean,
     maxLines : Int,
-    placeholderValue: String,
-    imeAction: ImeAction, //default,none이면 엔터키, next면 다음 텍스트필드로 넘어감, done면 완료키
     maxLength : Int, //최대 글자수
+    isError : Boolean,
+    imeAction: ImeAction, //default,none이면 엔터키, next면 다음 텍스트필드로 넘어감, done면 완료키
 ){
-        OutlinedTextField(
+       OutlinedTextField(
             value = value,
             onValueChange = {
                 onValueChanged(it, maxLength)
             },
-            textStyle = ZipdabangandroidTheme.Typography.sixteen_500,
-            modifier = Modifier
-                .fillMaxSize()
-                .background(Color(0xFFF7F6F6)),
+            textStyle = ZipdabangandroidTheme.Typography.sixteen_300,
+            modifier = Modifier.fillMaxSize(),
             placeholder = {
-                Text(
-                    text = placeholderValue,
-                    style = ZipdabangandroidTheme.Typography.sixteen_500,
-                    color = ZipdabangandroidTheme.Colors.Typo.copy(0.5f)
-                )
+                    Text(
+                        text = placeholderValue,
+                        style = ZipdabangandroidTheme.Typography.sixteen_300,
+                        color = ZipdabangandroidTheme.Colors.Typo.copy(0.5f)
+                    )
             },
+            isError = isError,
+            /*label = {
+                //에러일때 label
+                if(isError){
+                    Text(
+                        text = errorMessage,
+                        style = ZipdabangandroidTheme.Typography.twelve_500
+                    )
+                }
+            },*/
             singleLine = singleLine,
             maxLines = maxLines,
-            colors = TextFieldDefaults.colors(
+            colors = OutlinedTextFieldDefaults.colors(
                 cursorColor = ZipdabangandroidTheme.Colors.Typo.copy(0.5f),
-                errorCursorColor = Color.Red,
-                focusedIndicatorColor = ZipdabangandroidTheme.Colors.Typo.copy(0.2f),
-                unfocusedIndicatorColor = ZipdabangandroidTheme.Colors.Typo.copy(0.2f),
-                focusedContainerColor = ZipdabangandroidTheme.Colors.Typo.copy(0.2f),
-                unfocusedContainerColor = ZipdabangandroidTheme.Colors.Typo.copy(0.2f),
-                errorContainerColor = Color.Red,
+                focusedContainerColor = Color(0xFFF7F6F6),//ZipdabangandroidTheme.Colors.Typo.copy(0.1f),
+                focusedBorderColor = ZipdabangandroidTheme.Colors.Typo.copy(0.1f),
+                unfocusedContainerColor = Color(0xFFF7F6F6),//ZipdabangandroidTheme.Colors.Typo.copy(0.1f),
+                unfocusedBorderColor = ZipdabangandroidTheme.Colors.Typo.copy(0.1f),
+                errorCursorColor = Color(0xFFB00020),
+                errorContainerColor = Color(0xFFF7F6F6),// ZipdabangandroidTheme.Colors.Typo.copy(0.1f),
             ),
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Text,
                 imeAction = imeAction,
             ),
         )
-
 }
 
 @Preview
@@ -387,20 +390,69 @@ fun PreviewTextFieldForContent(){
     var textState by remember { mutableStateOf("") }
 
     Box(
-        modifier = Modifier.padding(16.dp)
+        modifier = Modifier
+            .padding(16.dp)
+            .height(70.dp)
+            .fillMaxWidth()
     ){
         TextFieldForContent(
-            textState,
+            value = textState,
             onValueChanged = { newText, maxLength ->
                 if(newText.length <= maxLength){
                     textState = newText
                 }
             },
-            false,
-            7,
-            "레시피 제목 (최대 20자)",
-            ImeAction.Default,
-            80
+            placeholderValue = "레시피 제목 (최대 20자)",
+            //errorMessage = "이메일 형식에 맞지 않습니다",
+            singleLine = false,
+            maxLines = 1,
+            maxLength = 8,
+            isError = if(textState == "ㅁㄴㅇㄹ") true else false,
+            imeAction = ImeAction.Default,
         )
     }
+}
+
+
+// textfiled - for recipewrite
+@Composable
+fun TextFieldForRecipeWrite(
+    value : String,
+    onValueChanged: (String, Int) -> Unit,
+    placeholderValue: String,
+    singleLine: Boolean,
+    maxLines : Int,
+    maxLength : Int, //최대 글자수
+    imeAction: ImeAction, //default,none이면 엔터키, next면 다음 텍스트필드로 넘어감, done면 완료키
+){
+    OutlinedTextField(
+        value = value,
+        onValueChange = {
+            onValueChanged(it, maxLength)
+        },
+        textStyle = ZipdabangandroidTheme.Typography.sixteen_300,
+        modifier = Modifier.fillMaxSize(),
+        placeholder = {
+            Text(
+                text = placeholderValue,
+                style = ZipdabangandroidTheme.Typography.sixteen_300,
+                color = ZipdabangandroidTheme.Colors.Typo.copy(0.5f)
+            )
+        },
+        singleLine = singleLine,
+        maxLines = maxLines,
+        colors = OutlinedTextFieldDefaults.colors(
+            cursorColor = ZipdabangandroidTheme.Colors.Typo.copy(0.5f),
+            focusedContainerColor = Color(0xFFF7F6F6), //ZipdabangandroidTheme.Colors.Typo.copy(0.1f),
+            focusedBorderColor = ZipdabangandroidTheme.Colors.Typo.copy(0.1f),
+            unfocusedContainerColor = Color(0xFFF7F6F6), //ZipdabangandroidTheme.Colors.Typo.copy(0.1f),
+            unfocusedBorderColor = ZipdabangandroidTheme.Colors.Typo.copy(0.1f),
+            errorCursorColor = Color(0xFFB00020),
+            errorContainerColor = ZipdabangandroidTheme.Colors.Typo.copy(0.1f),
+        ),
+        keyboardOptions = KeyboardOptions(
+            keyboardType = KeyboardType.Text,
+            imeAction = imeAction,
+        ),
+    )
 }

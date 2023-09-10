@@ -121,6 +121,8 @@
     <string name="my_recipewrite_recipetip_hint">레시피를 만들 때 주의해야 할 사항이나 맛있게 만드는 팁을 작성해 주세요. (최대 200자)</string>
     <string name="my_recipewrite_save">임시저장</string>
     <string name="my_recipewrite_writedone">작성 완료</string>
+    <string name="my_notuser">아직 회원이 아니신가요? 로그인을 통해\n더 많은 집다방 서비스를 즐겨보세요 :)</string>
+    <string name="my_gotologin">로그인하러 가기</string>
 
 
 
