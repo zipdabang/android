@@ -123,7 +123,7 @@ fun UserInfoScreen(
                                 contentDescription = "",
                                 tint = ZipdabangandroidTheme.Colors.Typo,
                                 modifier = Modifier
-                                    .size(15.dp, 12.dp)
+                                    .size(24.dp, 24.dp)
                                     .align(Alignment.Center)
                             )
                         }
@@ -179,7 +179,7 @@ fun UserInfoScreen(
                         contentDescription = "",
                         tint = Color.White,
                         modifier = Modifier
-                            .size(16.dp, 16.dp)
+                            .size(24.dp, 24.dp)
                             .clickable(onClick = { onClickEditBasic() })
                     )
                 }
@@ -197,10 +197,10 @@ fun UserInfoScreen(
                     Icon(
                         painter = painterResource(id = R.drawable.ic_signup_name),
                         contentDescription = "",
-                        tint = ZipdabangandroidTheme.Colors.Strawberry,
+                        tint = ZipdabangandroidTheme.Colors.Typo,
                         modifier = Modifier
-                            .size(22.dp, 22.dp)
-                            .padding(8.dp, 0.dp, 0.dp, 0.dp)
+                            .size(28.dp, 28.dp)
+                            .padding(4.dp, 0.dp, 0.dp, 0.dp)
                     )
                     Text(
                         modifier = Modifier.padding(8.dp, 0.dp,0.dp,0.dp),
@@ -231,10 +231,10 @@ fun UserInfoScreen(
                         Icon(
                             painter = painterResource(id = R.drawable.ic_signup_birthdaycake),
                             contentDescription = "",
-                            tint = ZipdabangandroidTheme.Colors.Strawberry,
+                            tint = ZipdabangandroidTheme.Colors.Typo,
                             modifier = Modifier
-                                .size(22.dp, 24.dp)
-                                .padding(8.dp, 0.dp, 0.dp, 0.dp)
+                                .size(28.dp, 30.dp)
+                                .padding(4.dp, 0.dp, 0.dp, 0.dp)
                         )
                         Text(
                             modifier = Modifier.padding(12.dp, 0.dp,0.dp,0.dp),
@@ -274,10 +274,10 @@ fun UserInfoScreen(
                     Icon(
                         painter = painterResource(id = R.drawable.ic_signup_phone),
                         contentDescription = "",
-                        tint = ZipdabangandroidTheme.Colors.Strawberry,
+                        tint = ZipdabangandroidTheme.Colors.Typo,
                         modifier = Modifier
-                            .size(24.dp, 24.dp)
-                            .padding(8.dp, 0.dp, 0.dp, 0.dp)
+                            .size(30.dp, 30.dp)
+                            .padding(4.dp, 0.dp, 0.dp, 0.dp)
                     )
                     Text(
                         modifier = Modifier.padding(8.dp, 0.dp,0.dp,0.dp),
@@ -289,7 +289,7 @@ fun UserInfoScreen(
             }
 
             //상세 정보
-            /*Column(
+            Column(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(240.dp)
@@ -330,7 +330,7 @@ fun UserInfoScreen(
                         contentDescription = "",
                         tint = Color.White,
                         modifier = Modifier
-                            .size(16.dp, 16.dp)
+                            .size(24.dp, 24.dp)
                             .clickable(onClick = { onClickEditDetail() })
                     )
                 }
@@ -348,10 +348,10 @@ fun UserInfoScreen(
                     Icon(
                         painter = painterResource(id = R.drawable.ic_signup_zipcode),
                         contentDescription = "",
-                        tint = ZipdabangandroidTheme.Colors.Strawberry,
+                        tint = ZipdabangandroidTheme.Colors.Typo,
                         modifier = Modifier
-                            .size(22.dp, 22.dp)
-                            .padding(8.dp, 0.dp, 0.dp, 0.dp)
+                            .size(28.dp, 28.dp)
+                            .padding(4.dp, 0.dp, 0.dp, 0.dp)
                     )
                     Text(
                         modifier = Modifier.padding(8.dp, 0.dp,0.dp,0.dp),
@@ -381,10 +381,10 @@ fun UserInfoScreen(
                     Icon(
                         painter = painterResource(id = R.drawable.ic_signup_address),
                         contentDescription = "",
-                        tint = ZipdabangandroidTheme.Colors.Strawberry,
+                        tint = ZipdabangandroidTheme.Colors.Typo,
                         modifier = Modifier
-                            .size(22.dp, 24.dp)
-                            .padding(8.dp, 0.dp, 0.dp, 0.dp)
+                            .size(28.dp, 30.dp)
+                            .padding(4.dp, 0.dp, 0.dp, 0.dp)
                     )
                     Text(
                         modifier = Modifier.padding(8.dp, 0.dp,0.dp,0.dp),
@@ -415,8 +415,8 @@ fun UserInfoScreen(
                     verticalAlignment = Alignment.CenterVertically
                 ){
                     Spacer(modifier = Modifier
-                        .size(24.dp, 24.dp)
-                        .padding(8.dp, 0.dp, 0.dp, 0.dp))
+                        .size(30.dp, 30.dp)
+                        .padding(4.dp, 0.dp, 0.dp, 0.dp))
                     Text(
                         modifier = Modifier.padding(8.dp, 0.dp,0.dp,0.dp),
                         text = stateUserInfo.detailAddress,
@@ -424,7 +424,7 @@ fun UserInfoScreen(
                         color = ZipdabangandroidTheme.Colors.Typo
                     )
                 }
-            }*/
+            }
 
             //닉네임
             Column(
@@ -468,7 +468,7 @@ fun UserInfoScreen(
                         contentDescription = "",
                         tint = Color.White,
                         modifier = Modifier
-                            .size(16.dp, 16.dp)
+                            .size(24.dp, 24.dp)
                             .clickable(onClick = { onClickEditNickname() })
                     )
                 }
@@ -489,7 +489,7 @@ fun UserInfoScreen(
                     Icon(
                         painter = painterResource(id = R.drawable.ic_my_smileface),
                         contentDescription = "",
-                        tint = ZipdabangandroidTheme.Colors.Strawberry,
+                        tint = ZipdabangandroidTheme.Colors.Typo,
                         modifier = Modifier
                             .size(22.dp, 22.dp)
                             .padding(8.dp, 0.dp, 0.dp, 0.dp)
@@ -545,7 +545,7 @@ fun UserInfoScreen(
                         contentDescription = "",
                         tint = Color.White,
                         modifier = Modifier
-                            .size(16.dp, 16.dp)
+                            .size(24.dp, 24.dp)
                             .clickable(onClick = { onClickEditPreferences() })
                     )
                 }
@@ -566,7 +566,7 @@ fun UserInfoScreen(
                     Icon(
                         painter = painterResource(id = R.drawable.ic_my_heart),
                         contentDescription = "",
-                        tint = ZipdabangandroidTheme.Colors.Strawberry,
+                        tint = ZipdabangandroidTheme.Colors.Typo,
                         modifier = Modifier
                             .size(26.dp, 24.dp)
                             .padding(8.dp, 0.dp, 0.dp, 0.dp)

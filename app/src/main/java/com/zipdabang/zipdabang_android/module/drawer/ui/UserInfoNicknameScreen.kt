@@ -50,7 +50,7 @@ fun UserInfoNicknameScreen(
             AppBarSignUp(
                 navigationIcon = R.drawable.ic_topbar_backbtn,
                 onClickNavIcon = { onClickBack() },
-                centerText = stringResource(id = R.string.my_myinfo_edit)
+                centerText = stringResource(id = R.string.drawer_edit_userinfonickname)
             )
         }
     ) {

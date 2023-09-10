@@ -61,7 +61,7 @@ fun SearchBar(
         },
         trailingIcon = {
             Icon(
-                painter = painterResource(id = R.drawable.ic_search_icon_small),
+                painter = painterResource(id = R.drawable.ic_search),
                 contentDescription = null,
                 modifier = Modifier
                     .noRippleClickable {

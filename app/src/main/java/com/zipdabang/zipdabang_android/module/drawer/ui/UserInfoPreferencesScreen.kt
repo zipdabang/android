@@ -57,7 +57,7 @@ fun UserInfoPreferencesScreen(
             AppBarSignUp(
                 navigationIcon = R.drawable.ic_topbar_backbtn,
                 onClickNavIcon = { onClickBack() },
-                centerText = stringResource(id = R.string.drawer_editpreferbeverage)
+                centerText = stringResource(id = R.string.drawer_edit_preferbeverage)
             )
         }
     ) {

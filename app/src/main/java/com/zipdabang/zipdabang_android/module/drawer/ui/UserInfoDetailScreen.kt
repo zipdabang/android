@@ -53,7 +53,7 @@ fun UserInfoDetailScreen(
             AppBarSignUp(
                 navigationIcon = R.drawable.ic_topbar_backbtn,
                 onClickNavIcon = { onClickBack() },
-                centerText = stringResource(id = R.string.my_myinfo_edit)
+                centerText = stringResource(id = R.string.drawer_edit_userinfodetail)
             )
         }
     ) {
@@ -93,9 +93,9 @@ fun UserInfoDetailScreen(
                         Icon(
                             painter = painterResource(id = R.drawable.ic_signup_zipcode),
                             contentDescription = "Icon",
-                            tint = ZipdabangandroidTheme.Colors.Choco,
+                            tint = ZipdabangandroidTheme.Colors.Typo,
                             modifier = Modifier
-                                .size(12.dp)
+                                .size(24.dp)
                                 .weight(1.4f),
                         )
                         Box(
@@ -135,9 +135,9 @@ fun UserInfoDetailScreen(
                         Icon(
                             painter = painterResource(id = R.drawable.ic_signup_address),
                             contentDescription = "Icon",
-                            tint = ZipdabangandroidTheme.Colors.Choco,
+                            tint = ZipdabangandroidTheme.Colors.Typo,
                             modifier = Modifier
-                                .size(16.dp)
+                                .size(24.dp)
                                 .weight(1.4f),
                         )
                         Box(
