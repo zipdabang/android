@@ -1,5 +1,8 @@
 package com.zipdabang.zipdabang_android.module.my.ui.viewmodel
 
+import androidx.compose.ui.res.stringResource
+import com.zipdabang.zipdabang_android.R
+
 data class MyUserInfoState(
     val isLoading : Boolean = false,
 

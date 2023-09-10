@@ -119,7 +119,7 @@ fun RegisterUserAddressScreen(
                             contentDescription = "Icon",
                             tint = ZipdabangandroidTheme.Colors.Choco,
                             modifier = Modifier
-                                .size(12.dp)
+                                .size(24.dp)
                                 .weight(1.4f),
                         )
                         Box(
@@ -161,7 +161,7 @@ fun RegisterUserAddressScreen(
                             contentDescription = "Icon",
                             tint = ZipdabangandroidTheme.Colors.Choco,
                             modifier = Modifier
-                                .size(16.dp)
+                                .size(24.dp)
                                 .weight(1.4f),
                         )
                         Box(
