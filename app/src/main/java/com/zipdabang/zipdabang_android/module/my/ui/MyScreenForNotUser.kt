@@ -108,7 +108,7 @@ fun MyScreenForNotUser(
                         ),
                         shape = RectangleShape,
                     )
-                    .blur(edgeTreatment = BlurredEdgeTreatment.Rectangle, radius = 2.dp), // 블러 처리
+                    .blur(edgeTreatment = BlurredEdgeTreatment.Rectangle, radius = 1.dp), // 블러 처리
                 topBar = {
                     AppBarMy(
                     startIcon = R.drawable.ic_topbar_backbtn,
@@ -452,7 +452,7 @@ fun MyScreenForNotUser(
                     text= stringResource(id = R.string.my_notuser),
                     color=Color.White,
                     style= ZipdabangandroidTheme.Typography.eighteen_700,
-                    modifier = Modifier.padding(0.dp, 160.dp, 0.dp, 20.dp)
+                    //modifier = Modifier.padding(0.dp, 160.dp, 0.dp, 20.dp)
                 )
                 Button(
                     onClick = {onClickLogin()},
