@@ -1,7 +1,10 @@
 package com.zipdabang.zipdabang_android.ui.component
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -25,11 +28,15 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.zipdabang.zipdabang_android.R
 import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
 
 //textfield -> api를 통해 error와 correct check가 필요할때 + checkicon 필요할때
@@ -331,13 +338,11 @@ fun PreviewTextField(){
 
 //textfield - for content -> 하현이가 맘껏 고치면서 쓰면 될듯
 @Composable
-fun TextFieldForContent(
+fun TextFieldForDrawerSingleline( //한줄 textfield
     value : String,
     onValueChanged: (String, Int) -> Unit,
     placeholderValue: String,
    //errorMessage : String,
-    singleLine: Boolean,
-    maxLines : Int,
     maxLength : Int, //최대 글자수
     isError : Boolean,
     imeAction: ImeAction, //default,none이면 엔터키, next면 다음 텍스트필드로 넘어감, done면 완료키
@@ -366,8 +371,7 @@ fun TextFieldForContent(
                     )
                 }
             },*/
-            singleLine = singleLine,
-            maxLines = maxLines,
+            singleLine = true,
             colors = OutlinedTextFieldDefaults.colors(
                 cursorColor = ZipdabangandroidTheme.Colors.Typo.copy(0.5f),
                 focusedContainerColor = Color(0xFFF7F6F6),//ZipdabangandroidTheme.Colors.Typo.copy(0.1f),
@@ -384,9 +388,65 @@ fun TextFieldForContent(
         )
 }
 
+@Composable
+fun TextFieldForDrawerMultiline( //여러줄 textfield -> height이랑 maxLines를 조정해가며 개발하면 됩니다!!!
+    value : String,
+    onValueChanged: (String, Int) -> Unit,
+    placeholderValue: String,
+    //errorMessage : String,
+    height : Dp,
+    maxLines : Int,
+    maxLength : Int, //최대 글자수
+    isError : Boolean,
+    imeAction: ImeAction, //default,none이면 엔터키, next면 다음 텍스트필드로 넘어감, done면 완료키
+) {
+    OutlinedTextField(
+        value = value,
+        onValueChange = {
+            onValueChanged(it, maxLength)
+        },
+        textStyle = ZipdabangandroidTheme.Typography.sixteen_300,
+        modifier = Modifier
+            .fillMaxSize()
+            .height(height),
+        placeholder = {
+            Text(
+                text = placeholderValue,
+                style = ZipdabangandroidTheme.Typography.sixteen_300,
+                color = ZipdabangandroidTheme.Colors.Typo.copy(0.5f)
+            )
+        },
+        isError = isError,
+        /*label = {
+            //에러일때 label
+            if(isError){
+                Text(
+                    text = errorMessage,
+                    style = ZipdabangandroidTheme.Typography.twelve_500
+                )
+            }
+        },*/
+        singleLine = false,
+        maxLines = maxLines,
+        colors = OutlinedTextFieldDefaults.colors(
+            cursorColor = ZipdabangandroidTheme.Colors.Typo.copy(0.5f),
+            focusedContainerColor = Color(0xFFF7F6F6),//ZipdabangandroidTheme.Colors.Typo.copy(0.1f),
+            focusedBorderColor = ZipdabangandroidTheme.Colors.Typo.copy(0.1f),
+            unfocusedContainerColor = Color(0xFFF7F6F6),//ZipdabangandroidTheme.Colors.Typo.copy(0.1f),
+            unfocusedBorderColor = ZipdabangandroidTheme.Colors.Typo.copy(0.1f),
+            errorCursorColor = Color(0xFFB00020),
+            errorContainerColor = Color(0xFFF7F6F6),// ZipdabangandroidTheme.Colors.Typo.copy(0.1f),
+        ),
+        keyboardOptions = KeyboardOptions(
+            keyboardType = KeyboardType.Text,
+            imeAction = imeAction,
+        ),
+    )
+}
+
 @Preview
 @Composable
-fun PreviewTextFieldForContent(){
+fun PreviewTextFieldForDrawerSingleline(){
     var textState by remember { mutableStateOf("") }
 
     Box(
@@ -395,7 +455,7 @@ fun PreviewTextFieldForContent(){
             .height(70.dp)
             .fillMaxWidth()
     ){
-        TextFieldForContent(
+        TextFieldForDrawerSingleline(
             value = textState,
             onValueChanged = { newText, maxLength ->
                 if(newText.length <= maxLength){
@@ -404,9 +464,21 @@ fun PreviewTextFieldForContent(){
             },
             placeholderValue = "레시피 제목 (최대 20자)",
             //errorMessage = "이메일 형식에 맞지 않습니다",
-            singleLine = false,
-            maxLines = 1,
             maxLength = 8,
+            isError = if(textState == "ㅁㄴㅇㄹ") true else false,
+            imeAction = ImeAction.Default,
+        )
+        TextFieldForDrawerMultiline(
+            value =textState ,
+            onValueChanged = { newText, maxLength ->
+                if(newText.length <= maxLength){
+                    textState = newText
+                }
+            },
+            placeholderValue = "레시피 제목 (최대 20자)",
+            height = 300.dp,
+            maxLines = 3,
+            maxLength = 100,
             isError = if(textState == "ㅁㄴㅇㄹ") true else false,
             imeAction = ImeAction.Default,
         )
@@ -414,24 +486,32 @@ fun PreviewTextFieldForContent(){
 }
 
 
+
+
 // textfiled - for recipewrite
 @Composable
-fun TextFieldForRecipeWrite(
+fun TextFieldForRecipeWriteSingleline(
     value : String,
     onValueChanged: (String, Int) -> Unit,
     placeholderValue: String,
-    singleLine: Boolean,
-    maxLines : Int,
     maxLength : Int, //최대 글자수
     imeAction: ImeAction, //default,none이면 엔터키, next면 다음 텍스트필드로 넘어감, done면 완료키
+    onClickTrailingicon : () ->Unit,
 ){
+    var isFocused by remember { mutableStateOf(false) }
+
     OutlinedTextField(
         value = value,
         onValueChange = {
             onValueChanged(it, maxLength)
         },
         textStyle = ZipdabangandroidTheme.Typography.sixteen_300,
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier
+            .fillMaxSize()
+            .onFocusChanged {
+                isFocused = it.isFocused
+                Log.e("isFocused", "${isFocused}")
+            },
         placeholder = {
             Text(
                 text = placeholderValue,
@@ -439,12 +519,72 @@ fun TextFieldForRecipeWrite(
                 color = ZipdabangandroidTheme.Colors.Typo.copy(0.5f)
             )
         },
-        singleLine = singleLine,
+        singleLine = true,
+        colors = OutlinedTextFieldDefaults.colors(
+            cursorColor = ZipdabangandroidTheme.Colors.Typo.copy(0.5f),
+            focusedContainerColor = Color(0xFFF7F6F6), //ZipdabangandroidTheme.Colors.Typo.copy(0.1f),
+            focusedBorderColor = ZipdabangandroidTheme.Colors.Strawberry,
+            unfocusedContainerColor = Color(0xFFF7F6F6), //ZipdabangandroidTheme.Colors.Typo.copy(0.1f),
+            unfocusedBorderColor = ZipdabangandroidTheme.Colors.Typo.copy(0.1f),
+            errorCursorColor = Color(0xFFB00020),
+            errorContainerColor = ZipdabangandroidTheme.Colors.Typo.copy(0.1f),
+        ),
+        keyboardOptions = KeyboardOptions(
+            keyboardType = KeyboardType.Text,
+            imeAction = imeAction,
+        ),
+        trailingIcon = {
+            if(!value.isEmpty() && isFocused){
+                Icon(
+                    painter = painterResource(R.drawable.ic_recipewrite_btn_cancel),
+                    contentDescription = "Icon",
+                    tint = ZipdabangandroidTheme.Colors.Strawberry,
+                    modifier = Modifier
+                        .size(18.dp)
+                        .padding(0.dp)
+                        .clickable(
+                            onClick = { onClickTrailingicon() }
+                        ),
+                )
+            } else {
+
+            }
+        }
+    )
+}
+
+@Composable
+fun TextFieldForRecipeWriteMultiline(
+    value : String,
+    onValueChanged: (String, Int) -> Unit,
+    placeholderValue: String,
+    height : Dp,
+    maxLines : Int,
+    maxLength : Int, //최대 글자수
+    imeAction: ImeAction, //default,none이면 엔터키, next면 다음 텍스트필드로 넘어감, done면 완료키
+) {
+    OutlinedTextField(
+        value = value,
+        onValueChange = {
+            onValueChanged(it, maxLength)
+        },
+        textStyle = ZipdabangandroidTheme.Typography.sixteen_300,
+        modifier = Modifier
+            .fillMaxSize()
+            .height(height),
+        placeholder = {
+            Text(
+                text = placeholderValue,
+                style = ZipdabangandroidTheme.Typography.sixteen_300,
+                color = ZipdabangandroidTheme.Colors.Typo.copy(0.5f)
+            )
+        },
+        singleLine = false,
         maxLines = maxLines,
         colors = OutlinedTextFieldDefaults.colors(
             cursorColor = ZipdabangandroidTheme.Colors.Typo.copy(0.5f),
             focusedContainerColor = Color(0xFFF7F6F6), //ZipdabangandroidTheme.Colors.Typo.copy(0.1f),
-            focusedBorderColor = ZipdabangandroidTheme.Colors.Typo.copy(0.1f),
+            focusedBorderColor = ZipdabangandroidTheme.Colors.Strawberry,
             unfocusedContainerColor = Color(0xFFF7F6F6), //ZipdabangandroidTheme.Colors.Typo.copy(0.1f),
             unfocusedBorderColor = ZipdabangandroidTheme.Colors.Typo.copy(0.1f),
             errorCursorColor = Color(0xFFB00020),
@@ -455,4 +595,43 @@ fun TextFieldForRecipeWrite(
             imeAction = imeAction,
         ),
     )
+}
+
+@Preview
+@Composable
+fun PreviewTextFieldForRecipeWrite(){
+    var textState by remember { mutableStateOf("") }
+
+    Column(
+        modifier = Modifier
+            .padding(16.dp)
+            .height(70.dp)
+            .fillMaxWidth()
+    ){
+        TextFieldForRecipeWriteSingleline(
+            value = textState,
+            onValueChanged = { newText, maxLength ->
+                if(newText.length <= maxLength){
+                    textState = newText
+                }
+            },
+            placeholderValue = "레시피 제목 (최대 20자)",
+            maxLength = 8,
+            imeAction = ImeAction.Default,
+            onClickTrailingicon = {}
+        )
+        TextFieldForRecipeWriteMultiline(
+            value = textState,
+            onValueChanged = { newText, maxLength ->
+                if(newText.length <= maxLength){
+                    textState = newText
+                }
+            },
+            placeholderValue = "레시피 제목 (최대 20자)",
+            maxLines = 1,
+            maxLength = 8,
+            height = 200.dp,
+            imeAction = ImeAction.Default,
+        )
+    }
 }
