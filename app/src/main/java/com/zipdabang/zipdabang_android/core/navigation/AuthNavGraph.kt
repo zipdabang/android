@@ -35,21 +35,6 @@ fun NavGraphBuilder.authNavGraph(navController: NavHostController) {
 
             val tokenStoreViewModel = hiltViewModel<ProtoDataViewModel>()
 
-            /*val currentPlatform = tokenStoreViewModel.tokens.collectAsState(
-                initial = Token(
-                    null,
-                    null,
-                    null,
-                    CurrentPlatform.NONE,
-                    null,
-                    null
-                )
-            ).value.platformStatus*/
-
-            /*CoroutineScope(Dispatchers.IO).async {
-                val currentPlatform = tokenStoreViewModel.tokens.first().platformStatus
-            }*/
-
             suspend fun currentPlatform() = withContext(Dispatchers.IO) {
                 tokenStoreViewModel.tokens.first().platformStatus
             }

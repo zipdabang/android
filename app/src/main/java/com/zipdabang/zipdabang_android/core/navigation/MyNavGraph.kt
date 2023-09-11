@@ -88,7 +88,10 @@ fun NavGraphBuilder.MyNavGraph(
                         navController.navigate(MyScreen.FriendList.route)
                     },
                     onClickLogout = {
-                        navController.navigate(MAIN_ROUTE){
+                        outerNavController.navigate(AUTH_ROUTE){
+                            popUpTo(MAIN_ROUTE) {
+                                inclusive = true
+                            }
                             launchSingleTop = true
                         }
                         Log.e("signup-tokens","로그아웃 클릭, onClick 실행 중")
