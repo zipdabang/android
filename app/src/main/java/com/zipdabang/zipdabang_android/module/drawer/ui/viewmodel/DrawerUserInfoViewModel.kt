@@ -581,7 +581,7 @@ class DrawerUserInfoViewModel @Inject constructor(
     suspend fun patchUserInfoBasic(){
         try{
             val result = patchUserInfoBasicUseCase(
-                accessToken = "Bearer " +dataStore.data.first().accessToken.toString(),
+                accessToken = "Bearer " + dataStore.data.first().accessToken.toString(),
                 userInfoBasic = UserInfoBasicRequest(
                     name = stateUserInfoBasic.name,
                     birth = stateUserInfoBasic.birthday,

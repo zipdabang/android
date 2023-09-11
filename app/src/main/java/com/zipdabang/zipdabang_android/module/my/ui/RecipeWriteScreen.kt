@@ -28,6 +28,7 @@ import com.zipdabang.zipdabang_android.ui.component.ImageWithIconAndText
 import com.zipdabang.zipdabang_android.ui.component.PrimaryButton
 import com.zipdabang.zipdabang_android.ui.component.PrimaryButtonWithStatus
 import com.zipdabang.zipdabang_android.ui.component.TextFieldForContent
+import com.zipdabang.zipdabang_android.ui.component.TextFieldForRecipeWrite
 import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
 
 @Composable
@@ -56,6 +57,7 @@ fun RecipeWriteScreen(
                 .verticalScroll(scrollState)
                 .background(Color.White)
         ) {
+            //썸네일
             Box(
                 modifier = Modifier
                     .height(360.dp)
@@ -70,7 +72,7 @@ fun RecipeWriteScreen(
                     },
                     imageUrl = "",
                     iconImageVector = R.drawable.ic_my_recipewrtie_camera,
-                    iconTint = ZipdabangandroidTheme.Colors.Typo,
+                    iconTint = ZipdabangandroidTheme.Colors.Typo.copy(0.5f),
                     iconModifier = Modifier.size(27.dp, 24.dp),
                     text = stringResource(id = R.string.my_recipewrite_thumbnail_upload),
                     textStyle = ZipdabangandroidTheme.Typography.sixteen_700,
@@ -90,7 +92,7 @@ fun RecipeWriteScreen(
                     style = ZipdabangandroidTheme.Typography.sixteen_700,
                     color = ZipdabangandroidTheme.Colors.Choco
                 )
-                TextFieldForContent(
+                TextFieldForRecipeWrite(
                     value = "",
                     onValueChanged = { newText, maxLength ->
                         if(newText.length <= maxLength){
@@ -110,6 +112,7 @@ fun RecipeWriteScreen(
                     color = ZipdabangandroidTheme.Colors.Typo
                 )
             }
+
 
 
             // 하단 버튼
