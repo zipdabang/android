@@ -44,6 +44,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.zipdabang.zipdabang_android.R
@@ -410,15 +411,12 @@ fun MyScreen(
                                 horizontalArrangement = Arrangement.Center
                             ){
                                 ClickableText(
+                                    modifier = Modifier,
                                     text = AnnotatedString(text = stringResource(id = R.string.my_logout)),
                                     style =  ZipdabangandroidTheme.Typography.fourteen_300,
                                     onClick = {
-                                        CoroutineScope(Dispatchers.Main).launch {
-                                            //tokenStoreViewModel.resetToken()
-                                            Log.e("signup-tokens","로그아웃 클릭, postJob 실행 중")
-                                            onClickLogout()
-                                            Log.e("signup-tokens","로그아웃 클릭, onClick 실행 끝")
-                                        }
+                                        Log.d("logout", "clicked")
+                                        myViewModel.signOut(onClickLogout)
                                     }
                                 )
                                 Text(

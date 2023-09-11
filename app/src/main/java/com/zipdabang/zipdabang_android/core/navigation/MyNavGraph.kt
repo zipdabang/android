@@ -1,6 +1,7 @@
 package com.zipdabang.zipdabang_android.core.navigation
 
 import android.util.Log
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
@@ -8,7 +9,9 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
+import com.zipdabang.zipdabang_android.core.data_store.proto.CurrentPlatform
 import com.zipdabang.zipdabang_android.core.data_store.proto.ProtoDataViewModel
+import com.zipdabang.zipdabang_android.core.data_store.proto.Token
 import com.zipdabang.zipdabang_android.module.my.ui.FriendListScreen
 import com.zipdabang.zipdabang_android.module.my.ui.LikeScreen
 import com.zipdabang.zipdabang_android.module.my.ui.MyScreen
@@ -19,29 +22,46 @@ import com.zipdabang.zipdabang_android.module.my.ui.ScrapScreen
 import com.zipdabang.zipdabang_android.module.my.ui.ShoppingScreen
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 
-fun NavGraphBuilder.MyNavGraph(navController: NavHostController) {
+fun NavGraphBuilder.MyNavGraph(
+    navController: NavHostController,
+    outerNavController: NavHostController
+) {
 
     navigation(startDestination = MyScreen.Home.route, route = MY_ROUTE) {
         composable(MyScreen.Home.route) {
             val tokenStoreViewModel = hiltViewModel<ProtoDataViewModel>()
-            var accessToken : String = ""
 
-            if(true){
+            val currentPlatform = tokenStoreViewModel.tokens.collectAsState(
+                initial = Token(
+                    null,
+                    null,
+                    null,
+                    CurrentPlatform.NONE,
+                    null,
+                    null
+                )
+            )
+
+            if (currentPlatform.value.platformStatus == CurrentPlatform.TEMP) {
+
+                Log.d("myRoute", navController.currentBackStackEntry?.destination?.label.toString())
+
                 MyScreenForNotUser(
                     navController = navController,
                     onClickLogin = {
-                        navController.navigate(HOME_ROUTE){
-                            popUpTo(MyScreen.Home.route) {
-                                inclusive = false
-                            }
+                        outerNavController.navigate(AUTH_ROUTE){
                             launchSingleTop = true
                         }
                     }
                 )
-            }else{
+            } else {
                 MyScreen(
                     navController = navController,
                     onClickBack = {
@@ -68,7 +88,10 @@ fun NavGraphBuilder.MyNavGraph(navController: NavHostController) {
                         navController.navigate(MyScreen.FriendList.route)
                     },
                     onClickLogout = {
-                        navController.navigate(MAIN_ROUTE){
+                        outerNavController.navigate(AUTH_ROUTE){
+                            popUpTo(MAIN_ROUTE) {
+                                inclusive = true
+                            }
                             launchSingleTop = true
                         }
                         Log.e("signup-tokens","로그아웃 클릭, onClick 실행 중")
@@ -78,7 +101,6 @@ fun NavGraphBuilder.MyNavGraph(navController: NavHostController) {
                     }
                 )
             }
-
         }
 
         /*composable(MyScreen.HomeForNotUser.route){
