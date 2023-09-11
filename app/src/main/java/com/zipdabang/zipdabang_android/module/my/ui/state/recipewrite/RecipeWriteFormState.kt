@@ -1,4 +1,4 @@
-package com.zipdabang.zipdabang_android.module.my.ui.viewmodel.recipewrite
+package com.zipdabang.zipdabang_android.module.my.ui.state.recipewrite
 
 data class RecipeWriteFormState(
     val isLoading : Boolean = false,

@@ -1,4 +1,4 @@
-package com.zipdabang.zipdabang_android.module.my.ui.viewmodel.recipewrite
+package com.zipdabang.zipdabang_android.module.my.ui.state.recipewrite
 
 import android.media.session.MediaSession.Token
 import androidx.compose.runtime.getValue

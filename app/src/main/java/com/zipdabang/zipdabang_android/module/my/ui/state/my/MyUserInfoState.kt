@@ -1,4 +1,4 @@
-package com.zipdabang.zipdabang_android.module.my.ui.viewmodel
+package com.zipdabang.zipdabang_android.module.my.ui.state.my
 
 import androidx.compose.ui.res.stringResource
 import com.zipdabang.zipdabang_android.R

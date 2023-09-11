@@ -10,7 +10,8 @@ import androidx.lifecycle.viewModelScope
 import com.zipdabang.zipdabang_android.common.Resource
 import com.zipdabang.zipdabang_android.core.data_store.proto.CurrentPlatform
 import com.zipdabang.zipdabang_android.core.data_store.proto.Token
-import com.zipdabang.zipdabang_android.module.my.ui.SignOutState
+import com.zipdabang.zipdabang_android.module.my.ui.state.signout.SignOutState
+import com.zipdabang.zipdabang_android.module.my.ui.state.my.MyUserInfoState
 import com.zipdabang.zipdabang_android.module.my.use_case.SignOutUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow

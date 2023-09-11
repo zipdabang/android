@@ -1,4 +1,4 @@
-package com.zipdabang.zipdabang_android.module.my.ui
+package com.zipdabang.zipdabang_android.module.my.ui.state.signout
 
 data class SignOutState(
     val isLoading: Boolean = false,
