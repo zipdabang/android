@@ -1,11 +1,13 @@
 package com.zipdabang.zipdabang_android.core.navigation
 
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import androidx.navigation.navigation
+import com.zipdabang.zipdabang_android.module.comment.ui.RecipeCommentViewModel
 import com.zipdabang.zipdabang_android.module.detail.recipe.ui.RecipeDetailScreen
 import com.zipdabang.zipdabang_android.module.market.ui.CategoryMarketScreen
 import com.zipdabang.zipdabang_android.module.search.ui.SearchCategoryScreen
@@ -24,6 +26,9 @@ fun NavGraphBuilder.SharedNavGraph(navController: NavController){
                 navArgument(name = "recipeId") { type = NavType.IntType }
             )
         ) { backStackEntry ->
+
+            val recipeCommentViewModel = hiltViewModel<RecipeCommentViewModel>()
+
             RecipeDetailScreen(
                 navController = navController,
                 recipeId = backStackEntry.arguments?.getInt("recipeId"),
@@ -36,8 +41,12 @@ fun NavGraphBuilder.SharedNavGraph(navController: NavController){
                 onClickReport = { recipeId -> },
                 onClickCommentBlock = { recipeId -> },
                 onClickCommentReport = { recipeId -> },
-                onClickCommentDelete = { recipeId -> },
-                onClickCommentEdit = { recipeId -> },
+                onClickCommentDelete = { recipeId, commentId ->
+                    recipeCommentViewModel.deleteComment(recipeId, commentId)
+                },
+                onClickCommentEdit = { recipeId, commentId, newContent ->
+                    recipeCommentViewModel.editComment(recipeId, commentId, newContent)
+                },
             )
         }
 

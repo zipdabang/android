@@ -7,5 +7,6 @@ data class RecipeCommentState(
     val ownerImage: String,
     val ownerNickname: String,
     val commentId: Int,
-    val ownerId: Int
+    val ownerId: Int,
+    val updatedAt: String
 )

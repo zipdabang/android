@@ -28,12 +28,13 @@ import com.zipdabang.zipdabang_android.module.comment.data.remote.PostCommentCon
 import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
 
 @Composable
-fun CommentSubmitButton(
+fun CommentEditButton(
     modifier: Modifier = Modifier,
     isFulfilled: Boolean = false,
     recipeId: Int,
     commentContent: String,
-    onClick: (Int, String) -> Unit
+    commentId: Int,
+    onEdit: (Int, Int, String) -> Unit
 ) {
     Column(
         modifier = modifier
@@ -45,14 +46,14 @@ fun CommentSubmitButton(
             )
             .clickable(enabled = isFulfilled) {
                 if (isFulfilled) {
-                    onClick(recipeId, commentContent)
+                    onEdit(recipeId, commentId, commentContent)
                 }
             },
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
         Text(
-            text = stringResource(R.string.btn_register_comment),
+            text = stringResource(R.string.btn_comment_edit),
             color = if (isFulfilled) Color(0xFFE7AC98) else Color(0x80262D31),
             fontFamily = FontFamily(Font(R.font.kopubworlddotum_medium)),
             fontSize = 14.sp
@@ -60,12 +61,3 @@ fun CommentSubmitButton(
     }
 }
 
-@Preview
-@Composable
-fun CommentButtonPreview() {
-    CommentSubmitButton(
-        recipeId = 1,
-        commentContent = "",
-        onClick = { id, content -> }
-    )
-}

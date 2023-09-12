@@ -28,15 +28,18 @@ import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CommentTextField(
+fun CommentEditTextField(
     isLoading: Boolean,
     modifier: Modifier = Modifier,
     recipeId: Int,
     value: String,
     onValueChange: (String) -> Unit,
     onSubmit: (Int, String) -> Unit,
+    onEdit: (Int, Int, String) -> Unit,
+    textMode: TextMode,
     isFulfilled: Boolean,
     placeHolder: String,
+    commentId: Int
 ) {
     OutlinedTextField(
         modifier = modifier
@@ -69,12 +72,22 @@ fun CommentTextField(
                     color = ZipdabangandroidTheme.Colors.Choco
                 )
             } else {
-                CommentSubmitButton(
-                    recipeId = recipeId,
-                    commentContent = value,
-                    onClick = onSubmit,
-                    isFulfilled = isFulfilled
-                )
+                if (textMode == TextMode.POST) {
+                    CommentSubmitButton(
+                        recipeId = recipeId,
+                        commentContent = value,
+                        onClick = onSubmit,
+                        isFulfilled = isFulfilled
+                    )
+                } else {
+                    CommentEditButton(
+                        recipeId = recipeId,
+                        commentContent = value,
+                        onEdit = onEdit,
+                        isFulfilled = isFulfilled,
+                        commentId = commentId
+                    )
+                }
             }
         }
     )

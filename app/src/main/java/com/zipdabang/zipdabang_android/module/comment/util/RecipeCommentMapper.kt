@@ -1,8 +1,11 @@
 package com.zipdabang.zipdabang_android.module.comment.util
 
+import com.zipdabang.zipdabang_android.common.ResponseBody
 import com.zipdabang.zipdabang_android.module.comment.data.local.RecipeCommentEntity
 import com.zipdabang.zipdabang_android.module.comment.data.remote.PostCommentDto
 import com.zipdabang.zipdabang_android.module.comment.data.remote.RecipeComment
+import com.zipdabang.zipdabang_android.module.comment.domain.DeleteResult
+import com.zipdabang.zipdabang_android.module.comment.domain.EditResult
 import com.zipdabang.zipdabang_android.module.comment.domain.PostResult
 import com.zipdabang.zipdabang_android.module.comment.ui.RecipeCommentState
 import java.util.Random
@@ -15,9 +18,9 @@ fun RecipeComment.toRecipeCommentEntity(): RecipeCommentEntity {
         isOwner = isOwner,
         ownerImage = ownerImage,
         ownerNickname = ownerNickname,
-        // TODO commentId와 ownerId 요구하여 고치기
-        commentId = ThreadLocalRandom.current().nextInt(1, 100000),
-        ownerId = ThreadLocalRandom.current().nextInt(1, 100000)
+        commentId = commentId,
+        ownerId = ownerId,
+        updatedAt = updatedAt
     )
 }
 
@@ -29,7 +32,8 @@ fun RecipeCommentEntity.toRecipeCommentState(): RecipeCommentState {
         ownerImage = ownerImage,
         ownerNickname = ownerNickname,
         commentId = commentId,
-        ownerId = ownerId
+        ownerId = ownerId,
+        updatedAt = updatedAt
     )
 }
 
@@ -42,7 +46,8 @@ fun RecipeCommentState.toRecipeCommentEntity(): RecipeCommentEntity {
         ownerImage = ownerImage,
         ownerNickname = ownerNickname,
         commentId = commentId,
-        ownerId = ownerId
+        ownerId = ownerId,
+        updatedAt = updatedAt
     )
 }
 
@@ -52,5 +57,23 @@ fun PostCommentDto.toPostResult(): PostResult {
         message = message,
         isConnectionSuccessful = isSuccess,
         isPostSuccessful = result != null
+    )
+}
+
+fun PostCommentDto.toEditResult(): EditResult {
+    return EditResult(
+        code = code,
+        message = message,
+        isConnectionSuccessful = isSuccess,
+        isEditSuccessful = result != null
+    )
+}
+
+fun ResponseBody<String?>.toDeleteResult(): DeleteResult {
+    return DeleteResult(
+        code = code,
+        message = message,
+        isConnectionSuccessful = isSuccess,
+        isDeleteSuccessful = result != null
     )
 }

@@ -10,6 +10,8 @@ import com.zipdabang.zipdabang_android.common.Resource
 import com.zipdabang.zipdabang_android.core.Paging3Database
 import com.zipdabang.zipdabang_android.module.comment.data.remote.PostCommentContent
 import com.zipdabang.zipdabang_android.module.comment.domain.RecipeCommentRepository
+import com.zipdabang.zipdabang_android.module.comment.use_case.DeleteCommentUseCase
+import com.zipdabang.zipdabang_android.module.comment.use_case.EditCommentUseCase
 import com.zipdabang.zipdabang_android.module.comment.use_case.PostCommentUseCase
 import com.zipdabang.zipdabang_android.module.comment.util.toRecipeCommentState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -24,6 +26,8 @@ import javax.inject.Inject
 @HiltViewModel
 class RecipeCommentViewModel @Inject constructor(
     private val postCommentUseCase: PostCommentUseCase,
+    private val deleteCommentUseCase: DeleteCommentUseCase,
+    private val editCommentUseCase: EditCommentUseCase,
     private val database: Paging3Database,
     private val repository: RecipeCommentRepository
 ): ViewModel() {
@@ -35,6 +39,12 @@ class RecipeCommentViewModel @Inject constructor(
     private val _postResult = MutableStateFlow(PostCommentState())
     val postResult = _postResult.asStateFlow()
     // val postResult = _postResult.collectAsState()
+
+    private val _deleteResult = MutableStateFlow(DeleteCommentState())
+    val deleteResult = _deleteResult.asStateFlow()
+
+    private val _editResult = MutableStateFlow(EditCommentState())
+    val editResult = _editResult.asStateFlow()
 
     fun getComments(
         recipeId: Int
@@ -51,7 +61,7 @@ class RecipeCommentViewModel @Inject constructor(
 
     fun postComment(
         recipeId: Int,
-        commentItem: PostCommentContent
+        commentItem: String
     ) {
         postCommentUseCase(recipeId, commentItem).onEach { result ->
             when (result) {
@@ -88,4 +98,83 @@ class RecipeCommentViewModel @Inject constructor(
         }.launchIn(viewModelScope)
     }
 
+    fun deleteComment(
+        recipeId: Int,
+        commentId: Int
+    ) {
+        deleteCommentUseCase(recipeId, commentId).onEach { result ->
+            when (result) {
+                is Resource.Loading -> {
+                    _deleteResult.emit(
+                        DeleteCommentState(
+                            isLoading = true
+                        )
+                    )
+                }
+
+                is Resource.Success -> {
+                    _deleteResult.emit(
+                        DeleteCommentState(
+                            isLoading = false,
+                            isConnectionSuccessful = true,
+                            errorMessage = null,
+                            isDeleteSuccessful = true
+                        )
+                    )
+                }
+
+                is Resource.Error -> {
+                    _deleteResult.emit(
+                        DeleteCommentState(
+                            isLoading = false,
+                            isConnectionSuccessful = true,
+                            errorMessage = result.message,
+                            isDeleteSuccessful = false
+                        )
+                    )
+                    Log.d(TAG, "${deleteResult.value}")
+                }
+            }
+        }.launchIn(viewModelScope)
+    }
+
+    fun editComment(
+        recipeId: Int,
+        commentId: Int,
+        newContent: String
+    ) {
+        editCommentUseCase(recipeId, commentId, newContent).onEach { result ->
+            when (result) {
+                is Resource.Loading -> {
+                    _editResult.emit(
+                        EditCommentState(
+                            isLoading = true
+                        )
+                    )
+                }
+
+                is Resource.Success -> {
+                    _editResult.emit(
+                        EditCommentState(
+                            isLoading = false,
+                            isConnectionSuccessful = true,
+                            errorMessage = null,
+                            isEditSuccessful = true
+                        )
+                    )
+                }
+
+                is Resource.Error -> {
+                    _editResult.emit(
+                        EditCommentState(
+                            isLoading = false,
+                            isConnectionSuccessful = true,
+                            errorMessage = result.message,
+                            isEditSuccessful = false
+                        )
+                    )
+                }
+            }
+        }.launchIn(viewModelScope)
+    }
 }

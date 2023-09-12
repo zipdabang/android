@@ -15,7 +15,8 @@ data class RecipeCommentEntity(
     val ownerImage: String,
     val ownerNickname: String,
     val commentId: Int,
-    val ownerId: Int
+    val ownerId: Int,
+    val updatedAt: String
 )
 /*
 TODO 질문사항
