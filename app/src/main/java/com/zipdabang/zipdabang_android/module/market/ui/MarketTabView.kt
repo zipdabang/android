@@ -55,7 +55,12 @@ fun MarketTabView(
     val pagerState = rememberPagerState()
     val coroutineScope = rememberCoroutineScope()
 
-    ScrollableTabRow(
+    ScrollableTabRow(style = TextStyle(
+        fontSize = 14.sp,
+        fontFamily = FontFamily(Font(R.font.pretendard)),
+        fontWeight = FontWeight(600),
+        color = Color(0xFF26282B),
+    )
         modifier = modifier,
         selectedTabIndex = pagerState.currentPage,
         containerColor = Color.Transparent,
