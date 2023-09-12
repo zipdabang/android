@@ -25,6 +25,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
@@ -138,7 +139,7 @@ fun CommentItem(
                     }
 
                     DropdownMenu(
-                        modifier = Modifier.background(ZipdabangandroidTheme.Colors.MainBackground),
+                        modifier = Modifier.background(Color.White),
                         expanded = isExpandedForOwner,
                         onDismissRequest = { isExpandedForOwner = false },
                     ) {
@@ -154,6 +155,25 @@ fun CommentItem(
                             onClick = {
                                 onClickEdit(commentItem.commentId, commentItem.content)
                                 isExpandedForOwner = !isExpandedForOwner
+                            }
+                        )
+                    }
+
+                    DropdownMenu(
+                        modifier = Modifier.background(Color.White),
+                        expanded = isExpandedForNotOwner,
+                        onDismissRequest = { isExpandedForNotOwner = false },
+                    ) {
+                        DropdownMenuItem(
+                            text = { Text("신고하기") },
+                            onClick = {
+
+                            }
+                        )
+                        DropdownMenuItem(
+                            text = { Text("차단하기") },
+                            onClick = {
+
                             }
                         )
                     }
