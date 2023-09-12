@@ -1,43 +1,71 @@
 package com.zipdabang.zipdabang_android.module.comment.ui.components
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material.IconButton
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.zipdabang.zipdabang_android.R
+import com.zipdabang.zipdabang_android.core.data_store.proto.CurrentPlatform
+import com.zipdabang.zipdabang_android.core.data_store.proto.ProtoDataViewModel
 import com.zipdabang.zipdabang_android.module.comment.ui.RecipeCommentState
 import com.zipdabang.zipdabang_android.ui.component.CircleImage
 import com.zipdabang.zipdabang_android.ui.theme.DialogGray
 import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @Composable
 fun CommentItem(
+    recipeId: Int,
     commentItem: RecipeCommentState,
     onClickReport: (Int) -> Unit,
     onClickBlock: (Int) -> Unit,
-    onClickEdit: (Int) -> Unit,
-    onClickDelete: (Int) -> Unit
+    // 여기서 onClickEdit은 textfield 활성화를 의미
+    onClickEdit: (Int, String) -> Unit,
+    onClickDelete: (Int, Int) -> Unit
 ) {
+    val tokenViewModel = hiltViewModel<ProtoDataViewModel>()
+
+    suspend fun currentPlatform() = withContext(Dispatchers.IO) {
+        tokenViewModel.tokens.first().platformStatus
+    }
+
+    var isExpandedForOwner by remember { mutableStateOf(false) }
+    var isExpandedForNotOwner by remember { mutableStateOf(false) }
+
     Row(
         modifier = Modifier.fillMaxWidth()
     ) {
@@ -84,23 +112,74 @@ fun CommentItem(
                     )
                 }
 
-                IconButton(
-                    modifier = Modifier.size(18.dp),
-                    onClick = {
-                        if (commentItem.isOwner) {
-
-                        } else {
-
+                Box(modifier = Modifier.size(18.dp).wrapContentSize(Alignment.TopEnd)) {
+                    IconButton(
+                        modifier = Modifier.fillMaxSize(),
+                        onClick = {
+                            CoroutineScope(Dispatchers.Main).launch {
+                                val currentPlatform = currentPlatform()
+                                if (currentPlatform == CurrentPlatform.NONE
+                                    || currentPlatform == CurrentPlatform.TEMP) {
+                                    // 온보딩으로 이동
+                                } else {
+                                    if (commentItem.isOwner) {
+                                        isExpandedForOwner = !isExpandedForOwner
+                                    } else {
+                                        isExpandedForNotOwner = !isExpandedForNotOwner
+                                    }
+                                }
+                            }
                         }
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.all_more_white),
+                            contentDescription = "comment menu",
+                            tint = ZipdabangandroidTheme.Colors.Typo
+                        )
                     }
-                ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.all_more_white),
-                        contentDescription = "comment menu",
-                        tint = ZipdabangandroidTheme.Colors.Typo
-                    )
+
+                    DropdownMenu(
+                        modifier = Modifier.background(Color.White),
+                        expanded = isExpandedForOwner,
+                        onDismissRequest = { isExpandedForOwner = false },
+                    ) {
+                        DropdownMenuItem(
+                            text = { Text("댓글 삭제하기") },
+                            onClick = {
+                                onClickDelete(recipeId, commentItem.commentId)
+                                isExpandedForOwner = !isExpandedForOwner
+                            }
+                        )
+                        DropdownMenuItem(
+                            text = { Text("댓글 수정하기") },
+                            onClick = {
+                                onClickEdit(commentItem.commentId, commentItem.content)
+                                isExpandedForOwner = !isExpandedForOwner
+                            }
+                        )
+                    }
+
+                    DropdownMenu(
+                        modifier = Modifier.background(Color.White),
+                        expanded = isExpandedForNotOwner,
+                        onDismissRequest = { isExpandedForNotOwner = false },
+                    ) {
+                        DropdownMenuItem(
+                            text = { Text("신고하기") },
+                            onClick = {
+
+                            }
+                        )
+                        DropdownMenuItem(
+                            text = { Text("차단하기") },
+                            onClick = {
+
+                            }
+                        )
+                    }
                 }
             }
+
 
             Spacer(modifier = Modifier.height(2.dp))
 

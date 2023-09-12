@@ -46,8 +46,8 @@ fun RecipeDetailScreen(
     onClickEdit: (Int) -> Unit,
     onClickCommentReport: (Int) -> Unit,
     onClickCommentBlock: (Int) -> Unit,
-    onClickCommentEdit: (Int) -> Unit,
-    onClickCommentDelete: (Int) -> Unit
+    onClickCommentEdit: (Int, Int, String) -> Unit,
+    onClickCommentDelete: (Int, Int) -> Unit
 ){
 
     Log.d("RecipeDetail", "$recipeId")
@@ -183,6 +183,7 @@ fun RecipeDetailScreen(
                         onClickReport = onClickCommentReport,
                         onClickBlock = onClickCommentBlock,
                         onClickDelete = onClickCommentDelete,
+                        // 제출
                         onClickEdit = onClickCommentEdit
                     )
                 ),
@@ -192,4 +193,5 @@ fun RecipeDetailScreen(
 
         }
     }
+
 }

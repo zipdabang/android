@@ -137,5 +137,6 @@
     <string name="btn_register_comment">등록</string>
     <string name="placeholder_comment">댓글 쓰기 (최대 100자)</string>
     <string name="group_header_recipe_of">의 레시피</string>
+    <string name="btn_comment_edit">수정</string>
 
 </resources>

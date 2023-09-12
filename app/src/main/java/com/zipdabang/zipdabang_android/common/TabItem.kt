@@ -20,8 +20,8 @@ sealed class TabItem(val tabTitle: String, val screen: ComposableFun) {
         val recipeId: Int,
         private val onClickReport: (Int) -> Unit,
         private val onClickBlock: (Int) -> Unit,
-        private val onClickEdit: (Int) -> Unit,
-        private val onClickDelete: (Int) -> Unit
+        private val onClickEdit: (Int, Int, String) -> Unit,
+        private val onClickDelete: (Int, Int) -> Unit
     ) : TabItem(
         tabTitle = "댓글 ${comments}개",
         screen = { RecipeCommentPage(

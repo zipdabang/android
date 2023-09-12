@@ -8,5 +8,8 @@ data class PostCommentResult(
     val createdAt: String,
     val isOwner: Boolean,
     val ownerImage: String,
-    val ownerNickname: String
+    val ownerNickname: String,
+    val commentId: Int,
+    val ownerId: Int,
+    val updatedAt: String
 )
