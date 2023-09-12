@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.map
+import androidx.room.withTransaction
 import com.zipdabang.zipdabang_android.common.Resource
 import com.zipdabang.zipdabang_android.core.Paging3Database
 import com.zipdabang.zipdabang_android.module.comment.data.remote.PostCommentContent
@@ -21,6 +22,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
+import java.lang.NullPointerException
 import javax.inject.Inject
 
 @HiltViewModel
@@ -113,6 +115,7 @@ class RecipeCommentViewModel @Inject constructor(
                 }
 
                 is Resource.Success -> {
+                    deleteCommentLocal(commentId)
                     _deleteResult.emit(
                         DeleteCommentState(
                             isLoading = false,
@@ -154,6 +157,7 @@ class RecipeCommentViewModel @Inject constructor(
                 }
 
                 is Resource.Success -> {
+                    editCommentLocal(commentId = commentId, newContent = newContent)
                     _editResult.emit(
                         EditCommentState(
                             isLoading = false,
@@ -176,5 +180,34 @@ class RecipeCommentViewModel @Inject constructor(
                 }
             }
         }.launchIn(viewModelScope)
+    }
+
+    private suspend fun editCommentLocal(
+        commentId: Int,
+        newContent: String
+    ) {
+        database.withTransaction {
+            try {
+                val currentComment = database.recipeCommentDao().getCommentItemById(commentId = commentId)
+                    ?: throw NullPointerException()
+                database.recipeCommentDao().updateComment(
+                    currentComment.copy(content = newContent)
+                )
+            } catch (e: NullPointerException) {
+                Log.d(TAG, "no comment ${e.message}")
+            }
+        }
+    }
+
+    private suspend fun deleteCommentLocal(
+        commentId: Int
+    ) {
+        database.withTransaction {
+            try {
+                database.recipeCommentDao().deleteComment(commentId)
+            } catch (e: NullPointerException) {
+                Log.d(TAG, "no comment ${e.message}")
+            }
+        }
     }
 }

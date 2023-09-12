@@ -1,6 +1,7 @@
 package com.zipdabang.zipdabang_android.module.comment.ui
 
 data class RecipeCommentState(
+    val itemId: Int,
     val content: String,
     val createdAt: String,
     val isOwner: Boolean,

@@ -26,6 +26,7 @@ fun RecipeComment.toRecipeCommentEntity(): RecipeCommentEntity {
 
 fun RecipeCommentEntity.toRecipeCommentState(): RecipeCommentState {
     return RecipeCommentState(
+        itemId = itemId,
         content = content,
         createdAt = createdAt,
         isOwner = isOwner,
@@ -39,7 +40,7 @@ fun RecipeCommentEntity.toRecipeCommentState(): RecipeCommentState {
 
 fun RecipeCommentState.toRecipeCommentEntity(): RecipeCommentEntity {
     return RecipeCommentEntity(
-        itemId = 0,
+        itemId = itemId,
         content = content,
         createdAt = createdAt,
         isOwner = isOwner,
