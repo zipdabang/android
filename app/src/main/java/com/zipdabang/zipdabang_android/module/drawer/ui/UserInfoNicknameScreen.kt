@@ -25,7 +25,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.zipdabang.zipdabang_android.R
 import com.zipdabang.zipdabang_android.module.drawer.ui.viewmodel.DrawerUserInfoViewModel
-import com.zipdabang.zipdabang_android.module.drawer.ui.viewmodel.userinfo.UserInfoNicknameEvent
+import com.zipdabang.zipdabang_android.module.drawer.ui.state.userinfo.UserInfoNicknameEvent
 import com.zipdabang.zipdabang_android.ui.component.AppBarSignUp
 import com.zipdabang.zipdabang_android.ui.component.PrimaryButtonOutLined
 import com.zipdabang.zipdabang_android.ui.component.PrimaryButtonWithStatus
@@ -86,7 +86,8 @@ fun UserInfoNicknameScreen(
                         TextFieldErrorAndCorrectIcon(
                             value = stateUserInfoNickname.nickname,
                             onValueChanged = {
-                                drawerUserInfoViewModel.onUserInfoNicknameEvent(UserInfoNicknameEvent.NicknameChanged(it))
+                                drawerUserInfoViewModel.onUserInfoNicknameEvent(
+                                    UserInfoNicknameEvent.NicknameChanged(it))
                             },
                             isTried = stateUserInfoNickname.isTried,
                             labelValue = stringResource(id = R.string.signup_nickname),
@@ -108,7 +109,8 @@ fun UserInfoNicknameScreen(
                             borderColor = ZipdabangandroidTheme.Colors.BlackSesame,
                             text= stringResource(id = R.string.signup_nickname_deplicatecheck),
                             onClick= {
-                                drawerUserInfoViewModel.onUserInfoNicknameEvent(UserInfoNicknameEvent.NicknameClicked(true))
+                                drawerUserInfoViewModel.onUserInfoNicknameEvent(
+                                    UserInfoNicknameEvent.NicknameClicked(true))
                             }
                         )
                     }
@@ -144,7 +146,8 @@ fun UserInfoNicknameScreen(
                                     onClickEdit()
                                 }
                             } else {
-                                drawerUserInfoViewModel.onUserInfoNicknameEvent(UserInfoNicknameEvent.BtnEnabled(true))
+                                drawerUserInfoViewModel.onUserInfoNicknameEvent(
+                                    UserInfoNicknameEvent.BtnEnabled(true))
                             }
                         },
                     )

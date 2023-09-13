@@ -28,6 +28,7 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -107,22 +108,19 @@ fun CustomDialogType1(
     text : String,
     declineText : String,
     acceptText : String,
-    setShowDialog: (Boolean) -> Unit,
-    onAcceptClick: () -> Unit
+    setShowDialog : (Boolean) -> Unit,
+    onAcceptClick : () -> Unit
 ) {
-
     Dialog(onDismissRequest = { setShowDialog(false) }) {
         Surface(
             shape = ZipdabangandroidTheme.Shapes.small,
             color = DialogBackground,
             modifier = Modifier.size(width = 216.dp, height = 167.dp)
         ) {
-
             Column(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-
                 Column(
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally,
@@ -132,46 +130,40 @@ fun CustomDialogType1(
                 {
                     Text(
                         text = title,
-                        color = NavBlack,
-                        fontSize = 14.sp,
-                        fontWeight = FontWeight(700)
+                        textAlign = TextAlign.Center,
+                        color = ZipdabangandroidTheme.Colors.Typo,
+                        style= ZipdabangandroidTheme.Typography.fourteen_700,
                     )
                     Spacer(modifier = Modifier.height(10.dp))
                     Text(
                         text = text,
                         textAlign = TextAlign.Center,
-                        color = NavBlack,
-                        fontSize = 12.sp,
-                        fontWeight = FontWeight(400)
+                        color = ZipdabangandroidTheme.Colors.Typo,
+                        style= ZipdabangandroidTheme.Typography.twelve_300,
                     )
-
                 }
-
-
                 Spacer(modifier = Modifier.height(10.dp))
                 Row(
-                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 8.dp),
+                    modifier = Modifier
+                        .padding(horizontal = 8.dp, vertical = 8.dp),
                 ) {
                     TextButton(
                         shape = RectangleShape,
                         onClick = { setShowDialog(false) }) {
                         Text(
                             text = declineText,
-                            color = NavBlack,
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight(500)
+                            color = ZipdabangandroidTheme.Colors.Typo,
+                            style= ZipdabangandroidTheme.Typography.sixteen_500,
                         )
                     }
                     Spacer(modifier = Modifier.width(20.dp))
-
                     TextButton(
                         shape = RectangleShape,
                         onClick = { onAcceptClick() }) {
                         Text(
                             text = acceptText,
-                            color = DialogPink,
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight(500)
+                            color = ZipdabangandroidTheme.Colors.Strawberry,
+                            style= ZipdabangandroidTheme.Typography.sixteen_500,
                         )
 
                     }
@@ -181,6 +173,7 @@ fun CustomDialogType1(
 
     }
 }
+
 //카메라, 파일 선택
 @Composable
 fun CustomDialogCameraFile(
@@ -657,7 +650,7 @@ fun DialogBackgroundPreview(){
             category
         )
     }
-    if(isEnabled.value){
+    if(isEnabled.value) {
         CustomDialogType1(
             title = "업로드",
             text = "작성 완료한 레시피를 업로드 하시겠습니까",
@@ -669,12 +662,27 @@ fun DialogBackgroundPreview(){
             {}
         )
     }
+}
 
 
+@Preview
+@Composable
+fun PreviewCustomDialogType1() {
+    val isClickedDialogSave = remember { mutableStateOf(true) }
+    val showDialogSave =  remember { mutableStateOf(false) }
 
-
-
-
-
-
+    //if(showDialogSave.value){
+        CustomDialogType1(
+            title = stringResource(id = R.string.my_save),
+            text = stringResource(id = R.string.my_dialog_save_detail),
+            declineText = stringResource(id = R.string.my_dialog_cancel),
+            acceptText = stringResource(id = R.string.my_save),
+            setShowDialog = {
+                showDialogSave.value = it
+            },
+            onAcceptClick = {
+                showDialogSave.value = false
+            }
+        )
+   // }
 }

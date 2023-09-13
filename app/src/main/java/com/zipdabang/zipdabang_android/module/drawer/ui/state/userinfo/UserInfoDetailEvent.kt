@@ -1,4 +1,4 @@
-package com.zipdabang.zipdabang_android.module.drawer.ui.viewmodel.userinfo
+package com.zipdabang.zipdabang_android.module.drawer.ui.state.userinfo
 
 sealed class UserInfoDetailEvent{
     data class ZipcodeChanged(val zipCode : String) : UserInfoDetailEvent()

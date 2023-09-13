@@ -72,6 +72,7 @@ fun MyScreen(
     onClickMyrecipe : ()->Unit,
     onClickShopping : ()->Unit,
     onClickFriendList : ()->Unit,
+    onClickNotice : ()->Unit,
     onClickLogout : ()->Unit,
     onClickUserInfo : () -> Unit,
 ){
@@ -309,7 +310,9 @@ fun MyScreen(
                                 Box(
                                     modifier = Modifier
                                         .fillMaxWidth()
-                                        .clickable(onClick = {})
+                                        .clickable(onClick = {
+                                            onClickNotice()
+                                        })
                                         .weight(1f)
                                         .background(
                                             color = Color.White,
@@ -457,6 +460,7 @@ fun PreviewMyScreen() {
         onClickMyrecipe = {},
         onClickShopping = {},
         onClickFriendList = {},
+        onClickNotice={},
         onClickLogout = {},
         onClickUserInfo = {},
     )

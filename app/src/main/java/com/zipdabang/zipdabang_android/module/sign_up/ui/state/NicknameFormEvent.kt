@@ -1,4 +1,4 @@
-package com.zipdabang.zipdabang_android.module.sign_up.ui.viewmodel
+package com.zipdabang.zipdabang_android.module.sign_up.ui.state
 
 sealed class NicknameFormEvent{
     data class NicknameChanged(val nickname : String) : NicknameFormEvent()

@@ -1,6 +1,4 @@
-package com.zipdabang.zipdabang_android.module.drawer.ui.viewmodel.userinfo
-
-import com.zipdabang.zipdabang_android.module.sign_up.ui.viewmodel.BeverageFormEvent
+package com.zipdabang.zipdabang_android.module.drawer.ui.state.userinfo
 
 sealed class UserInfoPreferencesEvent{
     data class BeverageCheckListChanged(val index : Int, val checked : Boolean) : UserInfoPreferencesEvent()
