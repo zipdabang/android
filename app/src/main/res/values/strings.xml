@@ -125,6 +125,8 @@
     <string name="my_gotologin">로그인하러 가기</string>
     <string name="my_recipewrite_warning_ingredient">최대 재료 개수는 10개입니다.</string>
     <string name="my_recipewrite_warning_step">한 Step 당 한 장씩 업로드할 수 있습니다.</string>
+    <string name="my_recipewrite_edit">수정</string>
+    <string name="my_recipewrite_delete">삭제</string>
     <string name="my_dialog_save_detail">작성 중인 레시피를\n임시저장 하시겠습니까?</string>
     <string name="my_dialog_cancel">취소</string>
     <string name="my_dialog_recipe_delete">레시피 삭제</string>

@@ -368,7 +368,7 @@ class DrawerUserInfoViewModel @Inject constructor(
                         isLoading = false,
                         nickname = result.data?.nickname ?: "",
                     )
-                    Log.e("drawer-userinfo-viewmodel", "성공 ${result.code}")
+                    Log.e("drawer-userinfo-viewmodel", "성공 ${result.code} ${result.data?.profileUrl}")
                 }
                 is Resource.Error ->{
                     stateUserInfo = stateUserInfo.copy(error = result.message ?: "An unexpeted error occured")

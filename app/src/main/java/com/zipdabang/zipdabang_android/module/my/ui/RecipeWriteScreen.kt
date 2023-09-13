@@ -1,7 +1,6 @@
 package com.zipdabang.zipdabang_android.module.my.ui
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -31,7 +30,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.zipdabang.zipdabang_android.R
-import com.zipdabang.zipdabang_android.module.my.ui.component.ButtonForRecipeWrite
+import com.zipdabang.zipdabang_android.module.my.ui.component.ButtonForIngredient
 import com.zipdabang.zipdabang_android.module.my.ui.component.IngredientAndUnit
 import com.zipdabang.zipdabang_android.module.my.ui.component.Step
 import com.zipdabang.zipdabang_android.ui.component.AppBarSignUp
@@ -277,7 +276,7 @@ fun RecipeWriteScreen(
                             textStateUnit = ""
                         }
                     )
-                    ButtonForRecipeWrite(
+                    ButtonForIngredient(
                         borderColor = ZipdabangandroidTheme.Colors.Strawberry,
                         containerColor = Color.White,
                         onClickBtn = { }
@@ -339,7 +338,7 @@ fun RecipeWriteScreen(
                         onClickAddBtn = { },
                         onClickDeleteStep = { }
                     )
-                    ButtonForRecipeWrite(
+                    ButtonForIngredient(
                         borderColor = ZipdabangandroidTheme.Colors.Strawberry,
                         containerColor = Color.White,
                         onClickBtn = { }

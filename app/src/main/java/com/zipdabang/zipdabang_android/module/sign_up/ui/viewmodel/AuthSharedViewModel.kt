@@ -650,7 +650,6 @@ class AuthSharedViewModel @Inject constructor(
                 social = dataStore.data.first().platformStatus.toString(), //social,
                 infoRequest = InfoRequest(
                     email = _email.value,
-                    profileUrl = _profile.value,
                     agreeTermsIdList = listOf(stateTermsForm.choiceId),
                     name = stateUserInfoForm.name,
                     birth = stateUserInfoForm.birthday,
