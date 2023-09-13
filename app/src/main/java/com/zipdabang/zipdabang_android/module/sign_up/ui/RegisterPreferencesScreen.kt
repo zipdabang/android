@@ -124,7 +124,7 @@ fun RegisterPreferencesScreen(
                                 ) {
                                     for (preference in chunk) {
                                         RoundedButton(
-                                            imageUrl = R.drawable.ic_topbar_backbtn, //preference.imageUrl,
+                                            imageUrl = preference.imageUrl,
                                             buttonText = preference.categoryName,
                                             isClicked = stateBeverageForm.beverageCheckList[index],
                                             isClickedChange = { selectedClicked ->

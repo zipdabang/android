@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
@@ -66,7 +67,7 @@ fun Step(
         )
         // Step 사진 추가 후
         Row(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth().wrapContentHeight(),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             Box(
@@ -91,7 +92,6 @@ fun Step(
                         BorderStroke(1.dp, ZipdabangandroidTheme.Colors.Typo.copy(0.1f)),
                         ZipdabangandroidTheme.Shapes.small
                     )
-                    .fillMaxHeight()
                     .weight(8.4f),
                 contentAlignment = Alignment.Center
             ) {

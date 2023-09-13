@@ -46,37 +46,26 @@ fun MarketReadyPage() {
 
             Text(
                 text = "현재 준비 중인 서비스에요!",
-                style = TextStyle(
-                    fontSize = 24.sp,
-                    fontFamily = FontFamily(Font(R.font.scdream_bold)),
-                    fontWeight = FontWeight(900),
-                    color = Color(0xFF867768),
-                    textAlign = TextAlign.Center,
-                )
-            )
-            Spacer(modifier = Modifier.height(10.dp))
-            Text(
-                text = "곧 찾아뵙겠습니다. 기대해주세요:)",
-                style = TextStyle(
-                    fontSize = 18.sp,
-                    fontFamily = FontFamily(Font(R.font.kopubworlddotum_medium)),
-                    fontWeight = FontWeight(300),
-                    color = Color(0xFF262D31),
-                    textAlign = TextAlign.Center,
-                )
+                style = ZipdabangandroidTheme.Typography.twentyfour_900_scdream,
             )
 
+            Spacer(modifier = Modifier.height(10.dp))
+
+            Text(
+                text = "곧 찾아뵙겠습니다. 기대해주세요:)",
+                style = ZipdabangandroidTheme.Typography.eighteen_300,
+                color = ZipdabangandroidTheme.Colors.Typo
+            )
 
             Spacer(modifier = Modifier.height(30.dp))
 
             Box(
-                modifier = Modifier.size(
-                    width = 216.dp, height = 182.dp
-                )
+                modifier = Modifier.size(width = 216.dp, height = 182.dp)
             ) {
                 Image(
                     painter = painterResource(id = R.drawable.market_ready),
-                    contentDescription = "market_ready", modifier = Modifier.fillMaxSize()
+                    contentDescription = "market_ready",
+                    modifier = Modifier.fillMaxSize()
                 )
             }
 

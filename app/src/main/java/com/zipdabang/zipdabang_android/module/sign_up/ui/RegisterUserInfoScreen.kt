@@ -106,12 +106,6 @@ fun RegisterUserInfoScreen(
                         .fillMaxWidth(),
                     verticalArrangement = Arrangement.spacedBy(10.dp)
                 ){
-                    Text(
-                        text= stringResource(id = R.string.signup_userinfo_basicinfo),
-                        style = ZipdabangandroidTheme.Typography.sixteen_300_cafe24,
-                        color = ZipdabangandroidTheme.Colors.Choco
-                    )
-
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.Center,
@@ -120,7 +114,7 @@ fun RegisterUserInfoScreen(
                         Icon(
                             painter = painterResource(id = R.drawable.ic_signup_name),
                             contentDescription = "Icon",
-                            tint = ZipdabangandroidTheme.Colors.Choco,
+                            tint = ZipdabangandroidTheme.Colors.Typo,
                             modifier = Modifier
                                 .size(24.dp)
                                 .weight(1.4f),
@@ -151,7 +145,7 @@ fun RegisterUserInfoScreen(
                         Icon(
                             painter = painterResource(id = R.drawable.ic_signup_birthdaycake),
                             contentDescription = "Icon",
-                            tint = ZipdabangandroidTheme.Colors.Choco,
+                            tint = ZipdabangandroidTheme.Colors.Typo,
                             modifier = Modifier
                                 .size(24.dp)
                                 .weight(1.4f),
@@ -196,12 +190,6 @@ fun RegisterUserInfoScreen(
                         .fillMaxWidth(),
                     verticalArrangement = Arrangement.spacedBy(10.dp)
                 ){
-                    Text(
-                        text= stringResource(id = R.string.signup_userinfo_validation),
-                        style = ZipdabangandroidTheme.Typography.sixteen_300_cafe24,
-                        color = ZipdabangandroidTheme.Colors.Choco
-                    )
-
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.Center,
@@ -210,7 +198,7 @@ fun RegisterUserInfoScreen(
                         Icon(
                             painter = painterResource(id = R.drawable.ic_signup_phone),
                             contentDescription = "Icon",
-                            tint = ZipdabangandroidTheme.Colors.Choco,
+                            tint = ZipdabangandroidTheme.Colors.Typo,
                             modifier = Modifier
                                 .size(24.dp)
                                 .weight(1.4f),

@@ -84,7 +84,7 @@ fun RegisterUserAddressScreen(
                 verticalArrangement = Arrangement.spacedBy(20.dp)
             ) {
                 MainAndSubTitle(
-                    mainValue = stringResource(id = R.string.signup_userinfo_maintitle),
+                    mainValue = stringResource(id = R.string.signup_userinfo_detailinfo),
                     mainTextStyle = ZipdabangandroidTheme.Typography.twentytwo_700,
                     mainTextColor = ZipdabangandroidTheme.Colors.Typo,
                     subValue = stringResource(id = R.string.signup_userinfo_subtitle),
@@ -98,11 +98,11 @@ fun RegisterUserAddressScreen(
                         .fillMaxWidth(),
                     verticalArrangement = Arrangement.spacedBy(10.dp)
                 ){
-                    Text(
+                    /*Text(
                         text= stringResource(id = R.string.signup_userinfo_detailinfo),
                         style = ZipdabangandroidTheme.Typography.sixteen_300_cafe24,
                         color = ZipdabangandroidTheme.Colors.Choco
-                    )
+                    )*/
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.Center,
@@ -111,7 +111,7 @@ fun RegisterUserAddressScreen(
                         Icon(
                             painter = painterResource(id = R.drawable.ic_signup_zipcode),
                             contentDescription = "Icon",
-                            tint = ZipdabangandroidTheme.Colors.Choco,
+                            tint = ZipdabangandroidTheme.Colors.Typo,
                             modifier = Modifier
                                 .size(24.dp)
                                 .weight(1.4f),
@@ -153,7 +153,7 @@ fun RegisterUserAddressScreen(
                         Icon(
                             painter = painterResource(id = R.drawable.ic_signup_address),
                             contentDescription = "Icon",
-                            tint = ZipdabangandroidTheme.Colors.Choco,
+                            tint = ZipdabangandroidTheme.Colors.Typo,
                             modifier = Modifier
                                 .size(24.dp)
                                 .weight(1.4f),

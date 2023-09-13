@@ -452,7 +452,7 @@ fun MyScreenForNotUser(
                     text= stringResource(id = R.string.my_notuser),
                     color=Color.White,
                     style= ZipdabangandroidTheme.Typography.eighteen_700,
-                    //modifier = Modifier.padding(0.dp, 160.dp, 0.dp, 20.dp)
+                    modifier = Modifier.padding(0.dp, 0.dp, 0.dp, 20.dp)
                 )
                 Button(
                     onClick = {onClickLogin()},
