@@ -21,6 +21,10 @@ import androidx.compose.material.ButtonDefaults
 import androidx.compose.material3.AlertDialogDefaults.shape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -33,6 +37,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.zipdabang.zipdabang_android.R
+import com.zipdabang.zipdabang_android.module.guide.CardFace
 import com.zipdabang.zipdabang_android.module.guide.GuideConstants
 import com.zipdabang.zipdabang_android.module.guide.HomeCafeTools
 import com.zipdabang.zipdabang_android.ui.component.RectangleWithRadiusText
@@ -104,17 +109,17 @@ fun GuideScreen1(){
             val toolsArray = HomeCafeTools.values()
 
 
+
             Carousel(
                 count = toolsArray.size,
-                contentWidth = 150.dp,
-                contentHeight = 200.dp,
+                contentWidth = 216. dp,
+                contentHeight = 280.dp,
                 content = { modifier, index ->
-                    MyComposableContent(
-                        item = toolsArray[index],
-                        modifier = modifier
-                    )
-                }
+                    FlipCard(item = toolsArray[index],
+                       modifier = modifier )
+                    }
             )
+
             Spacer(modifier = Modifier.height(30.dp))
 
             Text(GuideConstants.Guide1_Section2_Description,
@@ -133,7 +138,7 @@ fun GuideScreen1(){
                 .background(Color.White)
                 .fillMaxWidth()
                 .height(700.dp)
-                .padding(horizontal =40.dp ),
+                .padding(horizontal = 40.dp),
             horizontalAlignment = Alignment.CenterHorizontally
 
         ){

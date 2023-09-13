@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -78,46 +79,49 @@ fun Carousel(
     BoxWithConstraints(
         modifier = parentModifier
     ) {
-        val halfRowWidth = constraints.maxWidth / 2
+        val halfRowWidth = constraints.maxWidth.toFloat() / 2
         LazyRow(
             state = listState,
             modifier = Modifier
+                .wrapContentWidth()
                 .fillMaxSize()
                 .align(Alignment.Center),
-            contentPadding = PaddingValues(top = 10.dp,
-                start = 3.dp,
-                end = 3.dp),
+            contentPadding = PaddingValues(top = 10.dp),
             horizontalArrangement = Arrangement
-                .spacedBy(- contentWidth * 0.75f),
+                .spacedBy(- contentWidth * 0.65f),
             verticalAlignment = Alignment.CenterVertically
         ) {
+
             items(
-                count = Int.MAX_VALUE,
-                itemContent = { globalIndex ->
-                    val scale by remember {
-                        derivedStateOf {
-                            val currentItem = listState.layoutInfo.visibleItemsInfo.firstOrNull { it.index == globalIndex } ?: return@derivedStateOf 0.85f
-                            (1f - minOf(1f, abs(currentItem.offset + (currentItem.size / 2) - halfRowWidth).toFloat() / halfRowWidth) * 0.25f)
-                        }
+                count = Int.MAX_VALUE
+            ) { globalIndex ->
+                val scale by remember {
+                    derivedStateOf {
+                        val currentItem =
+                            listState.layoutInfo.visibleItemsInfo.firstOrNull { it.index == globalIndex }
+                                ?: return@derivedStateOf 0.85f
+                        (1f - minOf(
+                            1f,
+                            abs(currentItem.offset + (currentItem.size / 2) - halfRowWidth).toFloat() / halfRowWidth
+                        ) * 0.25f)
+
+                        // 현재 항목의 중간 지점과 화면의 중간 지점 간의 거리 계산 -> 거리를 0에서 1 사이로 정규화
+                        // 거리가 멀수록 스케일 작게 하기 위해 1에서 계산 값을 빼줌.
                     }
-
-                    content(
-                        index = globalIndex % count,
-                        modifier = Modifier
-                            .width(
-                                contentWidth * 1.4f
-                            )
-                            .height(contentHeight * 1.4f)
-                            .scale(scale)
-                            .zIndex(scale * 10)
-                            .background(
-                                color = Color.White,
-                                shape = RoundedCornerShape(size = 12.dp)
-                            )
-
-                    )
                 }
-            )
+
+                content(
+                    index = globalIndex % count,
+                    modifier = Modifier
+                        .width(
+                            contentWidth
+                        )
+                        .height(contentHeight)
+                        .scale(scale) // scale 적용
+                        .zIndex(scale * 10)
+
+                )
+            }
         }
     }
 }
