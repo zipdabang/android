@@ -1,6 +1,7 @@
 package com.zipdabang.zipdabang_android.module.bottom.ui
 
 import android.util.Log
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.RowScope
@@ -9,6 +10,7 @@ import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
@@ -27,10 +29,15 @@ import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
+import com.zipdabang.zipdabang_android.core.navigation.MarketScreen
 import com.zipdabang.zipdabang_android.module.bottom.BottomMenuContent
+import com.zipdabang.zipdabang_android.module.main.MainScreen
+import com.zipdabang.zipdabang_android.module.market.ui.MarketScreen
+import com.zipdabang.zipdabang_android.ui.component.CustomMarketReady
 import com.zipdabang.zipdabang_android.ui.theme.NavBlack
 import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
 import kotlinx.coroutines.selects.whileSelect
+import kotlinx.serialization.descriptors.setSerialDescriptor
 
 @Composable
 fun BottomNavigationBar(
@@ -53,7 +60,6 @@ fun BottomNavigationBar(
             backgroundColor = Color.White,
         ) {
             home_screens.forEach { screen ->
-
                 val selected = currentDestination?.hierarchy?.any{
                 it.route == screen.route
             } == true
@@ -62,7 +68,7 @@ fun BottomNavigationBar(
                     screen = screen,
                     currentDestination = currentDestination,
                     navController = navController,
-                    selected = selected
+                    selected = selected,
                 )
             }
         }
@@ -75,52 +81,59 @@ fun RowScope.AddItem(
     screen : BottomMenuContent,
     currentDestination: NavDestination?,
     navController: NavHostController,
-    selected: Boolean
+    selected: Boolean,
     ) {
-            BottomNavigationItem(
-                selected = selected,
-                onClick = {
-                    navController.navigate(screen.route) {
+    val showDialog = remember { mutableStateOf(false) }
+    val isFirst = remember { mutableStateOf(true) }
+
+
+        BottomNavigationItem(
+            selected = selected,
+            onClick = {
+
+                navController.navigate(screen.route) {
                         popUpTo(navController.graph.findStartDestination().id)
                         launchSingleTop = true
                     }
-                },
-                selectedContentColor = ZipdabangandroidTheme.Colors.Latte,
-                unselectedContentColor = NavBlack,
-                icon = {
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Center
-                    ) {
-                        if (selected) {
-                            Icon(
-                                painter = painterResource(id = screen.activeIcon),
-                                contentDescription = null
-                            )
 
-                            Text(
-                                text = screen.title,
-                                textAlign = TextAlign.Center,
-                                fontSize = 10.sp
-                            )
+            },
+            selectedContentColor = ZipdabangandroidTheme.Colors.Latte,
+            unselectedContentColor = NavBlack,
+            icon = {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    if (selected) {
+                        Icon(
+                            painter = painterResource(id = screen.activeIcon),
+                            contentDescription = null
+                        )
+
+                        Text(
+                            text = screen.title,
+                            textAlign = TextAlign.Center,
+                            fontSize = 10.sp
+                        )
 
 
-                        } else {
-                            Icon(
-                                painter = painterResource(id = screen.inactiveIcon),
-                                contentDescription = null
-                            )
+                    } else {
+                        Icon(
+                            painter = painterResource(id = screen.inactiveIcon),
+                            contentDescription = null,
+                        )
 
-                            Text(
-                                text = screen.title,
-                                textAlign = TextAlign.Center,
-                                fontSize = 10.sp
-                            )
-                        }
+                        Text(
+                            text = screen.title,
+                            textAlign = TextAlign.Center,
+                            fontSize = 10.sp
+                        )
                     }
-                })
+                }
+            })
+    }
 
-}
+
 
 
 
