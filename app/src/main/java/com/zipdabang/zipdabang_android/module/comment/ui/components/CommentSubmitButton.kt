@@ -32,8 +32,8 @@ fun CommentSubmitButton(
     modifier: Modifier = Modifier,
     isFulfilled: Boolean = false,
     recipeId: Int,
-    commentContent: PostCommentContent,
-    onClick: (Int, PostCommentContent) -> Unit
+    commentContent: String,
+    onClick: (Int, String) -> Unit
 ) {
     Column(
         modifier = modifier
@@ -65,7 +65,7 @@ fun CommentSubmitButton(
 fun CommentButtonPreview() {
     CommentSubmitButton(
         recipeId = 1,
-        commentContent = PostCommentContent(""),
+        commentContent = "",
         onClick = { id, content -> }
     )
 }

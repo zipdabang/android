@@ -22,6 +22,16 @@ import com.zipdabang.zipdabang_android.module.sign_up.domain.usecase.PostPhoneSm
 import com.zipdabang.zipdabang_android.module.sign_up.domain.usecase.ValidateBirthdayUseCase
 import com.zipdabang.zipdabang_android.module.sign_up.domain.usecase.ValidateNicknameUseCase
 import com.zipdabang.zipdabang_android.module.sign_up.domain.usecase.ValidatePhoneUseCase
+import com.zipdabang.zipdabang_android.module.sign_up.ui.state.BeverageFormEvent
+import com.zipdabang.zipdabang_android.module.sign_up.ui.state.BeverageFormState
+import com.zipdabang.zipdabang_android.module.sign_up.ui.state.NicknameFormEvent
+import com.zipdabang.zipdabang_android.module.sign_up.ui.state.NicknameFormState
+import com.zipdabang.zipdabang_android.module.sign_up.ui.state.TermsFormEvent
+import com.zipdabang.zipdabang_android.module.sign_up.ui.state.TermsFormState
+import com.zipdabang.zipdabang_android.module.sign_up.ui.state.UserAddressFormEvent
+import com.zipdabang.zipdabang_android.module.sign_up.ui.state.UserAddressFormState
+import com.zipdabang.zipdabang_android.module.sign_up.ui.state.UserInfoFormEvent
+import com.zipdabang.zipdabang_android.module.sign_up.ui.state.UserInfoFormState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow

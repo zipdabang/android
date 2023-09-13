@@ -26,7 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.zipdabang.zipdabang_android.R
 import com.zipdabang.zipdabang_android.module.drawer.ui.viewmodel.DrawerUserInfoViewModel
-import com.zipdabang.zipdabang_android.module.drawer.ui.viewmodel.userinfo.UserInfoDetailEvent
+import com.zipdabang.zipdabang_android.module.drawer.ui.state.userinfo.UserInfoDetailEvent
 import com.zipdabang.zipdabang_android.ui.component.AppBarSignUp
 import com.zipdabang.zipdabang_android.ui.component.MainAndSubTitle
 import com.zipdabang.zipdabang_android.ui.component.PrimaryButtonOutLined
@@ -104,7 +104,8 @@ fun UserInfoDetailScreen(
                             TextFieldError(
                                 value = stateUserInfoDetail.zipCode,
                                 onValueChanged = {
-                                    drawerUserInfoViewModel.onUserInfoDetailEvent(UserInfoDetailEvent.ZipcodeChanged(it))
+                                    drawerUserInfoViewModel.onUserInfoDetailEvent(
+                                        UserInfoDetailEvent.ZipcodeChanged(it))
                                 },
                                 labelValue = stringResource(id = R.string.signup_userinfo_zipcode),
                                 placeHolderValue = "",
@@ -121,7 +122,8 @@ fun UserInfoDetailScreen(
                                 borderColor = ZipdabangandroidTheme.Colors.BlackSesame,
                                 text = stringResource(id = R.string.signup_userinfo_addresssearch),
                                 onClick = {
-                                    drawerUserInfoViewModel.onUserInfoDetailEvent(UserInfoDetailEvent.ZipcodeClicked(true))
+                                    drawerUserInfoViewModel.onUserInfoDetailEvent(
+                                        UserInfoDetailEvent.ZipcodeClicked(true))
                                     //webView
                                 }
                             )
@@ -146,7 +148,8 @@ fun UserInfoDetailScreen(
                             TextFieldError(
                                 value = stateUserInfoDetail.address,
                                 onValueChanged = {
-                                    drawerUserInfoViewModel.onUserInfoDetailEvent(UserInfoDetailEvent.AddressChanged(it))
+                                    drawerUserInfoViewModel.onUserInfoDetailEvent(
+                                        UserInfoDetailEvent.AddressChanged(it))
                                 },
                                 labelValue = stringResource(id = R.string.signup_userinfo_address),
                                 placeHolderValue = "",
@@ -171,7 +174,8 @@ fun UserInfoDetailScreen(
                             TextFieldError(
                                 value = stateUserInfoDetail.detailAddress,
                                 onValueChanged = {
-                                    drawerUserInfoViewModel.onUserInfoDetailEvent(UserInfoDetailEvent.DetailaddressChanged(it))
+                                    drawerUserInfoViewModel.onUserInfoDetailEvent(
+                                        UserInfoDetailEvent.DetailaddressChanged(it))
                                 },
                                 labelValue = stringResource(id = R.string.signup_userinfo_detailaddress),
                                 placeHolderValue = stringResource(id = R.string.signup_userinfo_detailaddress_placeholder),

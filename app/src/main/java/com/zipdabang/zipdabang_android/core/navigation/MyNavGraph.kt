@@ -1,68 +1,109 @@
 package com.zipdabang.zipdabang_android.core.navigation
 
 import android.util.Log
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
+import com.zipdabang.zipdabang_android.core.data_store.proto.CurrentPlatform
+import com.zipdabang.zipdabang_android.core.data_store.proto.ProtoDataViewModel
+import com.zipdabang.zipdabang_android.core.data_store.proto.Token
 import com.zipdabang.zipdabang_android.module.my.ui.FriendListScreen
 import com.zipdabang.zipdabang_android.module.my.ui.LikeScreen
 import com.zipdabang.zipdabang_android.module.my.ui.MyScreen
+import com.zipdabang.zipdabang_android.module.my.ui.MyScreenForNotUser
 import com.zipdabang.zipdabang_android.module.my.ui.MyrecipeScreen
 import com.zipdabang.zipdabang_android.module.my.ui.RecipeWriteScreen
 import com.zipdabang.zipdabang_android.module.my.ui.ScrapScreen
 import com.zipdabang.zipdabang_android.module.my.ui.ShoppingScreen
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 
-fun NavGraphBuilder.MyNavGraph(navController: NavHostController) {
-    // drawer가 열려있는 상태일때 뒤로가기를 하면 닫히도록 바꿔야함 -> 이거 해야됨
-
-    // 레시피 작성 개발하기 !!!!!
-    // 알럿창 적용하기 !!!!!
-    // 회원가입 제어 수정하기 : 생일, textfield 글자수 제한
-    // api shimmering effet 쓰기
-
-    // 로그아웃 분기처리 -> 이건 토큰 관련 문제 해결되고 나서 가능할듯
-    // response enum class로 옮기기
+fun NavGraphBuilder.MyNavGraph(
+    navController: NavHostController,
+    outerNavController: NavHostController
+) {
 
     navigation(startDestination = MyScreen.Home.route, route = MY_ROUTE) {
         composable(MyScreen.Home.route) {
-            MyScreen(
-                navController = navController,
-                onClickBack = {
-                    navController.navigate(MAIN_ROUTE){
-                        launchSingleTop = true
-                    }
-                },
-                onClickEdit = {
+            val tokenStoreViewModel = hiltViewModel<ProtoDataViewModel>()
 
-                },
-                onClickLike = {
-                    navController.navigate(MyScreen.Like.route)
-                },
-                onClickScrap = {
-                    navController.navigate(MyScreen.Scrap.route)
-                },
-                onClickMyrecipe = {
-                    navController.navigate(MyScreen.Myrecipe.route)
-                },
-                onClickShopping = {
-                    navController.navigate(MyScreen.Shopping.route)
-                },
-                onClickFriendList = {
-                    navController.navigate(MyScreen.FriendList.route)
-                },
-                onClickLogout = {
-                    navController.navigate(MAIN_ROUTE){
-                        launchSingleTop = true
-                    }
-                    Log.e("signup-tokens","로그아웃 클릭, onClick 실행 중")
-                },
-                onClickUserInfo = {
-                    navController.navigate(DrawerScreen.UserInfo.route)
-                }
+            val currentPlatform = tokenStoreViewModel.tokens.collectAsState(
+                initial = Token(
+                    null,
+                    null,
+                    null,
+                    CurrentPlatform.NONE,
+                    null,
+                    null
+                )
             )
+
+            if (currentPlatform.value.platformStatus == CurrentPlatform.TEMP) {
+
+                Log.d("myRoute", navController.currentBackStackEntry?.destination?.label.toString())
+
+                MyScreenForNotUser(
+                    navController = navController,
+                    onClickLogin = {
+                        outerNavController.navigate(AUTH_ROUTE){
+                            launchSingleTop = true
+                        }
+                    }
+                )
+            } else {
+                MyScreen(
+                    navController = navController,
+                    onClickBack = {
+                        navController.navigate(MAIN_ROUTE){
+                            launchSingleTop = true
+                        }
+                    },
+                    onClickEdit = {
+
+                    },
+                    onClickLike = {
+                        navController.navigate(MyScreen.Like.route)
+                    },
+                    onClickScrap = {
+                        navController.navigate(MyScreen.Scrap.route)
+                    },
+                    onClickMyrecipe = {
+                        navController.navigate(MyScreen.Myrecipe.route)
+                    },
+                    onClickShopping = {
+                        navController.navigate(MyScreen.Shopping.route)
+                    },
+                    onClickFriendList = {
+                        navController.navigate(MyScreen.FriendList.route)
+                    },
+                    onClickNotice ={
+                        navController.navigate(DrawerScreen.Notice.route)
+                    },
+                    onClickLogout = {
+                        outerNavController.navigate(AUTH_ROUTE){
+                            popUpTo(MAIN_ROUTE) {
+                                inclusive = true
+                            }
+                            launchSingleTop = true
+                        }
+                        Log.e("signup-tokens","로그아웃 클릭, onClick 실행 중")
+                    },
+                    onClickUserInfo = {
+                        navController.navigate(DrawerScreen.UserInfo.route)
+                    }
+                )
+            }
         }
 
         composable(MyScreen.Like.route) {

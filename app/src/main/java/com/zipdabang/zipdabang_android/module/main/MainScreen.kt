@@ -21,31 +21,31 @@ import com.zipdabang.zipdabang_android.module.bottom.ui.BottomNavigationBar
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun MainScreen(
+    outerNavController: NavHostController,
     navController: NavHostController = rememberNavController()
 ){
     //drawer에 필요한 drawerState랑 scope
   //  val drawerState = rememberDrawerState(DrawerValue.Closed)
   //  val scope = rememberCoroutineScope()
 
-
-            Scaffold(
-                modifier = Modifier.fillMaxSize(),
-                containerColor = Color.White,
-                contentColor = Color.Black,
-                bottomBar = {
-                    BottomNavigationBar(navController = navController)
-                },
-                content = {
-                    Box(
-                     modifier = Modifier.padding(it)
-                    ) {
-                       MainNavGraph(navController = navController)
-                    }
-                },
-
-            )
-
-
+    Scaffold(
+        modifier = Modifier.fillMaxSize(),
+        containerColor = Color.White,
+        contentColor = Color.Black,
+        bottomBar = {
+            BottomNavigationBar(navController = navController)
+        },
+        content = {
+            Box(
+             modifier = Modifier.padding(it)
+            ) {
+               MainNavGraph(
+                   navController = navController,
+                   outerNavController = outerNavController
+               )
+            }
+        },
+    )
 }
 
 

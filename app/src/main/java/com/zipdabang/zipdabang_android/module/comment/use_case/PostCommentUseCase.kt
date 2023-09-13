@@ -19,7 +19,7 @@ class PostCommentUseCase @Inject constructor(
     private val tokenDataStore: DataStore<Token>
 ) {
     operator fun invoke(
-        recipeId: Int, commentBody: PostCommentContent
+        recipeId: Int, commentBody: String
     ) = flow {
         try {
             val accessToken = ("Bearer " + tokenDataStore.data.first().accessToken)
