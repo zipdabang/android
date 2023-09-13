@@ -9,10 +9,12 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
@@ -61,13 +63,11 @@ import kotlinx.coroutines.launch
 @Composable
 fun MarketScreen(
     viewMdoel: RecentMarketViewMdoel = hiltViewModel(),
-    navController: NavController
 ){
     //drawer에 필요한 drawerState랑 scope
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
     val state = viewMdoel.state.value
-
 
     ModalDrawer(
         scaffold = {
@@ -85,116 +85,123 @@ fun MarketScreen(
                 containerColor = Color.White,
                 contentColor = Color.Black,
                 content = {
-                    val scrollState = rememberScrollState()
-                    Column(
-                        modifier = Modifier
-                            .padding(
-                                top = it.calculateTopPadding(),
-                                bottom = it.calculateBottomPadding()
-                            )
-                            .verticalScroll(scrollState)
-                    ) {
-                        Banner(images = state.bannerList)
-                        Row(
-                            modifier = Modifier.padding(start = 8.dp,end = 8.dp, top= 20.dp, bottom = 10.dp),
-                            horizontalArrangement = Arrangement.SpaceEvenly
-                        ){
-                            MarketCategory(category = state.categoryList[0].name, imageUrl = state.categoryList[0].categoryImageUrl, onClick = { navController.navigate(MarketScreen.Category.route + 1) })
-                            MarketCategory(category = state.categoryList[1].name, imageUrl = state.categoryList[1].categoryImageUrl, onClick = { navController.navigate(MarketScreen.Category.route + 2) })
-                            MarketCategory(category = state.categoryList[2].name, imageUrl = state.categoryList[2].categoryImageUrl, onClick = { navController.navigate(MarketScreen.Category.route + 3) })
-                            MarketCategory(category = state.categoryList[3].name, imageUrl = state.categoryList[3].categoryImageUrl, onClick = { navController.navigate(MarketScreen.Category.route + 4) })
-                            MarketCategory(category = state.categoryList[4].name, imageUrl = state.categoryList[4].categoryImageUrl, onClick = { navController.navigate(MarketScreen.Category.route + 5) })
-                            MarketCategory(category = state.categoryList[5].name, imageUrl = state.categoryList[5].categoryImageUrl, onClick = {navController.navigate(MarketScreen.Category.route +  0 ) })
-                        }
 
-                        Canvas(
-                            Modifier
-                                .fillMaxWidth()
-                                .height(1.dp)
-                                .padding(horizontal = 8.dp)
-                        ){
-                            drawLine(
-                                color= Color(0xFFCDC6C3),
-                                start = Offset(0f,0f),
-                                end = Offset(size.width,0f)
-
-                            )
-                        }
-                        GroupHeader(
-                            groupName = "recent items",
-                            formerHeaderStrawberry = "내가 최근 봤던",
-                            latterHeaderChoco = "아이템",
-                            onClick = { TODO()  }
-                        )
-
-                        if(state.recentProductList.isEmpty()){
-                            Box(
-                                modifier = Modifier
-                                    .padding(horizontal = 8.dp)
-                                    .background(color = Color.White)
-                            ) {
-                                Text(
-                                    text = "앗! 최근 봤던 아이템이 없네요.한번 찾아볼까요?",
-                                    fontSize = 14.sp,
-                                    fontFamily = FontFamily(Font(R.font.kopubworlddotum_medium)),
-                                    fontWeight = FontWeight(300),
-                                    color = Color(0xFF262D31),
-                                    textAlign = TextAlign.Center,
-                                    modifier = Modifier
-                                        .align(Alignment.BottomCenter)
-                                        .padding(bottom = 5.dp)
-                                )
-                            }
-                        }else{
-                            LazyRow(
-                                contentPadding= PaddingValues(horizontal = 4.dp),
-                            ){
-                                itemsIndexed(state.recentProductList){
-                                    index, item ->
-                                    if(state.isLoading){
-                                        ShimmeringMarketItem()
-                                    }
-                                    else {
-                                        GoodsCard(
-                                            image = item.productImageUrl,
-                                            isBasket = item.isInBasket,
-                                            isFavorite = item.isLiked,
-                                            title = item.productName,
-                                            price = item.price,
-                                            star = item.productScore,
-                                            star_users = "1",
-                                            {},
-                                            {}
-                                        )
-                                    }
-                                }
-                            }
-                        }
-                        
-                        GroupHeaderReversed(
-                            groupName = "hot item",
-                            formerHeaderChoco = "카테고리별 ",
-                            latterHeaderStrawberry = "인기 아이템",
-                            onClick = { TODO() }
-                        )
-                        val categoryList = listOf("음료","재료","장비","굿즈","키트","전체")
-
-                  //      MarketTabView(categoryList =categoryList , modifier = Modifier.padding(horizontal = 8.dp), onTabSelected = {})
-
-
-
-
-
-
-
-
-
-
+                    Box(modifier = Modifier.fillMaxWidth()
+                        .wrapContentHeight()
+                        .padding(bottom= it.calculateBottomPadding(),top =200.dp)){
+                        MarketReadyPage()
                     }
+//                    val scrollState = rememberScrollState()
+//                    Column(
+//                        modifier = Modifier
+//                            .padding(
+//                                top = it.calculateTopPadding(),
+//                                bottom = it.calculateBottomPadding()
+//                            )
+//                            .verticalScroll(scrollState)
+//                    ) {
+//                        Banner(images = state.bannerList)
+//                        Row(
+//                            modifier = Modifier.padding(start = 8.dp,end = 8.dp, top= 20.dp, bottom = 10.dp),
+//                            horizontalArrangement = Arrangement.SpaceEvenly
+//                        ){
+//                            MarketCategory(category = state.categoryList[0].name, imageUrl = state.categoryList[0].categoryImageUrl, onClick = { navController.navigate(MarketScreen.Category.route + 1) })
+//                            MarketCategory(category = state.categoryList[1].name, imageUrl = state.categoryList[1].categoryImageUrl, onClick = { navController.navigate(MarketScreen.Category.route + 2) })
+//                            MarketCategory(category = state.categoryList[2].name, imageUrl = state.categoryList[2].categoryImageUrl, onClick = { navController.navigate(MarketScreen.Category.route + 3) })
+//                            MarketCategory(category = state.categoryList[3].name, imageUrl = state.categoryList[3].categoryImageUrl, onClick = { navController.navigate(MarketScreen.Category.route + 4) })
+//                            MarketCategory(category = state.categoryList[4].name, imageUrl = state.categoryList[4].categoryImageUrl, onClick = { navController.navigate(MarketScreen.Category.route + 5) })
+//                            MarketCategory(category = state.categoryList[5].name, imageUrl = state.categoryList[5].categoryImageUrl, onClick = {navController.navigate(MarketScreen.Category.route +  0 ) })
+//                        }
+//
+//                        Canvas(
+//                            Modifier
+//                                .fillMaxWidth()
+//                                .height(1.dp)
+//                                .padding(horizontal = 8.dp)
+//                        ){
+//                            drawLine(
+//                                color= Color(0xFFCDC6C3),
+//                                start = Offset(0f,0f),
+//                                end = Offset(size.width,0f)
+//
+//                            )
+//                        }
+//                        GroupHeader(
+//                            groupName = "recent items",
+//                            formerHeaderStrawberry = "내가 최근 봤던",
+//                            latterHeaderChoco = "아이템",
+//                            onClick = { TODO()  }
+//                        )
+//
+//                        if(state.recentProductList.isEmpty()){
+//                            Box(
+//                                modifier = Modifier
+//                                    .padding(horizontal = 8.dp)
+//                                    .background(color = Color.White)
+//                            ) {
+//                                Text(
+//                                    text = "앗! 최근 봤던 아이템이 없네요.한번 찾아볼까요?",
+//                                    fontSize = 14.sp,
+//                                    fontFamily = FontFamily(Font(R.font.kopubworlddotum_medium)),
+//                                    fontWeight = FontWeight(300),
+//                                    color = Color(0xFF262D31),
+//                                    textAlign = TextAlign.Center,
+//                                    modifier = Modifier
+//                                        .align(Alignment.BottomCenter)
+//                                        .padding(bottom = 5.dp)
+//                                )
+//                            }
+//                        }else{
+//                            LazyRow(
+//                                contentPadding= PaddingValues(horizontal = 4.dp),
+//                            ){
+//                                itemsIndexed(state.recentProductList){
+//                                    index, item ->
+//                                    if(state.isLoading){
+//                                        ShimmeringMarketItem()
+//                                    }
+//                                    else {
+//                                        GoodsCard(
+//                                            image = item.productImageUrl,
+//                                            isBasket = item.isInBasket,
+//                                            isFavorite = item.isLiked,
+//                                            title = item.productName,
+//                                            price = item.price,
+//                                            star = item.productScore,
+//                                            star_users = "1",
+//                                            {},
+//                                            {}
+//                                        )
+//                                    }
+//                                }
+//                            }
+//                        }
+//
+//                        GroupHeaderReversed(
+//                            groupName = "hot item",
+//                            formerHeaderChoco = "카테고리별 ",
+//                            latterHeaderStrawberry = "인기 아이템",
+//                            onClick = { TODO() }
+//                        )
+//                        val categoryList = listOf("음료","재료","장비","굿즈","키트","전체")
+//
+//                  //      MarketTabView(categoryList =categoryList , modifier = Modifier.padding(horizontal = 8.dp), onTabSelected = {})
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//                    }
+//
+//
+//
 
-
-
-                }
+               }
             )
         },
         drawerState = drawerState
@@ -439,7 +446,6 @@ fun MarketScreen_Test(){
                     val RankList = listOf(list,list2,null,null,null,null)
 
                     MarketTabView(
-
                         categoryList = categoryList,
                         modifier = Modifier.padding(horizontal = 8.dp),
                         categoryRankList = RankList
