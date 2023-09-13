@@ -2,7 +2,6 @@ package com.zipdabang.zipdabang_android.ui.component
 
 import android.util.Log
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,7 +12,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
@@ -24,7 +22,6 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.painterResource
@@ -42,74 +39,67 @@ import com.zipdabang.zipdabang_android.ui.theme.DialogPink
 import com.zipdabang.zipdabang_android.ui.theme.NavBlack
 import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun GeneralDialogType1(
-   title : String,
-   text : String,
-   declineText : String?,
-   acceptText : String,
-   setShowDialog: (Boolean) -> Unit ,
-   onAcceptClick : ()->Unit,
-   ){
+    title: String,
+    text: String,
+    declineText: String?,
+    acceptText: String,
+    setShowDialog: (Boolean) -> Unit,
+    onAcceptClick: () -> Unit,
+) {
+    AlertDialog(
+        onDismissRequest = { setShowDialog(false) },
+        title = {
+            Text(
+                text = title,
+                color = ZipdabangandroidTheme.Colors.Typo,
+                style = ZipdabangandroidTheme.Typography.fourteen_700
+            )
+        },
+        text = {
+            Text(
+                text = text,
+                color = ZipdabangandroidTheme.Colors.Typo,
+                style = ZipdabangandroidTheme.Typography.twelve_300
+            )
 
-        AlertDialog(
-            onDismissRequest = { setShowDialog(false) },
-            title = {
+        },
+        confirmButton = {
+            TextButton(onClick = { onAcceptClick() }) {
                 Text(
-                         text = title,
-                         color =  NavBlack,
-                         fontSize = 14.sp,
-                         fontWeight = FontWeight(700)
-                        )
-
-                    },
-            text = {
-                Text(
-                    text = text,
-                    color =  NavBlack,
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight(400)
+                    text = acceptText,
+                    color = ZipdabangandroidTheme.Colors.Strawberry,
+                    style = ZipdabangandroidTheme.Typography.sixteen_500
                 )
 
-                   },
-            confirmButton = {
-                TextButton(onClick = { onAcceptClick() }) {
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = { setShowDialog(false) }) {
+                if (declineText != null) {
                     Text(
-                        text = acceptText,
-                        color =  DialogPink,
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight(500)
+                        text = declineText,
+                        color = ZipdabangandroidTheme.Colors.Typo,
+                        style = ZipdabangandroidTheme.Typography.sixteen_500
                     )
-
                 }
-            },
-            dismissButton = {
-                TextButton(onClick = { setShowDialog(false)}) {
-                    if (declineText != null) {
-                        Text(
-                            text = declineText,
-                            color =  NavBlack,
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight(500)
-                        )
-                    }
-                }
-            },
-            shape = ZipdabangandroidTheme.Shapes.small,
-            containerColor = DialogBackground
-        )
-    }
+            }
+        },
+        shape = ZipdabangandroidTheme.Shapes.small,
+        containerColor = DialogBackground
+    )
+}
 
 //나의 레시피 업로드, 임시저장, 레시피 삭제
 @Composable
 fun CustomDialogType1(
-    title : String,
-    text : String,
-    declineText : String,
-    acceptText : String,
-    setShowDialog : (Boolean) -> Unit,
-    onAcceptClick : () -> Unit
+    title: String,
+    text: String,
+    declineText: String,
+    acceptText: String,
+    setShowDialog: (Boolean) -> Unit,
+    onAcceptClick: () -> Unit
 ) {
     Dialog(onDismissRequest = { setShowDialog(false) }) {
         Surface(
@@ -124,28 +114,32 @@ fun CustomDialogType1(
                 Column(
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier
-                        .padding(start = 50.dp, end = 50.dp, top = 18.dp, bottom = 8.dp)
+                    modifier = Modifier.padding(
+                        start = 50.dp,
+                        end = 50.dp,
+                        top = 18.dp,
+                        bottom = 8.dp
+                    )
                 )
                 {
                     Text(
                         text = title,
                         textAlign = TextAlign.Center,
                         color = ZipdabangandroidTheme.Colors.Typo,
-                        style= ZipdabangandroidTheme.Typography.fourteen_700,
+                        style = ZipdabangandroidTheme.Typography.fourteen_700,
                     )
                     Spacer(modifier = Modifier.height(10.dp))
                     Text(
                         text = text,
                         textAlign = TextAlign.Center,
                         color = ZipdabangandroidTheme.Colors.Typo,
-                        style= ZipdabangandroidTheme.Typography.twelve_300,
+                        style = ZipdabangandroidTheme.Typography.twelve_300,
                     )
                 }
                 Spacer(modifier = Modifier.height(10.dp))
                 Row(
-                    modifier = Modifier
-                        .padding(horizontal = 8.dp, vertical = 8.dp),
+                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 8.dp),
+                    horizontalArrangement = Arrangement.spacedBy(20.dp)
                 ) {
                     TextButton(
                         shape = RectangleShape,
@@ -153,17 +147,16 @@ fun CustomDialogType1(
                         Text(
                             text = declineText,
                             color = ZipdabangandroidTheme.Colors.Typo,
-                            style= ZipdabangandroidTheme.Typography.sixteen_500,
+                            style = ZipdabangandroidTheme.Typography.sixteen_500,
                         )
                     }
-                    Spacer(modifier = Modifier.width(20.dp))
                     TextButton(
                         shape = RectangleShape,
                         onClick = { onAcceptClick() }) {
                         Text(
                             text = acceptText,
                             color = ZipdabangandroidTheme.Colors.Strawberry,
-                            style= ZipdabangandroidTheme.Typography.sixteen_500,
+                            style = ZipdabangandroidTheme.Typography.sixteen_500,
                         )
 
                     }
@@ -177,34 +170,30 @@ fun CustomDialogType1(
 //카메라, 파일 선택
 @Composable
 fun CustomDialogCameraFile(
-    title : String,
+    title: String,
     setShowDialog: (Boolean) -> Unit,
     onCameraClick: () -> Unit,
     onFileClick: () -> Unit
 ) {
-
     Dialog(onDismissRequest = { setShowDialog(false) }) {
         Surface(
             shape = ZipdabangandroidTheme.Shapes.small,
             color = DialogBackground,
             modifier = Modifier.size(width = 216.dp, height = 191.dp)
         ) {
-
             Column(
-                modifier = Modifier.padding(top = 18.dp ),
+                modifier = Modifier.padding(top = 18.dp),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                        text = title,
-                        color = NavBlack,
-                        fontSize = 14.sp,
-                        fontWeight = FontWeight(700)
-                    )
-
-                Spacer(modifier = Modifier.height(40.dp))
+                    text = title,
+                    color = ZipdabangandroidTheme.Colors.Typo,
+                    style = ZipdabangandroidTheme.Typography.fourteen_700
+                )
+                Spacer(modifier = Modifier.height(24.dp))
                 Row(
-                    modifier = Modifier.padding(start = 35.dp,end =35.dp,bottom= 60.dp),
+                    modifier = Modifier.padding(start = 35.dp, end = 35.dp, bottom = 40.dp),
                 ) {
                     TextButton(
                         shape = RectangleShape,
@@ -213,39 +202,39 @@ fun CustomDialogCameraFile(
                             horizontalAlignment = Alignment.CenterHorizontally,
                             verticalArrangement = Arrangement.Center
                         ) {
-
                             Icon(
-                                painter = painterResource(id = R.drawable.ic_alert_camera_small),
-                                contentDescription = null
+                                modifier = Modifier.size(24.dp, 22.dp),
+                                painter = painterResource(id = R.drawable.ic_recipewrite_camera),
+                                contentDescription = null,
+                                tint = ZipdabangandroidTheme.Colors.Typo.copy(0.5f),
                             )
                             Text(
+                                modifier = Modifier.padding(0.dp, 8.dp, 0.dp, 0.dp),
                                 text = "카메라",
-                                color = DialogGray,
-                                fontSize = 16.sp,
-                                fontWeight = FontWeight(500)
+                                color = ZipdabangandroidTheme.Colors.Typo.copy(0.5f),
+                                style = ZipdabangandroidTheme.Typography.sixteen_500
                             )
                         }
                     }
                     Spacer(modifier = Modifier.width(20.dp))
-
                     TextButton(
                         shape = RectangleShape,
                         onClick = { onFileClick() }) {
-
                         Column(
                             horizontalAlignment = Alignment.CenterHorizontally,
                             verticalArrangement = Arrangement.Center
                         ) {
-
                             Icon(
-                                painter = painterResource(id = R.drawable.ic_alert_file_small),
-                                contentDescription = null
+                                modifier = Modifier.size(24.dp, 22.dp),
+                                painter = painterResource(id = R.drawable.ic_recipewrite_file),
+                                contentDescription = null,
+                                tint = ZipdabangandroidTheme.Colors.Typo.copy(0.5f),
                             )
                             Text(
+                                modifier = Modifier.padding(0.dp, 8.dp, 0.dp, 0.dp),
                                 text = "파일",
-                                color = DialogGray,
-                                fontSize = 16.sp,
-                                fontWeight = FontWeight(500)
+                                color = ZipdabangandroidTheme.Colors.Typo.copy(0.5f),
+                                style = ZipdabangandroidTheme.Typography.sixteen_500
                             )
                         }
 
@@ -262,8 +251,8 @@ fun CustomDialogCameraFile(
 @Composable
 fun CustomDialogRecipeDelete(
     setShowDialog: (Boolean) -> Unit,
-    onDeleteClick:() -> Unit,
-    onTemporalSave : () -> Unit
+    onDeleteClick: () -> Unit,
+    onTemporalSave: () -> Unit
 ) {
 
     Dialog(onDismissRequest = { setShowDialog(false) }) {
@@ -287,57 +276,53 @@ fun CustomDialogRecipeDelete(
                 {
                     Text(
                         text = "레시피 삭제",
-                        color = NavBlack,
-                        fontSize = 14.sp,
-                        fontWeight = FontWeight(700)
+                        color = ZipdabangandroidTheme.Colors.Typo,
+                        style = ZipdabangandroidTheme.Typography.fourteen_700
                     )
                     Spacer(modifier = Modifier.height(10.dp))
                     Text(
                         text = "지금 돌아가면 작성 내용이 모두 삭제됩니다.",
                         textAlign = TextAlign.Center,
-                        color = NavBlack,
-                        fontSize = 12.sp,
-                        fontWeight = FontWeight(400)
+                        color = ZipdabangandroidTheme.Colors.Typo,
+                        style = ZipdabangandroidTheme.Typography.twelve_300
                     )
-
                 }
-
                 Spacer(modifier = Modifier.height(10.dp))
                 Column(
-                    modifier = Modifier.padding(vertical = 8.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
+                    modifier = Modifier.padding(0.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
                 ) {
                     TextButton(
                         shape = RectangleShape,
-                        onClick = { onDeleteClick() }) {
-                        Text(
-                            text = "삭제",
-                            color = NavBlack,
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight(500)
-                        )
-                    }
-                    TextButton(
-                        shape = RectangleShape,
-                        onClick = { setShowDialog(false) }) {
-                        Text(
-                            text = "취소",
-                            color = NavBlack,
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight(500)
-                        )
-
-                    }
-                    TextButton(
-                        shape = RectangleShape,
+                        modifier = Modifier.padding(0.dp),
                         onClick = { onTemporalSave() }) {
                         Text(
                             text = "임시저장",
-                            color = NavBlack,
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight(500)
+                            color = ZipdabangandroidTheme.Colors.Typo,
+                            style = ZipdabangandroidTheme.Typography.sixteen_500
                         )
 
+                    }
+                    TextButton(
+                        shape = RectangleShape,
+                        modifier = Modifier.padding(0.dp),
+                        onClick = { setShowDialog(false) }) {
+                        Text(
+                            text = "취소",
+                            color = ZipdabangandroidTheme.Colors.Typo,
+                            style = ZipdabangandroidTheme.Typography.sixteen_500
+                        )
+                    }
+                    TextButton(
+                        shape = RectangleShape,
+                        modifier = Modifier.padding(0.dp),
+                        onClick = { onDeleteClick() }) {
+                        Text(
+                            text = "삭제",
+                            color = ZipdabangandroidTheme.Colors.Strawberry,
+                            style = ZipdabangandroidTheme.Typography.sixteen_500
+                        )
                     }
                 }
             }
@@ -349,24 +334,21 @@ fun CustomDialogRecipeDelete(
 //나의 레시피 업로드 완료
 @Composable
 fun CustomDialogUploadComplete(
-    image : String,
+    image: Any,
     setShowDialog: (Boolean) -> Unit,
-    onAccept:() -> Unit,
+    onAccept: () -> Unit,
 ) {
-
     Dialog(onDismissRequest = { setShowDialog(false) }) {
         Surface(
-            shape = ZipdabangandroidTheme.Shapes.small,
+            shape = ZipdabangandroidTheme.Shapes.large,
             color = DialogBackground,
             modifier = Modifier.size(width = 216.dp, height = 467.dp)
         ) {
-
             Column(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-
-                Icon(
+                /*Icon(
                     painter = painterResource(id = R.drawable.ic_alert_close_small),
                     contentDescription = null,
                     modifier = Modifier
@@ -375,11 +357,10 @@ fun CustomDialogUploadComplete(
                         .clickable {
                             setShowDialog(false)
                         }
-                )
-
+                )*/
                 Spacer(modifier = Modifier.height(10.dp))
 
-                Box(modifier = Modifier.size(200.dp)){
+                Box(modifier = Modifier.size(200.dp)) {
                     RectangleWithRadiusImage(
                         imageUrl = image,
                         contentDescription = "image in dialog"
@@ -401,11 +382,10 @@ fun CustomDialogUploadComplete(
                     )
                     Spacer(modifier = Modifier.height(10.dp))
                     Text(
-                        text = "멋진 홈카페 레시피를 공유해줘서 고마워요!",
+                        text = "맛있는 레시피를 공유해줘서 고마워요!",
                         textAlign = TextAlign.Center,
-                        color = NavBlack,
-                        fontSize = 12.sp,
-                        fontWeight = FontWeight(400)
+                        color = ZipdabangandroidTheme.Colors.Typo,
+                        style = ZipdabangandroidTheme.Typography.eighteen_500
                     )
 
                 }
@@ -421,9 +401,8 @@ fun CustomDialogUploadComplete(
                         onClick = { onAccept() }) {
                         Text(
                             text = "업로드 레시피 보러가기",
-                            color = NavBlack,
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight(500)
+                            color = ZipdabangandroidTheme.Colors.Strawberry,
+                            style = ZipdabangandroidTheme.Typography.sixteen_500
                         )
 
                     }
@@ -432,9 +411,8 @@ fun CustomDialogUploadComplete(
                         onClick = { setShowDialog(false) }) {
                         Text(
                             text = "나중에 보기",
-                            color = NavBlack,
-                            fontSize = 14.sp,
-                            fontWeight = FontWeight(300)
+                            color = ZipdabangandroidTheme.Colors.Typo,
+                            style = ZipdabangandroidTheme.Typography.sixteen_500
                         )
 
                     }
@@ -445,13 +423,13 @@ fun CustomDialogUploadComplete(
     }
 }
 
-//레시지 삭제
+// 카테고리 선택
 @Composable
 fun CustomDialogSelectCategory(
-    categoryList: ArrayList<String>,
+    categoryList: List<String>,
     setShowDialog: (Boolean) -> Unit,
     onSelectClick: (Int) -> Unit,
-    onCompleteClick:  () -> Unit,
+    onCompleteClick: () -> Unit,
     selectedCategory: MutableState<Int>,
 ) {
 
@@ -548,7 +526,7 @@ fun CustomDialogSelectCategory(
                 isEnabled.value = selectedCategory.value < 8
 
                 TextButton(
-                    enabled= isEnabled.value,
+                    enabled = isEnabled.value,
                     shape = RectangleShape,
                     onClick = { onCompleteClick() }
                 ) {
@@ -568,110 +546,40 @@ fun CustomDialogSelectCategory(
 }
 
 
+
+
+
+
+
 @Preview
 @Composable
-fun DialogBackgroundPreview(){
+fun PreviewGeneralDialogType1() {
+    val isClickedDialogSave = remember { mutableStateOf(true) }
+    val showDialogSave = remember { mutableStateOf(true) }
 
-    val showDialog =  remember { mutableStateOf(false) }
-
-   if(showDialog.value) {
-       GeneralDialogType1(
-           title = "작성 중인 글 삭제",
-           text = "다른 페이지 이동으로 작성 중인 게시글은 삭제됩니다. 다른페이지로 이동하시겠습니끼",
-           declineText = "아니오",
-           acceptText = "네",
-           setShowDialog = {
-               showDialog.value = it
-           },
-           {}
-       )
-   }
-    if(showDialog.value) {
-        CustomDialogType1(
-            title = "업로드",
-            text = "작성 완료한 레시피를 임시저장 하시겠습니까",
-            declineText = "취소",
-            acceptText = "임시저장",
+    if (showDialogSave.value) {
+        GeneralDialogType1(
+            title = stringResource(id = R.string.my_save),
+            text = stringResource(id = R.string.my_dialog_save_detail),
+            declineText = stringResource(id = R.string.my_dialog_cancel),
+            acceptText = stringResource(id = R.string.my_save),
             setShowDialog = {
-                showDialog.value = it
+                showDialogSave.value = it
             },
-            {}
-        )
-    }
-    if(showDialog.value) {
-     CustomDialogCameraFile(
-         title = "파일 선택",
-         setShowDialog= {
-             showDialog.value = it
-         },
-         onCameraClick = { /*TODO*/ }) {
-     }
-    }
-    if(showDialog.value) {
-        CustomDialogRecipeDelete(
-            setShowDialog= {
-                showDialog.value = it
-            },
-            onDeleteClick = {},
-            onTemporalSave ={} )
-    }
-    if(showDialog.value) {
-        CustomDialogUploadComplete(
-             image ="https://pds.joongang.co.kr/svcimg/newsletter/content/202203/14/3450436a-5c23-4cc9-b8a4-2ab7c2ca8b76.jpg",
-            setShowDialog = {
-                showDialog.value = it
-            },
-            onAccept= {}
-        )
-    }
-
-    val category = remember { mutableStateOf(8) }
-
-    val categoryList = arrayListOf("커피","논카페인","티","에이드","스무디","생과일 음료","건강 음료","기타")
-
-    val isEnabled = remember { mutableStateOf(false) }
-    if(!showDialog.value){
-        CustomDialogSelectCategory(
-            categoryList = categoryList,
-            setShowDialog = {
-                showDialog.value=it
-            },
-            onSelectClick =
-          {
-            category.value = it
-          },
-            onCompleteClick = {
-                if(category.value < 8) {
-                    Log.e("category", category.value.toString())
-                    isEnabled.value= true
-                    showDialog.value= true
-                }
-            },
-            category
-        )
-    }
-    if(isEnabled.value) {
-        CustomDialogType1(
-            title = "업로드",
-            text = "작성 완료한 레시피를 업로드 하시겠습니까",
-            declineText = "취소",
-            acceptText = "업로드",
-            setShowDialog = {
-                showDialog.value = it
-            },
-            {}
+            onAcceptClick = {
+                showDialogSave.value = false
+            }
         )
     }
 }
-
 
 @Preview
 @Composable
 fun PreviewCustomDialogType1() {
     val isClickedDialogSave = remember { mutableStateOf(true) }
-    val showDialogSave =  remember { mutableStateOf(false) }
+    val showDialogSave = remember { mutableStateOf(true) }
 
-    //if(showDialogSave.value){
+    if (showDialogSave.value) {
         CustomDialogType1(
             title = stringResource(id = R.string.my_save),
             text = stringResource(id = R.string.my_dialog_save_detail),
@@ -684,5 +592,81 @@ fun PreviewCustomDialogType1() {
                 showDialogSave.value = false
             }
         )
-   // }
+    }
+}
+
+@Preview
+@Composable
+fun PreviewCustomDialogCameraFile() {
+    val showDialogSave = remember { mutableStateOf(true) }
+    if(showDialogSave.value){
+        CustomDialogCameraFile(
+            title = stringResource(id = R.string.my_save),
+            setShowDialog = {
+                showDialogSave.value = it
+            },
+            onCameraClick = { },
+            onFileClick = { }
+        )
+    }
+}
+
+@Preview
+@Composable
+fun PreviewCustomDialogRecipeDelete() {
+    val showDialogSave = remember { mutableStateOf(false) }
+
+    CustomDialogRecipeDelete(
+        setShowDialog = {
+            showDialogSave.value = it
+        },
+        onDeleteClick = { },
+        onTemporalSave = { }
+    )
+}
+
+@Preview
+@Composable
+fun PreviewCustomDialogUploadComplete() {
+    val showDialogSave = remember { mutableStateOf(false) }
+
+    CustomDialogUploadComplete(
+        image = R.drawable.img_profile,
+        setShowDialog = {
+            showDialogSave.value = it
+        },
+        onAccept = { }
+    )
+}
+
+@Preview
+@Composable
+fun PreviewCustomDialogSelectCategory() {
+    val showDialog = remember { mutableStateOf(false) }
+
+    val category = remember { mutableStateOf(8) }
+    val categoryList = arrayListOf("커피", "논카페인", "티", "에이드", "스무디", "생과일 음료", "건강 음료", "기타")
+
+    val isEnabled = remember { mutableStateOf(false) }
+
+    if (!showDialog.value) {
+        CustomDialogSelectCategory(
+            categoryList = categoryList,
+            setShowDialog = {
+                showDialog.value = it
+            },
+            onSelectClick =
+            {
+                category.value = it
+            },
+            onCompleteClick = {
+                if (category.value < 8) {
+                    Log.e("category", category.value.toString())
+                    isEnabled.value = true
+                    showDialog.value = true
+                }
+            },
+            category
+        )
+    }
 }

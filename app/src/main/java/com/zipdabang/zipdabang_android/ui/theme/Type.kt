@@ -19,6 +19,10 @@ private val cafe24 = FontFamily(
     Font(R.font.cafe24ssurroundair, FontWeight.Light), //300
 )
 
+/*private val SCoreDream = FontFamily(
+
+)*/
+
 @Suppress("DEPRECATION")
 val defaultTextStyle = TextStyle(
     platformStyle = PlatformTextStyle( //플랫폼 텍스트 스타일
