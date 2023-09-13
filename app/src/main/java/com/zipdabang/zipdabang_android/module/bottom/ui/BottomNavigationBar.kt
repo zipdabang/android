@@ -90,12 +90,12 @@ fun RowScope.AddItem(
         BottomNavigationItem(
             selected = selected,
             onClick = {
-                if (screen.route != MarketScreen.Home.route) {
-                    navController.navigate(screen.route) {
+
+                navController.navigate(screen.route) {
                         popUpTo(navController.graph.findStartDestination().id)
                         launchSingleTop = true
                     }
-                }
+
             },
             selectedContentColor = ZipdabangandroidTheme.Colors.Latte,
             unselectedContentColor = NavBlack,
