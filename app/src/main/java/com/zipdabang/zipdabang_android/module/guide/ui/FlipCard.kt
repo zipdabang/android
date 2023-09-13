@@ -48,6 +48,7 @@ fun FlipCard(
         mutableStateOf(CardFace.Front)
     }
         val rotation = animateFloatAsState(
+            //targetvalue는 목표값
             targetValue = cardFace.angle,
             animationSpec = tween(
                 durationMillis = 400,
@@ -64,6 +65,7 @@ fun FlipCard(
             colors = CardDefaults.cardColors(containerColor = Color.White),
             border = BorderStroke(1.dp, Color(0x26000000))
         ) {
+            //front
             if (rotation.value <= 90f) {
                 Box(
                     Modifier.fillMaxSize()
@@ -96,6 +98,7 @@ fun FlipCard(
                     }
                 }
             } else {
+                //back
                 Box(
                     Modifier
                         .fillMaxSize()

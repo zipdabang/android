@@ -137,8 +137,7 @@ fun GuideScreen1(){
             Modifier
                 .background(Color.White)
                 .fillMaxWidth()
-                .height(700.dp)
-                .padding(horizontal = 40.dp),
+                .height(700.dp),
             horizontalAlignment = Alignment.CenterHorizontally
 
         ){
@@ -149,7 +148,7 @@ fun GuideScreen1(){
                 fontWeight = FontWeight(700),
                 color = Color(0xFF262D31),
                 textAlign = TextAlign.Center,
-                modifier =Modifier.padding(top = 60.dp,bottom=5.dp)
+                modifier =Modifier.padding(top = 60.dp,bottom=5.dp,start= 40.dp,end=40.dp)
             )
             Text(GuideConstants.Guide1_Section3_Subtitle,
                 fontSize = 14.sp,
@@ -157,6 +156,7 @@ fun GuideScreen1(){
                 fontWeight = FontWeight(500),
                 color = Color(0xFF262D31),
                 textAlign = TextAlign.Center,
+                modifier =Modifier.padding(start= 40.dp,end=40.dp)
 
             )
 
@@ -166,6 +166,8 @@ fun GuideScreen1(){
                     .size(300.dp))
 
             Box(Modifier.height(60.dp)
+                .padding(horizontal = 30.dp)
+
                 ) {
                 RectangleWithRadiusText(
                     text = GuideConstants.Guide1_Section3_Description1,
@@ -177,6 +179,7 @@ fun GuideScreen1(){
             Spacer(Modifier.height(10.dp))
 
             Box(Modifier.height(60.dp)
+                .padding(horizontal = 30.dp)
             ) {
                 RectangleWithRadiusText(
                     text = GuideConstants.Guide1_Section3_Description2,
