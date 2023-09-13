@@ -42,7 +42,13 @@ fun NavGraphBuilder.SharedNavGraph(navController: NavController){
         }
 
         composable(SharedScreen.Search.route){
-            SearchScreen(navController)
+            SearchScreen(
+                navController= navController,
+                onRecipeItemClick = {
+                    recipeid -> navController.navigate(SharedScreen.DetailRecipe.passRecipeId(recipeid))
+                }
+
+            )
         }
 
         composable(SharedScreen.SearchRecipeCategory.route,
@@ -53,8 +59,11 @@ fun NavGraphBuilder.SharedNavGraph(navController: NavController){
                val categoryId = it.arguments?.getInt("categoryId")
                val keyword = it.arguments?.getString("keyword")
 
-              SearchCategoryScreen(navController)
-
+              SearchCategoryScreen(navController,
+                  onRecipeItemClick = {
+                          recipeid -> navController.navigate(SharedScreen.DetailRecipe.passRecipeId(recipeid))
+                  }
+                  )
 
         }
         }

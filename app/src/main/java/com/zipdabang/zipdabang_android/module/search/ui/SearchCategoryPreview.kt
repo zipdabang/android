@@ -18,7 +18,8 @@ import com.zipdabang.zipdabang_android.module.search.data.dto.common.SearchRecip
 fun SearchCategoryPreview(
     title: String,
     previewList: List<SearchRecipes>,
-    onClick: () -> Unit
+    onRecipeItemClick : (Int) -> Unit,
+    onClick: () -> Unit,
 ){
    val mainViewModel = hiltViewModel<RecipeMainViewModel>()
 
@@ -49,7 +50,9 @@ fun SearchCategoryPreview(
                         isScrapSelected = previewList[it].isScrapped,
                         onLikeClick = { TODO() },
                         onScrapClick = { TODO() },
-                        onItemClick = {}
+                        onItemClick = {
+                            onRecipeItemClick(it)
+                        }
                     )
                 }
             }
