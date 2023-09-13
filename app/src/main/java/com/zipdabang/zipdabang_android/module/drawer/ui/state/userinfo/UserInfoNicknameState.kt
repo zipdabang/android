@@ -1,6 +1,6 @@
-package com.zipdabang.zipdabang_android.module.sign_up.ui.viewmodel
+package com.zipdabang.zipdabang_android.module.drawer.ui.state.userinfo
 
-data class NicknameFormState(
+data class UserInfoNicknameState(
     val isLoading : Boolean = false,
 
     val nickname : String = "",

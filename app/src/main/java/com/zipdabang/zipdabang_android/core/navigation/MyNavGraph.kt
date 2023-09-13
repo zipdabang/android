@@ -87,6 +87,9 @@ fun NavGraphBuilder.MyNavGraph(
                     onClickFriendList = {
                         navController.navigate(MyScreen.FriendList.route)
                     },
+                    onClickNotice ={
+                        navController.navigate(DrawerScreen.Notice.route)
+                    },
                     onClickLogout = {
                         outerNavController.navigate(AUTH_ROUTE){
                             popUpTo(MAIN_ROUTE) {
@@ -102,20 +105,6 @@ fun NavGraphBuilder.MyNavGraph(
                 )
             }
         }
-
-        /*composable(MyScreen.HomeForNotUser.route){
-            MyScreenForNotUser(
-                navController = navController,
-                onClickLogin = {
-                    navController.navigate(AUTH_ROUTE){
-                        popUpTo(MyScreen.HomeForNotUser.route) {
-                            inclusive = false
-                        }
-                        launchSingleTop = true
-                    }
-                }
-            )
-        }*/
 
         composable(MyScreen.Like.route) {
             LikeScreen(

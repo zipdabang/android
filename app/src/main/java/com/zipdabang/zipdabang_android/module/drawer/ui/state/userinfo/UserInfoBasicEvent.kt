@@ -1,4 +1,4 @@
-package com.zipdabang.zipdabang_android.module.drawer.ui.viewmodel.userinfo
+package com.zipdabang.zipdabang_android.module.drawer.ui.state.userinfo
 
 sealed class UserInfoBasicEvent{
     data class NameChanged(val name : String) : UserInfoBasicEvent()

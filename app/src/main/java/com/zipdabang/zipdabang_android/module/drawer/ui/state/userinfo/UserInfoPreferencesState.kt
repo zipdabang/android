@@ -1,8 +1,8 @@
-package com.zipdabang.zipdabang_android.module.sign_up.ui.viewmodel
+package com.zipdabang.zipdabang_android.module.drawer.ui.state.userinfo
 
 import com.zipdabang.zipdabang_android.module.sign_up.data.remote.BeverageCategory
 
-data class BeverageFormState(
+data class UserInfoPreferencesState(
     val isLoading : Boolean = false,
 
     val beverageList : List<BeverageCategory> = emptyList(),
