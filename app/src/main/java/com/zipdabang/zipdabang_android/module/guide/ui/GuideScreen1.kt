@@ -21,6 +21,10 @@ import androidx.compose.material.ButtonDefaults
 import androidx.compose.material3.AlertDialogDefaults.shape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -33,6 +37,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.zipdabang.zipdabang_android.R
+import com.zipdabang.zipdabang_android.module.guide.CardFace
 import com.zipdabang.zipdabang_android.module.guide.GuideConstants
 import com.zipdabang.zipdabang_android.module.guide.HomeCafeTools
 import com.zipdabang.zipdabang_android.ui.component.RectangleWithRadiusText
@@ -104,17 +109,17 @@ fun GuideScreen1(){
             val toolsArray = HomeCafeTools.values()
 
 
+
             Carousel(
                 count = toolsArray.size,
-                contentWidth = 150.dp,
-                contentHeight = 200.dp,
+                contentWidth = 216. dp,
+                contentHeight = 280.dp,
                 content = { modifier, index ->
-                    MyComposableContent(
-                        item = toolsArray[index],
-                        modifier = modifier
-                    )
-                }
+                    FlipCard(item = toolsArray[index],
+                       modifier = modifier )
+                    }
             )
+
             Spacer(modifier = Modifier.height(30.dp))
 
             Text(GuideConstants.Guide1_Section2_Description,
@@ -132,8 +137,7 @@ fun GuideScreen1(){
             Modifier
                 .background(Color.White)
                 .fillMaxWidth()
-                .height(700.dp)
-                .padding(horizontal =40.dp ),
+                .height(700.dp),
             horizontalAlignment = Alignment.CenterHorizontally
 
         ){
@@ -144,7 +148,7 @@ fun GuideScreen1(){
                 fontWeight = FontWeight(700),
                 color = Color(0xFF262D31),
                 textAlign = TextAlign.Center,
-                modifier =Modifier.padding(top = 60.dp,bottom=5.dp)
+                modifier =Modifier.padding(top = 60.dp,bottom=5.dp,start= 40.dp,end=40.dp)
             )
             Text(GuideConstants.Guide1_Section3_Subtitle,
                 fontSize = 14.sp,
@@ -152,6 +156,7 @@ fun GuideScreen1(){
                 fontWeight = FontWeight(500),
                 color = Color(0xFF262D31),
                 textAlign = TextAlign.Center,
+                modifier =Modifier.padding(start= 40.dp,end=40.dp)
 
             )
 
@@ -161,6 +166,8 @@ fun GuideScreen1(){
                     .size(300.dp))
 
             Box(Modifier.height(60.dp)
+                .padding(horizontal = 30.dp)
+
                 ) {
                 RectangleWithRadiusText(
                     text = GuideConstants.Guide1_Section3_Description1,
@@ -172,6 +179,7 @@ fun GuideScreen1(){
             Spacer(Modifier.height(10.dp))
 
             Box(Modifier.height(60.dp)
+                .padding(horizontal = 30.dp)
             ) {
                 RectangleWithRadiusText(
                     text = GuideConstants.Guide1_Section3_Description2,
