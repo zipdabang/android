@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.compose.animation.rememberSplineBasedDecay
 import androidx.datastore.core.DataStore
 import androidx.paging.ExperimentalPagingApi
+import androidx.paging.LoadState
 import androidx.paging.LoadType
 import androidx.paging.PagingState
 import androidx.paging.RemoteMediator
@@ -74,7 +75,7 @@ class SearchRecipeCategoryMediator @Inject constructor(
                      if(response.result == null ){
                          CategoryDao.deleteItems()
                          RemoteKeyDao.deleteRemoteKeys()
-                         delay(1000)
+
                          MediatorResult.Success(endOfPaginationReached = true)
                      }else{
                          val responseList = response.result.recipeList
@@ -112,6 +113,7 @@ class SearchRecipeCategoryMediator @Inject constructor(
 
                 paging3Database.withTransaction {
                     if(loadType == LoadType.REFRESH){
+
                         CategoryDao.deleteItems()
                         RemoteKeyDao.deleteRemoteKeys()
                     }
