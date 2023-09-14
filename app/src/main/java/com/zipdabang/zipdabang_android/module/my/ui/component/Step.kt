@@ -171,14 +171,22 @@ fun Step(
                 imeAction = imeAction,
             ),
         )
-        Text(
-            modifier = Modifier
-                .align(Alignment.End)
-                .padding(0.dp, 0.dp, 4.dp, 0.dp),
-            text = "0/200",
-            style = ZipdabangandroidTheme.Typography.fourteen_300,
-            color = ZipdabangandroidTheme.Colors.Typo
-        )
+        Row(
+            horizontalArrangement = Arrangement.SpaceBetween
+        ){
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ){
+
+            }
+            Text(
+                modifier = Modifier.padding(0.dp, 0.dp, 4.dp, 0.dp),
+                text = "0/200",
+                style = ZipdabangandroidTheme.Typography.fourteen_300,
+                color = ZipdabangandroidTheme.Colors.Typo
+            )
+        }
+
     }
 }
 
