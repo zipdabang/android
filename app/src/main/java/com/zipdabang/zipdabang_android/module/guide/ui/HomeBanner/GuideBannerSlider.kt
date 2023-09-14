@@ -14,6 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
@@ -25,22 +26,24 @@ import com.zipdabang.zipdabang_android.ui.theme.White
 @Composable
 @OptIn(ExperimentalFoundationApi::class, ExperimentalPagerApi::class)
 fun GuideBannerSlider(
+    onGuide1Click : () -> Unit
 ){
     val pagerState = com.google.accompanist.pager.rememberPagerState()
    Column(
-        modifier = Modifier.fillMaxWidth()
-            .wrapContentHeight(),
-        verticalArrangement = Arrangement.Center,
+        modifier = Modifier
+            .fillMaxSize(),
        horizontalAlignment = Alignment.CenterHorizontally
     ){
         HorizontalPager(
             count = 1,
+            modifier = Modifier.height(94.dp)
+                .fillMaxWidth(),
             state= pagerState,
             verticalAlignment = Alignment.CenterVertically,
         ) {
                when(it) {
-                   0 -> Box(Modifier.height(100.dp).fillMaxWidth()){
-                       HomeGuideBanner_1()
+                   0 -> {
+                       HomeGuideBanner_1(onGuide1Click)
                    }
                }
         }
@@ -48,7 +51,7 @@ fun GuideBannerSlider(
        HorizontalPagerIndicator(
            pagerState = pagerState,
            modifier = Modifier
-               .padding(10.dp)
+               .padding(5.dp)
            ,
            inactiveColor = Color(0x33262D31),
            activeColor = Color(0x80262D31),
@@ -58,4 +61,10 @@ fun GuideBannerSlider(
     }
 
 
+}
+
+@Preview
+@Composable
+fun GuideSliderPreview(){
+  //  GuideBannerSlider()
 }

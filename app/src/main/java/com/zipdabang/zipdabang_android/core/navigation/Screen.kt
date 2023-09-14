@@ -24,7 +24,7 @@ sealed class AuthScreen(val route: String) {
 
 sealed class HomeScreen(val route : String){
     object Home : HomeScreen(route = "home/home")
-    object Guide : HomeScreen(route = "home/guide")
+    object Guide1 : HomeScreen(route = "home/guide1")
 }
 
 sealed class MarketScreen(val route : String){

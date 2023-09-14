@@ -43,7 +43,9 @@ import kotlinx.coroutines.launch
 @Composable
 fun HomeScreen(
     navController : NavController,
-    viewModel: HomeViewModel = hiltViewModel()
+    onGuide1Click : ()-> Unit,
+    viewModel: HomeViewModel = hiltViewModel(),
+
 ){
     //drawer에 필요한 drawerState랑 scope
     val drawerState = rememberDrawerState(DrawerValue.Closed)
@@ -167,15 +169,10 @@ fun HomeScreen(
                             //가이드 배너
                             Box(modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(horizontal = 20.dp)
-                                .wrapContentHeight()){
-                                GuideBannerSlider()
+                                .height(120.dp)
+                                .padding(horizontal = 20.dp)){
+                                GuideBannerSlider(onGuide1Click)
                             }
-
-
-
-
-
 
                         }
 
