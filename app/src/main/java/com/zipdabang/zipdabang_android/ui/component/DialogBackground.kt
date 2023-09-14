@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -359,30 +360,27 @@ fun CustomDialogUploadComplete(
         Surface(
             shape = ZipdabangandroidTheme.Shapes.small,
             color = DialogBackground,
-            modifier = Modifier.size(width = 328.dp, height = 546.dp).fillMaxSize()
+            modifier = Modifier
+                .size(width = 328.dp, height = 548.dp)
+                .fillMaxSize()
         ) {
             Column(
                 modifier = Modifier.fillMaxSize(),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                /*Icon(
-                    painter = painterResource(id = R.drawable.ic_alert_close_small),
-                    contentDescription = null,
+                Box(
                     modifier = Modifier
-                        .padding(end = 8.dp)
-                        .align(Alignment.End)
-                        .clickable {
-                            setShowDialog(false)
-                        }
-                )*/
-                Spacer(modifier = Modifier.height(10.dp))
-                Box(modifier = Modifier.size(200.dp)) {
+                    .fillMaxWidth()
+                    .aspectRatio(1f)
+                    .padding(0.dp)
+                ){
                     RectangleWithRadiusImage(
                         imageUrl = image,
                         contentDescription = "image in dialog"
                     )
                 }
+                Spacer(modifier = Modifier.height(20.dp))
                 Column(
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally,
@@ -404,7 +402,7 @@ fun CustomDialogUploadComplete(
                 }
                 Spacer(modifier = Modifier.height(10.dp))
                 Column(
-                    modifier = Modifier.padding(vertical = 8.dp),
+                    //modifier = Modifier.padding(vertical = 8.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     TextButton(

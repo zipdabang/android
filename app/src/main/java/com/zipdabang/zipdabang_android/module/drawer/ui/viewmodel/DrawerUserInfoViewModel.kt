@@ -274,10 +274,10 @@ class DrawerUserInfoViewModel @Inject constructor(
     fun onUserInfoPreferencesEvent(event : UserInfoPreferencesEvent){
         when (event){
             is UserInfoPreferencesEvent.BeverageCheckListChanged ->{
-                val updatedCheckList = stateUserInfoPreferences.beverageCheckList.toMutableList().apply {
+                val updatedCheckList = stateUserInfoPreferences.preferBeverageCheckList.toMutableList().apply {
                     set(event.index, event.checked)
                 }
-                stateUserInfoPreferences = stateUserInfoPreferences.copy(beverageCheckList = updatedCheckList)
+                stateUserInfoPreferences = stateUserInfoPreferences.copy(preferBeverageCheckList = updatedCheckList)
             }
             is UserInfoPreferencesEvent.BtnEnabled -> {
                 updateBtnEnabledPreferences()
@@ -319,14 +319,26 @@ class DrawerUserInfoViewModel @Inject constructor(
         }
 
         // 선호 음료 != 현재 선호 음료
+        if(stateUserInfo.preferBeverageCheckList != stateUserInfoPreferences.preferBeverageCheckList){
+            val preferBeverageCheckList = stateUserInfoPreferences.preferBeverageList.map { category ->
+                stateUserInfo.preferBeverageList.indexOf(category.categoryName).let { index ->
+                    if (index != -1) true else false
+                }
+            }
+
+            stateUserInfoPreferences = stateUserInfoPreferences.copy(
+                preferBeverageCheckList = preferBeverageCheckList,
+                size = preferBeverageCheckList.size
+            )
+        }
     }
 
 
     init{
+        getBeverages()
         viewModelScope.launch {
             getUserInfo()
         }
-        getBeverages()
     }
     suspend fun getUserInfo(){
         val accessToken = "Bearer " + dataStore.data.first().accessToken ?: Constants.TOKEN_NULL
@@ -343,8 +355,10 @@ class DrawerUserInfoViewModel @Inject constructor(
                         name = result.data?.memberBasicInfoDto?.name ?: "",
                         birthday = result.data?.memberBasicInfoDto?.birth ?: "",
                         gender =  if(result.data?.memberBasicInfoDto?.genderType == "WOMAN") "여"
-                        else if(result.data?.memberBasicInfoDto?.genderType == "MAN") "남" else "",
+                        else if (result.data?.memberBasicInfoDto?.genderType == "MAN") "남" else "",
                         phoneNumber = result.data?.memberBasicInfoDto?.phoneNum ?: "",
+                        preferBeverageList = result.data?.preferCategories?.categories?.map { it.name } ?: emptyList(),
+                        preferBeverageCheckList = List(result.data?.preferCategories?.size ?: 0) { true },
                         zipcode = result.data?.memberDetailInfoDto?.zipCode ?: "",
                         address = result.data?.memberDetailInfoDto?.address ?: "",
                         detailAddress = result.data?.memberDetailInfoDto?.detailAddress ?: "",
@@ -368,13 +382,17 @@ class DrawerUserInfoViewModel @Inject constructor(
                         isLoading = false,
                         nickname = result.data?.nickname ?: "",
                     )
-                    Log.e("drawer-userinfo-viewmodel", "성공 ${result.code} ${result.data?.profileUrl}")
+                    stateUserInfoPreferences = stateUserInfoPreferences.copy(
+                        isLoading = false,
+                    )
+                    Log.e("drawer-userinfo-viewmodel", "성공 ${result.code} ${result.data?.preferCategories}")
                 }
                 is Resource.Error ->{
                     stateUserInfo = stateUserInfo.copy(error = result.message ?: "An unexpeted error occured")
                     stateUserInfoBasic = stateUserInfoBasic.copy(error = result.message ?: "An unexpeted error occured")
                     stateUserInfoDetail = stateUserInfoDetail.copy(error = result.message ?: "An unexpeted error occured")
                     stateUserInfoNickname = stateUserInfoNickname.copy(error = result.message ?: "An unexpeted error occured")
+                    stateUserInfoPreferences = stateUserInfoPreferences.copy(error = result.message ?: "An unexpeted error occured")
                     Log.e("drawer-userinfo-viewmodel", "에러 ${result.code}")
                 }
                 is Resource.Loading -> {
@@ -382,7 +400,8 @@ class DrawerUserInfoViewModel @Inject constructor(
                     stateUserInfoBasic = stateUserInfoBasic.copy(isLoading = true)
                     stateUserInfoDetail = stateUserInfoDetail.copy(isLoading = true)
                     stateUserInfoNickname = stateUserInfoNickname.copy(isLoading = true)
-                    Log.e("drawer-userinfo-viewmodel", "로딩중 ${result.code}")
+                    stateUserInfoPreferences = stateUserInfoPreferences.copy(isLoading = true)
+                    Log.e("drawer-userinfo-viewmodel", "로딩중 ${accessToken} ${result.code} ${result.message} ${result.data}")
                 }
             }
         }.launchIn(viewModelScope)
@@ -560,9 +579,9 @@ class DrawerUserInfoViewModel @Inject constructor(
                 is Resource.Success ->{
                     stateUserInfoPreferences = stateUserInfoPreferences.copy(
                         isLoading= false,
-                        beverageList = result.data?.beverageCategoryList ?: emptyList(),
+                        preferBeverageList = result.data?.beverageCategoryList ?: emptyList(),
                         size = result.data?.size ?: 0,
-                        beverageCheckList = List(result.data?.size ?: 0) { false }
+                        preferBeverageCheckList = List(result.data?.size ?: 0) { false }
                     )
                     Log.e("preferences-viewmodel", "성공 ${result.data?.beverageCategoryList}")
                 }
@@ -666,6 +685,9 @@ class DrawerUserInfoViewModel @Inject constructor(
             getUserInfo()
         } catch (e: Exception) {}
     }
+    suspend fun patchUserPreferences(){
+
+    }
     suspend fun patchUserInfoProfile(){
         try{
             val result = patchUserInfoProfileUseCase(
@@ -690,4 +712,5 @@ class DrawerUserInfoViewModel @Inject constructor(
             getUserInfo()
         } catch (e: Exception) {}
     }
+
 }

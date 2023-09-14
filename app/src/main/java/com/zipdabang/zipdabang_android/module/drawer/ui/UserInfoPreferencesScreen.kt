@@ -86,7 +86,7 @@ fun UserInfoPreferencesScreen(
                             subTextColor =  ZipdabangandroidTheme.Colors.Typo
                         )
 
-                        val chunkedBeverageList = stateUserInfoPreferences.beverageList.chunked(3)
+                        val chunkedBeverageList = stateUserInfoPreferences.preferBeverageList.chunked(3)
                         Column(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -107,7 +107,7 @@ fun UserInfoPreferencesScreen(
                                         RoundedButton(
                                             imageUrl = preference.imageUrl,
                                             buttonText = preference.categoryName,
-                                            isClicked = stateUserInfoPreferences.beverageCheckList[index],
+                                            isClicked = stateUserInfoPreferences.preferBeverageCheckList[index],
                                             isClickedChange = { selectedClicked ->
                                                 drawerUserInfoViewModel.onUserInfoPreferencesEvent(
                                                     UserInfoPreferencesEvent.BeverageCheckListChanged(preference.id-1 ,selectedClicked))
@@ -154,7 +154,7 @@ fun UserInfoPreferencesScreen(
                 ){
                     PrimaryButtonWithStatus(
                         isFormFilled = true, //stateUserInfoNickname.btnEnabled,
-                        text= stringResource(id = R.string.drawer_choosedone),
+                        text= stringResource(id = R.string.drawer_editdone),
                         onClick={
                                 onClickEdit()
                             /*if(stateUserInfoNickname.isSuccess){

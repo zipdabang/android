@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.ClickableText
@@ -571,12 +572,14 @@ fun UserInfoScreen(
                             .size(26.dp, 24.dp)
                             .padding(8.dp, 0.dp, 0.dp, 0.dp)
                     )
-                    Text(
-                        modifier = Modifier.padding(8.dp, 0.dp,0.dp,0.dp),
-                        text = stateUserInfo.nickname,
-                        style = ZipdabangandroidTheme.Typography.sixteen_500,
-                        color = ZipdabangandroidTheme.Colors.Typo
-                    )
+                    stateUserInfo.preferBeverageList.forEachIndexed { index, beverage ->
+                        Text(
+                            modifier = Modifier.padding(8.dp, 0.dp, 0.dp, 0.dp),
+                            text = beverage,
+                            style = ZipdabangandroidTheme.Typography.sixteen_500,
+                            color = ZipdabangandroidTheme.Colors.Typo,
+                        )
+                    }
                 }
             }
 

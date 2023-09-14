@@ -12,6 +12,8 @@ data class UserInfoState(
     val gender : String = "남",
     val phoneNumber : String = "전화번호 (-제외)",
     val nickname : String = "비니",
+    val preferBeverageList : List<String> = listOf("커피", "논카페인"),
+    val preferBeverageCheckList : List<Boolean> = emptyList(),
     val zipcode : String = "우편번호",
     val address : String = "주소",
     val detailAddress : String = "상세 주소 (배달 주문 시 입력 가능)",
