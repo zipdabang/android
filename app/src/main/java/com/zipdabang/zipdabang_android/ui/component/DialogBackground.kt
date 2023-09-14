@@ -18,6 +18,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
@@ -46,6 +48,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import com.zipdabang.zipdabang_android.R
+import com.zipdabang.zipdabang_android.module.sign_up.data.remote.BeverageCategory
+import com.zipdabang.zipdabang_android.module.sign_up.ui.state.BeverageFormEvent
 import com.zipdabang.zipdabang_android.ui.theme.DialogBackground
 import com.zipdabang.zipdabang_android.ui.theme.DialogGray
 import com.zipdabang.zipdabang_android.ui.theme.DialogPink
@@ -353,11 +357,12 @@ fun CustomDialogUploadComplete(
 ) {
     Dialog(onDismissRequest = { setShowDialog(false) }) {
         Surface(
-            shape = ZipdabangandroidTheme.Shapes.large,
+            shape = ZipdabangandroidTheme.Shapes.small,
             color = DialogBackground,
-            modifier = Modifier.size(width = 216.dp, height = 467.dp)
+            modifier = Modifier.size(width = 328.dp, height = 546.dp).fillMaxSize()
         ) {
             Column(
+                modifier = Modifier.fillMaxSize(),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
@@ -372,37 +377,31 @@ fun CustomDialogUploadComplete(
                         }
                 )*/
                 Spacer(modifier = Modifier.height(10.dp))
-
                 Box(modifier = Modifier.size(200.dp)) {
                     RectangleWithRadiusImage(
                         imageUrl = image,
                         contentDescription = "image in dialog"
                     )
                 }
-
                 Column(
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier
-                        .padding(start = 40.dp, end = 40.dp, top = 18.dp, bottom = 8.dp)
+                        //.padding(start = 30.dp, end = 30.dp, top = 18.dp, bottom = 8.dp)
                 )
                 {
                     Text(
                         text = "업로드 완료!",
-                        color = NavBlack,
-                        fontSize = 14.sp,
-                        fontWeight = FontWeight(700)
+                        style = ZipdabangandroidTheme.Typography.thirtytwo_900_scdream,
                     )
                     Spacer(modifier = Modifier.height(10.dp))
                     Text(
                         text = "맛있는 레시피를 공유해줘서 고마워요!",
                         textAlign = TextAlign.Center,
                         color = ZipdabangandroidTheme.Colors.Typo,
-                        style = ZipdabangandroidTheme.Typography.eighteen_500
+                        style = ZipdabangandroidTheme.Typography.eighteen_300
                     )
-
                 }
-
                 Spacer(modifier = Modifier.height(10.dp))
                 Column(
                     modifier = Modifier.padding(vertical = 8.dp),
@@ -410,12 +409,11 @@ fun CustomDialogUploadComplete(
                 ) {
                     TextButton(
                         shape = ZipdabangandroidTheme.Shapes.small,
-                        colors = ButtonDefaults.buttonColors(DialogPink),
                         onClick = { onAccept() }) {
                         Text(
                             text = "업로드 레시피 보러가기",
                             color = ZipdabangandroidTheme.Colors.Strawberry,
-                            style = ZipdabangandroidTheme.Typography.sixteen_500
+                            style = ZipdabangandroidTheme.Typography.fourteen_300
                         )
 
                     }
@@ -425,7 +423,7 @@ fun CustomDialogUploadComplete(
                         Text(
                             text = "나중에 보기",
                             color = ZipdabangandroidTheme.Colors.Typo,
-                            style = ZipdabangandroidTheme.Typography.sixteen_500
+                            style = ZipdabangandroidTheme.Typography.fourteen_300
                         )
 
                     }
@@ -445,12 +443,11 @@ fun CustomDialogSelectCategory(
     onCompleteClick: () -> Unit,
     selectedCategory: MutableState<Int>,
 ) {
-
     Dialog(onDismissRequest = { setShowDialog(false) }) {
         Surface(
             shape = ZipdabangandroidTheme.Shapes.small,
             color = DialogBackground,
-            modifier = Modifier.size(width = 216.dp, height = 343.dp)
+            modifier = Modifier.size(width = 328.dp, height = 384.dp)
         ) {
 
             Column(
@@ -462,29 +459,26 @@ fun CustomDialogSelectCategory(
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier
-                        .padding(start = 40.dp, end = 40.dp, top = 18.dp, bottom = 8.dp)
+                        .padding(start = 40.dp, end = 40.dp, top = 18.dp, bottom = 0.dp)
                 )
                 {
                     Text(
-                        text = "업로드",
-                        color = NavBlack,
-                        fontSize = 14.sp,
-                        fontWeight = FontWeight(700)
+                        text = "카테고리 선택",
+                        style = ZipdabangandroidTheme.Typography.thirtytwo_900_scdream,
                     )
                     Spacer(modifier = Modifier.height(10.dp))
                     Text(
                         text = "레시피의 카테고리를 선택해주세요",
                         textAlign = TextAlign.Center,
-                        color = NavBlack,
-                        fontSize = 12.sp,
-                        fontWeight = FontWeight(400)
+                        color = ZipdabangandroidTheme.Colors.Typo,
+                        style = ZipdabangandroidTheme.Typography.eighteen_300
                     )
 
                 }
 
                 Spacer(modifier = Modifier.height(10.dp))
 
-                NonlazyGrid(
+               /* NonlazyGrid(
                     columns = 2,
                     itemCount = categoryList.size,
                     modifier = Modifier
@@ -531,7 +525,51 @@ fun CustomDialogSelectCategory(
 
 
                     }
-                }
+                }*/
+
+                //chunkedBeverageList = stateBeverageForm.beverageList.chunked(3)
+                /*Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(0.dp, 20.dp, 0.dp, 0.dp),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    var index = 0
+                    for (chunk in chunkedBeverageList) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .wrapContentHeight(),
+                            horizontalArrangement = Arrangement.Center,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            for (preference in chunk) {
+                                RoundedButton(
+                                    imageUrl = preference.imageUrl,
+                                    buttonText = preference.categoryName,
+                                    isClicked = stateBeverageForm.beverageCheckList[index],
+                                    isClickedChange = { selectedClicked ->
+                                        authSharedViewModel.onBeverageEvent(
+                                            BeverageFormEvent.BeverageCheckListChanged(preference.id-1 ,selectedClicked))
+                                    }
+                                )
+                                index ++
+                            }
+                        }
+                    }
+                    if (stateBeverageForm.error.isNotBlank()) {
+                        androidx.compose.material.Text(
+                            text = stateBeverageForm.error,
+                            color = Color.Red,
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    }
+                    if (stateBeverageForm.isLoading) {
+                        CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
+                    }
+                }*/
 
                 val isEnabled = remember {
                     mutableStateOf(false)
@@ -539,15 +577,19 @@ fun CustomDialogSelectCategory(
                 isEnabled.value = selectedCategory.value < 8
 
                 TextButton(
-                    enabled = isEnabled.value,
-                    shape = RectangleShape,
+                    enabled = true,
+                    colors = ButtonDefaults.buttonColors(containerColor = ZipdabangandroidTheme.Colors.Strawberry),
+                    shape = ZipdabangandroidTheme.Shapes.smallRoundedBottom,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(50.dp),
+                    contentPadding = PaddingValues(0.dp),
                     onClick = { onCompleteClick() }
                 ) {
                     Text(
-                        text = "선택 완료",
-                        color = NavBlack,
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight(700)
+                        text = "확인",
+                        style = ZipdabangandroidTheme.Typography.sixteen_700,
+                        color = Color.White
                     )
 
                 }
@@ -639,7 +681,6 @@ fun CustomBasketReady(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(top = 50.dp)
-
             ) {
                 Text(
                     text = "현재 준비 중인 서비스에요!",
@@ -794,7 +835,7 @@ fun PreviewCustomDialogUploadComplete() {
     val showDialogSave = remember { mutableStateOf(false) }
 
     CustomDialogUploadComplete(
-        image = R.drawable.img_profile,
+        image = R.drawable.guide_appdesign_normal,
         setShowDialog = {
             showDialogSave.value = it
         },
