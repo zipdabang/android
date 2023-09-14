@@ -5,10 +5,12 @@ import androidx.paging.ExperimentalPagingApi
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import com.zipdabang.zipdabang_android.common.Constants
+import com.zipdabang.zipdabang_android.common.ResponseBody
 import com.zipdabang.zipdabang_android.core.Paging3Database
 import com.zipdabang.zipdabang_android.core.data_store.proto.Token
 import com.zipdabang.zipdabang_android.core.remotekey.RemoteKeys
 import com.zipdabang.zipdabang_android.module.comment.data.local.RecipeCommentEntity
+import com.zipdabang.zipdabang_android.module.comment.data.remote.EditCommentContent
 import com.zipdabang.zipdabang_android.module.comment.data.remote.PostCommentContent
 import com.zipdabang.zipdabang_android.module.comment.data.remote.PostCommentDto
 import com.zipdabang.zipdabang_android.module.comment.domain.CommentMgtResult
@@ -44,12 +46,33 @@ class RecipeCommentRepositoryImpl @Inject constructor(
     override suspend fun postRecipeComment(
         accessToken: String,
         recipeId: Int,
-        commentBody: PostCommentContent
+        commentBody: String
     ): PostCommentDto {
         return recipeApi.submitRecipeComment(
             accessToken,
             recipeId,
-            commentBody
+            PostCommentContent(commentBody)
+        )
+    }
+
+    override suspend fun deleteRecipeComment(
+        accessToken: String,
+        recipeId: Int,
+        commentId: Int
+    ): ResponseBody<String?> {
+        return recipeApi.deleteRecipeComment(
+            accessToken, recipeId, commentId
+        )
+    }
+
+    override suspend fun editRecipeComment(
+        accessToken: String,
+        recipeId: Int,
+        commentId: Int,
+        newContent: String
+    ): PostCommentDto {
+        return recipeApi.editRecipeComment(
+            accessToken, recipeId, commentId, EditCommentContent(newContent)
         )
     }
 

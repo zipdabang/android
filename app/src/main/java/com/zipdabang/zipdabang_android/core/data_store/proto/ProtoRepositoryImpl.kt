@@ -67,8 +67,7 @@ class ProtoRepositoryImpl @Inject constructor(
             token.copy(
                 accessToken = null,
                 refreshToken = null,
-                platformStatus = CurrentPlatform.NONE,
-                fcmToken = null
+                platformStatus = CurrentPlatform.NONE
             )
         }
     }

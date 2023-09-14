@@ -6,6 +6,7 @@ import com.zipdabang.zipdabang_android.module.drawer.data.remote.userinfodto.Use
 import com.zipdabang.zipdabang_android.module.drawer.data.remote.userinfodto.UserInfoNicknameRequest
 import com.zipdabang.zipdabang_android.module.drawer.data.remote.userinfodto.UserInfoProfileRequest
 import com.zipdabang.zipdabang_android.module.drawer.data.remote.userinfodto.UserInfoResponse
+import com.zipdabang.zipdabang_android.module.drawer.data.remote.userinfodto.UserPreferencesRequest
 import com.zipdabang.zipdabang_android.module.sign_up.data.remote.AuthRequest
 import com.zipdabang.zipdabang_android.module.sign_up.data.remote.AuthResponse
 import com.zipdabang.zipdabang_android.module.sign_up.data.remote.NicknameResponse
@@ -31,22 +32,25 @@ interface DrawerApi {
         @Body userInfoProfile : UserInfoProfileRequest
     ) : UserInfoEditResponse
 
-
+    // 기본 정보 수정
     @PATCH("myInfo/basicInfo")
     suspend fun patchUserInfoBasic(
         @Header("Authorization") accessToken: String,
         @Body userInfoBasic : UserInfoBasicRequest
     ) : UserInfoEditResponse
+    // 전화번호 인증
     @POST("members/phone/sms")
     suspend fun postPhoneSms(
         @Body phoneRequest : PhoneRequest
     ) : AuthResponse
+    // 인증번호 인증
     @POST("members/phone/auth")
     suspend fun postPhoneAuth(
         @Body authRequest : AuthRequest
     ) : AuthResponse
 
 
+    // 상세 정보 수정
     @PATCH("myInfo/detailInfo")
     suspend fun patchUserInfoDetail(
         @Header("Authorization") accessToken: String,
@@ -54,13 +58,22 @@ interface DrawerApi {
     ) : UserInfoEditResponse
 
 
+    // 닉네임 수정
     @PATCH("myInfo/nickname")
     suspend fun patchUserInfoNickname(
         @Header("Authorization") accessToken: String,
         @Body userInfoNickname : UserInfoNicknameRequest
     ) : UserInfoEditResponse
+    // 닉네임 중복 확인
     @GET("members/exist-nickname")
     suspend fun getNickname(
         @Query("nickname") nickname : String
     ) : NicknameResponse
+
+    // 선호 음료 수정
+    @PATCH("members/category")
+    suspend fun patchUserPreferences(
+        @Header("Authorization") accessToken: String,
+        @Body userPreferences : UserPreferencesRequest
+    ) : UserInfoEditResponse
 }

@@ -22,6 +22,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.zipdabang.zipdabang_android.R
 import com.zipdabang.zipdabang_android.common.Resource
+import com.zipdabang.zipdabang_android.module.comment.common.TextMode
 import com.zipdabang.zipdabang_android.module.comment.data.remote.PostCommentContent
 import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
 
@@ -33,9 +34,9 @@ fun CommentTextField(
     recipeId: Int,
     value: String,
     onValueChange: (String) -> Unit,
-    onSubmit: (Int, PostCommentContent) -> Unit,
+    onSubmit: (Int, String) -> Unit,
     isFulfilled: Boolean,
-    placeHolder: String
+    placeHolder: String,
 ) {
     OutlinedTextField(
         modifier = modifier
@@ -70,7 +71,7 @@ fun CommentTextField(
             } else {
                 CommentSubmitButton(
                     recipeId = recipeId,
-                    commentContent = PostCommentContent(value),
+                    commentContent = value,
                     onClick = onSubmit,
                     isFulfilled = isFulfilled
                 )
@@ -79,6 +80,7 @@ fun CommentTextField(
     )
 }
 
+/*
 @Preview
 @Composable
 fun CommentTextFieldPreview() {
@@ -91,4 +93,4 @@ fun CommentTextFieldPreview() {
         placeHolder = "adsf",
         isLoading = true
     )
-}
+}*/

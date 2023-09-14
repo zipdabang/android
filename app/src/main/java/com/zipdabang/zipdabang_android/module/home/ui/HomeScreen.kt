@@ -3,10 +3,12 @@ package com.zipdabang.zipdabang_android.module.home.ui
 import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -26,6 +28,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.zipdabang.zipdabang_android.R
 import com.zipdabang.zipdabang_android.core.navigation.SharedScreen
+import com.zipdabang.zipdabang_android.module.guide.ui.HomeBanner.GuideBannerSlider
+import com.zipdabang.zipdabang_android.module.guide.ui.HomeBanner.HomeGuideBanner_1
 import com.zipdabang.zipdabang_android.module.home.data.bestrecipe.BestRecipeDto
 import com.zipdabang.zipdabang_android.module.home.data.bestrecipe.Recipe
 import com.zipdabang.zipdabang_android.module.item.recipe.ui.RecipeCard
@@ -39,7 +43,9 @@ import kotlinx.coroutines.launch
 @Composable
 fun HomeScreen(
     navController : NavController,
-    viewModel: HomeViewModel = hiltViewModel()
+    onGuide1Click : ()-> Unit,
+    viewModel: HomeViewModel = hiltViewModel(),
+
 ){
     //drawer에 필요한 drawerState랑 scope
     val drawerState = rememberDrawerState(DrawerValue.Closed)
@@ -108,31 +114,31 @@ fun HomeScreen(
                             }
                             else if(recipeState.value.isError){
                                 val recipeList = emptyList<Recipe>()
-                                LazyRow(modifier = Modifier.padding(horizontal = 4.dp)) {
-                                    itemsIndexed(recipeList) { index, item ->
-                                        RecipeCard(
-                                            recipeId = item.recipeId,
-                                            title = item.recipeName,
-                                            user = item.owner,
-                                            thumbnail = item.thumbnailUrl,
-                                            date = item.createdAt,
-                                            likes = item.likes,
-                                            comments = item.comments,
-                                            isLikeSelected = item.isLiked,
-                                            isScrapSelected = item.isScrapped,
-                                            onLikeClick = { TODO() },
-                                            onScrapClick = { TODO() },
-                                            onItemClick = {}
-                                        )
-                                    }
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .height(200.dp)
+                                ) {
+
                                 }
-
-
 
                                 Log.e("HomeScreen Error",bannerState.value.error)
                             }
                             else {
                                 LazyRow(modifier = Modifier.padding(horizontal = 4.dp)) {
+                                    item {
+                                        if (recipeState.value.recipeList.isEmpty()) {
+                                            Box(
+                                                modifier = Modifier
+                                                    .fillMaxWidth()
+                                                    .height(100.dp)
+                                                    .padding(horizontal = 20.dp)
+                                            ) {
+
+                                            }
+                                        }
+                                    }
+
                                     itemsIndexed(recipeState.value.recipeList) { index, item ->
                                         RecipeCard(
                                             recipeId = item.recipeId,
@@ -158,6 +164,15 @@ fun HomeScreen(
 
                             }
 
+                            Spacer(modifier = Modifier.height(20.dp))
+
+                            //가이드 배너
+                            Box(modifier = Modifier
+                                .fillMaxWidth()
+                                .height(120.dp)
+                                .padding(horizontal = 20.dp)){
+                                GuideBannerSlider(onGuide1Click)
+                            }
 
                         }
 

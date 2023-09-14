@@ -237,7 +237,7 @@ fun UserInfoScreen(
                                 .padding(4.dp, 0.dp, 0.dp, 0.dp)
                         )
                         Text(
-                            modifier = Modifier.padding(12.dp, 0.dp,0.dp,0.dp),
+                            modifier = Modifier.padding(12.dp, 3.dp,0.dp,0.dp),
                             text = stateUserInfo.birthday,
                             style = ZipdabangandroidTheme.Typography.sixteen_500,
                             color = ZipdabangandroidTheme.Colors.Typo
@@ -289,7 +289,7 @@ fun UserInfoScreen(
             }
 
             //상세 정보
-            Column(
+            /*Column(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(240.dp)
@@ -424,7 +424,7 @@ fun UserInfoScreen(
                         color = ZipdabangandroidTheme.Colors.Typo
                     )
                 }
-            }
+            }*/
 
             //닉네임
             Column(

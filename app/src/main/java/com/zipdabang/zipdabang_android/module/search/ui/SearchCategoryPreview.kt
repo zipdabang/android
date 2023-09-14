@@ -10,17 +10,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
-import com.zipdabang.zipdabang_android.core.navigation.SharedScreen
 import com.zipdabang.zipdabang_android.module.item.recipe.ui.RecipeCard
 import com.zipdabang.zipdabang_android.module.recipes.ui.viewmodel.RecipeMainViewModel
-import com.zipdabang.zipdabang_android.module.search.data.dto.common.SearchRecipe
+import com.zipdabang.zipdabang_android.module.search.data.dto.common.SearchRecipes
 
 @Composable
 fun SearchCategoryPreview(
-    title : String,
-    previewList : List<SearchRecipe>,
-    onClick : () -> Unit
+    title: String,
+    previewList: List<SearchRecipes>,
+    onClick: () -> Unit
 ){
    val mainViewModel = hiltViewModel<RecipeMainViewModel>()
 

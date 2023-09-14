@@ -11,6 +11,5 @@ data class InfoRequest(
     val nickname: String,
     val phoneNum: String,
     val preferBeverages: List<Int>,
-    val profileUrl: String,
     //val zipCode: String
 )

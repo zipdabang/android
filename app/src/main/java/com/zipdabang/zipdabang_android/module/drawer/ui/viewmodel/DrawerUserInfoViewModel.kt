@@ -19,15 +19,15 @@ import com.zipdabang.zipdabang_android.module.drawer.domain.usecase.PatchUserInf
 import com.zipdabang.zipdabang_android.module.drawer.domain.usecase.PatchUserInfoDetailUseCase
 import com.zipdabang.zipdabang_android.module.drawer.domain.usecase.PatchUserInfoNicknameUseCase
 import com.zipdabang.zipdabang_android.module.drawer.domain.usecase.PatchUserInfoProfileUseCase
-import com.zipdabang.zipdabang_android.module.drawer.ui.viewmodel.userinfo.UserInfoBasicEvent
-import com.zipdabang.zipdabang_android.module.drawer.ui.viewmodel.userinfo.UserInfoBasicState
-import com.zipdabang.zipdabang_android.module.drawer.ui.viewmodel.userinfo.UserInfoDetailEvent
-import com.zipdabang.zipdabang_android.module.drawer.ui.viewmodel.userinfo.UserInfoDetailState
-import com.zipdabang.zipdabang_android.module.drawer.ui.viewmodel.userinfo.UserInfoNicknameEvent
-import com.zipdabang.zipdabang_android.module.drawer.ui.viewmodel.userinfo.UserInfoNicknameState
-import com.zipdabang.zipdabang_android.module.drawer.ui.viewmodel.userinfo.UserInfoPreferencesEvent
-import com.zipdabang.zipdabang_android.module.drawer.ui.viewmodel.userinfo.UserInfoPreferencesState
-import com.zipdabang.zipdabang_android.module.drawer.ui.viewmodel.userinfo.UserInfoState
+import com.zipdabang.zipdabang_android.module.drawer.ui.state.userinfo.UserInfoBasicEvent
+import com.zipdabang.zipdabang_android.module.drawer.ui.state.userinfo.UserInfoBasicState
+import com.zipdabang.zipdabang_android.module.drawer.ui.state.userinfo.UserInfoDetailEvent
+import com.zipdabang.zipdabang_android.module.drawer.ui.state.userinfo.UserInfoDetailState
+import com.zipdabang.zipdabang_android.module.drawer.ui.state.userinfo.UserInfoNicknameEvent
+import com.zipdabang.zipdabang_android.module.drawer.ui.state.userinfo.UserInfoNicknameState
+import com.zipdabang.zipdabang_android.module.drawer.ui.state.userinfo.UserInfoPreferencesEvent
+import com.zipdabang.zipdabang_android.module.drawer.ui.state.userinfo.UserInfoPreferencesState
+import com.zipdabang.zipdabang_android.module.drawer.ui.state.userinfo.UserInfoState
 import com.zipdabang.zipdabang_android.module.sign_up.data.remote.AuthRequest
 import com.zipdabang.zipdabang_android.module.sign_up.data.remote.PhoneRequest
 import com.zipdabang.zipdabang_android.module.sign_up.domain.usecase.GetBeveragesUseCase
@@ -37,7 +37,6 @@ import com.zipdabang.zipdabang_android.module.sign_up.domain.usecase.PostPhoneSm
 import com.zipdabang.zipdabang_android.module.sign_up.domain.usecase.ValidateBirthdayUseCase
 import com.zipdabang.zipdabang_android.module.sign_up.domain.usecase.ValidateNicknameUseCase
 import com.zipdabang.zipdabang_android.module.sign_up.domain.usecase.ValidatePhoneUseCase
-import com.zipdabang.zipdabang_android.module.sign_up.ui.viewmodel.BeverageFormState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.launchIn
@@ -369,7 +368,7 @@ class DrawerUserInfoViewModel @Inject constructor(
                         isLoading = false,
                         nickname = result.data?.nickname ?: "",
                     )
-                    Log.e("drawer-userinfo-viewmodel", "성공 ${result.code}")
+                    Log.e("drawer-userinfo-viewmodel", "성공 ${result.code} ${result.data?.profileUrl}")
                 }
                 is Resource.Error ->{
                     stateUserInfo = stateUserInfo.copy(error = result.message ?: "An unexpeted error occured")
@@ -581,7 +580,7 @@ class DrawerUserInfoViewModel @Inject constructor(
     suspend fun patchUserInfoBasic(){
         try{
             val result = patchUserInfoBasicUseCase(
-                accessToken = "Bearer " +dataStore.data.first().accessToken.toString(),
+                accessToken = "Bearer " + dataStore.data.first().accessToken.toString(),
                 userInfoBasic = UserInfoBasicRequest(
                     name = stateUserInfoBasic.name,
                     birth = stateUserInfoBasic.birthday,

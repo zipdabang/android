@@ -1,5 +1,7 @@
 package com.zipdabang.zipdabang_android.module.recipes.data
 
+import com.zipdabang.zipdabang_android.common.ResponseBody
+import com.zipdabang.zipdabang_android.module.comment.data.remote.EditCommentContent
 import com.zipdabang.zipdabang_android.module.comment.data.remote.PostCommentContent
 import com.zipdabang.zipdabang_android.module.comment.data.remote.PostCommentDto
 import com.zipdabang.zipdabang_android.module.comment.data.remote.RecipeCommentDto
@@ -10,8 +12,10 @@ import com.zipdabang.zipdabang_android.module.recipes.data.preference.Preference
 import com.zipdabang.zipdabang_android.module.recipes.data.preview.RecipePreviewItemsDto
 import com.zipdabang.zipdabang_android.module.recipes.data.recipe_list.RecipeListDto
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Header
+import retrofit2.http.PATCH
 import retrofit2.http.POST
 import retrofit2.http.Path
 import retrofit2.http.Query
@@ -88,5 +92,20 @@ interface RecipeApi {
         @Header("Authorization") accessToken: String,
         @Path("recipeId") recipeId: Int,
         @Body content: PostCommentContent
+    ): PostCommentDto
+
+    @DELETE("members/recipes/{recipeId}/{commentId}")
+    suspend fun deleteRecipeComment(
+        @Header("Authorization") accessToken: String,
+        @Path("recipeId") recipeId: Int,
+        @Path("commentId") commentId: Int
+    ): ResponseBody<String?>
+
+    @PATCH("members/recipes/{recipeId}/{commentId}")
+    suspend fun editRecipeComment(
+        @Header("Authorization") accessToken: String,
+        @Path("recipeId") recipeId: Int,
+        @Path("commentId") commentId: Int,
+        @Body comment: EditCommentContent
     ): PostCommentDto
 }

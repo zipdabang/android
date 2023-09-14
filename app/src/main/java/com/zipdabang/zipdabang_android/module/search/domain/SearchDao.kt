@@ -11,8 +11,11 @@ import com.zipdabang.zipdabang_android.module.search.data.dto.common.SearchRecip
 @Dao
 interface SearchDao {
 
-    @Query("SELECT * FROM search_recipe_table")
+    @Query("SELECT * FROM search_recipe_table ORDER BY `index`")
     fun getAllItem() : PagingSource<Int, SearchRecipe>
+
+    @Query("SELECT recipeId FROM search_recipe_table")
+    fun getAllId() : Int
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun addItems(items : List<SearchRecipe>)

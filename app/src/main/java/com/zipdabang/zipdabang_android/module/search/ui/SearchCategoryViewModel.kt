@@ -31,8 +31,6 @@ class SearchCategoryViewModel @OptIn(ExperimentalPagingApi::class)
     init{
         categoryId .value= savedStateHandle.get<Int>("categoryId")!!
         keyword.value = savedStateHandle.get<String>("keyword").toString()
-        Log.e("searchtest_categoryId",categoryId.value.toString())
-        Log.e("searchtest_keyword",keyword.value)
     }
 
 

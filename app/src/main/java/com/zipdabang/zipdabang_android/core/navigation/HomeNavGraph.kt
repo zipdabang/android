@@ -5,6 +5,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
+import com.zipdabang.zipdabang_android.module.guide.ui.GuideScreen1
 import com.zipdabang.zipdabang_android.module.home.ui.GuideScreen
 import com.zipdabang.zipdabang_android.module.home.ui.HomeScreen
 
@@ -14,10 +15,12 @@ fun NavGraphBuilder.HomeNavGraph(navController: NavController){
 
     navigation(startDestination = HomeScreen.Home.route,route = HOME_ROUTE){
         composable(HomeScreen.Home.route){
-            HomeScreen(navController)
+            HomeScreen(navController, onGuide1Click = {
+               (navController.navigate(HomeScreen.Guide1.route))
+            })
         }
-        composable(HomeScreen.Guide.route){
-            GuideScreen()
+        composable(HomeScreen.Guide1.route){
+            GuideScreen1()
         }
     }
 

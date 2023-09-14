@@ -34,7 +34,6 @@ fun SearchBar(
     viewModel: SearchViewModel = hiltViewModel(),
     keyword: String = "",
     hintText : String,
-    getText : (String) -> Unit ={ }
     ){
 
     var text by remember { mutableStateOf(keyword) }
@@ -62,7 +61,6 @@ fun SearchBar(
                     .noRippleClickable {
                         viewModel.searchText.value= text
                         viewModel.getSearchList()
-                        getText(text)
                     }
             )
 
@@ -75,7 +73,6 @@ fun SearchBar(
             onSearch ={
                 viewModel.searchText.value= text
                 viewModel.getSearchList()
-                getText(text)
             }
         ),
         shape = ZipdabangandroidTheme.Shapes.small,
