@@ -12,6 +12,10 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
@@ -32,30 +36,17 @@ import kotlinx.coroutines.launch
 @Composable
 fun SearchCategoryScreen(
     navController: NavController,
+    onRecipeItemClick : (Int) -> Unit,
    searchViewModel: SearchCategoryViewModel = hiltViewModel()
 
 ){
     val allItems = searchViewModel.getSearchRecipeCategoryItems.collectAsLazyPagingItems()
     val context = LocalContext.current
     val categoryId = searchViewModel.categoryId
-
-    LaunchedEffect(key1 = allItems.loadState) {
-        if(allItems.loadState.refresh is LoadState.Error) {
-//            Toast.makeText(
-//                context,
-//                "Error: " + (allItems.loadState.refresh as LoadState.Error).error.message,
-//                Toast.LENGTH_LONG
-//            ).show()
-        }
-
+    var isLoading by remember {
+        mutableStateOf(false)
     }
 
-//    BackHandler(enabled = true, onBack = {
-//        navController.navigate(SharedScreen.Search.route){
-//              launchSingleTop  = true
-//
-//           }
-//    })
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
@@ -68,6 +59,7 @@ fun SearchCategoryScreen(
 
         },
         content= {
+
             LazyVerticalGrid(
                 columns = GridCells.Fixed(2),
                 modifier = Modifier.padding(top = it.calculateTopPadding(),start= 4.dp, end= 4.dp),
@@ -77,8 +69,9 @@ fun SearchCategoryScreen(
                 items(
                     allItems.itemCount
                 ) { index ->
+
                     if (allItems.loadState.refresh is LoadState.Loading || allItems.loadState.append is LoadState.Loading) {
-                        ShimmeringMarketItem()
+                        if(isLoading) ShimmeringMarketItem()
                     } else {
                         RecipeCard(
                             recipeId = allItems[index]!!.recipeId,
@@ -92,7 +85,7 @@ fun SearchCategoryScreen(
                             isScrapSelected = allItems[index]!!.isScrapped,
                             onLikeClick = { TODO() },
                             onScrapClick = { TODO() },
-                            onItemClick = {}
+                            onItemClick = {onRecipeItemClick(it)}
                         )
                     }
                 }

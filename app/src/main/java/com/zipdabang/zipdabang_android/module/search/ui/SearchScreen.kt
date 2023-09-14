@@ -27,6 +27,7 @@ import com.zipdabang.zipdabang_android.module.search.data.dto.searchpreview.Sear
 @Composable
 fun SearchScreen(
     navController: NavController,
+    onRecipeItemClick: (Int) -> Unit,
     searchViewModel: SearchViewModel = hiltViewModel()
 
 ) {
@@ -77,7 +78,8 @@ fun SearchScreen(
                 index, item ->
                 SearchCategoryPreview(
                     title = categoryTitleList[index].categoryName,
-                    previewList = categoryList[index].recipeList
+                    previewList = categoryList[index].recipeList,
+                    onRecipeItemClick =  onRecipeItemClick
                 ) {
                     navController.navigate(
                         SharedScreen.SearchRecipeCategory.passQuery(
