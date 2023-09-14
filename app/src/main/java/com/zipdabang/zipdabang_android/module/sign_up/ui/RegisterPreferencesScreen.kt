@@ -31,11 +31,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.zipdabang.zipdabang_android.R
-import com.zipdabang.zipdabang_android.common.Resource
 import com.zipdabang.zipdabang_android.core.data_store.proto.ProtoDataViewModel
 import com.zipdabang.zipdabang_android.core.navigation.AuthScreen
 import com.zipdabang.zipdabang_android.module.sign_up.ui.viewmodel.AuthSharedViewModel
-import com.zipdabang.zipdabang_android.module.sign_up.ui.viewmodel.BeverageFormEvent
+import com.zipdabang.zipdabang_android.module.sign_up.ui.state.BeverageFormEvent
 import com.zipdabang.zipdabang_android.ui.component.AppBarSignUp
 import com.zipdabang.zipdabang_android.ui.component.MainAndSubTitle
 import com.zipdabang.zipdabang_android.ui.component.PrimaryButtonWithStatus
@@ -43,11 +42,7 @@ import com.zipdabang.zipdabang_android.ui.component.RoundedButton
 import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withContext
-import okhttp3.internal.wait
 
 @Composable
 fun RegisterPreferencesScreen(
@@ -129,11 +124,12 @@ fun RegisterPreferencesScreen(
                                 ) {
                                     for (preference in chunk) {
                                         RoundedButton(
-                                            imageUrl = R.drawable.ic_topbar_backbtn, //preference.imageUrl,
+                                            imageUrl = preference.imageUrl,
                                             buttonText = preference.categoryName,
                                             isClicked = stateBeverageForm.beverageCheckList[index],
                                             isClickedChange = { selectedClicked ->
-                                                authSharedViewModel.onBeverageEvent(BeverageFormEvent.BeverageCheckListChanged(preference.id-1 ,selectedClicked))
+                                                authSharedViewModel.onBeverageEvent(
+                                                    BeverageFormEvent.BeverageCheckListChanged(preference.id-1 ,selectedClicked))
                                             }
                                         )
                                         index ++

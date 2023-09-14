@@ -18,12 +18,15 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.zipdabang.zipdabang_android.R
 import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
@@ -51,7 +54,7 @@ fun IngredientAndUnit(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ){
-        Box(modifier = Modifier.weight(1f)){
+        Box(modifier = Modifier.weight(3f)){
             OutlinedTextField(
                 value = valueIngredient,
                 onValueChange = {
@@ -97,22 +100,11 @@ fun IngredientAndUnit(
                                     onClick = { onClickTrailingiconIngredient() }
                                 ),
                         )
-                    } else if(!valueIngredient.isEmpty() && !valueUnit.isEmpty()){
-                        Icon(
-                            painter = painterResource(R.drawable.ic_recipewrite_btn_remove),
-                            contentDescription = "Icon",
-                            modifier = Modifier
-                                .size(24.dp)
-                                .padding(0.dp)
-                                .clickable(
-                                    onClick = { onClickCancelIngredient() }
-                                ),
-                        )
                     } else { }
                 }
             )
         }
-        Box(modifier = Modifier.weight(1f)){
+        Box(modifier = Modifier.weight(3f)){
             OutlinedTextField(
                 value = valueUnit,
                 onValueChange = {
@@ -164,5 +156,55 @@ fun IngredientAndUnit(
                 }
             )
         }
+        Icon(
+            modifier = Modifier
+                .weight(1f)
+                .size(30.dp)
+                .padding(0.dp)
+                .align(Alignment.CenterVertically)
+                .clickable(
+                    onClick = { onClickTrailingiconUnit() }
+                ),
+            painter = painterResource(R.drawable.ic_recipewrite_trashcan),
+            contentDescription = "Icon",
+            tint = ZipdabangandroidTheme.Colors.Typo,
+        )
     }
+}
+
+@Preview
+@Composable
+fun PreviewIngredientAndUnit() {
+    var textStateIngredient by remember { mutableStateOf("") }
+    var textStateUnit by remember { mutableStateOf("") }
+
+    IngredientAndUnit(
+        valueIngredient = textStateIngredient,
+        onValueChangedIngredient = { newText, maxLength ->
+            if (newText.length <= maxLength) {
+                textStateIngredient = newText
+            }
+        },
+        placeholderValueIngredient = stringResource(id = R.string.my_recipewrite_milk),
+        maxLengthIngredient = 10,
+        imeActionIngredient = ImeAction.Default,
+        onClickTrailingiconIngredient = {
+            textStateIngredient = ""
+        },
+        onClickCancelIngredient = {
+
+        },
+        valueUnit = textStateUnit,
+        onValueChangedUnit = { newText, maxLength ->
+            if (newText.length <= maxLength) {
+                textStateUnit = newText
+            }
+        },
+        placeholderValueUnit = stringResource(id = R.string.my_recipewrite_hundredmilli),
+        maxLengthUnit = 10,
+        imeActionUnit = ImeAction.Default,
+        onClickTrailingiconUnit = {
+            textStateUnit = ""
+        }
+    )
 }

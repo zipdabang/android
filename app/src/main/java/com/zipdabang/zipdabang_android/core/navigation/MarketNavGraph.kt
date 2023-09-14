@@ -24,7 +24,7 @@ fun NavGraphBuilder.MarketNavGraph(navController: NavController){
 
     navigation(startDestination = MarketScreen.Home.route,route = MARKET_ROUTE){
         composable( MarketScreen.Home.route){
-            MarketScreen_Test()
+            MarketScreen()
         }
         composable( MarketScreen.Category.route,
             arguments = listOf(navArgument("categoryId"){

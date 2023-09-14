@@ -10,19 +10,14 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.Text
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarHost
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -40,13 +35,12 @@ import androidx.navigation.compose.rememberNavController
 import com.zipdabang.zipdabang_android.R
 import com.zipdabang.zipdabang_android.core.navigation.AuthScreen
 import com.zipdabang.zipdabang_android.module.sign_up.ui.viewmodel.AuthSharedViewModel
-import com.zipdabang.zipdabang_android.module.sign_up.ui.viewmodel.UserAddressFormEvent
+import com.zipdabang.zipdabang_android.module.sign_up.ui.state.UserAddressFormEvent
 import com.zipdabang.zipdabang_android.ui.component.AppBarSignUp
 import com.zipdabang.zipdabang_android.ui.component.MainAndSubTitle
 import com.zipdabang.zipdabang_android.ui.component.PrimaryButtonOutLined
 import com.zipdabang.zipdabang_android.ui.component.PrimaryButtonWithStatus
 import com.zipdabang.zipdabang_android.ui.component.TextFieldError
-import com.zipdabang.zipdabang_android.ui.component.TextFieldErrorAndCorrect
 import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
 
 @Composable
@@ -90,7 +84,7 @@ fun RegisterUserAddressScreen(
                 verticalArrangement = Arrangement.spacedBy(20.dp)
             ) {
                 MainAndSubTitle(
-                    mainValue = stringResource(id = R.string.signup_userinfo_maintitle),
+                    mainValue = stringResource(id = R.string.signup_userinfo_detailinfo),
                     mainTextStyle = ZipdabangandroidTheme.Typography.twentytwo_700,
                     mainTextColor = ZipdabangandroidTheme.Colors.Typo,
                     subValue = stringResource(id = R.string.signup_userinfo_subtitle),
@@ -104,11 +98,11 @@ fun RegisterUserAddressScreen(
                         .fillMaxWidth(),
                     verticalArrangement = Arrangement.spacedBy(10.dp)
                 ){
-                    Text(
+                    /*Text(
                         text= stringResource(id = R.string.signup_userinfo_detailinfo),
                         style = ZipdabangandroidTheme.Typography.sixteen_300_cafe24,
                         color = ZipdabangandroidTheme.Colors.Choco
-                    )
+                    )*/
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.Center,
@@ -117,7 +111,7 @@ fun RegisterUserAddressScreen(
                         Icon(
                             painter = painterResource(id = R.drawable.ic_signup_zipcode),
                             contentDescription = "Icon",
-                            tint = ZipdabangandroidTheme.Colors.Choco,
+                            tint = ZipdabangandroidTheme.Colors.Typo,
                             modifier = Modifier
                                 .size(24.dp)
                                 .weight(1.4f),
@@ -159,7 +153,7 @@ fun RegisterUserAddressScreen(
                         Icon(
                             painter = painterResource(id = R.drawable.ic_signup_address),
                             contentDescription = "Icon",
-                            tint = ZipdabangandroidTheme.Colors.Choco,
+                            tint = ZipdabangandroidTheme.Colors.Typo,
                             modifier = Modifier
                                 .size(24.dp)
                                 .weight(1.4f),

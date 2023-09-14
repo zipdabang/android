@@ -141,13 +141,13 @@ fun NavGraphBuilder.authNavGraph(navController: NavHostController) {
                     navController.popBackStack(AuthScreen.Terms.route, inclusive = false)
                 },
                 onClickNext = {
-                    navController.navigate(AuthScreen.RegisterNickname.route)
+                    navController.navigate(AuthScreen.RegisterUserAddress.route)
                 }
             )
         }
 
         // 상세 주소
-        /*composable(route =AuthScreen.RegisterUserAddress.route) {navBackStackEntry ->
+        composable(route =AuthScreen.RegisterUserAddress.route) {navBackStackEntry ->
             val authSharedViewModel = navBackStackEntry.authSharedViewModel<AuthSharedViewModel>(navController = navController)
             RegisterUserAddressScreen(
                 navController = navController,
@@ -159,7 +159,7 @@ fun NavGraphBuilder.authNavGraph(navController: NavHostController) {
                     navController.navigate(AuthScreen.RegisterNickname.route)
                 }
             )
-        }*/
+        }
 
         composable(route =AuthScreen.RegisterNickname.route) {navBackStackEntry ->
             val authSharedViewModel = navBackStackEntry.authSharedViewModel<AuthSharedViewModel>(navController = navController)
@@ -167,7 +167,7 @@ fun NavGraphBuilder.authNavGraph(navController: NavHostController) {
                 navController = navController,
                 authSharedViewModel = authSharedViewModel,
                 onClickBack = {
-                    navController.popBackStack(AuthScreen.RegisterUserInfo.route, inclusive = false)
+                    navController.popBackStack(AuthScreen.RegisterUserAddress.route, inclusive = false)
                 },
                 onClickNext = {
                     navController.navigate(AuthScreen.RegisterPreferences.route)

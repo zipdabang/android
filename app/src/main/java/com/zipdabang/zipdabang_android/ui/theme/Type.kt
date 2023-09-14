@@ -1,5 +1,9 @@
 package com.zipdabang.zipdabang_android.ui.theme
 
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.text.PlatformTextStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
@@ -17,6 +21,11 @@ private val Kopubworld = FontFamily(
 
 private val cafe24 = FontFamily(
     Font(R.font.cafe24ssurroundair, FontWeight.Light), //300
+)
+
+private val SCoreDream = FontFamily(
+    Font(R.font.scdream_bold, FontWeight.Bold),
+    Font(R.font.scdream_normal, FontWeight.Normal)
 )
 
 @Suppress("DEPRECATION")
@@ -37,7 +46,7 @@ val defaultTextStyle = TextStyle(
  FontWeight.Bold (값:700)
  FontWeight.ExtraBold (값:800)
  */
-
+@OptIn(ExperimentalTextApi::class)
 data class ZipdabangTypography (
     //로고!!!
     val logo : TextStyle = defaultTextStyle.copy(
@@ -185,7 +194,38 @@ data class ZipdabangTypography (
         letterSpacing = 0.sp,
     ),
 
-    )
+
+
+    val thirtytwo_900_scdream : TextStyle = defaultTextStyle.copy(
+        fontFamily = SCoreDream,
+        fontWeight = FontWeight.W900,
+        fontSize = 32.sp,
+        letterSpacing = -2.sp,
+        brush = Brush.linearGradient(
+            colors = listOf(
+                Color(0xFFD4B2A7) ,
+                Color(0xFF867768)
+            ),
+            start = Offset(0f, Float.POSITIVE_INFINITY),
+            end = Offset(Float.POSITIVE_INFINITY, 0f),
+        )
+    ),
+
+    val twentyfour_900_scdream : TextStyle = defaultTextStyle.copy(
+        fontFamily = SCoreDream,
+        fontWeight = FontWeight.W900,
+        fontSize = 24.sp,
+        letterSpacing = -2.sp,
+        brush = Brush.linearGradient(
+            colors = listOf(
+                Color(0xFFD4B2A7) ,
+                Color(0xFF867768)
+            ),
+            start = Offset(0f, Float.POSITIVE_INFINITY),
+            end = Offset(Float.POSITIVE_INFINITY, 0f),
+        )
+    ),
+)
 
 
 /*

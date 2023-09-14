@@ -1,11 +1,11 @@
 package com.zipdabang.zipdabang_android.module.my.ui
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -30,10 +30,11 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.zipdabang.zipdabang_android.R
-import com.zipdabang.zipdabang_android.module.my.ui.component.ButtonForRecipeWrite
+import com.zipdabang.zipdabang_android.module.my.ui.component.ButtonForIngredient
 import com.zipdabang.zipdabang_android.module.my.ui.component.IngredientAndUnit
 import com.zipdabang.zipdabang_android.module.my.ui.component.Step
 import com.zipdabang.zipdabang_android.ui.component.AppBarSignUp
+import com.zipdabang.zipdabang_android.ui.component.CustomDialogType1
 import com.zipdabang.zipdabang_android.ui.component.ImageWithIconAndText
 import com.zipdabang.zipdabang_android.ui.component.PrimaryButton
 import com.zipdabang.zipdabang_android.ui.component.PrimaryButtonWithStatus
@@ -43,8 +44,29 @@ import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
 
 @Composable
 fun RecipeWriteScreen(
-    onClickBack : ()->Unit
+    onClickBack: () -> Unit
 ) {
+    // textfield
+    var textState by remember { mutableStateOf("") }
+    var textStateTime by remember { mutableStateOf("") }
+    var textStateIntro by remember { mutableStateOf("") }
+    var textStateIngredient by remember { mutableStateOf("") }
+    var textStateUnit by remember { mutableStateOf("") }
+    var textStateStep by remember { mutableStateOf("") }
+    var textStateTip by remember { mutableStateOf("") }
+
+    // 알럿
+    val isClickedDialogFileSelect = remember { mutableStateOf(false) }
+    val showDialogFileSelect = remember { mutableStateOf(false) }
+    val isClickedDialogPerimission = remember { mutableStateOf(false) }
+    val showDialogPerimission = remember { mutableStateOf(false) }
+    val isClickedDialogSave = remember { mutableStateOf(false) }
+    val showDialogSave = remember { mutableStateOf(false) }
+    val isClickedDialogUpload = remember { mutableStateOf(false) }
+    val showDialogUpload = remember { mutableStateOf(false) }
+    val isClickedDialogUploadComplete = remember { mutableStateOf(false) }
+    val showDialogUploadComplete = remember { mutableStateOf(false) }
+
     Scaffold(
         modifier = Modifier
             .fillMaxSize(),
@@ -57,7 +79,7 @@ fun RecipeWriteScreen(
         },
         containerColor = Color.White,
         contentColor = Color.White,
-    ){
+    ) {
         val scrollState = rememberScrollState()
 
         Column(
@@ -72,7 +94,8 @@ fun RecipeWriteScreen(
                 modifier = Modifier
                     .height(360.dp)
                     .fillMaxWidth()
-            ){
+                    .aspectRatio(1f)
+            ) {
                 ImageWithIconAndText(
                     addImageClick = {
 
@@ -90,18 +113,16 @@ fun RecipeWriteScreen(
                 )
             }
 
-            //레시피 제목
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(16.dp, 20.dp, 16.dp, 10.dp),
                 verticalArrangement = Arrangement.spacedBy(4.dp)
-            ){
+            ) {
                 // 레시피 제목
-                var textState by remember { mutableStateOf("") }
                 Column(
                     verticalArrangement = Arrangement.spacedBy(4.dp)
-                ){
+                ) {
                     Text(
                         text = stringResource(id = R.string.my_recipewrite_title),
                         style = ZipdabangandroidTheme.Typography.sixteen_700,
@@ -110,7 +131,7 @@ fun RecipeWriteScreen(
                     TextFieldForRecipeWriteSingleline(
                         value = textState,
                         onValueChanged = { newText, maxLength ->
-                            if(newText.length <= maxLength){
+                            if (newText.length <= maxLength) {
                                 textState = newText
                             }
                         },
@@ -132,10 +153,9 @@ fun RecipeWriteScreen(
                 }
 
                 // 소요 시간
-                var textStateTime by remember { mutableStateOf("") }
                 Column(
                     verticalArrangement = Arrangement.spacedBy(4.dp)
-                ){
+                ) {
                     Text(
                         text = stringResource(id = R.string.my_recipewrite_time),
                         style = ZipdabangandroidTheme.Typography.sixteen_700,
@@ -144,7 +164,7 @@ fun RecipeWriteScreen(
                     TextFieldForRecipeWriteSingleline(
                         value = textStateTime,
                         onValueChanged = { newText, maxLength ->
-                            if(newText.length <= maxLength){
+                            if (newText.length <= maxLength) {
                                 textStateTime = newText
                             }
                         },
@@ -166,10 +186,9 @@ fun RecipeWriteScreen(
                 }
 
                 // 레시피 한 줄 소개
-                var textStateIntro by remember { mutableStateOf("") }
                 Column(
                     verticalArrangement = Arrangement.spacedBy(4.dp)
-                ){
+                ) {
                     Text(
                         text = stringResource(id = R.string.my_recipewrite_intro),
                         style = ZipdabangandroidTheme.Typography.sixteen_700,
@@ -178,7 +197,7 @@ fun RecipeWriteScreen(
                     TextFieldForRecipeWriteMultiline(
                         value = textStateIntro,
                         onValueChanged = { newText, maxLength ->
-                            if(newText.length <= maxLength){
+                            if (newText.length <= maxLength) {
                                 textStateIntro = newText
                             }
                         },
@@ -199,11 +218,9 @@ fun RecipeWriteScreen(
                 }
 
                 // 재료
-                var textStateIngredient by remember { mutableStateOf("") }
-                var textStateUnit by remember { mutableStateOf("") }
                 Column(
                     verticalArrangement = Arrangement.spacedBy(4.dp)
-                ){
+                ) {
                     Text(
                         text = stringResource(id = R.string.my_recipewrite_ingredient),
                         style = ZipdabangandroidTheme.Typography.sixteen_700,
@@ -212,10 +229,10 @@ fun RecipeWriteScreen(
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.spacedBy(4.dp)
-                    ){
+                    ) {
                         Text(
                             modifier = Modifier
-                                .weight(1f)
+                                .weight(3f)
                                 .padding(4.dp, 0.dp, 0.dp, 0.dp),
                             text = stringResource(id = R.string.my_recipewrite_ingredient),
                             style = ZipdabangandroidTheme.Typography.fourteen_500,
@@ -223,7 +240,7 @@ fun RecipeWriteScreen(
                         )
                         Text(
                             modifier = Modifier
-                                .weight(1f)
+                                .weight(4f)
                                 .padding(4.dp, 0.dp, 0.dp, 0.dp),
                             text = stringResource(id = R.string.my_recipewrite_unit),
                             style = ZipdabangandroidTheme.Typography.fourteen_500,
@@ -233,7 +250,7 @@ fun RecipeWriteScreen(
                     IngredientAndUnit(
                         valueIngredient = textStateIngredient,
                         onValueChangedIngredient = { newText, maxLength ->
-                            if(newText.length <= maxLength){
+                            if (newText.length <= maxLength) {
                                 textStateIngredient = newText
                             }
                         },
@@ -243,12 +260,12 @@ fun RecipeWriteScreen(
                         onClickTrailingiconIngredient = {
                             textStateIngredient = ""
                         },
-                        onClickCancelIngredient={
+                        onClickCancelIngredient = {
 
                         },
                         valueUnit = textStateUnit,
                         onValueChangedUnit = { newText, maxLength ->
-                            if(newText.length <= maxLength){
+                            if (newText.length <= maxLength) {
                                 textStateUnit = newText
                             }
                         },
@@ -259,18 +276,20 @@ fun RecipeWriteScreen(
                             textStateUnit = ""
                         }
                     )
-                    ButtonForRecipeWrite(
+                    ButtonForIngredient(
                         borderColor = ZipdabangandroidTheme.Colors.Strawberry,
                         containerColor = Color.White,
                         onClickBtn = { }
                     )
                     Row(
-                        modifier = Modifier.fillMaxWidth().padding(0.dp, 0.dp, 0.dp, 4.dp),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(0.dp, 0.dp, 0.dp, 4.dp),
                         horizontalArrangement = Arrangement.SpaceBetween
-                    ){
+                    ) {
                         Row(
                             horizontalArrangement = Arrangement.Center
-                        ){
+                        ) {
                             Icon(
                                 painter = painterResource(R.drawable.ic_recipewrite_warning),
                                 contentDescription = "Icon",
@@ -280,7 +299,7 @@ fun RecipeWriteScreen(
                                     .padding(4.dp, 0.dp, 0.dp, 0.dp),
                             )
                             Text(
-                                modifier = Modifier.padding(2.dp, 0.dp, 0.dp,0.dp),
+                                modifier = Modifier.padding(2.dp, 0.dp, 0.dp, 0.dp),
                                 text = stringResource(id = R.string.my_recipewrite_warning_ingredient),
                                 style = ZipdabangandroidTheme.Typography.twelve_500,
                                 color = Color(0xFFB00020)
@@ -296,7 +315,6 @@ fun RecipeWriteScreen(
                 }
 
                 // 레시피 순서
-                var textStateStep by remember { mutableStateOf("") }
                 Column(
                     verticalArrangement = Arrangement.spacedBy(4.dp)
                 ) {
@@ -308,7 +326,7 @@ fun RecipeWriteScreen(
                     Step(
                         value = textStateStep,
                         onValueChanged = { newText, maxLength ->
-                            if(newText.length <= maxLength){
+                            if (newText.length <= maxLength) {
                                 textStateStep = newText
                             }
                         },
@@ -317,9 +335,10 @@ fun RecipeWriteScreen(
                         maxLines = 7,
                         maxLength = 200,
                         imeAction = ImeAction.None,
-                        onClickBtn = { }
+                        onClickAddBtn = { },
+                        onClickDeleteStep = { }
                     )
-                    ButtonForRecipeWrite(
+                    ButtonForIngredient(
                         borderColor = ZipdabangandroidTheme.Colors.Strawberry,
                         containerColor = Color.White,
                         onClickBtn = { }
@@ -335,10 +354,9 @@ fun RecipeWriteScreen(
                 }
 
                 // 레시피 Tip
-                var textStateTip by remember { mutableStateOf("") }
                 Column(
                     verticalArrangement = Arrangement.spacedBy(4.dp)
-                ){
+                ) {
                     Text(
                         text = stringResource(id = R.string.my_recipewrite_recipetip),
                         style = ZipdabangandroidTheme.Typography.sixteen_700,
@@ -347,7 +365,7 @@ fun RecipeWriteScreen(
                     TextFieldForRecipeWriteMultiline(
                         value = textStateTip,
                         onValueChanged = { newText, maxLength ->
-                            if(newText.length <= maxLength){
+                            if (newText.length <= maxLength) {
                                 textStateTip = newText
                             }
                         },
@@ -376,23 +394,43 @@ fun RecipeWriteScreen(
                     .padding(16.dp, 12.dp, 16.dp, 12.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 verticalAlignment = Alignment.Bottom
-            ){
+            ) {
                 Box(
                     modifier = Modifier.weight(1f)
-                ){
+                ) {
                     PrimaryButton(
                         backgroundColor = ZipdabangandroidTheme.Colors.MainBackground,
-                        text= stringResource(id = R.string.my_recipewrite_save),
-                        onClick={},
+                        text = stringResource(id = R.string.my_recipewrite_save),
+                        onClick = {
+                            isClickedDialogSave.value = true
+                        },
                     )
                 }
                 Box(
                     modifier = Modifier.weight(1f)
-                ){
+                ) {
                     PrimaryButtonWithStatus(
                         isFormFilled = false,
-                        text= stringResource(id = R.string.my_recipewrite_writedone),
-                        onClick={},
+                        text = stringResource(id = R.string.my_recipewrite_writedone),
+                        onClick = {},
+                    )
+                }
+
+
+                // 알럿
+                if (isClickedDialogSave.value) {
+                    CustomDialogType1(
+                        title = stringResource(id = R.string.my_save),
+                        text = stringResource(id = R.string.my_dialog_save_detail),
+                        declineText = stringResource(id = R.string.my_dialog_cancel),
+                        acceptText = stringResource(id = R.string.my_save),
+                        setShowDialog = {
+                            showDialogSave.value = false
+                        },
+                        onAcceptClick = {
+                            // 임시저장 api & navGraph 이동
+                            showDialogSave.value = false
+                        }
                     )
                 }
             }
@@ -404,6 +442,6 @@ fun RecipeWriteScreen(
 @Composable
 fun PreviewRecipeWriteScreen() {
     RecipeWriteScreen(
-        onClickBack ={}
+        onClickBack = {}
     )
 }

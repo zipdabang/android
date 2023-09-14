@@ -1,4 +1,4 @@
-package com.zipdabang.zipdabang_android.module.sign_up.ui.viewmodel
+package com.zipdabang.zipdabang_android.module.sign_up.ui.state
 
 sealed class TermsFormEvent{
     data class AllAgreeChanged(val checked : Boolean) : TermsFormEvent()
