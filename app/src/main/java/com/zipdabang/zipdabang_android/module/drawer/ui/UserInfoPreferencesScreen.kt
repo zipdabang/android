@@ -14,6 +14,7 @@ import androidx.compose.material.Text
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -31,6 +32,9 @@ import com.zipdabang.zipdabang_android.ui.component.PrimaryButtonOutLined
 import com.zipdabang.zipdabang_android.ui.component.PrimaryButtonWithStatus
 import com.zipdabang.zipdabang_android.ui.component.RoundedButton
 import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 @Composable
 fun UserInfoPreferencesScreen(
@@ -40,6 +44,10 @@ fun UserInfoPreferencesScreen(
     onClickEdit : ()->Unit
 ) {
     val stateUserInfoPreferences = drawerUserInfoViewModel.stateUserInfoPreferences
+
+    LaunchedEffect(key1 = stateUserInfoPreferences.preferBeverageCheckList){
+        drawerUserInfoViewModel.onUserInfoPreferencesEvent(UserInfoPreferencesEvent.BtnEnabled(true))
+    }
 
     Scaffold(
         modifier = Modifier
@@ -153,19 +161,15 @@ fun UserInfoPreferencesScreen(
                     modifier = Modifier.weight(1f)
                 ){
                     PrimaryButtonWithStatus(
-                        isFormFilled = true, //stateUserInfoNickname.btnEnabled,
+                        isFormFilled = stateUserInfoPreferences.btnEnabled,
                         text= stringResource(id = R.string.drawer_editdone),
                         onClick={
-                                onClickEdit()
-                            /*if(stateUserInfoNickname.isSuccess){
+                            if(stateUserInfoPreferences.btnEnabled){
                                 CoroutineScope(Dispatchers.Main).launch{
-                                    drawerUserInfoViewModel.patchUserInfoNickname()
+                                    drawerUserInfoViewModel.patchUserPreferences()
                                     onClickEdit()
                                 }
-                            } else {
-                                drawerUserInfoViewModel.onUserInfoNicknameEvent(
-                                    UserInfoNicknameEvent.BtnEnabled(true))
-                            }*/
+                            }
                         },
                     )
                 }

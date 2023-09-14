@@ -13,11 +13,13 @@ import com.zipdabang.zipdabang_android.core.data_store.proto.Token
 import com.zipdabang.zipdabang_android.module.drawer.data.remote.userinfodto.UserInfoBasicRequest
 import com.zipdabang.zipdabang_android.module.drawer.data.remote.userinfodto.UserInfoDetailRequest
 import com.zipdabang.zipdabang_android.module.drawer.data.remote.userinfodto.UserInfoNicknameRequest
+import com.zipdabang.zipdabang_android.module.drawer.data.remote.userinfodto.UserInfoPreferencesRequest
 import com.zipdabang.zipdabang_android.module.drawer.data.remote.userinfodto.UserInfoProfileRequest
 import com.zipdabang.zipdabang_android.module.drawer.domain.usecase.GetUserInfoUseCase
 import com.zipdabang.zipdabang_android.module.drawer.domain.usecase.PatchUserInfoBasicUseCase
 import com.zipdabang.zipdabang_android.module.drawer.domain.usecase.PatchUserInfoDetailUseCase
 import com.zipdabang.zipdabang_android.module.drawer.domain.usecase.PatchUserInfoNicknameUseCase
+import com.zipdabang.zipdabang_android.module.drawer.domain.usecase.PatchUserInfoPreferencesUseCase
 import com.zipdabang.zipdabang_android.module.drawer.domain.usecase.PatchUserInfoProfileUseCase
 import com.zipdabang.zipdabang_android.module.drawer.ui.state.userinfo.UserInfoBasicEvent
 import com.zipdabang.zipdabang_android.module.drawer.ui.state.userinfo.UserInfoBasicState
@@ -54,6 +56,7 @@ class DrawerUserInfoViewModel @Inject constructor(
     private val patchUserInfoBasicUseCase: PatchUserInfoBasicUseCase,
     private val patchUserInfoDetailUseCase: PatchUserInfoDetailUseCase,
     private val patchUserInfoNicknameUseCase: PatchUserInfoNicknameUseCase,
+    private val patchUserInfoPreferencesUseCase: PatchUserInfoPreferencesUseCase,
     private val patchUserInfoProfileUseCase: PatchUserInfoProfileUseCase,
     private val validateBirthdayUseCase : ValidateBirthdayUseCase = ValidateBirthdayUseCase(),
     private val validatePhoneUseCase: ValidatePhoneUseCase = ValidatePhoneUseCase(),
@@ -285,7 +288,11 @@ class DrawerUserInfoViewModel @Inject constructor(
         }
     }
     private fun updateBtnEnabledPreferences(){
-        //만약 stateUserInfo.preferList != staeUserInfoPreferences.preferList이면 btnenabled 되게하자
+        if(stateUserInfo.preferBeverageCheckList != stateUserInfoPreferences.preferBeverageCheckList) {
+            stateUserInfoPreferences = stateUserInfoPreferences.copy(btnEnabled = true)
+        } else{
+            stateUserInfoPreferences = stateUserInfoPreferences.copy(btnEnabled = false)
+        }
     }
 
 
@@ -318,13 +325,14 @@ class DrawerUserInfoViewModel @Inject constructor(
             stateUserInfoNickname = stateUserInfoNickname.copy(nickname = stateUserInfo.nickname)
         }
 
-        // 선호 음료 != 현재 선호 음료
         if(stateUserInfo.preferBeverageCheckList != stateUserInfoPreferences.preferBeverageCheckList){
             val preferBeverageCheckList = stateUserInfoPreferences.preferBeverageList.map { category ->
                 stateUserInfo.preferBeverageList.indexOf(category.categoryName).let { index ->
                     if (index != -1) true else false
                 }
             }
+
+            stateUserInfo = stateUserInfo.copy(preferBeverageCheckList = preferBeverageCheckList)
 
             stateUserInfoPreferences = stateUserInfoPreferences.copy(
                 preferBeverageCheckList = preferBeverageCheckList,
@@ -658,7 +666,7 @@ class DrawerUserInfoViewModel @Inject constructor(
             Log.e("nicknameedit-viewmodel","토큰, 닉네임 :  ${dataStore.data.first().accessToken.toString()} ${stateUserInfoNickname.nickname}")
 
             val result = patchUserInfoNicknameUseCase(
-                accessToken = "Bearer " +dataStore.data.first().accessToken.toString(),
+                accessToken = "Bearer " + dataStore.data.first().accessToken.toString(),
                 userInfoNickname = UserInfoNicknameRequest(stateUserInfoNickname.nickname),
             )
             result.collect { result->
@@ -686,7 +694,35 @@ class DrawerUserInfoViewModel @Inject constructor(
         } catch (e: Exception) {}
     }
     suspend fun patchUserPreferences(){
+        try{
+            val result = patchUserInfoPreferencesUseCase(
+                accessToken = "Bearer " +dataStore.data.first().accessToken.toString(),
+                userInfoPreferences = UserInfoPreferencesRequest(
+                    stateUserInfoPreferences.preferBeverageList.filterIndexed { index, _ ->
+                        stateUserInfoPreferences.preferBeverageCheckList.getOrNull(index) == true
+                    }.map { it.categoryName }
+                )
+            )
+            Log.d("preferencesedit-viewmodel", "${"Bearer " +dataStore.data.first().accessToken.toString()}")
+            Log.d("preferencesedit-viewmodel", "${UserInfoPreferencesRequest(stateUserInfoPreferences.preferBeverageList.map{it.categoryName})}")
 
+            result.collect{result->
+                when(result){
+                    is Resource.Success ->{
+                        Log.e("preferencesedit-viewmodel","성공 :  ${result.code} ${result.message}")
+                    }
+                    is Resource.Error ->{
+                        stateUserInfoPreferences = stateUserInfoPreferences.copy(error = result.message ?: "An unexpeted error occured")
+                        Log.e("preferencesedit-viewmodel","에러 :  ${result.code} ${result.message}")
+                    }
+                    is Resource.Loading ->{
+                        stateUserInfoPreferences = stateUserInfoPreferences.copy(isLoading = true)
+                        Log.e("preferencesedit-viewmodel","로딩중 :  ${result.code} ${result.message}")
+                    }
+                }
+            }
+            getUserInfo()
+        } catch (e: Exception) {}
     }
     suspend fun patchUserInfoProfile(){
         try{
