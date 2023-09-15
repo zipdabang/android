@@ -107,21 +107,19 @@ fun GuideScreen1(){
             Spacer(modifier = Modifier.height(20.dp))
 
             val toolsArray = HomeCafeTools.values()
-
-
-
             Carousel(
                 count = toolsArray.size,
                 contentWidth = 216. dp,
                 contentHeight = 280.dp,
-                content = { modifier, index ->
-                    FlipCard(item = toolsArray[index],
-                       modifier = modifier )
+                content = {
+                        modifier, index ->
+                    FlipCard(
+                        item = toolsArray[index],
+                       modifier = modifier)
                     }
             )
 
             Spacer(modifier = Modifier.height(30.dp))
-
             Text(GuideConstants.Guide1_Section2_Description,
                 fontSize = 14.sp,
                 fontFamily = FontFamily(Font(R.font.kopubworlddotum_medium)),

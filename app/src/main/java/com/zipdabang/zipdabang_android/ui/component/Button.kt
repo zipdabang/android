@@ -45,6 +45,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.zipdabang.zipdabang_android.R
+import com.zipdabang.zipdabang_android.ui.theme.DialogPink
 import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
 
 @Composable
@@ -122,6 +123,20 @@ fun PrimaryButtonStrawberry(
     )
 }
 
+
+@Composable
+fun PrimaryButtonStrawBerry80(
+    text: String,
+    onClick: () -> Unit
+) {
+    PrimaryButton(
+        backgroundColor = DialogPink,
+        text = text,
+        onClick = onClick
+    )
+}
+
+
 @Composable
 fun PrimaryButtonMainBG(
     text: String,
@@ -146,6 +161,19 @@ fun PrimaryButtonStrawberryOutlined(
         onClick = onClick
     )
 }
+
+@Composable
+fun PrimaryButtonStrawberry80Outlined(
+    text: String,
+    onClick: () -> Unit
+) {
+    PrimaryButtonOutLined(
+        borderColor= DialogPink,
+        text = text,
+        onClick = onClick
+    )
+}
+
 
 @Composable
 fun PrimaryButtonMainBGOutlined(
@@ -304,6 +332,8 @@ fun PrimaryButtonPreview() {
         PrimaryButtonStrawberryOutlined(text = "배송지 추가", onClick = {})
         PrimaryButtonMainBG(text = "배송조회", onClick = {})
         PrimaryButtonMainBGOutlined(text = "주문·배송 취소", onClick = {})
+        PrimaryButtonStrawBerry80(text = "임시저장 하기", onClick = {})
+        PrimaryButtonStrawberry80Outlined(text = "취소", onClick = {})
     }
 }
 
