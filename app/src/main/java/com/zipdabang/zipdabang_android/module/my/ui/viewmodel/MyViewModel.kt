@@ -36,6 +36,7 @@ class MyViewModel @Inject constructor(
         onSignOutSuccessful: () -> Unit
     ) {
         signOutUseCase().onEach { resource ->
+            Log.d("logout viewmodel", "usecase called")
             when (resource) {
                 is Resource.Loading -> {
                     _signOutState.value = SignOutState(
@@ -45,34 +46,23 @@ class MyViewModel @Inject constructor(
 
                 is Resource.Success -> {
                     Log.d("Logout", resource.data.toString())
-                    try {
-                        _signOutState.value = SignOutState(
-                            isLoading = false,
-                            isSuccessful = true
+                    _signOutState.value = SignOutState(
+                        isLoading = false,
+                        isSuccessful = true
+                    )
+
+                    dataStore.updateData {
+                        it.copy(
+                            accessToken = null,
+                            refreshToken = null,
+                            platformToken = null,
+                            platformStatus = CurrentPlatform.NONE
                         )
-
-                        dataStore.updateData {
-                            it.copy(
-                                accessToken = null,
-                                refreshToken = null,
-                                platformToken = null,
-                                platformStatus = CurrentPlatform.NONE
-                            )
-                        }
-
-                        onSignOutSuccessful()
-                    } catch (e: Exception) {
-                        if (e is CancellationException) {
-                            throw e
-                        } else {
-                            _signOutState.value = SignOutState(
-                                isLoading = false,
-                                errorMessage = e.message,
-                                isSuccessful = false
-                            )
-                        }
                     }
+
+                    onSignOutSuccessful()
                 }
+
 
                 is Resource.Error -> {
                     Log.d("Logout", "error ${resource.code} : ${resource.message}")

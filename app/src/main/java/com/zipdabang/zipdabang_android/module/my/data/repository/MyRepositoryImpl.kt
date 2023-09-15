@@ -9,10 +9,7 @@ import javax.inject.Inject
 class MyRepositoryImpl @Inject constructor(
     private val api : MyApi
 ) : MyRepository{
-    override suspend fun signOut(
-        accessToken: String,
-        signOutTokens: SignOutTokens
-    ): SignOutResponseDto {
-        return api.signOut(accessToken, signOutTokens)
+    override suspend fun signOut(accessToken: String, ): SignOutResponseDto {
+        return api.signOut(accessToken)
     }
 }
