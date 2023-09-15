@@ -100,8 +100,9 @@ fun CheckBoxRectangle(
     Box(
         modifier = Modifier
             .clip(shapeType)
-            .border(1.dp, color = ZipdabangandroidTheme.Colors.Strawberry, shape = shapeType)
-            .background(Color.Transparent, shapeType)
+            .border(0.5.dp, color = ZipdabangandroidTheme.Colors.Strawberry, shape = shapeType)
+            .background(
+                containerColor, shapeType)
             .fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
