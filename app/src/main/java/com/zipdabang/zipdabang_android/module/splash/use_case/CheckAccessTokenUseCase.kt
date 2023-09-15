@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import retrofit2.HttpException
 import java.io.IOException
+import java.util.concurrent.CancellationException
 import javax.inject.Inject
 
 class CheckAccessTokenUseCase @Inject constructor(
@@ -26,11 +27,14 @@ class CheckAccessTokenUseCase @Inject constructor(
         try {
             emit(Resource.Loading())
 
-            Log.d("logout tokens", "${tokenDataStore.data.first()}")
+            val accessToken = "Bearer ${tokenDataStore.data.first().accessToken}"
 
-            val accessToken = ("Bearer " + tokenDataStore.data.first().accessToken)
+            Log.d(TAG, "access token : $accessToken")
 
             val result = autoLoginRepository.checkAccessToken(accessToken = accessToken)
+
+            Log.d(TAG, "check access token validity result : $result")
+
             result?.let {
                 emit(Resource.Success(
                     data = it,
@@ -40,12 +44,15 @@ class CheckAccessTokenUseCase @Inject constructor(
                 emit(Resource.Error(message = "result is nothing"))
             }
         } catch (e: HttpException) {
-            Log.d(TAG, e.message ?: "unexpected http error")
+            Log.e(TAG, "${e.message} ${e.code()}")
             emit(Resource.Error(message = e.message ?: "unexpected http exception"))
         } catch (e: IOException) {
-            Log.d(TAG, e.message ?: "unexpected io error")
+            Log.e(TAG, e.message ?: "unexpected io error")
             emit(Resource.Error(message = e.message ?: "unexpected io exception"))
         } catch (e: Exception) {
+            if (e is CancellationException) {
+                throw e
+            }
             emit(Resource.Error(message = e.message ?: "unexpected etc exception"))
         }
     }

@@ -1,5 +1,6 @@
 package com.zipdabang.zipdabang_android.module.splash.ui
 
+import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.datastore.core.DataStore
@@ -24,6 +25,10 @@ class SplashViewModel @Inject constructor(
     private val getNewTokenUseCase: GetNewTokenUseCase,
     private val tokenDataStore: DataStore<Token>
 ): ViewModel() {
+
+    companion object {
+        const val TAG = "SplashViewModel"
+    }
 
     private val _checkAccessTokenState = mutableStateOf(CheckAccessTokenState())
     val checkAccessTokenState: State<CheckAccessTokenState>
@@ -54,11 +59,14 @@ class SplashViewModel @Inject constructor(
                                 return@apply
                             }
 
+                            Log.d(TAG, "result : access token check successful, access token expired ${checkAccessTokenState.value}")
+
                             getNewToken(
                                 onTokenValid = onTokenValid,
                                 onTokenInvalid = onTokenInvalid
                             )
                         } else {
+                            Log.d(TAG, "result : access token check not successful, ${checkAccessTokenState.value}")
                             onTokenInvalid()
                         }
                     }
@@ -88,17 +96,22 @@ class SplashViewModel @Inject constructor(
                     newTokenState.value.apply {
                         if (isRefreshTokenValid == true && newTokens != null) {
                             // refresh 토큰 아직 만료x
+                            Log.d(TAG, "result : refresh token check successful, refresh token not expired ${newTokenState.value}")
+
                             tokenDataStore.updateData {
                                 it.copy(
                                     accessToken = newTokens.accessToken,
                                     refreshToken = newTokens.refreshToken
                                 )
                             }
+
                             onTokenValid()
                             return@apply
                         }
 
                         // 만료되었거나 실패
+                        Log.d(TAG, "result : refresh token check successful, refresh token expired ${newTokenState.value}")
+
                         tokenDataStore.updateData {
                             it.copy(
                                 accessToken = null,
@@ -112,6 +125,8 @@ class SplashViewModel @Inject constructor(
                 }
 
                 is Resource.Error -> {
+                    Log.d(TAG, "result : refresh token check failure ${newTokenState.value}")
+
                     onTokenInvalid()
                 }
             }
