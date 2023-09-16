@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.datastore.core.DataStore
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -356,6 +357,7 @@ class DrawerUserInfoViewModel @Inject constructor(
         ).onEach { result->
             when(result){
                 is Resource.Success -> {
+
                     stateUserInfo = stateUserInfo.copy(
                         isLoading = false,
                         email = result.data?.email ?: "",
@@ -367,6 +369,7 @@ class DrawerUserInfoViewModel @Inject constructor(
                         phoneNumber = result.data?.memberBasicInfoDto?.phoneNum ?: "",
                         preferBeverageList = result.data?.preferCategories?.categories?.map { it.name } ?: emptyList(),
                         preferBeverageCheckList = List(result.data?.preferCategories?.size ?: 0) { true },
+                        size = result.data?.preferCategories?.size ?: 0,
                         zipcode = result.data?.memberDetailInfoDto?.zipCode ?: "",
                         address = result.data?.memberDetailInfoDto?.address ?: "",
                         detailAddress = result.data?.memberDetailInfoDto?.detailAddress ?: "",
@@ -392,8 +395,9 @@ class DrawerUserInfoViewModel @Inject constructor(
                     )
                     stateUserInfoPreferences = stateUserInfoPreferences.copy(
                         isLoading = false,
+                        size = result.data?.preferCategories?.size ?: 0,
                     )
-                    Log.e("drawer-userinfo-viewmodel", "성공 ${result.code} ${result.data?.preferCategories}")
+                    Log.e("drawer-userinfo-viewmodel", "성공 ${result.code} ${result.data?.profileUrl}")
                 }
                 is Resource.Error ->{
                     stateUserInfo = stateUserInfo.copy(error = result.message ?: "An unexpeted error occured")

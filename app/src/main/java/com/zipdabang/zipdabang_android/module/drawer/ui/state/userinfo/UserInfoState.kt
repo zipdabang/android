@@ -13,6 +13,7 @@ data class UserInfoState(
     val phoneNumber : String = "전화번호 (-제외)",
     val nickname : String = "비니",
     val preferBeverageList : List<String> = listOf("커피", "논카페인"),
+    val size : Int = 0,
     val preferBeverageCheckList : List<Boolean> = emptyList(),
     val zipcode : String = "우편번호",
     val address : String = "주소",
