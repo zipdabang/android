@@ -148,4 +148,9 @@
     <string name="group_header_recipe_of">의 레시피</string>
     <string name="btn_comment_edit">수정</string>
 
+
+    <!--  for drawer  -->
+    <string name="drawer_quit">집다방 탈퇴</string>
+
+
 </resources>
