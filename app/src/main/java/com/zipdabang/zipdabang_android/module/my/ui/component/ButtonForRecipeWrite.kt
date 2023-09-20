@@ -39,13 +39,18 @@ fun ButtonForIngredient(
         Box(
             contentAlignment = Alignment.Center
         ) {
-            Icon(
+            /*Icon(
                 painter = painterResource(R.drawable.ic_recipewrite_btn_add),
                 contentDescription = "Icon",
                 tint = ZipdabangandroidTheme.Colors.Strawberry,
                 modifier = Modifier
                     .size(18.dp)
                     .padding(0.dp)
+            )*/
+            Text(
+                text= stringResource(id = R.string.my_recipewrite_addingredient),
+                color = ZipdabangandroidTheme.Colors.Typo.copy(0.5f),
+                style= ZipdabangandroidTheme.Typography.sixteen_500
             )
         }
     }
@@ -70,11 +75,15 @@ fun ButtonForStep(
         Box(
             contentAlignment = Alignment.Center
         ) {
+            /*Text(
+                text= stringResource(id = R.string.my_recipewrite_addstep),
+                color = ZipdabangandroidTheme.Colors.Typo,
+                style= ZipdabangandroidTheme.Typography.sixteen_500
+            )*/
             Text(
-                modifier = Modifier.padding(0.dp, 0.dp, 4.dp, 0.dp),
-                text = stringResource(id = R.string.my_recipewrite_writedone),
-                style = ZipdabangandroidTheme.Typography.fourteen_300,
-                color = ZipdabangandroidTheme.Colors.Typo
+                text= stringResource(id = R.string.my_recipewrite_writedone),
+                color = ZipdabangandroidTheme.Colors.Typo.copy(0.5f),
+                style= ZipdabangandroidTheme.Typography.sixteen_500
             )
         }
     }

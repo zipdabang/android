@@ -30,6 +30,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -616,19 +618,17 @@ fun CustomDialogUploadComplete(
 // 카테고리 선택
 @Composable
 fun CustomDialogSelectCategory(
-    categoryParagraph: Int,
+    categoryList: List<com.zipdabang.zipdabang_android.module.my.data.remote.BeverageCategory>,
     categoryParagraphList: List<Int>,
     categorySelectedList: List<Boolean>,
-    categoryList: List<com.zipdabang.zipdabang_android.module.my.data.remote.BeverageCategory>,
-    setShowDialog: (Boolean) -> Unit,
-    onSelectClick: (Int) -> Unit,
+    onSelectClick : (Int, Boolean)->Unit,
     onCompleteClick: () -> Unit,
-    selectedCategory: MutableState<Int>,
+    setShowDialog: (Boolean) -> Unit,
 ) {
     Dialog(onDismissRequest = { setShowDialog(false) }) {
         Box(
             modifier = Modifier
-                .size(width = 320.dp, height = 374.dp)
+                .size(width = 320.dp, height = 388.dp)
                 .fillMaxSize()
                 .background(color = DialogBackground, shape = ZipdabangandroidTheme.Shapes.small),
         ) {
@@ -638,7 +638,7 @@ fun CustomDialogSelectCategory(
                     .wrapContentHeight(),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
-            ){
+            ) {
                 Column(
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally,
@@ -650,7 +650,7 @@ fun CustomDialogSelectCategory(
                         text = "카테고리 선택",
                         style = ZipdabangandroidTheme.Typography.thirtytwo_900_scdream,
                     )
-                    Spacer(modifier = Modifier.height(10.dp))
+                    Spacer(modifier = Modifier.height(4.dp))
                     Text(
                         text = "레시피의 카테고리를 선택해주세요",
                         textAlign = TextAlign.Center,
@@ -660,39 +660,38 @@ fun CustomDialogSelectCategory(
 
                 }
 
-                Spacer(modifier = Modifier.height(10.dp))
+                Spacer(modifier = Modifier.height(16.dp))
 
                 Column(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(0.dp, 20.dp, 0.dp, 0.dp),
+                        .fillMaxWidth(),
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     var categoryIndex = 0
-                    for (chunk in categoryList.chunked(3)) {
+                    var categoryParagraph = 0
+
+                    for(i in 0.. categoryList.size / categoryParagraphList.size + 1) {
                         Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .wrapContentHeight(),
+                            modifier = Modifier.fillMaxWidth().wrapContentHeight(),
                             horizontalArrangement = Arrangement.Center,
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            for (category in chunk) {
+                            for (i in categoryParagraph .. categoryParagraphList[categoryIndex] - 1 + categoryParagraph) {
                                 RoundedButton(
-                                    imageUrl = category.imageUrl,
-                                    buttonText = category.categoryName,
+                                    imageUrl = categoryList[i].imageUrl,
+                                    buttonText = categoryList[i].categoryName,
                                     isClicked = categorySelectedList[categoryIndex],
                                     isClickedChange = { selectedClicked ->
-                                        //categorySelectedList[index] = selectedClicked
+                                        onSelectClick(categoryIndex ,selectedClicked)
                                     }
                                 )
-                                categoryIndex++
                             }
+                            categoryParagraph += categoryParagraphList[categoryIndex]
+                            categoryIndex ++
                         }
                     }
                 }
-
                 /*val isEnabled = remember {
                     mutableStateOf(false)
                 }
@@ -718,7 +717,6 @@ fun CustomDialogSelectCategory(
                         style = ZipdabangandroidTheme.Typography.sixteen_700,
                         color = Color.White
                     )
-
                 }
             }
         }
@@ -989,7 +987,6 @@ fun PreviewCustomDialogUploadComplete() {
 fun PreviewCustomDialogSelectCategory() {
     val showDialog = remember { mutableStateOf(false) }
 
-    val category = remember { mutableStateOf(8) }
     val categoryList = listOf(
         com.zipdabang.zipdabang_android.module.my.data.remote.BeverageCategory(
             categoryName = "커피",
@@ -1032,30 +1029,25 @@ fun PreviewCustomDialogSelectCategory() {
             imageUrl = ""
         ),
     )
+    val categorySelectedList = remember { mutableStateListOf(false, false, false, false, false, false, false, false) }
 
     val isEnabled = remember { mutableStateOf(false) }
 
     if (!showDialog.value) {
         CustomDialogSelectCategory(
-            categoryParagraph = 4,
             categoryParagraphList = listOf(3, 2, 2, 1),
+            categorySelectedList = categorySelectedList,
             categoryList = categoryList,
+            onSelectClick= { index, clicked ->
+                categorySelectedList[index] = clicked
+                Log.e("categorySelectedList", "${categorySelectedList.toString()}")
+            },
+            onCompleteClick = {
+
+            },
             setShowDialog = {
                 showDialog.value = it
             },
-            onSelectClick =
-            {
-                category.value = it
-            },
-            onCompleteClick = {
-                if (category.value < 8) {
-                    Log.e("category", category.value.toString())
-                    isEnabled.value = true
-                    showDialog.value = true
-                }
-            },
-            selectedCategory = category,
-            categorySelectedList = listOf(false, false, false, false, false, false, false, false)
         )
     }
 }

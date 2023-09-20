@@ -1,5 +1,7 @@
 package com.zipdabang.zipdabang_android.module.my.ui
 
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -31,6 +33,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.zipdabang.zipdabang_android.R
 import com.zipdabang.zipdabang_android.module.my.ui.component.ButtonForIngredient
+import com.zipdabang.zipdabang_android.module.my.ui.component.ButtonForStep
 import com.zipdabang.zipdabang_android.module.my.ui.component.IngredientAndUnit
 import com.zipdabang.zipdabang_android.module.my.ui.component.Step
 import com.zipdabang.zipdabang_android.ui.component.AppBarSignUp
@@ -346,7 +349,7 @@ fun RecipeWriteScreen(
                         onClickAddBtn = { },
                         onClickDeleteStep = { }
                     )
-                    ButtonForIngredient(
+                    ButtonForStep(
                         borderColor = ZipdabangandroidTheme.Colors.Strawberry,
                         containerColor = Color.White,
                         onClickBtn = { }
@@ -498,6 +501,7 @@ fun RecipeWriteScreen(
         }
     }
 }
+
 
 @Preview
 @Composable

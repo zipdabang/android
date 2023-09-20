@@ -8,6 +8,7 @@ import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -26,6 +27,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -34,6 +36,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
@@ -70,19 +73,17 @@ fun Step(
         )
         // Step 사진 추가 후
         Row(
-            modifier = Modifier.fillMaxWidth().wrapContentHeight(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(IntrinsicSize.Min),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             Box(
-                modifier = Modifier
-                    .weight(1.6f)
-                    .aspectRatio(1f)
+                modifier = Modifier.weight(1.6f)
             ) {
                 ImageWithIcon(
                     imageUrl = R.drawable.ic_launcher_background,
-                    onClick = {
-
-                    }
+                    onClick = { }
                 )
             }
             Box(
@@ -95,7 +96,8 @@ fun Step(
                         BorderStroke(1.dp, ZipdabangandroidTheme.Colors.Typo.copy(0.1f)),
                         ZipdabangandroidTheme.Shapes.small
                     )
-                    .weight(8.4f),
+                    .weight(8.4f)
+                    .height(51.dp),
                 contentAlignment = Alignment.Center
             ) {
                 Row(
@@ -174,51 +176,49 @@ fun Step(
                 imeAction = imeAction,
             ),
         )
+        // 수정, 삭제 버튼과 글자수
         Row(
+            modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween
-        ){
+        ) {
             Row(
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ){
-                Button(
-                    onClick = {
-
-                    },
-                    shape = ZipdabangandroidTheme.Shapes.thin,
-                    modifier = Modifier.width(48.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = ZipdabangandroidTheme.Colors.Strawberry
+            ) {
+                Box(
+                    modifier = Modifier
+                        .width(48.dp)
+                        .wrapContentHeight()
+                        .padding(0.dp)
+                        .clickable(onClick={})
+                        .background(
+                            color = ZipdabangandroidTheme.Colors.Strawberry,
+                            shape = ZipdabangandroidTheme.Shapes.large,
+                        ),
+                    contentAlignment = Alignment.Center
+                ){
+                    Text(
+                        text = stringResource(R.string.my_recipewrite_edit),
+                        color = Color.White,
+                        style = ZipdabangandroidTheme.Typography.fourteen_300,
                     )
-                ) {
-                    Box(
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text(
-                            text= stringResource(R.string.my_recipewrite_edit),
-                            textAlign = TextAlign.Center,
-                            style= ZipdabangandroidTheme.Typography.fourteen_300,
-                        )
-                    }
                 }
-                Button(
-                    onClick = {
-
-                    },
-                    shape = ZipdabangandroidTheme.Shapes.thin,
-                    modifier = Modifier.width(48.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = ZipdabangandroidTheme.Colors.Strawberry
+                Box(
+                    modifier = Modifier
+                        .width(48.dp)
+                        .wrapContentHeight()
+                        .padding(0.dp)
+                        .clickable(onClick={})
+                        .background(
+                            color = ZipdabangandroidTheme.Colors.Strawberry,
+                            shape = ZipdabangandroidTheme.Shapes.large,
+                        ),
+                    contentAlignment = Alignment.Center
+                ){
+                    Text(
+                        text = stringResource(R.string.my_recipewrite_delete),
+                        color = Color.White,
+                        style = ZipdabangandroidTheme.Typography.fourteen_300,
                     )
-                ) {
-                    Box(
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text(
-                            text= stringResource(R.string.my_recipewrite_delete),
-                            textAlign = TextAlign.Center,
-                            style= ZipdabangandroidTheme.Typography.fourteen_300,
-                        )
-                    }
                 }
             }
             Text(
@@ -228,12 +228,8 @@ fun Step(
                 color = ZipdabangandroidTheme.Colors.Typo
             )
         }
-
     }
 }
-
-
-
 
 
 @Preview
