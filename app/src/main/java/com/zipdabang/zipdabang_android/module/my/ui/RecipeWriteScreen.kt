@@ -34,13 +34,18 @@ import com.zipdabang.zipdabang_android.module.my.ui.component.ButtonForIngredien
 import com.zipdabang.zipdabang_android.module.my.ui.component.IngredientAndUnit
 import com.zipdabang.zipdabang_android.module.my.ui.component.Step
 import com.zipdabang.zipdabang_android.ui.component.AppBarSignUp
+import com.zipdabang.zipdabang_android.ui.component.CustomDialogCameraFile
+import com.zipdabang.zipdabang_android.ui.component.CustomDialogRecipeDelete
 import com.zipdabang.zipdabang_android.ui.component.CustomDialogType1
+import com.zipdabang.zipdabang_android.ui.component.CustomDialogType2
 import com.zipdabang.zipdabang_android.ui.component.ImageWithIconAndText
 import com.zipdabang.zipdabang_android.ui.component.PrimaryButton
 import com.zipdabang.zipdabang_android.ui.component.PrimaryButtonWithStatus
 import com.zipdabang.zipdabang_android.ui.component.TextFieldForRecipeWriteMultiline
 import com.zipdabang.zipdabang_android.ui.component.TextFieldForRecipeWriteSingleline
 import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 
 @Composable
 fun RecipeWriteScreen(
@@ -56,15 +61,11 @@ fun RecipeWriteScreen(
     var textStateTip by remember { mutableStateOf("") }
 
     // 알럿
-    val isClickedDialogFileSelect = remember { mutableStateOf(false) }
+    val showDialogRecipeDelete = remember { mutableStateOf(false) }
     val showDialogFileSelect = remember { mutableStateOf(false) }
-    val isClickedDialogPerimission = remember { mutableStateOf(false) }
     val showDialogPerimission = remember { mutableStateOf(false) }
-    val isClickedDialogSave = remember { mutableStateOf(false) }
     val showDialogSave = remember { mutableStateOf(false) }
-    val isClickedDialogUpload = remember { mutableStateOf(false) }
     val showDialogUpload = remember { mutableStateOf(false) }
-    val isClickedDialogUploadComplete = remember { mutableStateOf(false) }
     val showDialogUploadComplete = remember { mutableStateOf(false) }
 
     Scaffold(
@@ -73,7 +74,14 @@ fun RecipeWriteScreen(
         topBar = {
             AppBarSignUp(
                 navigationIcon = R.drawable.ic_topbar_backbtn,
-                onClickNavIcon = { onClickBack() },
+                onClickNavIcon = {
+                    // 만약 하나라도 차있으면, dialog 띄운 후에 onClickBack()
+                    // if(){
+                    showDialogRecipeDelete.value = true
+                    // } else{
+                    //      onClickBack()
+                    // }
+                },
                 centerText = stringResource(id = R.string.my_recipewrite)
             )
         },
@@ -98,7 +106,7 @@ fun RecipeWriteScreen(
             ) {
                 ImageWithIconAndText(
                     addImageClick = {
-
+                        showDialogFileSelect.value = true
                     },
                     deleteImageClick = {
 
@@ -402,7 +410,7 @@ fun RecipeWriteScreen(
                         backgroundColor = ZipdabangandroidTheme.Colors.MainBackground,
                         text = stringResource(id = R.string.my_recipewrite_save),
                         onClick = {
-                            isClickedDialogSave.value = true
+                            showDialogSave.value = true
                         },
                     )
                 }
@@ -416,23 +424,76 @@ fun RecipeWriteScreen(
                     )
                 }
 
+            }
 
-                // 알럿
-                if (isClickedDialogSave.value) {
-                    CustomDialogType1(
-                        title = stringResource(id = R.string.my_save),
-                        text = stringResource(id = R.string.my_dialog_save_detail),
-                        declineText = stringResource(id = R.string.my_dialog_cancel),
-                        acceptText = stringResource(id = R.string.my_save),
-                        setShowDialog = {
-                            showDialogSave.value = false
-                        },
-                        onAcceptClick = {
-                            // 임시저장 api & navGraph 이동
-                            showDialogSave.value = false
-                        }
-                    )
-                }
+
+            // 알럿
+            // 권한허용 알럿
+            if(showDialogPerimission.value){
+                CustomDialogType1(
+                    title = stringResource(id = R.string.my_dialog_permission),
+                    text = stringResource(id = R.string.my_dialog_permission_detail),
+                    declineText = stringResource(id = R.string.my_dialog_cancel),
+                    acceptText = stringResource(id = R.string.my_dialog_permit),
+                    setShowDialog = {
+                        showDialogPerimission.value = it
+                    },
+                    onAcceptClick = {
+                        // 카메라 허용받기
+                        showDialogPerimission.value = false
+                    }
+                )
+            }
+            // 파일선택 알럿
+            if (showDialogFileSelect.value) {
+                CustomDialogCameraFile(
+                    title = stringResource(id = R.string.my_dialog_fileselect),
+                    setShowDialog = {
+                        showDialogFileSelect.value = it
+                    },
+                    onCameraClick = {
+                        showDialogFileSelect.value = false
+                    },
+                    onFileClick = {
+                        showDialogFileSelect.value = false
+                    }
+                )
+            }
+            // 임시저장 알럿
+            if (showDialogSave.value) {
+                CustomDialogType2(
+                    title = stringResource(id = R.string.my_save),
+                    text = stringResource(id = R.string.my_dialog_save_detail),
+                    declineText = stringResource(id = R.string.my_dialog_cancel),
+                    acceptText = stringResource(id = R.string.my_save),
+                    setShowDialog = {
+                        showDialogSave.value = it
+                    },
+                    onAcceptClick = {
+                        // 임시저장 api & navGraph 이동
+                        showDialogSave.value = false
+                    }
+                )
+            }
+            // 업로드 알럿
+            if (showDialogUpload.value) {
+
+            }
+            // 작성 중 취소 알럿
+            if (showDialogRecipeDelete.value) {
+                CustomDialogRecipeDelete(
+                    setShowDialog = {
+                        showDialogRecipeDelete.value = it
+                    },
+                    onDeleteClick = {
+                        showDialogRecipeDelete.value = false
+                        onClickBack()
+                    },
+                    onTemporalSave = {
+                        // 임시저장 api & navGraph 이동
+                        showDialogRecipeDelete.value = false
+                    }
+                )
             }
         }
     }
