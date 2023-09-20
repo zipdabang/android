@@ -681,9 +681,9 @@ fun CustomDialogSelectCategory(
                                 RoundedButton(
                                     imageUrl = categoryList[i].imageUrl,
                                     buttonText = categoryList[i].categoryName,
-                                    isClicked = categorySelectedList[categoryIndex],
+                                    isClicked = categorySelectedList[i],
                                     isClickedChange = { selectedClicked ->
-                                        onSelectClick(categoryIndex ,selectedClicked)
+                                        onSelectClick(i, selectedClicked)
                                     }
                                 )
                             }
@@ -1040,7 +1040,9 @@ fun PreviewCustomDialogSelectCategory() {
             categoryList = categoryList,
             onSelectClick= { index, clicked ->
                 categorySelectedList[index] = clicked
-                Log.e("categorySelectedList", "${categorySelectedList.toString()}")
+                Log.e("categorySelectedList", "${categorySelectedList[0]} ${categorySelectedList[1]} ${categorySelectedList[2]} " +
+                        "${categorySelectedList[3]} ${categorySelectedList[4]} ${categorySelectedList[5]} ${categorySelectedList[6]} " +
+                        "${categorySelectedList[7]}" )
             },
             onCompleteClick = {
 

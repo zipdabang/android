@@ -113,7 +113,7 @@ fun PreviewImageWithIcon(){
 fun ImageWithIconAndText(
     addImageClick : () -> Unit, //image add할때 클릭이벤트
     deleteImageClick : () -> Unit, //image delete할때 클릭이벤트
-    imageUrl : String,
+    imageUrl : Any?,
     iconImageVector : Int,
     iconTint : Color,
     iconModifier : Modifier,
@@ -128,7 +128,7 @@ fun ImageWithIconAndText(
             .background(color = Color(0xFFF7F6F6)),
         contentAlignment = Alignment.Center,
     ){
-        if (imageUrl != ""){
+        if (imageUrl != null){
             AsyncImage(
                 model = imageUrl,
                 contentDescription = null,

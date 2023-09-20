@@ -1,7 +1,13 @@
 package com.zipdabang.zipdabang_android.module.my.ui
 
+import android.content.Context
+import android.graphics.Bitmap
+import android.net.Uri
+import android.os.Environment
+import android.util.Base64
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.result.launch
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -26,11 +32,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.content.FileProvider
 import com.zipdabang.zipdabang_android.R
 import com.zipdabang.zipdabang_android.module.my.ui.component.ButtonForIngredient
 import com.zipdabang.zipdabang_android.module.my.ui.component.ButtonForStep
@@ -47,8 +55,20 @@ import com.zipdabang.zipdabang_android.ui.component.PrimaryButtonWithStatus
 import com.zipdabang.zipdabang_android.ui.component.TextFieldForRecipeWriteMultiline
 import com.zipdabang.zipdabang_android.ui.component.TextFieldForRecipeWriteSingleline
 import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
+import java.io.ByteArrayOutputStream
+import java.io.File
+import java.io.FileOutputStream
+
+private fun getImageUri(context: Context, imageBitmap: Bitmap): Uri {
+    val imagesDir = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+    val imageFile = File(imagesDir, "temp_image.png")
+
+    val outputStream = FileOutputStream(imageFile)
+    imageBitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
+    outputStream.close()
+
+    return FileProvider.getUriForFile(context, "zipdabang.fileprovider", imageFile)
+}
 
 @Composable
 fun RecipeWriteScreen(
@@ -70,6 +90,35 @@ fun RecipeWriteScreen(
     val showDialogSave = remember { mutableStateOf(false) }
     val showDialogUpload = remember { mutableStateOf(false) }
     val showDialogUploadComplete = remember { mutableStateOf(false) }
+
+
+    // 사진
+    var imageUri by remember { mutableStateOf<Uri?>(null) }
+    val context = LocalContext.current
+    // 갤러리
+    val takePhotoFromAlbumLauncher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
+        imageUri = uri
+    }
+    // 카메라
+    val takePhotoFromCameraLauncher = rememberLauncherForActivityResult(ActivityResultContracts.TakePicturePreview()) { takenPhoto ->
+        if(takenPhoto != null){
+            val baos = ByteArrayOutputStream()
+            takenPhoto.compress(
+                Bitmap.CompressFormat.PNG,
+                100,
+                baos
+            )
+            /*val b : ByteArray = baos.toByteArray()
+            val encoded : String = Base64.encodeToString(b, Base64.DEFAULT)*/
+
+            val tempUri = getImageUri(context, takenPhoto)
+            imageUri = tempUri
+        } else {
+
+        }
+    }
+
+
 
     Scaffold(
         modifier = Modifier
@@ -112,9 +161,9 @@ fun RecipeWriteScreen(
                         showDialogFileSelect.value = true
                     },
                     deleteImageClick = {
-
+                        imageUri = null
                     },
-                    imageUrl = "",
+                    imageUrl = imageUri,
                     iconImageVector = R.drawable.ic_recipewrite_camera,
                     iconTint = ZipdabangandroidTheme.Colors.Typo.copy(0.5f),
                     iconModifier = Modifier.size(27.dp, 24.dp),
@@ -455,9 +504,11 @@ fun RecipeWriteScreen(
                         showDialogFileSelect.value = it
                     },
                     onCameraClick = {
+                        takePhotoFromCameraLauncher.launch()
                         showDialogFileSelect.value = false
                     },
                     onFileClick = {
+                        takePhotoFromAlbumLauncher.launch("image/*")
                         showDialogFileSelect.value = false
                     }
                 )
@@ -480,7 +531,14 @@ fun RecipeWriteScreen(
             }
             // 업로드 알럿
             if (showDialogUpload.value) {
-
+                /*CustomDialogSelectCategory(
+                    categoryList = ,
+                    categoryParagraphList = ,
+                    categorySelectedList = ,
+                    onSelectClick = {},
+                    onCompleteClick = { *//*TODO*//* },
+                    setShowDialog = {}
+                )*/
             }
             // 작성 중 취소 알럿
             if (showDialogRecipeDelete.value) {
