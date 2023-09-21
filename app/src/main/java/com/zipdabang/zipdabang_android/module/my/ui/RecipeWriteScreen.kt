@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Environment
+import android.provider.MediaStore
 import android.util.Base64
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -58,8 +59,12 @@ import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
+import java.io.OutputStream
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
-private fun getImageUri(context: Context, imageBitmap: Bitmap): Uri {
+/*private fun getImageUri(context: Context, imageBitmap: Bitmap): Uri {
     val imagesDir = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
     val imageFile = File(imagesDir, "temp_image.png")
 
@@ -68,6 +73,29 @@ private fun getImageUri(context: Context, imageBitmap: Bitmap): Uri {
     outputStream.close()
 
     return FileProvider.getUriForFile(context, "zipdabang.fileprovider", imageFile)
+}*/
+
+// 비트맵을 Uri로 변환하는 함수
+fun bitmapToUri(context: Context, bitmap: Bitmap): Uri? {
+    val imagesDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).toString()
+    val imageFileName = "IMG_" + SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(Date()) + ".jpg"
+    val imageFile = File(imagesDir, imageFileName)
+    val fos: OutputStream
+    try {
+        fos = FileOutputStream(imageFile)
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos)
+        fos.flush()
+        fos.close()
+    } catch (e: Exception) {
+        e.printStackTrace()
+        return null
+    }
+
+    // 이미지를 미디어 스캔하여 갤러리에 표시
+    MediaStore.Images.Media.insertImage(context.contentResolver, imageFile.absolutePath, imageFileName, null)
+
+    // 파일의 Uri 반환
+    return Uri.fromFile(imageFile)
 }
 
 @Composable
@@ -95,28 +123,28 @@ fun RecipeWriteScreen(
     // 사진
     var imageUri by remember { mutableStateOf<Uri?>(null) }
     val context = LocalContext.current
-    // 갤러리
-    val takePhotoFromAlbumLauncher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
-        imageUri = uri
-    }
-    // 카메라
-    val takePhotoFromCameraLauncher = rememberLauncherForActivityResult(ActivityResultContracts.TakePicturePreview()) { takenPhoto ->
-        if(takenPhoto != null){
-            val baos = ByteArrayOutputStream()
-            takenPhoto.compress(
-                Bitmap.CompressFormat.PNG,
-                100,
-                baos
-            )
-            /*val b : ByteArray = baos.toByteArray()
-            val encoded : String = Base64.encodeToString(b, Base64.DEFAULT)*/
-
-            val tempUri = getImageUri(context, takenPhoto)
-            imageUri = tempUri
-        } else {
-
+    // 갤러리->Uri 형식
+    val takePhotoFromAlbumLauncher =
+        rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
+            imageUri = uri
         }
-    }
+    // 카메라->Bitmap 형식
+    val takePhotoFromCameraLauncher =
+        rememberLauncherForActivityResult(ActivityResultContracts.TakePicturePreview()) { bitmap: Bitmap? ->
+            if (bitmap != null) {
+                /*val baos = ByteArrayOutputStream()
+                takenPhoto.compress(
+                    Bitmap.CompressFormat.PNG,
+                    100,
+                    baos
+                )*/
+                /*val b : ByteArray = baos.toByteArray()
+                val encoded : String = Base64.encodeToString(b, Base64.DEFAULT)*/
+                // 비트맵을 Uri로 변환하고 imageUri에 할당
+                imageUri = bitmapToUri(context, bitmap)
+            }
+        }
+
 
 
 
@@ -481,7 +509,7 @@ fun RecipeWriteScreen(
 
             // 알럿
             // 권한허용 알럿
-            if(showDialogPerimission.value){
+            if (showDialogPerimission.value) {
                 CustomDialogType1(
                     title = stringResource(id = R.string.my_dialog_permission),
                     text = stringResource(id = R.string.my_dialog_permission_detail),
