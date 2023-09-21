@@ -64,16 +64,6 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-/*private fun getImageUri(context: Context, imageBitmap: Bitmap): Uri {
-    val imagesDir = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
-    val imageFile = File(imagesDir, "temp_image.png")
-
-    val outputStream = FileOutputStream(imageFile)
-    imageBitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
-    outputStream.close()
-
-    return FileProvider.getUriForFile(context, "zipdabang.fileprovider", imageFile)
-}*/
 
 // 비트맵을 Uri로 변환하는 함수
 fun bitmapToUri(context: Context, bitmap: Bitmap): Uri? {
