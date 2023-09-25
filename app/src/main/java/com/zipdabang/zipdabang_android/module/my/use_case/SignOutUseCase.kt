@@ -28,31 +28,16 @@ class SignOutUseCase @Inject constructor(
 
             val tokens = tokenDataStore.data.first()
             val accessToken = "Bearer ${tokens.accessToken}"
-            val refreshToken = tokens.refreshToken ?: TOKEN_NULL
-            val fcmToken = tokens.fcmToken ?: TOKEN_NULL
-            val deviceNumber = tokens.deviceNumber ?: TOKEN_NULL
 
             Log.d("logout", "tokens : $tokens")
 
-            val tokensForSignOut = SignOutTokens(
-                fcmToken = fcmToken,
-                serialNumber = deviceNumber
-            )
-
-            Log.d("logout", "${repository.signOut(
-                accessToken = accessToken,
-                signOutTokens = tokensForSignOut
-            )}")
-
-            val result = repository.signOut(
-                accessToken = accessToken,
-                signOutTokens = tokensForSignOut
-            ).toSignOutResponse()
+            val result = repository.signOut(accessToken = accessToken).toSignOutResponse()
 
             Log.d("result", result.code.toString())
 
             when (result.code) {
                 ResponseCode.RESPONSE_DEFAULT.code -> {
+                    Log.d("logout", "sign out successful")
                     emit(
                         Resource.Success(
                             code = result.code,
@@ -63,6 +48,7 @@ class SignOutUseCase @Inject constructor(
                 }
 
                 else -> {
+                    Log.d("logout", "sign out failure ${result.code}")
                     emit(
                         Resource.Error(
                             message = ResponseCode.getMessageByCode(result.code),
@@ -72,14 +58,14 @@ class SignOutUseCase @Inject constructor(
                 }
             }
         } catch (e: HttpException) {
-            emit(Resource.Error(e.message ?: "unexpected http exception"))
+            emit(Resource.Error("${e.message} ${e.stackTrace} ${e.localizedMessage}" ?: "unexpected http exception"))
         } catch (e: IOException) {
-            emit(Resource.Error(e.message ?: "unexpected io exception"))
+            emit(Resource.Error("${e.message} ${e.stackTrace}" ?: "unexpected io exception"))
         } catch (e: Exception) {
             if (e is CancellationException) {
                 throw e
             } else {
-                emit(Resource.Error("unexpected error : ${e.message}"))
+                emit(Resource.Error("unexpected error : ${e.message} ${e.printStackTrace()}"))
             }
         }
     }

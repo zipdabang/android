@@ -7,7 +7,6 @@ import retrofit2.http.POST
 interface MyApi {
     @POST("members/logout")
     suspend fun signOut(
-        @Header("Authorization") accessToken: String,
-        @Body tokensForSignOut: SignOutTokens
+        @Header("Authorization") accessToken: String
     ): SignOutResponseDto
 }
