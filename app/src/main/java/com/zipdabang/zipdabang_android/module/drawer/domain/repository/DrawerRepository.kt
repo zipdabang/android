@@ -1,5 +1,7 @@
 package com.zipdabang.zipdabang_android.module.drawer.domain.repository
 
+import com.zipdabang.zipdabang_android.module.drawer.data.remote.quitdto.QuitDto
+import com.zipdabang.zipdabang_android.module.drawer.data.remote.quitdto.QuitRequest
 import com.zipdabang.zipdabang_android.module.drawer.data.remote.userinfodto.UserInfoBasicRequest
 import com.zipdabang.zipdabang_android.module.drawer.data.remote.userinfodto.UserInfoDetailRequest
 import com.zipdabang.zipdabang_android.module.drawer.data.remote.userinfodto.UserInfoEditResponse
@@ -20,4 +22,8 @@ interface DrawerRepository {
     suspend fun patchUserInfoBasic(accessToken: String, userInfoBasic : UserInfoBasicRequest): UserInfoEditResponse
     suspend fun patchUserInfoDetail(accessToken: String, userInfoDetail : UserInfoDetailRequest): UserInfoEditResponse
     suspend fun patchUserInfoNickname(accessToken: String, userInfoNickname : UserInfoNicknameRequest): UserInfoEditResponse
+
+
+
+    suspend fun patchQuit(accessToken: String, quitReason : QuitRequest): QuitDto
 }

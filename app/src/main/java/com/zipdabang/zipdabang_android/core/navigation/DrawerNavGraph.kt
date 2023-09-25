@@ -13,6 +13,7 @@ import androidx.lifecycle.ViewModel
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
+import androidx.navigation.NavHost
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -23,9 +24,10 @@ import com.zipdabang.zipdabang_android.module.drawer.ui.UserInfoDetailScreen
 import com.zipdabang.zipdabang_android.module.drawer.ui.UserInfoNicknameScreen
 import com.zipdabang.zipdabang_android.module.drawer.ui.UserInfoPreferencesScreen
 import com.zipdabang.zipdabang_android.module.drawer.ui.UserInfoScreen
+import com.zipdabang.zipdabang_android.module.drawer.ui.quit.QuitScreen
 import com.zipdabang.zipdabang_android.module.drawer.ui.viewmodel.DrawerUserInfoViewModel
 
-fun NavGraphBuilder.DrawerNavGraph(navController: NavHostController){
+fun NavGraphBuilder.DrawerNavGraph(navController: NavHostController,outerNavController: NavHostController){
 
     navigation(startDestination = DrawerScreen.Notice.route, route = DRAWER_ROUTE){
         composable(DrawerScreen.Notice.route){
@@ -59,7 +61,9 @@ fun NavGraphBuilder.DrawerNavGraph(navController: NavHostController){
                     navController.navigate(DrawerScreen.UserInfoPreferences.route)
                 },
                 onClickLogout = {},
-                onClickWithdraw = {}
+                onClickWithdraw = {
+                    navController.navigate(DrawerScreen.Quit.route)
+                }
             )
         }
 
@@ -133,6 +137,10 @@ fun NavGraphBuilder.DrawerNavGraph(navController: NavHostController){
                     navController.popBackStack(DrawerScreen.UserInfo.route, inclusive = false)
                 }
             )
+        }
+
+        composable(DrawerScreen.Quit.route){
+           QuitScreen(onQuitClick = { outerNavController.navigate(AuthScreen.SignIn.route) })
         }
     }
 

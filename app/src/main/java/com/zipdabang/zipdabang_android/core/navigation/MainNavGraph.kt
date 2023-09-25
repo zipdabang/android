@@ -32,7 +32,8 @@ fun MainNavGraph(
 
         SharedNavGraph(navController)
 
-        DrawerNavGraph(navController = navController)
+        DrawerNavGraph(navController = navController,
+            outerNavController= outerNavController)
 
     }
 

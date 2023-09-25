@@ -1,5 +1,7 @@
 package com.zipdabang.zipdabang_android.module.drawer.data.remote
 
+import com.zipdabang.zipdabang_android.module.drawer.data.remote.quitdto.QuitDto
+import com.zipdabang.zipdabang_android.module.drawer.data.remote.quitdto.QuitRequest
 import com.zipdabang.zipdabang_android.module.drawer.data.remote.userinfodto.UserInfoBasicRequest
 import com.zipdabang.zipdabang_android.module.drawer.data.remote.userinfodto.UserInfoDetailRequest
 import com.zipdabang.zipdabang_android.module.drawer.data.remote.userinfodto.UserInfoEditResponse
@@ -76,4 +78,12 @@ interface DrawerApi {
         @Header("Authorization") accessToken: String,
         @Body userPreferences : UserPreferencesRequest
     ) : UserInfoEditResponse
+
+
+    @PATCH("members/deregister")
+    suspend fun patchQuit(
+        @Header("Authorization") accessToken: String,
+        @Body quitReason : QuitRequest
+    ) :QuitDto
+
 }

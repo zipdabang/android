@@ -10,15 +10,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -28,20 +26,28 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.zipdabang.zipdabang_android.R
+import com.zipdabang.zipdabang_android.module.drawer.ui.viewmodel.QuitViewModel
 import com.zipdabang.zipdabang_android.ui.component.AppBarSignUp
+import com.zipdabang.zipdabang_android.ui.component.CustomDialogOnlyConfirm
+import com.zipdabang.zipdabang_android.ui.component.GeneralDialogType1
 import com.zipdabang.zipdabang_android.ui.component.MainAndSubTitle
 import com.zipdabang.zipdabang_android.ui.component.PrimaryButtonWithStatus
 import com.zipdabang.zipdabang_android.ui.component.TextFieldForDrawerMultiline
 import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun QuitScreen(){
+fun QuitScreen(
+    onQuitClick : ()-> Unit,
+    quitViewModel: QuitViewModel = hiltViewModel()
+){
 
-    val checkList: MutableState<MutableList<Int>> = remember {
-        mutableStateOf(mutableListOf())
-    }
+    var checkReasonList  = mutableListOf<String>()
     var ButtonFilled by remember {
         mutableStateOf(false)
     }
@@ -50,7 +56,6 @@ fun QuitScreen(){
     }
 
 
-    ButtonFilled =  checkList.value.size != 0 && text != ""
 
 
     Scaffold(
@@ -72,14 +77,16 @@ fun QuitScreen(){
             .background(color = Color.White)
 
         ){
-            val reasonList = listOf<String>(
-                "사고싶은 물품이 없어요.",
-                "앱을 이용하지 않아요.",
-                "앱 이용이 불편해요.",
-                "새 계정을 만들고 싶어요.",
-                "비매너 유저를 만났어요.",
-                "기타"
-            )
+//            val reasonList = listOf<String?>(
+//                null,
+//                "사고싶은 물품이 없어요.",
+//                "앱을 이용하지 않아요.",
+//                "앱 이용이 불편해요.",
+//                "새 계정을 만들고 싶어요.",
+//                "비매너 유저를 만났어요.",
+//                "기타"
+//            )
+            val reasonList = QuitReasons.values()
             MainAndSubTitle(
                 mainValue = "집다방 탈퇴",
                 mainTextStyle = ZipdabangandroidTheme.Typography.twentytwo_700,
@@ -97,22 +104,22 @@ fun QuitScreen(){
                     .wrapContentHeight()
 
             ){
-                reasonList.forEachIndexed { index, reason ->
+                reasonList.forEachIndexed { index, reasonData ->
+                    Log.e("quit_log_inex",index.toString())
 
-                    QuitCheckBoxComponent(
-                        reason = reason,
-                        addReason =
-                        {
-                            checkList.value.add(index)
-                            ButtonFilled =  checkList.value.size != 0 && text != ""
-
-                        },
-                        removeReason = {
-                            checkList.value.remove(index)
-                            ButtonFilled =  checkList.value.size != 0 && text != ""
-
-                        }
-                    )
+                    if (reasonData.reason != null) {
+                        QuitCheckBoxComponent(
+                            reason = reasonData.reason ,
+                            ischeckedChange = {
+                                checkReasonList.add(reasonData.requestString)
+                                ButtonFilled = checkReasonList.isNotEmpty()
+                            },
+                            isNotChecked = {
+                                checkReasonList.remove(reasonData.requestString)
+                                ButtonFilled = checkReasonList.isNotEmpty()
+                            }
+                        )
+                    }
                 }
             }
 
@@ -141,15 +148,45 @@ fun QuitScreen(){
 
             Spacer(modifier = Modifier.height(133.dp))
 
-            PrimaryButtonWithStatus(text = "제출하기", onClick = { /*TODO*/ }, isFormFilled = ButtonFilled)
+            val showDialogSave = remember { mutableStateOf(false) }
+            if (showDialogSave.value) {
+                CustomDialogOnlyConfirm(
+                    title = "집다방 탈퇴 완료",
+                    text = "지금까지 집다방을 이용해주셔서 감사합니다. 다음에도 좋은 인연으로 만날 수 있길 바랍니다. 건강하고 행복하세요!",
+                    acceptText = "확인",
+                    setShowDialog = {
+                        showDialogSave.value = it
+                    },
+                    onAcceptClick = {
+                        showDialogSave.value = false
+                    }
+                )
+            }
+
+            Log.e("quit_log", checkReasonList.size.toString())
+            PrimaryButtonWithStatus(
+                text = "제출하기",
+                onClick = {
+                    CoroutineScope(Dispatchers.IO).launch {
+                        quitViewModel.pathQuitReasonUseCase(checkReasonList, text) {
+                            onQuitClick()
+                        }
+                        if(quitViewModel.quitState.value.isSuccessful) showDialogSave.value = true
+                     }
+                          },
+                isFormFilled = ButtonFilled
+            )
 
 
         }
     }
+
+
+
     }
 
 @Preview
 @Composable
 fun previewQuitScreen(){
-    QuitScreen()
+ //   QuitScreen()
 }

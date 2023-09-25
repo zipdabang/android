@@ -1,6 +1,8 @@
 package com.zipdabang.zipdabang_android.module.drawer.data.repository
 
 import com.zipdabang.zipdabang_android.module.drawer.data.remote.DrawerApi
+import com.zipdabang.zipdabang_android.module.drawer.data.remote.quitdto.QuitDto
+import com.zipdabang.zipdabang_android.module.drawer.data.remote.quitdto.QuitRequest
 import com.zipdabang.zipdabang_android.module.drawer.data.remote.userinfodto.UserInfoBasicRequest
 import com.zipdabang.zipdabang_android.module.drawer.data.remote.userinfodto.UserInfoDetailRequest
 import com.zipdabang.zipdabang_android.module.drawer.data.remote.userinfodto.UserInfoEditResponse
@@ -59,6 +61,13 @@ class DrawerRepositoryImpl @Inject constructor(
         userInfoNickname: UserInfoNicknameRequest
     ): UserInfoEditResponse {
         return api.patchUserInfoNickname(accessToken = accessToken, userInfoNickname = userInfoNickname)
+    }
+
+    override suspend fun patchQuit(
+        accessToken: String,
+        quitReason: QuitRequest
+    ): QuitDto {
+        return api.patchQuit(accessToken = accessToken,quitReason = quitReason)
     }
 
 }
