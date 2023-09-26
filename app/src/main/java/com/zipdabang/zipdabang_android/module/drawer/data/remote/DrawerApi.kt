@@ -83,7 +83,8 @@ interface DrawerApi {
     @PATCH("members/deregister")
     suspend fun patchQuit(
         @Header("Authorization") accessToken: String,
-        @Body quitReason : QuitRequest
+        @Query("deregisterTypes") deregisterTypes: List<String>,
+        @Query("feedback") feedback: String,
     ) :QuitDto
 
 }

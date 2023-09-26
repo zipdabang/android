@@ -23,13 +23,12 @@ class PatchQuitReasonUseCase @Inject constructor(
     private val datastore : DataStore<Token>
 
 ){
-    operator fun invoke(quitReason : QuitRequest) : Flow<Resource<QuitDto>> = flow{
+    operator fun invoke(deregisterTypes: List<String>,feedback : String) : Flow<Resource<QuitDto>> = flow{
         try {
             emit(Resource.Loading())
             val accessToken = datastore.data.first().accessToken ?: Constants.TOKEN_NULL
             val token = "Bearer " + accessToken
-            Log.e("quit_log",quitReason.deregisterTypes[0])
-            val basicResponse = repository.patchQuit(accessToken =token, quitReason = quitReason)
+            val basicResponse = repository.patchQuit(accessToken =token, deregisterTypes= deregisterTypes, feedback = feedback)
             Log.e("quit_log",basicResponse.code.toString())
 
             emit(

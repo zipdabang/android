@@ -22,8 +22,5 @@ interface DrawerRepository {
     suspend fun patchUserInfoBasic(accessToken: String, userInfoBasic : UserInfoBasicRequest): UserInfoEditResponse
     suspend fun patchUserInfoDetail(accessToken: String, userInfoDetail : UserInfoDetailRequest): UserInfoEditResponse
     suspend fun patchUserInfoNickname(accessToken: String, userInfoNickname : UserInfoNicknameRequest): UserInfoEditResponse
-
-
-
-    suspend fun patchQuit(accessToken: String, quitReason : QuitRequest): QuitDto
+    suspend fun patchQuit(accessToken: String, deregisterTypes: List<String>, feedback : String): QuitDto
 }

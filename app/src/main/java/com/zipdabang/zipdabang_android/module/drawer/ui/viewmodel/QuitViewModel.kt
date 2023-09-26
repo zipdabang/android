@@ -27,10 +27,14 @@ class QuitViewModel @Inject constructor(
     var quitState = _quitState
 
 
-    fun pathQuitReasonUseCase(reasonList : List<String>, feedBack: String,onQuitClick : ()->Unit){
-       val quitRequest  = QuitRequest(deregisterTypes = reasonList, feedback = feedBack)
+    fun pathQuitReasonUseCase(reasonList : List<String>, feedBack: String, onDialogShow : ()-> Unit){
 
-        quitUseCase(quitReason = quitRequest).onEach {
+       val quitRequest  = QuitRequest(deregisterTypes = reasonList, feedback = feedBack)
+        reasonList.forEach {
+            Log.e("reasonList",it)
+        }
+
+        quitUseCase(deregisterTypes = reasonList,feedback = feedBack).onEach {
         result ->
             when(result){
                 is Resource.Loading -> {
@@ -44,6 +48,8 @@ class QuitViewModel @Inject constructor(
                             isLoading = false,
                             isSuccessful = true
                         )
+                        result.code?.let { Log.e("quit", it.toString()) }
+
                         dataStore.updateData {
                             it.copy(
                                 accessToken = null,
@@ -52,7 +58,7 @@ class QuitViewModel @Inject constructor(
                                 platformStatus = CurrentPlatform.NONE
                             )
                         }
-                        onQuitClick()
+                    onDialogShow()
 
                     }else{
                         result.message?.let { Log.e("quit_error", it) }

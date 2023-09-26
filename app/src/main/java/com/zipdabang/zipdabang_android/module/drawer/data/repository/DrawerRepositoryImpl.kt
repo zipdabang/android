@@ -65,9 +65,10 @@ class DrawerRepositoryImpl @Inject constructor(
 
     override suspend fun patchQuit(
         accessToken: String,
-        quitReason: QuitRequest
+        deregisterTypes: List<String>,
+        feedback : String
     ): QuitDto {
-        return api.patchQuit(accessToken = accessToken,quitReason = quitReason)
+        return api.patchQuit(accessToken = accessToken, deregisterTypes = deregisterTypes, feedback = feedback)
     }
 
 }

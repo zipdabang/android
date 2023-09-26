@@ -31,6 +31,7 @@ import com.zipdabang.zipdabang_android.R
 import com.zipdabang.zipdabang_android.module.drawer.ui.viewmodel.QuitViewModel
 import com.zipdabang.zipdabang_android.ui.component.AppBarSignUp
 import com.zipdabang.zipdabang_android.ui.component.CustomDialogOnlyConfirm
+import com.zipdabang.zipdabang_android.ui.component.CustomDialogQuitConfirm
 import com.zipdabang.zipdabang_android.ui.component.GeneralDialogType1
 import com.zipdabang.zipdabang_android.ui.component.MainAndSubTitle
 import com.zipdabang.zipdabang_android.ui.component.PrimaryButtonWithStatus
@@ -149,16 +150,15 @@ fun QuitScreen(
             Spacer(modifier = Modifier.height(133.dp))
 
             val showDialogSave = remember { mutableStateOf(false) }
+
             if (showDialogSave.value) {
-                CustomDialogOnlyConfirm(
+                CustomDialogQuitConfirm(
                     title = "집다방 탈퇴 완료",
                     text = "지금까지 집다방을 이용해주셔서 감사합니다. 다음에도 좋은 인연으로 만날 수 있길 바랍니다. 건강하고 행복하세요!",
                     acceptText = "확인",
-                    setShowDialog = {
-                        showDialogSave.value = it
-                    },
                     onAcceptClick = {
                         showDialogSave.value = false
+                        onQuitClick()
                     }
                 )
             }
@@ -167,12 +167,11 @@ fun QuitScreen(
             PrimaryButtonWithStatus(
                 text = "제출하기",
                 onClick = {
-                    CoroutineScope(Dispatchers.IO).launch {
-                        quitViewModel.pathQuitReasonUseCase(checkReasonList, text) {
-                            onQuitClick()
+                    quitViewModel.pathQuitReasonUseCase(
+                        checkReasonList, text , onDialogShow = {
+                            showDialogSave.value = true
                         }
-                        if(quitViewModel.quitState.value.isSuccessful) showDialogSave.value = true
-                     }
+                    )
                           },
                 isFormFilled = ButtonFilled
             )
