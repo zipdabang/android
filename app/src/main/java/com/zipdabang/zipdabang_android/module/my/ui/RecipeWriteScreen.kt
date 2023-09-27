@@ -111,12 +111,12 @@ fun RecipeWriteScreen(
 
 
     // 사진
-    var imageUri by remember { mutableStateOf<Uri?>(null) }
+    var thumbnailUri by remember { mutableStateOf<Uri?>(null) }
     val context = LocalContext.current
     // 갤러리->Uri 형식
     val takePhotoFromAlbumLauncher =
         rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
-            imageUri = uri
+            thumbnailUri = uri
         }
     // 카메라->Bitmap 형식
     val takePhotoFromCameraLauncher =
@@ -131,7 +131,7 @@ fun RecipeWriteScreen(
                 /*val b : ByteArray = baos.toByteArray()
                 val encoded : String = Base64.encodeToString(b, Base64.DEFAULT)*/
                 // 비트맵을 Uri로 변환하고 imageUri에 할당
-                imageUri = bitmapToUri(context, bitmap)
+                thumbnailUri = bitmapToUri(context, bitmap)
             }
         }
 
@@ -179,9 +179,9 @@ fun RecipeWriteScreen(
                         showDialogFileSelect.value = true
                     },
                     deleteImageClick = {
-                        imageUri = null
+                        thumbnailUri = null
                     },
-                    imageUrl = imageUri,
+                    imageUrl = thumbnailUri,
                     iconImageVector = R.drawable.ic_recipewrite_camera,
                     iconTint = ZipdabangandroidTheme.Colors.Typo.copy(0.5f),
                     iconModifier = Modifier.size(27.dp, 24.dp),
@@ -357,6 +357,7 @@ fun RecipeWriteScreen(
                     ButtonForIngredient(
                         borderColor = ZipdabangandroidTheme.Colors.Strawberry,
                         containerColor = Color.White,
+                        enabled = false,
                         onClickBtn = { }
                     )
                     Row(
@@ -419,6 +420,7 @@ fun RecipeWriteScreen(
                     ButtonForStep(
                         borderColor = ZipdabangandroidTheme.Colors.Strawberry,
                         containerColor = Color.White,
+                        enabled = false,
                         onClickBtn = { }
                     )
                     Text(

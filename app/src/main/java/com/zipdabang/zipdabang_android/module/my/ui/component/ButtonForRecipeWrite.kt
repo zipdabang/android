@@ -24,13 +24,14 @@ import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
 fun ButtonForIngredient(
     borderColor: Color,
     containerColor: Color,
+    enabled : Boolean,
     onClickBtn : ()->Unit,
 ) {
     Button(
         onClick = { onClickBtn() },
         shape = ZipdabangandroidTheme.Shapes.thin,
         modifier = Modifier.fillMaxWidth(),
-        enabled = true,
+        enabled = enabled,
         border = BorderStroke(1.dp, borderColor),
         colors = ButtonDefaults.buttonColors(
             containerColor = containerColor
@@ -39,14 +40,6 @@ fun ButtonForIngredient(
         Box(
             contentAlignment = Alignment.Center
         ) {
-            /*Icon(
-                painter = painterResource(R.drawable.ic_recipewrite_btn_add),
-                contentDescription = "Icon",
-                tint = ZipdabangandroidTheme.Colors.Strawberry,
-                modifier = Modifier
-                    .size(18.dp)
-                    .padding(0.dp)
-            )*/
             Text(
                 text= stringResource(id = R.string.my_recipewrite_addingredient),
                 color = ZipdabangandroidTheme.Colors.Typo.copy(0.5f),
@@ -60,13 +53,14 @@ fun ButtonForIngredient(
 fun ButtonForStep(
     borderColor: Color,
     containerColor: Color,
+    enabled : Boolean,
     onClickBtn : ()->Unit,
 ) {
     Button(
         onClick = { onClickBtn() },
         shape = ZipdabangandroidTheme.Shapes.thin,
         modifier = Modifier.fillMaxWidth(),
-        enabled = true,
+        enabled = enabled,
         border = BorderStroke(1.dp, borderColor),
         colors = ButtonDefaults.buttonColors(
             containerColor = containerColor
