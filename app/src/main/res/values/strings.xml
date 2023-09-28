@@ -104,6 +104,8 @@
     <string name="my_upload">업로드</string>
     <string name="my_save">임시저장</string>
     <string name="my_addnewrecipe">새로운 레시피 추가하기</string>
+    <string name="my_notuser">아직 회원이 아니신가요? 로그인을 통해\n더 많은 집다방 서비스를 즐겨보세요 :)</string>
+    <string name="my_gotologin">로그인하러 가기</string>
     <string name="my_recipewrite">레시피 작성</string>
     <string name="my_recipewrite_thumbnail_upload">레시피 대표 사진 등록하기</string>
     <string name="my_recipewrite_title">레시피 제목</string>
@@ -121,20 +123,23 @@
     <string name="my_recipewrite_recipetip_hint">레시피를 만들 때 주의해야 할 사항이나 맛있게 만드는 팁을 작성해 주세요. (최대 200자)</string>
     <string name="my_recipewrite_save">임시저장</string>
     <string name="my_recipewrite_writedone">작성 완료</string>
-    <string name="my_notuser">아직 회원이 아니신가요? 로그인을 통해\n더 많은 집다방 서비스를 즐겨보세요 :)</string>
-    <string name="my_gotologin">로그인하러 가기</string>
     <string name="my_recipewrite_warning_ingredient">최대 재료 개수는 10개입니다.</string>
     <string name="my_recipewrite_warning_step">한 Step 당 한 장씩 업로드할 수 있습니다.</string>
     <string name="my_recipewrite_edit">수정</string>
     <string name="my_recipewrite_delete">삭제</string>
+    <string name="my_recipewrite_addstep">Step 추가</string>
+    <string name="my_recipewrite_addingredient">재료 추가</string>
     <string name="my_dialog_save_detail">작성 중인 레시피를\n임시저장 하시겠습니까?</string>
     <string name="my_dialog_cancel">취소</string>
+    <string name="my_dialog_permit">수락</string>
     <string name="my_dialog_recipe_delete">레시피 삭제</string>
     <string name="my_dialog_recipe_delete_detail">지금 돌아가면 작성 내용이\n모두 삭제됩니다.</string>
     <string name="my_dialog_delete">삭제</string>
     <string name="my_dialog_fileselect">파일 선택</string>
     <string name="my_dialog_camera">카메라</string>
     <string name="my_dialog_file">파일</string>
+    <string name="my_dialog_permission">집다방’이(가) 사용자의 사진에\n접근하려고 합니다.</string>
+    <string name="my_dialog_permission_detail">회원님이 집다방에 사진과 동영상을 공유하고 공유할 사진 및 동영상을 추천하는 등의 목적으로 집다방이 회원님의 카메라롤에 대한 액세스 권한을 요청합니다.</string>
 
     <!--  for fcm  -->
     <string name="default_notification_channel_id" translatable="false">fcm_default_channel</string>

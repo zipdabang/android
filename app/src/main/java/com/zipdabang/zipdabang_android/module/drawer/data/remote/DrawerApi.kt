@@ -6,7 +6,7 @@ import com.zipdabang.zipdabang_android.module.drawer.data.remote.userinfodto.Use
 import com.zipdabang.zipdabang_android.module.drawer.data.remote.userinfodto.UserInfoNicknameRequest
 import com.zipdabang.zipdabang_android.module.drawer.data.remote.userinfodto.UserInfoProfileRequest
 import com.zipdabang.zipdabang_android.module.drawer.data.remote.userinfodto.UserInfoResponse
-import com.zipdabang.zipdabang_android.module.drawer.data.remote.userinfodto.UserPreferencesRequest
+import com.zipdabang.zipdabang_android.module.drawer.data.remote.userinfodto.UserInfoPreferencesRequest
 import com.zipdabang.zipdabang_android.module.sign_up.data.remote.AuthRequest
 import com.zipdabang.zipdabang_android.module.sign_up.data.remote.AuthResponse
 import com.zipdabang.zipdabang_android.module.sign_up.data.remote.NicknameResponse
@@ -71,9 +71,9 @@ interface DrawerApi {
     ) : NicknameResponse
 
     // 선호 음료 수정
-    @PATCH("members/category")
+    @PATCH("myInfo/category")
     suspend fun patchUserPreferences(
         @Header("Authorization") accessToken: String,
-        @Body userPreferences : UserPreferencesRequest
+        @Body userInfoPreferences : UserInfoPreferencesRequest
     ) : UserInfoEditResponse
 }
