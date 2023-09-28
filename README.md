@@ -1,6 +1,6 @@
 # Zipdabang
 
-![Static Badge](https://img.shields.io/badge/version-2.0.0-blue)
+![Static Badge](https://img.shields.io/badge/version-2.0.0-blue)(Development In Progress)
 
 ### Application for Home Cafe Information & Market
 
@@ -31,6 +31,7 @@
 ![Kotlin](https://img.shields.io/badge/kotlin-%237F52FF.svg?style=for-the-badge&logo=kotlin&logoColor=white)
 ![Firebase](https://img.shields.io/badge/Firebase-039BE5?style=for-the-badge&logo=Firebase&logoColor=white)
 ![Jira](https://img.shields.io/badge/jira-%230A0FFF.svg?style=for-the-badge&logo=jira&logoColor=white)
+![Git](https://img.shields.io/badge/git-%23F05033.svg?style=for-the-badge&logo=git&logoColor=white)
 ![GitHub](https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white)
 ![Notion](https://img.shields.io/badge/Notion-%23000000.svg?style=for-the-badge&logo=notion&logoColor=white)
 ![Discord](https://img.shields.io/badge/Discord-%235865F2.svg?style=for-the-badge&logo=discord&logoColor=white)
@@ -80,13 +81,49 @@
 
 <br>
 
-## Functions
+## Architecture
 
+### Package Structure
+
+![image](https://github.com/kmkim2689/paging3-unsplash/assets/101035437/beb89b13-8d1c-4419-874f-199772d00c53)
+
+* common
+  * Classes/Files used in no less than two modules
+    * ExceptionsResource/ResponseBody Wrapper Class
+    * Response Code Enum Class
+    * Constants
+    
+* core
+  * Core utilities(Libraries...) used across the application
+    * Database for Paging
+    * Network
+    * FCM
+    * Navigation
+    * Global AppModule for DI
+
+* entity
+  * Tables(data classes) used in the database
+
+* module
+  * Divided by feature
+    * dividing the entire app into smaller features
+  * Package Structure for each module
+    * data
+    * di
+    * domain
+    * util
+    * ui
+    * use_case
+
+* ui
+  * Components commonly used across the application(no less than two modules)
+  * Composable Functions
 
 <br>
 
-## Architecture
+### Module Architecture
 
+![image](https://github.com/kmkim2689/paging3-unsplash/assets/101035437/f83d14ee-314a-42e8-a5e2-d78c72c140dd)
 
 <br>
 
