@@ -53,6 +53,7 @@ import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
 
 @Composable
 fun Step(
+    stepNum : Int,
     value: String,
     onValueChanged: (String, Int) -> Unit,
     placeholderValue: String,
@@ -60,14 +61,15 @@ fun Step(
     maxLines: Int,
     maxLength: Int, //최대 글자수
     imeAction: ImeAction, //default,none이면 엔터키, next면 다음 텍스트필드로 넘어감, done면 완료키
-    onClickAddBtn: () -> Unit,
+    onClickImageAddBtn: () -> Unit,
     onClickDeleteStep: () -> Unit,
+    onClickEditStep:()->Unit,
 ) {
     Column(
         verticalArrangement = Arrangement.spacedBy(4.dp)
     ) {
         Text(
-            text = stringResource(id = R.string.my_recipewrite_step),
+            text = "Step "+stepNum,
             style = ZipdabangandroidTheme.Typography.fourteen_500,
             color = ZipdabangandroidTheme.Colors.Typo
         )
@@ -122,7 +124,7 @@ fun Step(
         }
         // Step 사진 추가 버튼
         Button(
-            onClick = { onClickAddBtn() },
+            onClick = { onClickImageAddBtn() },
             shape = ZipdabangandroidTheme.Shapes.thin,
             modifier = Modifier
                 .fillMaxWidth()
@@ -189,7 +191,9 @@ fun Step(
                         .width(48.dp)
                         .wrapContentHeight()
                         .padding(0.dp)
-                        .clickable(onClick={})
+                        .clickable(onClick={
+                            onClickEditStep()
+                        })
                         .background(
                             color = ZipdabangandroidTheme.Colors.Strawberry,
                             shape = ZipdabangandroidTheme.Shapes.large,
@@ -207,7 +211,9 @@ fun Step(
                         .width(48.dp)
                         .wrapContentHeight()
                         .padding(0.dp)
-                        .clickable(onClick={})
+                        .clickable(onClick={
+                            onClickDeleteStep()
+                        })
                         .background(
                             color = ZipdabangandroidTheme.Colors.Strawberry,
                             shape = ZipdabangandroidTheme.Shapes.large,
@@ -238,6 +244,7 @@ fun PreviewStep() {
     var textStateStep by remember { mutableStateOf("") }
     Box(modifier = Modifier.background(Color.White)) {
         Step(
+            stepNum = 1,
             value = textStateStep,
             onValueChanged = { newText, maxLength ->
                 if (newText.length <= maxLength) {
@@ -249,8 +256,9 @@ fun PreviewStep() {
             maxLines = 7,
             maxLength = 200,
             imeAction = ImeAction.None,
-            onClickAddBtn = { },
-            onClickDeleteStep = {}
+            onClickImageAddBtn = { },
+            onClickDeleteStep = {},
+            onClickEditStep = {}
         )
     }
 }

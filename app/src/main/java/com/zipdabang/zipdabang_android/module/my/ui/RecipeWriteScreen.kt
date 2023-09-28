@@ -6,6 +6,7 @@ import android.net.Uri
 import android.os.Environment
 import android.provider.MediaStore
 import android.util.Base64
+import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.result.launch
@@ -26,6 +27,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -40,11 +42,15 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.content.FileProvider
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.zipdabang.zipdabang_android.R
 import com.zipdabang.zipdabang_android.module.my.ui.component.ButtonForIngredient
 import com.zipdabang.zipdabang_android.module.my.ui.component.ButtonForStep
 import com.zipdabang.zipdabang_android.module.my.ui.component.IngredientAndUnit
 import com.zipdabang.zipdabang_android.module.my.ui.component.Step
+import com.zipdabang.zipdabang_android.module.my.ui.state.recipewrite.RecipeWriteFormEvent
+import com.zipdabang.zipdabang_android.module.my.ui.viewmodel.MyViewModel
+import com.zipdabang.zipdabang_android.module.my.ui.viewmodel.RecipeWriteViewModel
 import com.zipdabang.zipdabang_android.ui.component.AppBarSignUp
 import com.zipdabang.zipdabang_android.ui.component.CustomDialogCameraFile
 import com.zipdabang.zipdabang_android.ui.component.CustomDialogRecipeDelete
@@ -67,8 +73,10 @@ import java.util.Locale
 
 // 비트맵을 Uri로 변환하는 함수
 fun bitmapToUri(context: Context, bitmap: Bitmap): Uri? {
-    val imagesDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).toString()
-    val imageFileName = "IMG_" + SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(Date()) + ".jpg"
+    val imagesDir =
+        Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).toString()
+    val imageFileName =
+        "IMG_" + SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(Date()) + ".jpg"
     val imageFile = File(imagesDir, imageFileName)
     val fos: OutputStream
     try {
@@ -82,7 +90,12 @@ fun bitmapToUri(context: Context, bitmap: Bitmap): Uri? {
     }
 
     // 이미지를 미디어 스캔하여 갤러리에 표시
-    MediaStore.Images.Media.insertImage(context.contentResolver, imageFile.absolutePath, imageFileName, null)
+    MediaStore.Images.Media.insertImage(
+        context.contentResolver,
+        imageFile.absolutePath,
+        imageFileName,
+        null
+    )
 
     // 파일의 Uri 반환
     return Uri.fromFile(imageFile)
@@ -90,16 +103,19 @@ fun bitmapToUri(context: Context, bitmap: Bitmap): Uri? {
 
 @Composable
 fun RecipeWriteScreen(
-    onClickBack: () -> Unit
+    onClickBack: () -> Unit,
+    recipeWriteViewModel: RecipeWriteViewModel = hiltViewModel()
 ) {
+    val stateRecipeWriteForm = recipeWriteViewModel.stateRecipeWriteForm
+    val stateRecipeWriteDialog = recipeWriteViewModel.stateRecipeWriteDialog
+
+    LaunchedEffect(key1 =stateRecipeWriteForm.ingredientsNum){
+
+    }
     // textfield
-    var textState by remember { mutableStateOf("") }
-    var textStateTime by remember { mutableStateOf("") }
-    var textStateIntro by remember { mutableStateOf("") }
     var textStateIngredient by remember { mutableStateOf("") }
     var textStateUnit by remember { mutableStateOf("") }
     var textStateStep by remember { mutableStateOf("") }
-    var textStateTip by remember { mutableStateOf("") }
 
     // 알럿
     val showDialogRecipeDelete = remember { mutableStateOf(false) }
@@ -117,6 +133,7 @@ fun RecipeWriteScreen(
     val takePhotoFromAlbumLauncher =
         rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
             thumbnailUri = uri
+            Log.e("사진-앨범","${thumbnailUri}")
         }
     // 카메라->Bitmap 형식
     val takePhotoFromCameraLauncher =
@@ -131,7 +148,9 @@ fun RecipeWriteScreen(
                 /*val b : ByteArray = baos.toByteArray()
                 val encoded : String = Base64.encodeToString(b, Base64.DEFAULT)*/
                 // 비트맵을 Uri로 변환하고 imageUri에 할당
+                Log.e("사진-카메라 변환 전","${context}")
                 thumbnailUri = bitmapToUri(context, bitmap)
+                Log.e("사진-카메라","${thumbnailUri}")
             }
         }
 
@@ -207,24 +226,24 @@ fun RecipeWriteScreen(
                         color = ZipdabangandroidTheme.Colors.Choco
                     )
                     TextFieldForRecipeWriteSingleline(
-                        value = textState,
+                        value = stateRecipeWriteForm.title,
                         onValueChanged = { newText, maxLength ->
                             if (newText.length <= maxLength) {
-                                textState = newText
+                                recipeWriteViewModel.onRecipeWriteFormEvent(RecipeWriteFormEvent.TitleChanged(newText))
                             }
                         },
                         maxLength = 20,
                         placeholderValue = stringResource(id = R.string.my_recipewrite_title_hint),
                         imeAction = ImeAction.Next,
                         onClickTrailingicon = {
-                            textState = ""
+                            recipeWriteViewModel.onRecipeWriteFormEvent(RecipeWriteFormEvent.TitleChanged(""))
                         }
                     )
                     Text(
                         modifier = Modifier
                             .align(Alignment.End)
                             .padding(0.dp, 0.dp, 4.dp, 0.dp),
-                        text = "0/20",
+                        text = stateRecipeWriteForm.titleWordCount.toString() + "/20",
                         style = ZipdabangandroidTheme.Typography.fourteen_300,
                         color = ZipdabangandroidTheme.Colors.Typo
                     )
@@ -240,24 +259,24 @@ fun RecipeWriteScreen(
                         color = ZipdabangandroidTheme.Colors.Choco
                     )
                     TextFieldForRecipeWriteSingleline(
-                        value = textStateTime,
+                        value = stateRecipeWriteForm.time,
                         onValueChanged = { newText, maxLength ->
                             if (newText.length <= maxLength) {
-                                textStateTime = newText
+                                recipeWriteViewModel.onRecipeWriteFormEvent(RecipeWriteFormEvent.TimeChanged(newText))
                             }
                         },
                         maxLength = 20,
                         placeholderValue = stringResource(id = R.string.my_recipewrite_time),
                         imeAction = ImeAction.Next,
                         onClickTrailingicon = {
-                            textStateTime = ""
+                            recipeWriteViewModel.onRecipeWriteFormEvent(RecipeWriteFormEvent.TimeChanged(""))
                         }
                     )
                     Text(
                         modifier = Modifier
                             .align(Alignment.End)
                             .padding(0.dp, 0.dp, 4.dp, 0.dp),
-                        text = "0/20",
+                        text = stateRecipeWriteForm.timeWordCount.toString() + "/20",
                         style = ZipdabangandroidTheme.Typography.fourteen_300,
                         color = ZipdabangandroidTheme.Colors.Typo
                     )
@@ -273,10 +292,10 @@ fun RecipeWriteScreen(
                         color = ZipdabangandroidTheme.Colors.Choco
                     )
                     TextFieldForRecipeWriteMultiline(
-                        value = textStateIntro,
+                        value = stateRecipeWriteForm.intro,
                         onValueChanged = { newText, maxLength ->
                             if (newText.length <= maxLength) {
-                                textStateIntro = newText
+                                recipeWriteViewModel.onRecipeWriteFormEvent(RecipeWriteFormEvent.IntroChanged(newText))
                             }
                         },
                         height = 128.dp,
@@ -289,7 +308,7 @@ fun RecipeWriteScreen(
                         modifier = Modifier
                             .align(Alignment.End)
                             .padding(0.dp, 0.dp, 4.dp, 0.dp),
-                        text = "0/100",
+                        text = stateRecipeWriteForm.introWordCount.toString() + "/100",
                         style = ZipdabangandroidTheme.Typography.fourteen_300,
                         color = ZipdabangandroidTheme.Colors.Typo
                     )
@@ -325,40 +344,44 @@ fun RecipeWriteScreen(
                             color = ZipdabangandroidTheme.Colors.Typo
                         )
                     }
-                    IngredientAndUnit(
-                        valueIngredient = textStateIngredient,
-                        onValueChangedIngredient = { newText, maxLength ->
-                            if (newText.length <= maxLength) {
-                                textStateIngredient = newText
-                            }
-                        },
-                        placeholderValueIngredient = stringResource(id = R.string.my_recipewrite_milk),
-                        maxLengthIngredient = 10,
-                        imeActionIngredient = ImeAction.Default,
-                        onClickTrailingiconIngredient = {
-                            textStateIngredient = ""
-                        },
-                        onClickCancelIngredient = {
+                    for (i in  0 until stateRecipeWriteForm.ingredientsNum){
+                        IngredientAndUnit(
+                            valueIngredient = stateRecipeWriteForm.ingredients[i].ingredientName,
+                            onValueChangedIngredient = { newText, maxLength ->
+                                if (newText.length <= maxLength) {
+                                    textStateIngredient = newText
+                                }
+                            },
+                            placeholderValueIngredient = stringResource(id = R.string.my_recipewrite_milk),
+                            maxLengthIngredient = 16,
+                            imeActionIngredient = ImeAction.Default,
+                            onClickTrailingiconIngredient = {
+                                textStateIngredient = ""
+                            },
+                            onClickCancelIngredient = {
 
-                        },
-                        valueUnit = textStateUnit,
-                        onValueChangedUnit = { newText, maxLength ->
-                            if (newText.length <= maxLength) {
-                                textStateUnit = newText
+                            },
+                            valueUnit = stateRecipeWriteForm.ingredients[i].quantity,
+                            onValueChangedUnit = { newText, maxLength ->
+                                if (newText.length <= maxLength) {
+                                    textStateUnit = newText
+                                }
+                            },
+                            placeholderValueUnit = stringResource(id = R.string.my_recipewrite_hundredmilli),
+                            maxLengthUnit = 16,
+                            imeActionUnit = ImeAction.Default,
+                            onClickTrailingiconUnit = {
+                                textStateUnit = ""
                             }
-                        },
-                        placeholderValueUnit = stringResource(id = R.string.my_recipewrite_hundredmilli),
-                        maxLengthUnit = 10,
-                        imeActionUnit = ImeAction.Default,
-                        onClickTrailingiconUnit = {
-                            textStateUnit = ""
-                        }
-                    )
+                        )
+                    }
                     ButtonForIngredient(
                         borderColor = ZipdabangandroidTheme.Colors.Strawberry,
                         containerColor = Color.White,
-                        enabled = false,
-                        onClickBtn = { }
+                        enabled = true,
+                        onClickBtn = {
+                            recipeWriteViewModel.onRecipeWriteFormEvent(RecipeWriteFormEvent.BtnIngredientAdd(ingredientNum = stateRecipeWriteForm.ingredientsNum + 1))
+                        }
                     )
                     Row(
                         modifier = Modifier
@@ -386,7 +409,7 @@ fun RecipeWriteScreen(
                         }
                         Text(
                             modifier = Modifier.padding(0.dp, 0.dp, 4.dp, 0.dp),
-                            text = "1/10",
+                            text = stateRecipeWriteForm.ingredientsNum.toString() + "/10",
                             style = ZipdabangandroidTheme.Typography.fourteen_300,
                             color = ZipdabangandroidTheme.Colors.Typo
                         )
@@ -402,32 +425,38 @@ fun RecipeWriteScreen(
                         style = ZipdabangandroidTheme.Typography.sixteen_700,
                         color = ZipdabangandroidTheme.Colors.Choco
                     )
-                    Step(
-                        value = textStateStep,
-                        onValueChanged = { newText, maxLength ->
-                            if (newText.length <= maxLength) {
-                                textStateStep = newText
-                            }
-                        },
-                        placeholderValue = stringResource(id = R.string.my_recipewrite_step_hint),
-                        height = 232.dp,
-                        maxLines = 7,
-                        maxLength = 200,
-                        imeAction = ImeAction.None,
-                        onClickAddBtn = { },
-                        onClickDeleteStep = { }
-                    )
+                    for (i in  0 until stateRecipeWriteForm.stepsNum) {
+                        Step(
+                            stepNum = stateRecipeWriteForm.stepsNum,
+                            value = textStateStep,
+                            onValueChanged = { newText, maxLength ->
+                                if (newText.length <= maxLength) {
+                                    textStateStep = newText
+                                }
+                            },
+                            placeholderValue = stringResource(id = R.string.my_recipewrite_step_hint),
+                            height = 232.dp,
+                            maxLines = 7,
+                            maxLength = 200,
+                            imeAction = ImeAction.None,
+                            onClickImageAddBtn = { },
+                            onClickDeleteStep = { },
+                            onClickEditStep = { }
+                        )
+                    }
                     ButtonForStep(
                         borderColor = ZipdabangandroidTheme.Colors.Strawberry,
                         containerColor = Color.White,
-                        enabled = false,
-                        onClickBtn = { }
+                        enabled = true,
+                        onClickBtn = {
+                            recipeWriteViewModel.onRecipeWriteFormEvent(RecipeWriteFormEvent.BtnStepAdd(stepNum = stateRecipeWriteForm.stepsNum + 1))
+                        }
                     )
                     Text(
                         modifier = Modifier
                             .align(Alignment.End)
                             .padding(0.dp, 0.dp, 4.dp, 0.dp),
-                        text = "Step1/Step10",
+                        text = "Step"+ stateRecipeWriteForm.stepsNum + "/Step10",
                         style = ZipdabangandroidTheme.Typography.fourteen_300,
                         color = ZipdabangandroidTheme.Colors.Typo
                     )
@@ -443,10 +472,10 @@ fun RecipeWriteScreen(
                         color = ZipdabangandroidTheme.Colors.Choco
                     )
                     TextFieldForRecipeWriteMultiline(
-                        value = textStateTip,
+                        value = stateRecipeWriteForm.recipeTip,
                         onValueChanged = { newText, maxLength ->
                             if (newText.length <= maxLength) {
-                                textStateTip = newText
+                                recipeWriteViewModel.onRecipeWriteFormEvent(RecipeWriteFormEvent.RecipeTipChanged(newText))
                             }
                         },
                         height = 224.dp,
@@ -459,7 +488,7 @@ fun RecipeWriteScreen(
                         modifier = Modifier
                             .align(Alignment.End)
                             .padding(0.dp, 0.dp, 4.dp, 0.dp),
-                        text = "0/200",
+                        text =  stateRecipeWriteForm.recipeTipWordCount.toString() + "/200",
                         style = ZipdabangandroidTheme.Typography.fourteen_300,
                         color = ZipdabangandroidTheme.Colors.Typo
                     )

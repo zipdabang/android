@@ -15,11 +15,14 @@ data class RecipeWriteFormState(
     val categoryId : List<Int> = emptyList(),
 
     val ingredients : List<Ingredient> = emptyList(),
+    val ingredientsNum : Int=1,
     val steps : List<Step> = emptyList(),
+    val stepsNum : Int = 1,
     val ingredientIsvalidate : Boolean = false,
     val ingredientBtnEnabled : Boolean = false,
     val stepIsvalidate : Boolean = false,
     val stepBtnEnabled : Boolean = false,
+
     val btnEnabled : Boolean = false,
 
     val error : String = ""

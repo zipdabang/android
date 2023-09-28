@@ -558,7 +558,7 @@ fun UserInfoScreen(
                             color = Color.White,
                             shape = ZipdabangandroidTheme.Shapes.smallRoundedBottom
                         )
-                        .height(if(stateUserInfo.size < 4) 44.dp else 88.dp)
+                        .height(if (stateUserInfo.size <= 4) 44.dp else 88.dp)
                         .wrapContentHeight()
                         .padding(16.dp, 0.dp, 16.dp, 0.dp),
                     verticalArrangement = Arrangement.spacedBy(8.dp)

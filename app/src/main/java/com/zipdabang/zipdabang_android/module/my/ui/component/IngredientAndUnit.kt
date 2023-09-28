@@ -163,7 +163,7 @@ fun IngredientAndUnit(
                 .padding(0.dp)
                 .align(Alignment.CenterVertically)
                 .clickable(
-                    onClick = { onClickTrailingiconUnit() }
+                    onClick = { onClickCancelIngredient() }
                 ),
             painter = painterResource(R.drawable.ic_recipewrite_trashcan),
             contentDescription = "Icon",

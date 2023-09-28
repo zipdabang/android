@@ -34,7 +34,8 @@ fun ButtonForIngredient(
         enabled = enabled,
         border = BorderStroke(1.dp, borderColor),
         colors = ButtonDefaults.buttonColors(
-            containerColor = containerColor
+            containerColor = containerColor,
+            disabledContainerColor = containerColor,
         )
     ) {
         Box(
@@ -63,7 +64,8 @@ fun ButtonForStep(
         enabled = enabled,
         border = BorderStroke(1.dp, borderColor),
         colors = ButtonDefaults.buttonColors(
-            containerColor = containerColor
+            containerColor = containerColor,
+            disabledContainerColor = containerColor,
         )
     ) {
         Box(

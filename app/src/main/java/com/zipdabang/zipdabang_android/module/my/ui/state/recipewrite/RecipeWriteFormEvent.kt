@@ -8,8 +8,10 @@ sealed class RecipeWriteFormEvent{
     data class TimeChanged(val time : String) : RecipeWriteFormEvent()
     data class IntroChanged(val intro : String) : RecipeWriteFormEvent()
     data class RecipeTipChanged(val recipeTip : String) : RecipeWriteFormEvent()
-
-
+    data class BtnIngredientAdd(val ingredientNum : Int) : RecipeWriteFormEvent()
+    data class IngredientChanged(val ingredient : Ingredient, val ingredientNum: Int) : RecipeWriteFormEvent()
+    data class BtnStepAdd(val stepNum : Int) : RecipeWriteFormEvent()
+    data class StepChanged(val step : Step, val stepNum: Int) : RecipeWriteFormEvent()
 
 
     data class BtnEnabled(val enabled: Boolean) : RecipeWriteFormEvent()

@@ -24,6 +24,7 @@ class RecipeWriteViewModel @Inject constructor(
         RecipeWriteFormState(
             steps = listOf(
                 Step(
+                    stepNum = 1,
                     stepImages = null,
                     description = "",
                     stepWordCount = 0
@@ -31,6 +32,7 @@ class RecipeWriteViewModel @Inject constructor(
             ),
             ingredients = listOf(
                 Ingredient(
+                    ingredientNum = 1,
                     ingredientName = "",
                     ingredientWordCount = 0,
                     quantity = "",
@@ -40,6 +42,8 @@ class RecipeWriteViewModel @Inject constructor(
         ),
     )
     var stateRecipeWriteDialog by mutableStateOf(RecipeWriteDialogState())
+
+
 
     fun onRecipeWriteFormEvent(event : RecipeWriteFormEvent){
         when(event){
@@ -70,6 +74,43 @@ class RecipeWriteViewModel @Inject constructor(
             is RecipeWriteFormEvent.ThumbnailChanged->{
 
             }
+            is RecipeWriteFormEvent.BtnIngredientAdd->{
+                val currentIngredients = stateRecipeWriteForm.ingredients.toMutableList()
+                val newIngredient = Ingredient(
+                    ingredientNum = stateRecipeWriteForm.ingredientsNum + 1,
+                    ingredientName = "",
+                    ingredientWordCount = 0,
+                    quantity = "",
+                    quantityWordCount = 0,
+                )
+                currentIngredients.add(newIngredient)
+                stateRecipeWriteForm = stateRecipeWriteForm.copy(
+                    ingredients = currentIngredients,
+                    ingredientsNum = currentIngredients.size
+                )
+            }
+            is RecipeWriteFormEvent.IngredientChanged->{
+                stateRecipeWriteForm = stateRecipeWriteForm.copy(
+
+                )
+            }
+            is RecipeWriteFormEvent.BtnStepAdd->{
+                val currentSteps = stateRecipeWriteForm.steps.toMutableList()
+                val newStep = Step(
+                    stepNum = stateRecipeWriteForm.stepsNum + 1,
+                    stepImages = null,
+                    description = "",
+                    stepWordCount = 0
+                )
+                currentSteps.add(newStep)
+                stateRecipeWriteForm = stateRecipeWriteForm.copy(
+                    steps = currentSteps,
+                    stepsNum = currentSteps.size
+                )
+            }
+            is RecipeWriteFormEvent.StepChanged->{
+
+            }
             is RecipeWriteFormEvent.BtnEnabled->{
 
             }
@@ -83,19 +124,15 @@ class RecipeWriteViewModel @Inject constructor(
             }
             is RecipeWriteDialogEvent.FileSelectChanged->{
                 stateRecipeWriteDialog = stateRecipeWriteDialog.copy(isOpenFileSelect = event.isOpen)
-
             }
             is RecipeWriteDialogEvent.PermissionChanged->{
                 stateRecipeWriteDialog = stateRecipeWriteDialog.copy(isOpenPermission = event.isOpen)
-
             }
             is RecipeWriteDialogEvent.SaveChanged->{
                 stateRecipeWriteDialog = stateRecipeWriteDialog.copy(isOpenSave = event.isOpen)
-
             }
             is RecipeWriteDialogEvent.UploadCategoryChanged->{
                 stateRecipeWriteDialog = stateRecipeWriteDialog.copy(isOpenUploadCategory = event.isOpen)
-
             }
             is RecipeWriteDialogEvent.UploadCompleteChanged->{
                 stateRecipeWriteDialog = stateRecipeWriteDialog.copy(isOpenUploadComplete = event.isOpen)
