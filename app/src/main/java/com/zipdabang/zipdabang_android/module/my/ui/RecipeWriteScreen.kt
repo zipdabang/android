@@ -1,5 +1,15 @@
 package com.zipdabang.zipdabang_android.module.my.ui
 
+import android.content.Context
+import android.graphics.Bitmap
+import android.net.Uri
+import android.os.Environment
+import android.provider.MediaStore
+import android.util.Base64
+import android.util.Log
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.result.launch
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -17,6 +27,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -24,48 +35,127 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.content.FileProvider
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.zipdabang.zipdabang_android.R
 import com.zipdabang.zipdabang_android.module.my.ui.component.ButtonForIngredient
+import com.zipdabang.zipdabang_android.module.my.ui.component.ButtonForStep
 import com.zipdabang.zipdabang_android.module.my.ui.component.IngredientAndUnit
 import com.zipdabang.zipdabang_android.module.my.ui.component.Step
+import com.zipdabang.zipdabang_android.module.my.ui.state.recipewrite.RecipeWriteFormEvent
+import com.zipdabang.zipdabang_android.module.my.ui.viewmodel.MyViewModel
+import com.zipdabang.zipdabang_android.module.my.ui.viewmodel.RecipeWriteViewModel
 import com.zipdabang.zipdabang_android.ui.component.AppBarSignUp
+import com.zipdabang.zipdabang_android.ui.component.CustomDialogCameraFile
+import com.zipdabang.zipdabang_android.ui.component.CustomDialogRecipeDelete
 import com.zipdabang.zipdabang_android.ui.component.CustomDialogType1
+import com.zipdabang.zipdabang_android.ui.component.CustomDialogType2
 import com.zipdabang.zipdabang_android.ui.component.ImageWithIconAndText
 import com.zipdabang.zipdabang_android.ui.component.PrimaryButton
 import com.zipdabang.zipdabang_android.ui.component.PrimaryButtonWithStatus
 import com.zipdabang.zipdabang_android.ui.component.TextFieldForRecipeWriteMultiline
 import com.zipdabang.zipdabang_android.ui.component.TextFieldForRecipeWriteSingleline
 import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
+import java.io.ByteArrayOutputStream
+import java.io.File
+import java.io.FileOutputStream
+import java.io.OutputStream
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
+
+
+// 비트맵을 Uri로 변환하는 함수
+fun bitmapToUri(context: Context, bitmap: Bitmap): Uri? {
+    val imagesDir =
+        Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).toString()
+    val imageFileName =
+        "IMG_" + SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(Date()) + ".jpg"
+    val imageFile = File(imagesDir, imageFileName)
+    val fos: OutputStream
+    try {
+        fos = FileOutputStream(imageFile)
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos)
+        fos.flush()
+        fos.close()
+    } catch (e: Exception) {
+        e.printStackTrace()
+        return null
+    }
+
+    // 이미지를 미디어 스캔하여 갤러리에 표시
+    MediaStore.Images.Media.insertImage(
+        context.contentResolver,
+        imageFile.absolutePath,
+        imageFileName,
+        null
+    )
+
+    // 파일의 Uri 반환
+    return Uri.fromFile(imageFile)
+}
 
 @Composable
 fun RecipeWriteScreen(
-    onClickBack: () -> Unit
+    onClickBack: () -> Unit,
+    recipeWriteViewModel: RecipeWriteViewModel = hiltViewModel()
 ) {
+    val stateRecipeWriteForm = recipeWriteViewModel.stateRecipeWriteForm
+    val stateRecipeWriteDialog = recipeWriteViewModel.stateRecipeWriteDialog
+
+    LaunchedEffect(key1 =stateRecipeWriteForm.ingredientsNum){
+
+    }
     // textfield
-    var textState by remember { mutableStateOf("") }
-    var textStateTime by remember { mutableStateOf("") }
-    var textStateIntro by remember { mutableStateOf("") }
     var textStateIngredient by remember { mutableStateOf("") }
     var textStateUnit by remember { mutableStateOf("") }
     var textStateStep by remember { mutableStateOf("") }
-    var textStateTip by remember { mutableStateOf("") }
 
     // 알럿
-    val isClickedDialogFileSelect = remember { mutableStateOf(false) }
+    val showDialogRecipeDelete = remember { mutableStateOf(false) }
     val showDialogFileSelect = remember { mutableStateOf(false) }
-    val isClickedDialogPerimission = remember { mutableStateOf(false) }
     val showDialogPerimission = remember { mutableStateOf(false) }
-    val isClickedDialogSave = remember { mutableStateOf(false) }
     val showDialogSave = remember { mutableStateOf(false) }
-    val isClickedDialogUpload = remember { mutableStateOf(false) }
     val showDialogUpload = remember { mutableStateOf(false) }
-    val isClickedDialogUploadComplete = remember { mutableStateOf(false) }
     val showDialogUploadComplete = remember { mutableStateOf(false) }
+
+
+    // 사진
+    var thumbnailUri by remember { mutableStateOf<Uri?>(null) }
+    val context = LocalContext.current
+    // 갤러리->Uri 형식
+    val takePhotoFromAlbumLauncher =
+        rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
+            thumbnailUri = uri
+            Log.e("사진-앨범","${thumbnailUri}")
+        }
+    // 카메라->Bitmap 형식
+    val takePhotoFromCameraLauncher =
+        rememberLauncherForActivityResult(ActivityResultContracts.TakePicturePreview()) { bitmap: Bitmap? ->
+            if (bitmap != null) {
+                /*val baos = ByteArrayOutputStream()
+                takenPhoto.compress(
+                    Bitmap.CompressFormat.PNG,
+                    100,
+                    baos
+                )*/
+                /*val b : ByteArray = baos.toByteArray()
+                val encoded : String = Base64.encodeToString(b, Base64.DEFAULT)*/
+                // 비트맵을 Uri로 변환하고 imageUri에 할당
+                Log.e("사진-카메라 변환 전","${context}")
+                thumbnailUri = bitmapToUri(context, bitmap)
+                Log.e("사진-카메라","${thumbnailUri}")
+            }
+        }
+
+
+
 
     Scaffold(
         modifier = Modifier
@@ -73,7 +163,14 @@ fun RecipeWriteScreen(
         topBar = {
             AppBarSignUp(
                 navigationIcon = R.drawable.ic_topbar_backbtn,
-                onClickNavIcon = { onClickBack() },
+                onClickNavIcon = {
+                    // 만약 하나라도 차있으면, dialog 띄운 후에 onClickBack()
+                    // if(){
+                    showDialogRecipeDelete.value = true
+                    // } else{
+                    //      onClickBack()
+                    // }
+                },
                 centerText = stringResource(id = R.string.my_recipewrite)
             )
         },
@@ -98,12 +195,12 @@ fun RecipeWriteScreen(
             ) {
                 ImageWithIconAndText(
                     addImageClick = {
-
+                        showDialogFileSelect.value = true
                     },
                     deleteImageClick = {
-
+                        thumbnailUri = null
                     },
-                    imageUrl = "",
+                    imageUrl = thumbnailUri,
                     iconImageVector = R.drawable.ic_recipewrite_camera,
                     iconTint = ZipdabangandroidTheme.Colors.Typo.copy(0.5f),
                     iconModifier = Modifier.size(27.dp, 24.dp),
@@ -129,24 +226,24 @@ fun RecipeWriteScreen(
                         color = ZipdabangandroidTheme.Colors.Choco
                     )
                     TextFieldForRecipeWriteSingleline(
-                        value = textState,
+                        value = stateRecipeWriteForm.title,
                         onValueChanged = { newText, maxLength ->
                             if (newText.length <= maxLength) {
-                                textState = newText
+                                recipeWriteViewModel.onRecipeWriteFormEvent(RecipeWriteFormEvent.TitleChanged(newText))
                             }
                         },
                         maxLength = 20,
                         placeholderValue = stringResource(id = R.string.my_recipewrite_title_hint),
                         imeAction = ImeAction.Next,
                         onClickTrailingicon = {
-                            textState = ""
+                            recipeWriteViewModel.onRecipeWriteFormEvent(RecipeWriteFormEvent.TitleChanged(""))
                         }
                     )
                     Text(
                         modifier = Modifier
                             .align(Alignment.End)
                             .padding(0.dp, 0.dp, 4.dp, 0.dp),
-                        text = "0/20",
+                        text = stateRecipeWriteForm.titleWordCount.toString() + "/20",
                         style = ZipdabangandroidTheme.Typography.fourteen_300,
                         color = ZipdabangandroidTheme.Colors.Typo
                     )
@@ -162,24 +259,24 @@ fun RecipeWriteScreen(
                         color = ZipdabangandroidTheme.Colors.Choco
                     )
                     TextFieldForRecipeWriteSingleline(
-                        value = textStateTime,
+                        value = stateRecipeWriteForm.time,
                         onValueChanged = { newText, maxLength ->
                             if (newText.length <= maxLength) {
-                                textStateTime = newText
+                                recipeWriteViewModel.onRecipeWriteFormEvent(RecipeWriteFormEvent.TimeChanged(newText))
                             }
                         },
                         maxLength = 20,
                         placeholderValue = stringResource(id = R.string.my_recipewrite_time),
                         imeAction = ImeAction.Next,
                         onClickTrailingicon = {
-                            textStateTime = ""
+                            recipeWriteViewModel.onRecipeWriteFormEvent(RecipeWriteFormEvent.TimeChanged(""))
                         }
                     )
                     Text(
                         modifier = Modifier
                             .align(Alignment.End)
                             .padding(0.dp, 0.dp, 4.dp, 0.dp),
-                        text = "0/20",
+                        text = stateRecipeWriteForm.timeWordCount.toString() + "/20",
                         style = ZipdabangandroidTheme.Typography.fourteen_300,
                         color = ZipdabangandroidTheme.Colors.Typo
                     )
@@ -195,10 +292,10 @@ fun RecipeWriteScreen(
                         color = ZipdabangandroidTheme.Colors.Choco
                     )
                     TextFieldForRecipeWriteMultiline(
-                        value = textStateIntro,
+                        value = stateRecipeWriteForm.intro,
                         onValueChanged = { newText, maxLength ->
                             if (newText.length <= maxLength) {
-                                textStateIntro = newText
+                                recipeWriteViewModel.onRecipeWriteFormEvent(RecipeWriteFormEvent.IntroChanged(newText))
                             }
                         },
                         height = 128.dp,
@@ -211,7 +308,7 @@ fun RecipeWriteScreen(
                         modifier = Modifier
                             .align(Alignment.End)
                             .padding(0.dp, 0.dp, 4.dp, 0.dp),
-                        text = "0/100",
+                        text = stateRecipeWriteForm.introWordCount.toString() + "/100",
                         style = ZipdabangandroidTheme.Typography.fourteen_300,
                         color = ZipdabangandroidTheme.Colors.Typo
                     )
@@ -247,39 +344,44 @@ fun RecipeWriteScreen(
                             color = ZipdabangandroidTheme.Colors.Typo
                         )
                     }
-                    IngredientAndUnit(
-                        valueIngredient = textStateIngredient,
-                        onValueChangedIngredient = { newText, maxLength ->
-                            if (newText.length <= maxLength) {
-                                textStateIngredient = newText
-                            }
-                        },
-                        placeholderValueIngredient = stringResource(id = R.string.my_recipewrite_milk),
-                        maxLengthIngredient = 10,
-                        imeActionIngredient = ImeAction.Default,
-                        onClickTrailingiconIngredient = {
-                            textStateIngredient = ""
-                        },
-                        onClickCancelIngredient = {
+                    for (i in  0 until stateRecipeWriteForm.ingredientsNum){
+                        IngredientAndUnit(
+                            valueIngredient = stateRecipeWriteForm.ingredients[i].ingredientName,
+                            onValueChangedIngredient = { newText, maxLength ->
+                                if (newText.length <= maxLength) {
+                                    textStateIngredient = newText
+                                }
+                            },
+                            placeholderValueIngredient = stringResource(id = R.string.my_recipewrite_milk),
+                            maxLengthIngredient = 16,
+                            imeActionIngredient = ImeAction.Default,
+                            onClickTrailingiconIngredient = {
+                                textStateIngredient = ""
+                            },
+                            onClickCancelIngredient = {
 
-                        },
-                        valueUnit = textStateUnit,
-                        onValueChangedUnit = { newText, maxLength ->
-                            if (newText.length <= maxLength) {
-                                textStateUnit = newText
+                            },
+                            valueUnit = stateRecipeWriteForm.ingredients[i].quantity,
+                            onValueChangedUnit = { newText, maxLength ->
+                                if (newText.length <= maxLength) {
+                                    textStateUnit = newText
+                                }
+                            },
+                            placeholderValueUnit = stringResource(id = R.string.my_recipewrite_hundredmilli),
+                            maxLengthUnit = 16,
+                            imeActionUnit = ImeAction.Default,
+                            onClickTrailingiconUnit = {
+                                textStateUnit = ""
                             }
-                        },
-                        placeholderValueUnit = stringResource(id = R.string.my_recipewrite_hundredmilli),
-                        maxLengthUnit = 10,
-                        imeActionUnit = ImeAction.Default,
-                        onClickTrailingiconUnit = {
-                            textStateUnit = ""
-                        }
-                    )
+                        )
+                    }
                     ButtonForIngredient(
                         borderColor = ZipdabangandroidTheme.Colors.Strawberry,
                         containerColor = Color.White,
-                        onClickBtn = { }
+                        enabled = true,
+                        onClickBtn = {
+                            recipeWriteViewModel.onRecipeWriteFormEvent(RecipeWriteFormEvent.BtnIngredientAdd(ingredientNum = stateRecipeWriteForm.ingredientsNum + 1))
+                        }
                     )
                     Row(
                         modifier = Modifier
@@ -307,7 +409,7 @@ fun RecipeWriteScreen(
                         }
                         Text(
                             modifier = Modifier.padding(0.dp, 0.dp, 4.dp, 0.dp),
-                            text = "1/10",
+                            text = stateRecipeWriteForm.ingredientsNum.toString() + "/10",
                             style = ZipdabangandroidTheme.Typography.fourteen_300,
                             color = ZipdabangandroidTheme.Colors.Typo
                         )
@@ -323,31 +425,38 @@ fun RecipeWriteScreen(
                         style = ZipdabangandroidTheme.Typography.sixteen_700,
                         color = ZipdabangandroidTheme.Colors.Choco
                     )
-                    Step(
-                        value = textStateStep,
-                        onValueChanged = { newText, maxLength ->
-                            if (newText.length <= maxLength) {
-                                textStateStep = newText
-                            }
-                        },
-                        placeholderValue = stringResource(id = R.string.my_recipewrite_step_hint),
-                        height = 232.dp,
-                        maxLines = 7,
-                        maxLength = 200,
-                        imeAction = ImeAction.None,
-                        onClickAddBtn = { },
-                        onClickDeleteStep = { }
-                    )
-                    ButtonForIngredient(
+                    for (i in  0 until stateRecipeWriteForm.stepsNum) {
+                        Step(
+                            stepNum = stateRecipeWriteForm.stepsNum,
+                            value = textStateStep,
+                            onValueChanged = { newText, maxLength ->
+                                if (newText.length <= maxLength) {
+                                    textStateStep = newText
+                                }
+                            },
+                            placeholderValue = stringResource(id = R.string.my_recipewrite_step_hint),
+                            height = 232.dp,
+                            maxLines = 7,
+                            maxLength = 200,
+                            imeAction = ImeAction.None,
+                            onClickImageAddBtn = { },
+                            onClickDeleteStep = { },
+                            onClickEditStep = { }
+                        )
+                    }
+                    ButtonForStep(
                         borderColor = ZipdabangandroidTheme.Colors.Strawberry,
                         containerColor = Color.White,
-                        onClickBtn = { }
+                        enabled = true,
+                        onClickBtn = {
+                            recipeWriteViewModel.onRecipeWriteFormEvent(RecipeWriteFormEvent.BtnStepAdd(stepNum = stateRecipeWriteForm.stepsNum + 1))
+                        }
                     )
                     Text(
                         modifier = Modifier
                             .align(Alignment.End)
                             .padding(0.dp, 0.dp, 4.dp, 0.dp),
-                        text = "Step1/Step10",
+                        text = "Step"+ stateRecipeWriteForm.stepsNum + "/Step10",
                         style = ZipdabangandroidTheme.Typography.fourteen_300,
                         color = ZipdabangandroidTheme.Colors.Typo
                     )
@@ -363,10 +472,10 @@ fun RecipeWriteScreen(
                         color = ZipdabangandroidTheme.Colors.Choco
                     )
                     TextFieldForRecipeWriteMultiline(
-                        value = textStateTip,
+                        value = stateRecipeWriteForm.recipeTip,
                         onValueChanged = { newText, maxLength ->
                             if (newText.length <= maxLength) {
-                                textStateTip = newText
+                                recipeWriteViewModel.onRecipeWriteFormEvent(RecipeWriteFormEvent.RecipeTipChanged(newText))
                             }
                         },
                         height = 224.dp,
@@ -379,7 +488,7 @@ fun RecipeWriteScreen(
                         modifier = Modifier
                             .align(Alignment.End)
                             .padding(0.dp, 0.dp, 4.dp, 0.dp),
-                        text = "0/200",
+                        text =  stateRecipeWriteForm.recipeTipWordCount.toString() + "/200",
                         style = ZipdabangandroidTheme.Typography.fourteen_300,
                         color = ZipdabangandroidTheme.Colors.Typo
                     )
@@ -402,7 +511,7 @@ fun RecipeWriteScreen(
                         backgroundColor = ZipdabangandroidTheme.Colors.MainBackground,
                         text = stringResource(id = R.string.my_recipewrite_save),
                         onClick = {
-                            isClickedDialogSave.value = true
+                            showDialogSave.value = true
                         },
                     )
                 }
@@ -416,27 +525,90 @@ fun RecipeWriteScreen(
                     )
                 }
 
+            }
 
-                // 알럿
-                if (isClickedDialogSave.value) {
-                    CustomDialogType1(
-                        title = stringResource(id = R.string.my_save),
-                        text = stringResource(id = R.string.my_dialog_save_detail),
-                        declineText = stringResource(id = R.string.my_dialog_cancel),
-                        acceptText = stringResource(id = R.string.my_save),
-                        setShowDialog = {
-                            showDialogSave.value = false
-                        },
-                        onAcceptClick = {
-                            // 임시저장 api & navGraph 이동
-                            showDialogSave.value = false
-                        }
-                    )
-                }
+
+            // 알럿
+            // 권한허용 알럿
+            if (showDialogPerimission.value) {
+                CustomDialogType1(
+                    title = stringResource(id = R.string.my_dialog_permission),
+                    text = stringResource(id = R.string.my_dialog_permission_detail),
+                    declineText = stringResource(id = R.string.my_dialog_cancel),
+                    acceptText = stringResource(id = R.string.my_dialog_permit),
+                    setShowDialog = {
+                        showDialogPerimission.value = it
+                    },
+                    onAcceptClick = {
+                        // 카메라 허용받기
+                        showDialogPerimission.value = false
+                    }
+                )
+            }
+            // 파일선택 알럿
+            if (showDialogFileSelect.value) {
+                CustomDialogCameraFile(
+                    title = stringResource(id = R.string.my_dialog_fileselect),
+                    setShowDialog = {
+                        showDialogFileSelect.value = it
+                    },
+                    onCameraClick = {
+                        takePhotoFromCameraLauncher.launch()
+                        showDialogFileSelect.value = false
+                    },
+                    onFileClick = {
+                        takePhotoFromAlbumLauncher.launch("image/*")
+                        showDialogFileSelect.value = false
+                    }
+                )
+            }
+            // 임시저장 알럿
+            if (showDialogSave.value) {
+                CustomDialogType2(
+                    title = stringResource(id = R.string.my_save),
+                    text = stringResource(id = R.string.my_dialog_save_detail),
+                    declineText = stringResource(id = R.string.my_dialog_cancel),
+                    acceptText = stringResource(id = R.string.my_save),
+                    setShowDialog = {
+                        showDialogSave.value = it
+                    },
+                    onAcceptClick = {
+                        // 임시저장 api & navGraph 이동
+                        showDialogSave.value = false
+                    }
+                )
+            }
+            // 업로드 알럿
+            if (showDialogUpload.value) {
+                /*CustomDialogSelectCategory(
+                    categoryList = ,
+                    categoryParagraphList = ,
+                    categorySelectedList = ,
+                    onSelectClick = {},
+                    onCompleteClick = { *//*TODO*//* },
+                    setShowDialog = {}
+                )*/
+            }
+            // 작성 중 취소 알럿
+            if (showDialogRecipeDelete.value) {
+                CustomDialogRecipeDelete(
+                    setShowDialog = {
+                        showDialogRecipeDelete.value = it
+                    },
+                    onDeleteClick = {
+                        showDialogRecipeDelete.value = false
+                        onClickBack()
+                    },
+                    onTemporalSave = {
+                        // 임시저장 api & navGraph 이동
+                        showDialogRecipeDelete.value = false
+                    }
+                )
             }
         }
     }
 }
+
 
 @Preview
 @Composable

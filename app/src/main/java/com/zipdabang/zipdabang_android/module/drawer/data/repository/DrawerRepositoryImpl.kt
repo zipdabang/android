@@ -7,6 +7,7 @@ import com.zipdabang.zipdabang_android.module.drawer.data.remote.userinfodto.Use
 import com.zipdabang.zipdabang_android.module.drawer.data.remote.userinfodto.UserInfoNicknameRequest
 import com.zipdabang.zipdabang_android.module.drawer.data.remote.userinfodto.UserInfoProfileRequest
 import com.zipdabang.zipdabang_android.module.drawer.data.remote.userinfodto.UserInfoResponse
+import com.zipdabang.zipdabang_android.module.drawer.data.remote.userinfodto.UserInfoPreferencesRequest
 import com.zipdabang.zipdabang_android.module.drawer.domain.repository.DrawerRepository
 import com.zipdabang.zipdabang_android.module.sign_up.data.remote.AuthRequest
 import com.zipdabang.zipdabang_android.module.sign_up.data.remote.AuthResponse
@@ -59,6 +60,13 @@ class DrawerRepositoryImpl @Inject constructor(
         userInfoNickname: UserInfoNicknameRequest
     ): UserInfoEditResponse {
         return api.patchUserInfoNickname(accessToken = accessToken, userInfoNickname = userInfoNickname)
+    }
+
+    override suspend fun patchUserPreferences(
+        accessToken: String,
+        userInfoPreferences: UserInfoPreferencesRequest
+    ): UserInfoEditResponse {
+        return api.patchUserPreferences(accessToken = accessToken, userInfoPreferences = userInfoPreferences)
     }
 
 }
