@@ -31,6 +31,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.zipdabang.zipdabang_android.R
 import com.zipdabang.zipdabang_android.module.drawer.ui.viewmodel.DrawerUserInfoViewModel
 import com.zipdabang.zipdabang_android.module.drawer.ui.state.userinfo.UserInfoBasicEvent
+import com.zipdabang.zipdabang_android.module.sign_up.ui.state.UserInfoFormEvent
 import com.zipdabang.zipdabang_android.ui.component.AppBarSignUp
 import com.zipdabang.zipdabang_android.ui.component.MainAndSubTitle
 import com.zipdabang.zipdabang_android.ui.component.PrimaryButtonOutLined
@@ -126,8 +127,12 @@ fun UserInfoBasicScreen(
                         ){
                             TextFieldError(
                                 value = stateUserInfoBasic.name,
-                                onValueChanged = {
-                                    drawerUserInfoViewModel.onUserInfoBasicEvent(UserInfoBasicEvent.NameChanged(it))
+                                maxLength = 20,
+                                onValueChanged = { newText, maxLength ->
+                                    if (newText.length <= maxLength) {
+                                        drawerUserInfoViewModel.onUserInfoBasicEvent(UserInfoBasicEvent.NameChanged(newText))
+
+                                    }
                                 },
                                 labelValue = stringResource(id = R.string.signup_userinfo_name),
                                 placeHolderValue = "",
@@ -157,8 +162,12 @@ fun UserInfoBasicScreen(
                         ){
                             TextFieldErrorAndCorrect(
                                 value = stateUserInfoBasic.birthday,
-                                onValueChanged = {
-                                    drawerUserInfoViewModel.onUserInfoBasicEvent(UserInfoBasicEvent.BirthdayChanged(it))
+                                maxLength = 6,
+                                onValueChanged = { newText, maxLength ->
+                                    if (newText.length <= maxLength) {
+                                        drawerUserInfoViewModel.onUserInfoBasicEvent(UserInfoBasicEvent.BirthdayChanged(newText))
+
+                                    }
                                 },
                                 labelValue = stringResource(id = R.string.signup_userinfo_birthday),
                                 placeHolderValue = stringResource(id = R.string.signup_userinfo_birthday_placeholder),
@@ -210,8 +219,11 @@ fun UserInfoBasicScreen(
                         ){
                             TextFieldErrorAndCorrect(
                                 value = stateUserInfoBasic.phoneNumber,
-                                onValueChanged = {
-                                    drawerUserInfoViewModel.onUserInfoBasicEvent(UserInfoBasicEvent.PhoneNumberChanged(it))
+                                maxLength = 11,
+                                onValueChanged = { newText, maxLength ->
+                                    if (newText.length <= maxLength) {
+                                        drawerUserInfoViewModel.onUserInfoBasicEvent(UserInfoBasicEvent.PhoneNumberChanged(newText))
+                                    }
                                 },
                                 labelValue = stringResource(id = R.string.signup_userinfo_phonenumber),
                                 placeHolderValue = stringResource(id = R.string.signup_userinfo_phonenumber_placeholder),
@@ -249,8 +261,11 @@ fun UserInfoBasicScreen(
                         ){
                             TextFieldErrorAndCorrect(
                                 value = stateUserInfoBasic.authNumber,
-                                onValueChanged = {
-                                    drawerUserInfoViewModel.onUserInfoBasicEvent(UserInfoBasicEvent.AuthNumberChanged(it))
+                                maxLength = 6,
+                                onValueChanged = { newText, maxLength ->
+                                    if (newText.length <= maxLength) {
+                                        drawerUserInfoViewModel.onUserInfoBasicEvent(UserInfoBasicEvent.AuthNumberChanged(newText))
+                                    }
                                 },
                                 isTried = stateUserInfoBasic.authNumberIsTried,
                                 labelValue = stringResource(id = R.string.signup_userinfo_certificatenumber),

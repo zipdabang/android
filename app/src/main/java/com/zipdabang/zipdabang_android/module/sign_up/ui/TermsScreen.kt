@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Text
 import androidx.compose.material3.Divider
@@ -92,6 +93,7 @@ fun TermsScreen(
                     isCheckedChange = {
                         authSharedViewModel.onTermsEvent(TermsFormEvent.AllAgreeChanged(it))
                     },
+                    shimmering = false,
                     mainValue = stringResource(id = R.string.signup_terms_allagree),
                     mainTextStyle = ZipdabangandroidTheme.Typography.sixteen_700,
                     isDetailValue = true,
@@ -110,6 +112,7 @@ fun TermsScreen(
                     isCheckBox = false,
                     isChecked = null,
                     isCheckedChange = {},
+                    shimmering = false,
                     mainValue = stringResource(id = R.string.signup_terms_zipdabangserviceagree),
                     mainTextStyle = ZipdabangandroidTheme.Typography.sixteen_700,
                     isDetailValue = false,
@@ -127,6 +130,7 @@ fun TermsScreen(
                         isCheckedChange = {
                             authSharedViewModel.onTermsEvent(TermsFormEvent.RequiredOneChanged(it))
                         },
+                        shimmering = if(stateTermsForm.isLoading || stateTermsForm.error.isNotBlank()){true} else{false},
                         mainValue = stateTermsForm.requiredOneTitle,
                         mainTextStyle = ZipdabangandroidTheme.Typography.fourteen_500,
                         isDetailValue = true,
@@ -139,6 +143,7 @@ fun TermsScreen(
                         isCheckedChange = {
                             authSharedViewModel.onTermsEvent(TermsFormEvent.RequiredTwoChanged(it))
                         },
+                        shimmering = if(stateTermsForm.isLoading || stateTermsForm.error.isNotBlank()){true} else{false},
                         mainValue = stateTermsForm.requiredTwoTitle,
                         mainTextStyle = ZipdabangandroidTheme.Typography.fourteen_500,
                         onClick = {
@@ -151,6 +156,7 @@ fun TermsScreen(
                         isCheckedChange = {
                             authSharedViewModel.onTermsEvent(TermsFormEvent.RequiredThreeChanged(it))
                         },
+                        shimmering = if(stateTermsForm.isLoading || stateTermsForm.error.isNotBlank()){true} else{false},
                         mainValue = stateTermsForm.requiredThreeTitle,
                         mainTextStyle = ZipdabangandroidTheme.Typography.fourteen_500,
                         onClick = {
@@ -163,6 +169,7 @@ fun TermsScreen(
                         isCheckedChange = {
                             authSharedViewModel.onTermsEvent(TermsFormEvent.RequiredFourChanged(it))
                         },
+                        shimmering = if(stateTermsForm.isLoading || stateTermsForm.error.isNotBlank()){true} else{false},
                         mainValue = stateTermsForm.requiredFourTitle,
                         mainTextStyle = ZipdabangandroidTheme.Typography.fourteen_500,
                         onClick = {
@@ -175,58 +182,13 @@ fun TermsScreen(
                         isCheckedChange = {
                             authSharedViewModel.onTermsEvent(TermsFormEvent.ChoiceChanged(it))
                         },
+                        shimmering = if(stateTermsForm.isLoading || stateTermsForm.error.isNotBlank()){true} else{false},
                         mainValue = stateTermsForm.choiceTitle,
                         mainTextStyle = ZipdabangandroidTheme.Typography.fourteen_500,
                         onClick = {
                             onClickDetailNext(4)
                         }
                     )
-                }
-                /*LazyColumn(
-                    modifier = Modifier.padding(0.dp,12.dp,0.dp,0.dp),
-                    verticalArrangement = Arrangement.spacedBy(10.dp),
-                ){
-                    itemsIndexed(stateTerms.termsList) { index, termInfo ->
-                        val termInfo = stateTerms.termsList[index]
-
-                        if(termInfo.isMoreToSee){
-                            CheckBoxWithTextAndButton(
-                                isChecked = , //stateTermsListAgree[index],
-                                isCheckedChange = { selectedChecked ->
-                                    //authSharedViewModel.updateTermsListAgree(index, selectedChecked)
-                                },
-                                mainValue = termInfo.termsTitle,
-                                mainTextStyle = ZipdabangandroidTheme.Typography.fourteen_500,
-                                onClick = {
-                                    onClickDetailNext(index)
-                                }
-                            )
-                        } else{
-                            CheckBoxWithText(
-                                isCheckBox = true,
-                                isChecked = ,
-                                isCheckedChange = {selectedChecked ->
-
-                                },
-                                mainValue = termInfo.termsTitle,
-                                mainTextStyle = ZipdabangandroidTheme.Typography.fourteen_500,
-                                isDetailValue = true,
-                                detailValue = termInfo.termsBody,
-                                detailTextStyle = ZipdabangandroidTheme.Typography.twelve_300,)
-                        }
-                    }
-                }*/
-                if(stateTermsForm.error.isNotBlank()){
-                    Text(
-                        text = stateTermsForm.error,
-                        color = Color.Red,
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                    )
-                }
-                if(stateTermsForm.isLoading) {
-                    CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
                 }
             }
 

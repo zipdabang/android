@@ -34,6 +34,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.zipdabang.zipdabang_android.R
 import com.zipdabang.zipdabang_android.core.navigation.AuthScreen
+import com.zipdabang.zipdabang_android.module.drawer.ui.state.userinfo.UserInfoBasicEvent
 import com.zipdabang.zipdabang_android.module.sign_up.ui.viewmodel.AuthSharedViewModel
 import com.zipdabang.zipdabang_android.module.sign_up.ui.state.UserAddressFormEvent
 import com.zipdabang.zipdabang_android.ui.component.AppBarSignUp
@@ -121,8 +122,11 @@ fun RegisterUserAddressScreen(
                         ){
                             TextFieldError(
                                 value = stateUserAddressForm.zipCode,
-                                onValueChanged = {
-                                    authSharedViewModel.onUserAddressEvent(UserAddressFormEvent.ZipcodeChanged(it))
+                                maxLength = 5,
+                                onValueChanged = { newText, maxLength ->
+                                    if (newText.length <= maxLength) {
+                                        authSharedViewModel.onUserAddressEvent(UserAddressFormEvent.ZipcodeChanged(newText))
+                                    }
                                 },
                                 labelValue = stringResource(id = R.string.signup_userinfo_zipcode),
                                 placeHolderValue = "",
@@ -163,8 +167,11 @@ fun RegisterUserAddressScreen(
                         ){
                             TextFieldError(
                                 value = stateUserAddressForm.address,
-                                onValueChanged = {
-                                    authSharedViewModel.onUserAddressEvent(UserAddressFormEvent.AddressChanged(it))
+                                maxLength = 50,
+                                onValueChanged = { newText, maxLength ->
+                                    if (newText.length <= maxLength) {
+                                        authSharedViewModel.onUserAddressEvent(UserAddressFormEvent.AddressChanged(newText))
+                                    }
                                 },
                                 labelValue = stringResource(id = R.string.signup_userinfo_address),
                                 placeHolderValue = "",
@@ -188,8 +195,11 @@ fun RegisterUserAddressScreen(
                         ){
                             TextFieldError(
                                 value = stateUserAddressForm.detailAddress,
-                                onValueChanged = {
-                                    authSharedViewModel.onUserAddressEvent(UserAddressFormEvent.DetailaddressChanged(it))
+                                maxLength = 50,
+                                onValueChanged = { newText, maxLength ->
+                                    if (newText.length <= maxLength) {
+                                        authSharedViewModel.onUserAddressEvent(UserAddressFormEvent.DetailaddressChanged(newText))
+                                    }
                                 },
                                 labelValue = stringResource(id = R.string.signup_userinfo_detailaddress),
                                 placeHolderValue = stringResource(id = R.string.signup_userinfo_detailaddress_placeholder),
