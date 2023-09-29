@@ -72,6 +72,7 @@ class AuthSharedViewModel @Inject constructor(
 
     /*TermsScreen*/
     var stateTermsForm by mutableStateOf(TermsFormState())
+    var showPermissionDialog by mutableStateOf(false)
     fun onTermsEvent(event : TermsFormEvent){
         when(event){
             is TermsFormEvent.AllAgreeChanged -> {

@@ -34,6 +34,7 @@ import com.zipdabang.zipdabang_android.module.sign_up.ui.component.CheckBoxWithT
 import com.zipdabang.zipdabang_android.module.sign_up.ui.viewmodel.AuthSharedViewModel
 import com.zipdabang.zipdabang_android.module.sign_up.ui.state.TermsFormEvent
 import com.zipdabang.zipdabang_android.ui.component.AppBarSignUp
+import com.zipdabang.zipdabang_android.ui.component.CustomSignupPermission
 import com.zipdabang.zipdabang_android.ui.component.MainAndSubTitle
 import com.zipdabang.zipdabang_android.ui.component.PrimaryButtonWithStatus
 import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
@@ -199,8 +200,23 @@ fun TermsScreen(
             ){
                 PrimaryButtonWithStatus(
                     text= stringResource(id = R.string.signup_btn_termsagree),
-                    onClick={ onClickNext() },
+                    onClick={
+                        authSharedViewModel.showPermissionDialog = true
+                     },
                     isFormFilled = stateTermsForm.btnEnabled
+                )
+            }
+
+            if(authSharedViewModel.showPermissionDialog){
+                CustomSignupPermission(
+                    setShowDialog = {
+                        authSharedViewModel.showPermissionDialog = it
+                    },
+                    onCheckClick = {
+                        // 접근 권한들 다 허용받고
+                        authSharedViewModel.showPermissionDialog = false
+                        onClickNext()
+                    },
                 )
             }
         }
