@@ -20,6 +20,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
@@ -673,7 +674,9 @@ fun CustomDialogSelectCategory(
 
                     for(i in 0.. categoryList.size / categoryParagraphList.size + 1) {
                         Row(
-                            modifier = Modifier.fillMaxWidth().wrapContentHeight(),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .wrapContentHeight(),
                             horizontalArrangement = Arrangement.Center,
                             verticalAlignment = Alignment.CenterVertically
                         ) {
@@ -720,6 +723,203 @@ fun CustomDialogSelectCategory(
     }
 }
 
+@Composable
+fun CustomSignupPermission(
+    setShowDialog: (Boolean) -> Unit,
+    onCheckClick: () -> Unit,
+){
+    Dialog(onDismissRequest = { setShowDialog(false) }) {
+        Box(
+            modifier = Modifier
+                .size(width = 328.dp, height = 472.dp)
+                .fillMaxHeight()
+                .background(color = DialogBackground, shape = ZipdabangandroidTheme.Shapes.small)
+        ){
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(20.dp, 30.dp, 20.dp, 0.dp)
+            ){
+                Box(
+                    modifier = Modifier.fillMaxWidth()
+                ){
+                    MainAndSubTitle(
+                        mainValue = "앱 접근 권한 안내",
+                        mainTextStyle = ZipdabangandroidTheme.Typography.twentytwo_700,
+                        mainTextColor = ZipdabangandroidTheme.Colors.Typo,
+                        subValue = "집다방 이용을 위해 다음 접근 권한 허용이\n필요하오니 확인 부탁드립니다.",
+                        subTextStyle = ZipdabangandroidTheme.Typography.sixteen_300,
+                        subTextColor = ZipdabangandroidTheme.Colors.Typo
+                    )
+                }
+
+                Row(
+                    modifier = Modifier
+                        .padding(0.dp, 20.dp, 0.dp, 0.dp)
+                        .fillMaxWidth()
+                ){
+                    Box(
+                        modifier = Modifier
+                            .size(40.dp)
+                            .aspectRatio(1f)
+                            .background(
+                                color = ZipdabangandroidTheme.Colors.Strawberry,
+                                shape = CircleShape
+                            ),
+                        contentAlignment = Alignment.Center
+                    ){
+                        Icon(
+                            modifier = Modifier.size(32.dp, 32.dp),
+                            painter = painterResource(id = R.drawable.ic_signup_camerapermission),
+                            contentDescription = null,
+                            tint = Color.White,
+                        )
+                    }
+                    Spacer(modifier = Modifier.weight(0.4f))
+                    Box(
+                        modifier = Modifier.weight(7f),
+                    ){
+                        MainAndSubTitle(
+                            mainValue = "카메라 (선택)",
+                            mainTextStyle = ZipdabangandroidTheme.Typography.sixteen_700,
+                            mainTextColor = ZipdabangandroidTheme.Colors.Typo,
+                            subValue = "레시피 사진 등록에 필요합니다.",
+                            subTextStyle = ZipdabangandroidTheme.Typography.twelve_300,
+                            subTextColor = ZipdabangandroidTheme.Colors.Typo,
+                        )
+                    }
+                }
+                Row(
+                    modifier = Modifier
+                        .padding(0.dp, 20.dp, 0.dp, 0.dp)
+                        .fillMaxWidth()
+                ){
+                    Box(
+                        modifier = Modifier
+                            .size(40.dp)
+                            .aspectRatio(1f)
+                            .background(
+                                color = ZipdabangandroidTheme.Colors.Strawberry,
+                                shape = CircleShape
+                            ),
+                        contentAlignment = Alignment.Center
+                    ){
+                        Icon(
+                            modifier = Modifier.size(32.dp, 32.dp),
+                            painter = painterResource(id = R.drawable.ic_signup_gallerypermission),
+                            contentDescription = null,
+                            tint = Color.White,
+                        )
+                    }
+                    Spacer(modifier = Modifier.weight(0.4f))
+                    Box(
+                        modifier = Modifier.weight(7f),
+                    ){
+                        MainAndSubTitle(
+                            mainValue = "사진 (선택)",
+                            mainTextStyle = ZipdabangandroidTheme.Typography.sixteen_700,
+                            mainTextColor = ZipdabangandroidTheme.Colors.Typo,
+                            subValue = "?",
+                            subTextStyle = ZipdabangandroidTheme.Typography.twelve_300,
+                            subTextColor = ZipdabangandroidTheme.Colors.Typo,
+                        )
+                    }
+                }
+                Row(
+                    modifier = Modifier
+                        .padding(0.dp, 20.dp, 0.dp, 0.dp)
+                        .fillMaxWidth()
+                ){
+                    Box(
+                        modifier = Modifier
+                            .size(40.dp)
+                            .aspectRatio(1f)
+                            .background(
+                                color = ZipdabangandroidTheme.Colors.Strawberry,
+                                shape = CircleShape
+                            ),
+                        contentAlignment = Alignment.Center
+                    ){
+                        Icon(
+                            modifier = Modifier.size(32.dp, 32.dp),
+                            painter = painterResource(id = R.drawable.ic_signup_addresspermission),
+                            contentDescription = null,
+                            tint = Color.White,
+                        )
+                    }
+                    Spacer(modifier = Modifier.weight(0.4f))
+                    Box(
+                        modifier = Modifier.weight(7f),
+                    ){
+                        MainAndSubTitle(
+                            mainValue = "위치 (선택)",
+                            mainTextStyle = ZipdabangandroidTheme.Typography.sixteen_700,
+                            mainTextColor = ZipdabangandroidTheme.Colors.Typo,
+                            subValue = "위치 기반 정보 제공에 필요합니다.",
+                            subTextStyle = ZipdabangandroidTheme.Typography.twelve_300,
+                            subTextColor = ZipdabangandroidTheme.Colors.Typo,
+                        )
+                    }
+                }
+                Row(
+                    modifier = Modifier
+                        .padding(0.dp, 20.dp, 0.dp, 0.dp)
+                        .fillMaxWidth()
+                ){
+                    Box(
+                        modifier = Modifier
+                            .size(40.dp)
+                            .aspectRatio(1f)
+                            .background(
+                                color = ZipdabangandroidTheme.Colors.Strawberry,
+                                shape = CircleShape
+                            ),
+                        contentAlignment = Alignment.Center
+                    ){
+                        Icon(
+                            modifier = Modifier.size(32.dp, 32.dp),
+                            painter = painterResource(id = R.drawable.ic_signup_alarmpermission),
+                            contentDescription = null,
+                            tint = Color.White,
+                        )
+                    }
+                    Spacer(modifier = Modifier.weight(0.4f))
+                    Box(
+                        modifier = Modifier.weight(7f),
+                    ){
+                        MainAndSubTitle(
+                            mainValue = "알림 (선택)",
+                            mainTextStyle = ZipdabangandroidTheme.Typography.sixteen_700,
+                            mainTextColor = ZipdabangandroidTheme.Colors.Typo,
+                            subValue = "예약 확인, 이벤트 당첨 알림 정보, 베송 알림 등의\n알림을 제공합니다.",
+                            subTextStyle = ZipdabangandroidTheme.Typography.twelve_300,
+                            subTextColor = ZipdabangandroidTheme.Colors.Typo,
+                        )
+                    }
+                }
+            }
+            TextButton(
+                enabled = true,
+                colors = ButtonDefaults.buttonColors(containerColor = ZipdabangandroidTheme.Colors.Strawberry),
+                shape = ZipdabangandroidTheme.Shapes.smallRoundedBottom,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(50.dp)
+                    .align(Alignment.BottomCenter),
+                contentPadding = PaddingValues(0.dp),
+                onClick = { onCheckClick() }
+            ) {
+                Text(
+                    text = "확인",
+                    style = ZipdabangandroidTheme.Typography.sixteen_700,
+                    color = Color.White
+                )
+            }
+        }
+    }
+}
+
 // 마켓 준비중
 @Composable
 fun CustomMarketReady(
@@ -738,7 +938,6 @@ fun CustomMarketReady(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(top = 50.dp)
-
             ) {
                 Text(
                     text = "현재 준비 중인 서비스에요!",
@@ -842,6 +1041,22 @@ fun CustomBasketReady(
 
             }
         }
+    }
+}
+
+
+@Preview
+@Composable
+fun PreviewCustomSignupPermission() {
+    val showDialog = remember { mutableStateOf(true) }
+
+    if(showDialog.value){
+        CustomSignupPermission(
+            setShowDialog = {
+                showDialog.value = it
+            },
+            onCheckClick = { /*TODO*/ },
+        )
     }
 }
 
