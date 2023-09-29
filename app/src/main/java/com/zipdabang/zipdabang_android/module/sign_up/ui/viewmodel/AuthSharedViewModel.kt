@@ -441,7 +441,8 @@ class AuthSharedViewModel @Inject constructor(
                         choiceTitle = result.data?.termsList?.get(4)?.termsTitle ?: "",
                         choiceBody = result.data?.termsList?.get(4)?.termsBody ?: "",
                         isMoreToSeeChoice = result.data?.termsList?.get(4)?.isMoreToSee ?: false,
-                        )
+                         isLoading = false
+                     )
                     Log.e("terms-viewmodel", "성공 ${result.data?.termsList}")
                 }
                 is Resource.Error ->{

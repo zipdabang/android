@@ -62,6 +62,40 @@ fun IconAndText(
 }
 
 @Composable
+fun IconAndTextNotClickable(
+    iconImageVector: Int,
+    iconColor : Color,
+    iconModifier : Modifier,
+    text : String,
+    textColor : Color,
+    textStyle : TextStyle,
+){
+    Column(
+        modifier = Modifier
+            .fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ){
+        Box(
+            modifier = Modifier.size(40.dp, 40.dp),
+            contentAlignment = Alignment.Center
+        ){
+            Icon(
+                painter = painterResource(id = iconImageVector),
+                contentDescription = "Icon",
+                tint = iconColor,
+                modifier = iconModifier,
+            )
+        }
+        Text(
+            text = text,
+            color = textColor,
+            style = textStyle,
+        )
+    }
+}
+
+@Composable
 fun ImageIconAndText(
     iconImageVector: Int,
     iconColor : Color,
