@@ -115,6 +115,7 @@ fun UserInfoPreferencesScreen(
                                         RoundedButton(
                                             imageUrl = preference.imageUrl,
                                             buttonText = preference.categoryName,
+                                            shimmering = if(stateUserInfoPreferences.isLoading || stateUserInfoPreferences.error.isNotBlank()){true} else{false},
                                             isClicked = stateUserInfoPreferences.preferBeverageCheckList[index],
                                             isClickedChange = { selectedClicked ->
                                                 drawerUserInfoViewModel.onUserInfoPreferencesEvent(
@@ -124,17 +125,6 @@ fun UserInfoPreferencesScreen(
                                         index ++
                                     }
                                 }
-                            }
-                            if (stateUserInfoPreferences.error.isNotBlank()) {
-                                Text(
-                                    text = stateUserInfoPreferences.error,
-                                    color = Color.Red,
-                                    textAlign = TextAlign.Center,
-                                    modifier = Modifier.fillMaxWidth()
-                                )
-                            }
-                            if (stateUserInfoPreferences.isLoading) {
-                                CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
                             }
                         }
                     }

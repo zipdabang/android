@@ -681,6 +681,7 @@ fun CustomDialogSelectCategory(
                                 RoundedButton(
                                     imageUrl = categoryList[i].imageUrl,
                                     buttonText = categoryList[i].categoryName,
+                                    shimmering = false,
                                     isClicked = categorySelectedList[i],
                                     isClickedChange = { selectedClicked ->
                                         onSelectClick(i, selectedClicked)
@@ -692,10 +693,6 @@ fun CustomDialogSelectCategory(
                         }
                     }
                 }
-                /*val isEnabled = remember {
-                    mutableStateOf(false)
-                }
-                isEnabled.value = selectedCategory.value < 8*/
             }
 
             Row(
