@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
@@ -23,16 +24,19 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.zipdabang.zipdabang_android.R
+import com.zipdabang.zipdabang_android.ui.shimmeringEffect
 import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
 
 //4번 -> 완성, 얘는 size 설정 안해줘도 됨.
 @Composable
 fun RoundedButton(
     imageUrl : Any,
+    shimmering : Boolean,
     buttonText : String,
     isClicked : Boolean,
     isClickedChange : (Boolean) -> Unit,
@@ -62,7 +66,9 @@ fun RoundedButton(
             modifier = Modifier.wrapContentSize()
         ){
             Box(
-                modifier = Modifier.size(24.dp),
+                modifier = Modifier.size(24.dp)
+                    //.clip(CircleShape)
+                    .then(if(shimmering){Modifier.shimmeringEffect()} else{Modifier}),
             ){
                 CircleImage(
                     imageUrl = imageUrl ,
@@ -74,6 +80,7 @@ fun RoundedButton(
                 color = textColor,
                 style = ZipdabangandroidTheme.Typography.eighteen_300,
                 modifier = Modifier.padding(0.dp, 0.dp, 4.dp, 0.dp)
+                    .then(if(shimmering){Modifier.shimmeringEffect()} else{Modifier}),
             )
         }
     }
@@ -89,6 +96,7 @@ fun PreviewRoundedRectangle(){
         RoundedButton(
             imageUrl = R.drawable.ic_launcher_foreground,
             buttonText = "생과일 음료" ,
+            shimmering = false,
             isClicked = isClicked,
             isClickedChange = { selectedClicked -> isClicked = selectedClicked}) //isClicked 값이 바뀌면서 재렌더링한다.
     }

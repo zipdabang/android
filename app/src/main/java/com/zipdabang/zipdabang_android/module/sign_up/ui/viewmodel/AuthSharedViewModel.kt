@@ -503,7 +503,7 @@ class AuthSharedViewModel @Inject constructor(
                     stateBeverageForm = BeverageFormState(
                         beverageList = result.data?.beverageCategoryList ?: emptyList(),
                         size = result.data?.size ?: 0,
-                        beverageCheckList = List(result.data?.size ?: 0) { false }
+                        beverageCheckList = List(result.data?.size ?: 0) { false },
                     )
                     Log.e("preferences-viewmodel", "성공 ${result.data?.beverageCategoryList}")
                 }

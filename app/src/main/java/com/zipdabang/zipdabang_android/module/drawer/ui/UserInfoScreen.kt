@@ -50,6 +50,7 @@ import com.zipdabang.zipdabang_android.R
 import com.zipdabang.zipdabang_android.module.drawer.ui.viewmodel.DrawerUserInfoViewModel
 import com.zipdabang.zipdabang_android.ui.component.AppBarSignUp
 import com.zipdabang.zipdabang_android.ui.component.CircleImage
+import com.zipdabang.zipdabang_android.ui.shimmeringEffect
 import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -68,6 +69,13 @@ fun UserInfoScreen(
     onClickWithdraw: () -> Unit,
 ) {
     val stateUserInfo = drawerUserInfoViewModel.stateUserInfo
+    var shimmering : Boolean = true
+
+    if (stateUserInfo.isLoading || stateUserInfo.error.isNotBlank()) {
+        shimmering = true
+    } else {
+        shimmering = false
+    }
 
     Scaffold(
         modifier = Modifier
@@ -104,7 +112,8 @@ fun UserInfoScreen(
                     Box(
                         modifier = Modifier
                             .size(120.dp, 120.dp)
-                            .clip(CircleShape)
+                            //.clip(CircleShape)
+                            .shimmeringEffect()
                     ) {
                         CircleImage(imageUrl = stateUserInfo.profileUrl, contentDescription = "")
                     }
@@ -135,6 +144,7 @@ fun UserInfoScreen(
                     style = ZipdabangandroidTheme.Typography.sixteen_300,
                     color = ZipdabangandroidTheme.Colors.Typo,
                     modifier = Modifier.padding(0.dp, 4.dp, 0.dp, 0.dp)
+                        .then(if(shimmering){Modifier.shimmeringEffect()} else{Modifier}),
                 )
             }
 
@@ -204,7 +214,8 @@ fun UserInfoScreen(
                             .padding(4.dp, 0.dp, 0.dp, 0.dp)
                     )
                     Text(
-                        modifier = Modifier.padding(8.dp, 0.dp, 0.dp, 0.dp),
+                        modifier = Modifier.padding(8.dp, 0.dp, 0.dp, 0.dp)
+                            .then(if(shimmering){Modifier.shimmeringEffect()} else{Modifier}),
                         text = stateUserInfo.name,
                         style = ZipdabangandroidTheme.Typography.sixteen_500,
                         color = ZipdabangandroidTheme.Colors.Typo
@@ -238,14 +249,16 @@ fun UserInfoScreen(
                                 .padding(4.dp, 0.dp, 0.dp, 0.dp)
                         )
                         Text(
-                            modifier = Modifier.padding(12.dp, 3.dp, 0.dp, 0.dp),
+                            modifier = Modifier.padding(12.dp, 3.dp, 0.dp, 0.dp)
+                                .then(if(shimmering){Modifier.shimmeringEffect()} else{Modifier}),
                             text = stateUserInfo.birthday,
                             style = ZipdabangandroidTheme.Typography.sixteen_500,
                             color = ZipdabangandroidTheme.Colors.Typo
                         )
                     }
                     Text(
-                        modifier = Modifier.padding(0.dp, 0.dp, 8.dp, 0.dp),
+                        modifier = Modifier.padding(0.dp, 0.dp, 8.dp, 0.dp)
+                            .then(if(shimmering){Modifier.shimmeringEffect()} else{Modifier}),
                         text = stateUserInfo.gender,
                         style = ZipdabangandroidTheme.Typography.sixteen_500,
                         color = ZipdabangandroidTheme.Colors.Typo
@@ -281,7 +294,8 @@ fun UserInfoScreen(
                             .padding(4.dp, 0.dp, 0.dp, 0.dp)
                     )
                     Text(
-                        modifier = Modifier.padding(8.dp, 0.dp, 0.dp, 0.dp),
+                        modifier = Modifier.padding(8.dp, 0.dp, 0.dp, 0.dp)
+                            .then(if(shimmering){Modifier.shimmeringEffect()} else{Modifier}),
                         text = stateUserInfo.phoneNumber,
                         style = ZipdabangandroidTheme.Typography.sixteen_500,
                         color = ZipdabangandroidTheme.Colors.Typo
@@ -355,7 +369,8 @@ fun UserInfoScreen(
                             .padding(4.dp, 0.dp, 0.dp, 0.dp)
                     )
                     Text(
-                        modifier = Modifier.padding(8.dp, 0.dp,0.dp,0.dp),
+                        modifier = Modifier.padding(8.dp, 0.dp,0.dp,0.dp)
+                        .then(if(shimmering){Modifier.shimmeringEffect()} else{Modifier}),
                         text = stateUserInfo.zipcode,
                         style = ZipdabangandroidTheme.Typography.sixteen_500,
                         color = ZipdabangandroidTheme.Colors.Typo
@@ -388,7 +403,8 @@ fun UserInfoScreen(
                             .padding(4.dp, 0.dp, 0.dp, 0.dp)
                     )
                     Text(
-                        modifier = Modifier.padding(8.dp, 0.dp,0.dp,0.dp),
+                        modifier = Modifier.padding(8.dp, 0.dp,0.dp,0.dp)
+                        .then(if(shimmering){Modifier.shimmeringEffect()} else{Modifier}),
                         text = stateUserInfo.address,
                         style = ZipdabangandroidTheme.Typography.sixteen_500,
                         color = ZipdabangandroidTheme.Colors.Typo
@@ -419,7 +435,8 @@ fun UserInfoScreen(
                         .size(30.dp, 30.dp)
                         .padding(4.dp, 0.dp, 0.dp, 0.dp))
                     Text(
-                        modifier = Modifier.padding(8.dp, 0.dp,0.dp,0.dp),
+                        modifier = Modifier.padding(8.dp, 0.dp,0.dp,0.dp)
+                        .then(if(shimmering){Modifier.shimmeringEffect()} else{Modifier}),
                         text = stateUserInfo.detailAddress,
                         style = ZipdabangandroidTheme.Typography.sixteen_500,
                         color = ZipdabangandroidTheme.Colors.Typo
@@ -496,7 +513,8 @@ fun UserInfoScreen(
                             .padding(8.dp, 0.dp, 0.dp, 0.dp)
                     )
                     Text(
-                        modifier = Modifier.padding(8.dp, 0.dp, 0.dp, 0.dp),
+                        modifier = Modifier.padding(8.dp, 0.dp, 0.dp, 0.dp)
+                            .then(if(shimmering){Modifier.shimmeringEffect()} else{Modifier}),
                         text = stateUserInfo.nickname,
                         style = ZipdabangandroidTheme.Typography.sixteen_500,
                         color = ZipdabangandroidTheme.Colors.Typo
@@ -577,7 +595,8 @@ fun UserInfoScreen(
                         )
                         stateUserInfo.preferBeverageList.take(4).forEachIndexed { index, beverage ->
                             Text(
-                                modifier = Modifier.padding(6.dp, 0.dp, 0.dp, 0.dp),
+                                modifier = Modifier.padding(6.dp, 0.dp, 0.dp, 0.dp)
+                                    .then(if(shimmering){Modifier.shimmeringEffect()} else{Modifier}),
                                 text = beverage,
                                 style = ZipdabangandroidTheme.Typography.sixteen_500,
                                 color = ZipdabangandroidTheme.Colors.Typo,
@@ -594,7 +613,8 @@ fun UserInfoScreen(
                             stateUserInfo.preferBeverageList.drop(4)
                                 .forEachIndexed { index, beverage ->
                                     Text(
-                                        modifier = Modifier.padding(6.dp, 0.dp, 0.dp, 0.dp),
+                                        modifier = Modifier.padding(6.dp, 0.dp, 0.dp, 0.dp)
+                                            .then(if(shimmering){Modifier.shimmeringEffect()} else{Modifier}),
                                         text = beverage,
                                         style = ZipdabangandroidTheme.Typography.sixteen_500,
                                         color = ZipdabangandroidTheme.Colors.Typo,
@@ -605,19 +625,6 @@ fun UserInfoScreen(
                 }
             }
 
-            // api 로딩
-            if (stateUserInfo.error.isNotBlank()) {
-                androidx.compose.material.Text(
-                    text = stateUserInfo.error,
-                    color = Color.Red,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                )
-            }
-            if (stateUserInfo.isLoading) {
-                CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
-            }
         }
 
 
