@@ -164,7 +164,7 @@
     <string name="dialog_permission_camera">카메라 (선택)</string>
     <string name="dialog_permission_cameradetail">레시피 사진 등록에 필요합니다.</string>
     <string name="dialog_permission_gallery">사진 (선택)</string>
-    <string name="dialog_permission_gallerydetail">레시피 사진 등록 등에 필요합니다.</string>
+    <string name="dialog_permission_gallerydetail">레시피 사진 등록에 필요합니다.</string>
     <string name="dialog_permission_address">위치 (선택)</string>
     <string name="dialog_permission_addressdetail">위치 기반 정보 제공에 필요합니다.</string>
     <string name="dialog_permission_alarm">알림 (선택)</string>

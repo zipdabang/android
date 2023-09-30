@@ -106,7 +106,7 @@ fun UserInfoNicknameScreen(
                             .wrapContentSize(),
                     ){
                         PrimaryButtonOutLined(
-                            borderColor = ZipdabangandroidTheme.Colors.BlackSesame,
+                            borderColor = ZipdabangandroidTheme.Colors.Typo.copy(0.2f),
                             text= stringResource(id = R.string.signup_nickname_deplicatecheck),
                             onClick= {
                                 drawerUserInfoViewModel.onUserInfoNicknameEvent(

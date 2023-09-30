@@ -47,6 +47,7 @@ import com.zipdabang.zipdabang_android.module.my.ui.component.ButtonForIngredien
 import com.zipdabang.zipdabang_android.module.my.ui.component.ButtonForStep
 import com.zipdabang.zipdabang_android.module.my.ui.component.IngredientAndUnit
 import com.zipdabang.zipdabang_android.module.my.ui.component.Step
+import com.zipdabang.zipdabang_android.module.my.ui.state.recipewrite.RecipeWriteDialogEvent
 import com.zipdabang.zipdabang_android.module.my.ui.state.recipewrite.RecipeWriteFormEvent
 import com.zipdabang.zipdabang_android.module.my.ui.viewmodel.RecipeWriteViewModel
 import com.zipdabang.zipdabang_android.ui.component.AppBarSignUp
@@ -78,22 +79,14 @@ fun RecipeWriteScreen(
 ) {
     val stateRecipeWriteForm = recipeWriteViewModel.stateRecipeWriteForm
     val stateRecipeWriteDialog = recipeWriteViewModel.stateRecipeWriteDialog
-
     LaunchedEffect(key1 = stateRecipeWriteForm.ingredientsNum) {
 
     }
+
     // textfield
     var textStateIngredient by remember { mutableStateOf("") }
     var textStateUnit by remember { mutableStateOf("") }
     var textStateStep by remember { mutableStateOf("") }
-
-    // 알럿
-    val showDialogRecipeDelete = remember { mutableStateOf(false) }
-    val showDialogFileSelect = remember { mutableStateOf(false) }
-    val showDialogPerimission = remember { mutableStateOf(false) }
-    val showDialogSave = remember { mutableStateOf(false) }
-    val showDialogUpload = remember { mutableStateOf(false) }
-    val showDialogUploadComplete = remember { mutableStateOf(false) }
 
 
     // 사진
@@ -236,7 +229,7 @@ fun RecipeWriteScreen(
                 onClickNavIcon = {
                     // 만약 하나라도 차있으면, dialog 띄운 후에 onClickBack()
                     // if(){
-                    showDialogRecipeDelete.value = true
+                    recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.RecipeDeleteChanged(true))
                     // } else{
                     //      onClickBack()
                     // }
@@ -265,7 +258,7 @@ fun RecipeWriteScreen(
             ) {
                 ImageWithIconAndText(
                     addImageClick = {
-                        showDialogFileSelect.value = true
+                        recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.FileSelectChanged(true))
                     },
                     deleteImageClick = {
                         thumbnail = null
@@ -613,7 +606,7 @@ fun RecipeWriteScreen(
                         backgroundColor = ZipdabangandroidTheme.Colors.MainBackground,
                         text = stringResource(id = R.string.my_recipewrite_save),
                         onClick = {
-                            showDialogSave.value = true
+                            recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.SaveChanged(true))
                         },
                     )
                 }
@@ -632,56 +625,56 @@ fun RecipeWriteScreen(
 
             // 알럿
             // 권한허용 알럿
-            if (showDialogPerimission.value) {
+            if (stateRecipeWriteDialog.isOpenPermission) {
                 CustomDialogType1(
                     title = stringResource(id = R.string.my_dialog_permission),
                     text = stringResource(id = R.string.my_dialog_permission_detail),
                     declineText = stringResource(id = R.string.my_dialog_cancel),
                     acceptText = stringResource(id = R.string.my_dialog_permit),
                     setShowDialog = {
-                        showDialogPerimission.value = it
+                        recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.PermissionChanged(it))
                     },
                     onAcceptClick = {
                         // 카메라 허용받기
-                        showDialogPerimission.value = false
+                        recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.PermissionChanged(false))
                     }
                 )
             }
             // 파일선택 알럿
-            if (showDialogFileSelect.value) {
+            if (stateRecipeWriteDialog.isOpenFileSelect) {
                 CustomDialogCameraFile(
                     title = stringResource(id = R.string.my_dialog_fileselect),
                     setShowDialog = {
-                        showDialogFileSelect.value = it
+                        recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.FileSelectChanged(it))
                     },
                     onCameraClick = {
                         takePhotoFromCameraLauncher.launch()
-                        showDialogFileSelect.value = false
+                        recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.FileSelectChanged(false))
                     },
                     onFileClick = {
                         takePhotoFromAlbumLauncher.launch("image/*")
-                        showDialogFileSelect.value = false
+                        recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.FileSelectChanged(false))
                     }
                 )
             }
             // 임시저장 알럿
-            if (showDialogSave.value) {
+            if (stateRecipeWriteDialog.isOpenSave) {
                 CustomDialogType2(
                     title = stringResource(id = R.string.my_save),
                     text = stringResource(id = R.string.my_dialog_save_detail),
                     declineText = stringResource(id = R.string.my_dialog_cancel),
                     acceptText = stringResource(id = R.string.my_save),
                     setShowDialog = {
-                        showDialogSave.value = it
+                        recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.SaveChanged(it))
                     },
                     onAcceptClick = {
                         // 임시저장 api & navGraph 이동
-                        showDialogSave.value = false
+                        recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.SaveChanged(false))
                     }
                 )
             }
             // 업로드 알럿
-            if (showDialogUpload.value) {
+            if (stateRecipeWriteDialog.isOpenUploadCategory) {
                 /*CustomDialogSelectCategory(
                     categoryList = ,
                     categoryParagraphList = ,
@@ -692,18 +685,18 @@ fun RecipeWriteScreen(
                 )*/
             }
             // 작성 중 취소 알럿
-            if (showDialogRecipeDelete.value) {
+            if (stateRecipeWriteDialog.isOpenRecipeDelete) {
                 CustomDialogRecipeDelete(
                     setShowDialog = {
-                        showDialogRecipeDelete.value = it
+                        recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.RecipeDeleteChanged(it))
                     },
                     onDeleteClick = {
-                        showDialogRecipeDelete.value = false
+                        recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.RecipeDeleteChanged(false))
                         onClickBack()
                     },
                     onTemporalSave = {
                         // 임시저장 api & navGraph 이동
-                        showDialogRecipeDelete.value = false
+                        recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.RecipeDeleteChanged(false))
                     }
                 )
             }

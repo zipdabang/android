@@ -24,7 +24,6 @@ class RecipeWriteViewModel @Inject constructor(
         RecipeWriteFormState(
             steps = listOf(
                 Step(
-                    stepNum = 1,
                     stepImages = null,
                     description = "",
                     stepWordCount = 0
@@ -32,7 +31,6 @@ class RecipeWriteViewModel @Inject constructor(
             ),
             ingredients = listOf(
                 Ingredient(
-                    ingredientNum = 1,
                     ingredientName = "",
                     ingredientWordCount = 0,
                     quantity = "",
@@ -77,7 +75,6 @@ class RecipeWriteViewModel @Inject constructor(
             is RecipeWriteFormEvent.BtnIngredientAdd->{
                 val currentIngredients = stateRecipeWriteForm.ingredients.toMutableList()
                 val newIngredient = Ingredient(
-                    ingredientNum = stateRecipeWriteForm.ingredientsNum + 1,
                     ingredientName = "",
                     ingredientWordCount = 0,
                     quantity = "",
@@ -97,7 +94,6 @@ class RecipeWriteViewModel @Inject constructor(
             is RecipeWriteFormEvent.BtnStepAdd->{
                 val currentSteps = stateRecipeWriteForm.steps.toMutableList()
                 val newStep = Step(
-                    stepNum = stateRecipeWriteForm.stepsNum + 1,
                     stepImages = null,
                     description = "",
                     stepWordCount = 0
