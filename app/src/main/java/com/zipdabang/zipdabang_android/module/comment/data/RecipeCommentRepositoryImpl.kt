@@ -86,5 +86,19 @@ class RecipeCommentRepositoryImpl @Inject constructor(
         )
     }
 
+    override suspend fun reportComment(
+        accessToken: String,
+        recipeId: Int,
+        commentId: Int,
+        reportId: Int
+    ): ResponseBody<String?> {
+        return recipeApi.reportComment(
+            accessToken = accessToken,
+            recipeId = recipeId,
+            commentId = commentId,
+            reportId = reportId
+        )
+    }
+
 
 }

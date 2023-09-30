@@ -115,4 +115,12 @@ interface RecipeApi {
         @Header("Authorization") accessToken: String,
         @Query("blocked") ownerId: Int
     ): ResponseBody<UserBlockDto?>
+
+    @GET("members/recipes/{recipeId}/{commentId}/report/{reportId}")
+    suspend fun reportComment(
+        @Header("Authorization") accessToken: String,
+        @Path("recipeId") recipeId: Int,
+        @Path("commentId") commentId: Int,
+        @Path("reportId") reportId: Int
+    ): ResponseBody<String?>
 }

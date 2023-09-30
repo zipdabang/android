@@ -26,3 +26,11 @@ data class UserBlockResult(
     val isConnectionSuccessful: Boolean,
     val isBlockSuccessful: Boolean
 )
+
+data class ReportResult(
+    val code: Int,
+    val message: String,
+    val isConnectionSuccessful: Boolean,
+    val isReportSuccessful: Boolean
+)
+

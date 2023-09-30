@@ -15,6 +15,7 @@ import com.zipdabang.zipdabang_android.module.comment.use_case.BlockUserUseCase
 import com.zipdabang.zipdabang_android.module.comment.use_case.DeleteCommentUseCase
 import com.zipdabang.zipdabang_android.module.comment.use_case.EditCommentUseCase
 import com.zipdabang.zipdabang_android.module.comment.use_case.PostCommentUseCase
+import com.zipdabang.zipdabang_android.module.comment.use_case.ReportCommentUseCase
 import com.zipdabang.zipdabang_android.module.comment.util.toRecipeCommentState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
@@ -32,6 +33,7 @@ class RecipeCommentViewModel @Inject constructor(
     private val deleteCommentUseCase: DeleteCommentUseCase,
     private val editCommentUseCase: EditCommentUseCase,
     private val blockUserUseCase: BlockUserUseCase,
+    private val reportCommentUseCase: ReportCommentUseCase,
     private val database: Paging3Database,
     private val repository: RecipeCommentRepository
 ): ViewModel() {
@@ -52,6 +54,9 @@ class RecipeCommentViewModel @Inject constructor(
 
     private val _blockResult = MutableStateFlow(BlockUserState())
     val blockResult = _blockResult.asStateFlow()
+
+    private val _reportResult = MutableStateFlow(ReportCommentState())
+    val reportResult = _reportResult.asStateFlow()
 
     fun getComments(
         recipeId: Int
@@ -244,6 +249,48 @@ class RecipeCommentViewModel @Inject constructor(
                 is Resource.Loading -> {
                     _blockResult.emit(
                         BlockUserState(
+                            isLoading = true
+                        )
+                    )
+                }
+            }
+        }
+    }
+
+    private suspend fun reportComment(
+        recipeId: Int,
+        commentId: Int,
+        reportId: Int
+    ) {
+        reportCommentUseCase(
+            recipeId = recipeId,
+            commentId = commentId,
+            reportId = reportId
+        ).onEach { result ->
+            when (result) {
+                is Resource.Success -> {
+                    _reportResult.emit(
+                        ReportCommentState(
+                            isLoading = false,
+                            isConnectionSuccessful = true,
+                            errorMessage = null,
+                            isReportSuccessful = true
+                        )
+                    )
+                }
+                is Resource.Error -> {
+                    _reportResult.emit(
+                        ReportCommentState(
+                            isLoading = false,
+                            isConnectionSuccessful = true,
+                            errorMessage = result.message,
+                            isReportSuccessful = false
+                        )
+                    )
+                }
+                is Resource.Loading -> {
+                    _reportResult.emit(
+                        ReportCommentState(
                             isLoading = true
                         )
                     )

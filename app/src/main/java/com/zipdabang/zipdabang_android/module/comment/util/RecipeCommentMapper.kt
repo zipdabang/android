@@ -8,6 +8,7 @@ import com.zipdabang.zipdabang_android.module.comment.data.remote.UserBlockDto
 import com.zipdabang.zipdabang_android.module.comment.domain.DeleteResult
 import com.zipdabang.zipdabang_android.module.comment.domain.EditResult
 import com.zipdabang.zipdabang_android.module.comment.domain.PostResult
+import com.zipdabang.zipdabang_android.module.comment.domain.ReportResult
 import com.zipdabang.zipdabang_android.module.comment.domain.UserBlockResult
 import com.zipdabang.zipdabang_android.module.comment.ui.RecipeCommentState
 import java.util.Random
@@ -87,5 +88,14 @@ fun ResponseBody<UserBlockDto?>.toUserBlockResult(): UserBlockResult {
         message = message,
         isConnectionSuccessful = isSuccess,
         isBlockSuccessful = result != null
+    )
+}
+
+fun ResponseBody<String?>.toReportResult(): ReportResult {
+    return ReportResult(
+        code = code,
+        message = message,
+        isConnectionSuccessful = isSuccess,
+        isReportSuccessful = result != null
     )
 }
