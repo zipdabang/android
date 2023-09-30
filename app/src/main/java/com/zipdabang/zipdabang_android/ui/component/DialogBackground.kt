@@ -1,10 +1,8 @@
 package com.zipdabang.zipdabang_android.ui.component
 
 import android.util.Log
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -21,8 +19,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
@@ -30,91 +26,24 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.Font
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import coil.compose.AsyncImage
 import com.zipdabang.zipdabang_android.R
-import com.zipdabang.zipdabang_android.module.sign_up.data.remote.BeverageCategory
-import com.zipdabang.zipdabang_android.module.sign_up.ui.state.BeverageFormEvent
 import com.zipdabang.zipdabang_android.ui.theme.DialogBackground
-import com.zipdabang.zipdabang_android.ui.theme.DialogGray
-import com.zipdabang.zipdabang_android.ui.theme.DialogPink
-import com.zipdabang.zipdabang_android.ui.theme.NavBlack
 import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
-
-/*@Composable
-fun GeneralDialogType1(
-    title: String,
-    text: String,
-    declineText: String?,
-    acceptText: String,
-    setShowDialog: (Boolean) -> Unit,
-    onAcceptClick: () -> Unit,
-) {
-    AlertDialog(
-        onDismissRequest = { setShowDialog(false) },
-        title = {
-            Text(
-                text = title,
-                color = ZipdabangandroidTheme.Colors.Typo,
-                style = ZipdabangandroidTheme.Typography.fourteen_700
-            )
-        },
-        text = {
-            Text(
-                text = text,
-                color = ZipdabangandroidTheme.Colors.Typo,
-                style = ZipdabangandroidTheme.Typography.twelve_300
-            )
-
-        },
-        confirmButton = {
-            TextButton(onClick = { onAcceptClick() }) {
-                Text(
-                    text = acceptText,
-                    color = ZipdabangandroidTheme.Colors.Strawberry,
-                    style = ZipdabangandroidTheme.Typography.sixteen_500
-                )
-
-            }
-        },
-        dismissButton = {
-            TextButton(onClick = { setShowDialog(false) }) {
-                if (declineText != null) {
-                    Text(
-                        text = declineText,
-                        color = ZipdabangandroidTheme.Colors.Typo,
-                        style = ZipdabangandroidTheme.Typography.sixteen_500
-                    )
-                }
-            }
-        },
-        shape = ZipdabangandroidTheme.Shapes.small,
-        containerColor = DialogBackground
-    )
-}*/
 
 //나의 레시피 업로드, 임시저장, 레시피 삭제 -> 버튼 비율 1:1
 @Composable
@@ -400,7 +329,7 @@ fun CustomDialogCameraFile(
                             )
                             Text(
                                 modifier = Modifier.padding(0.dp, 8.dp, 0.dp, 0.dp),
-                                text = "카메라",
+                                text = stringResource(id = R.string.dialog_camera),
                                 color = ZipdabangandroidTheme.Colors.Typo.copy(0.5f),
                                 style = ZipdabangandroidTheme.Typography.sixteen_500
                             )
@@ -422,7 +351,7 @@ fun CustomDialogCameraFile(
                             )
                             Text(
                                 modifier = Modifier.padding(0.dp, 8.dp, 0.dp, 0.dp),
-                                text = "파일",
+                                text = stringResource(id = R.string.dialog_file),
                                 color = ZipdabangandroidTheme.Colors.Typo.copy(0.5f),
                                 style = ZipdabangandroidTheme.Typography.sixteen_500
                             )
@@ -459,26 +388,25 @@ fun CustomDialogRecipeDelete(
             )
             {
                 Text(
-                    text = "작성 중인 레시피 삭제하기",
+                    text = stringResource(id = R.string.dialog_deleterecipe),
                     textAlign = TextAlign.Center,
                     color = ZipdabangandroidTheme.Colors.Typo,
                     style = ZipdabangandroidTheme.Typography.eighteen_500,
                 )
                 Spacer(modifier = Modifier.height(20.dp))
                 Text(
-                    text = "지금 돌아가면 작성 내용이 모두 삭제됩니다.\n" +
-                            "작성 중인 레시피를 삭제하시겠습니까?",
+                    text = stringResource(id = R.string.dialog_deleterecipe_detail),
                     textAlign = TextAlign.Start,
                     color = ZipdabangandroidTheme.Colors.Typo,
                     style = ZipdabangandroidTheme.Typography.sixteen_300,
                 )
                 Spacer(modifier = Modifier.height(28.dp))
 
-                PrimaryButtonStrawBerry80(text = "임시저장 하기", onClick = { onTemporalSave() })
+                PrimaryButtonStrawBerry80(text = stringResource(id = R.string.dialog_deleterecipe_save), onClick = { onTemporalSave() })
 
                 Spacer(modifier = Modifier.height(10.dp))
 
-                PrimaryButtonStrawberry80Outlined(text = "취소", onClick = {
+                PrimaryButtonStrawberry80Outlined(text = stringResource(id = R.string.dialog_deleterecipe_cancel), onClick = {
                     setShowDialog(false)
                 }
                 )
@@ -502,7 +430,7 @@ fun CustomDialogRecipeDelete(
                     )
                 ) {
                     Text(
-                        text = "삭제하기",
+                        text = stringResource(id = R.string.dialog_deleterecipe_delete),
                         color = Color.White,
                         style = ZipdabangandroidTheme.Typography.sixteen_500,
                     )
@@ -561,12 +489,12 @@ fun CustomDialogUploadComplete(
                 )
                 {
                     Text(
-                        text = "업로드 완료!",
+                        text = stringResource(id = R.string.dialog_upload),
                         style = ZipdabangandroidTheme.Typography.thirtytwo_900_scdream,
                     )
                     Spacer(modifier = Modifier.height(10.dp))
                     Text(
-                        text = "맛있는 레시피를 공유해줘서 고마워요!",
+                        text = stringResource(id = R.string.dialog_upload_detail),
                         textAlign = TextAlign.Center,
                         color = ZipdabangandroidTheme.Colors.Typo,
                         style = ZipdabangandroidTheme.Typography.eighteen_300
@@ -590,7 +518,7 @@ fun CustomDialogUploadComplete(
                             contentAlignment = Alignment.Center
                         ) {
                             Text(
-                                text = "업로드 레시피 보러가기",
+                                text = stringResource(id = R.string.dialog_upload_gotouploadrecipe),
                                 textAlign = TextAlign.Center,
                                 color = Color.White,
                                 maxLines = 1,
@@ -603,7 +531,7 @@ fun CustomDialogUploadComplete(
                         shape = RectangleShape,
                         onClick = { setShowDialog(false) }) {
                         Text(
-                            text = "나중에 보기",
+                            text = stringResource(id = R.string.dialog_upload_seenexttime),
                             color = ZipdabangandroidTheme.Colors.Typo,
                             style = ZipdabangandroidTheme.Typography.fourteen_300
                         )
@@ -648,12 +576,12 @@ fun CustomDialogSelectCategory(
                 )
                 {
                     Text(
-                        text = "카테고리 선택",
+                        text = stringResource(id = R.string.dialog_selectcategory),
                         style = ZipdabangandroidTheme.Typography.thirtytwo_900_scdream,
                     )
                     Spacer(modifier = Modifier.height(4.dp))
                     Text(
-                        text = "레시피의 카테고리를 선택해주세요",
+                        text = stringResource(id = R.string.dialog_selectcategory_detail),
                         textAlign = TextAlign.Center,
                         color = ZipdabangandroidTheme.Colors.Typo,
                         style = ZipdabangandroidTheme.Typography.eighteen_300
@@ -713,7 +641,7 @@ fun CustomDialogSelectCategory(
                     )
                 ) {
                     Text(
-                        text = "업로드 하기",
+                        text = stringResource(id = R.string.dialog_selectcategory_upload),
                         style = ZipdabangandroidTheme.Typography.sixteen_700,
                         color = Color.White
                     )
@@ -745,10 +673,10 @@ fun CustomSignupPermission(
                     modifier = Modifier.fillMaxWidth()
                 ){
                     MainAndSubTitle(
-                        mainValue = "앱 접근 권한 안내",
+                        mainValue = stringResource(id = R.string.dialog_permission),
                         mainTextStyle = ZipdabangandroidTheme.Typography.twentytwo_700,
                         mainTextColor = ZipdabangandroidTheme.Colors.Typo,
-                        subValue = "집다방 이용을 위해 다음 접근 권한 허용이\n필요하오니 확인 부탁드립니다.",
+                        subValue = stringResource(id = R.string.dialog_permission_detail),
                         subTextStyle = ZipdabangandroidTheme.Typography.sixteen_300,
                         subTextColor = ZipdabangandroidTheme.Colors.Typo
                     )
@@ -781,10 +709,10 @@ fun CustomSignupPermission(
                         modifier = Modifier.weight(7f),
                     ){
                         MainAndSubTitle(
-                            mainValue = "카메라 (선택)",
+                            mainValue = stringResource(id = R.string.dialog_permission_camera),
                             mainTextStyle = ZipdabangandroidTheme.Typography.sixteen_700,
                             mainTextColor = ZipdabangandroidTheme.Colors.Typo,
-                            subValue = "레시피 사진 등록에 필요합니다.",
+                            subValue =  stringResource(id = R.string.dialog_permission_cameradetail),
                             subTextStyle = ZipdabangandroidTheme.Typography.twelve_300,
                             subTextColor = ZipdabangandroidTheme.Colors.Typo,
                         )
@@ -817,10 +745,10 @@ fun CustomSignupPermission(
                         modifier = Modifier.weight(7f),
                     ){
                         MainAndSubTitle(
-                            mainValue = "사진 (선택)",
+                            mainValue = stringResource(id = R.string.dialog_permission_gallery),
                             mainTextStyle = ZipdabangandroidTheme.Typography.sixteen_700,
                             mainTextColor = ZipdabangandroidTheme.Colors.Typo,
-                            subValue = "?",
+                            subValue = stringResource(id = R.string.dialog_permission_gallerydetail),
                             subTextStyle = ZipdabangandroidTheme.Typography.twelve_300,
                             subTextColor = ZipdabangandroidTheme.Colors.Typo,
                         )
@@ -853,10 +781,10 @@ fun CustomSignupPermission(
                         modifier = Modifier.weight(7f),
                     ){
                         MainAndSubTitle(
-                            mainValue = "위치 (선택)",
+                            mainValue = stringResource(id = R.string.dialog_permission_address),
                             mainTextStyle = ZipdabangandroidTheme.Typography.sixteen_700,
                             mainTextColor = ZipdabangandroidTheme.Colors.Typo,
-                            subValue = "위치 기반 정보 제공에 필요합니다.",
+                            subValue = stringResource(id = R.string.dialog_permission_addressdetail),
                             subTextStyle = ZipdabangandroidTheme.Typography.twelve_300,
                             subTextColor = ZipdabangandroidTheme.Colors.Typo,
                         )
@@ -889,10 +817,10 @@ fun CustomSignupPermission(
                         modifier = Modifier.weight(7f),
                     ){
                         MainAndSubTitle(
-                            mainValue = "알림 (선택)",
+                            mainValue = stringResource(id = R.string.dialog_permission_alarm),
                             mainTextStyle = ZipdabangandroidTheme.Typography.sixteen_700,
                             mainTextColor = ZipdabangandroidTheme.Colors.Typo,
-                            subValue = "예약 확인, 이벤트 당첨 알림 정보, 베송 알림 등의\n알림을 제공합니다.",
+                            subValue = stringResource(id = R.string.dialog_permission_alarmdetail),
                             subTextStyle = ZipdabangandroidTheme.Typography.twelve_300,
                             subTextColor = ZipdabangandroidTheme.Colors.Typo,
                         )
@@ -911,7 +839,7 @@ fun CustomSignupPermission(
                 onClick = { onCheckClick() }
             ) {
                 Text(
-                    text = "확인",
+                    text = stringResource(id = R.string.dialog_permission_check),
                     style = ZipdabangandroidTheme.Typography.sixteen_700,
                     color = Color.White
                 )
@@ -940,12 +868,12 @@ fun CustomMarketReady(
                     .padding(top = 50.dp)
             ) {
                 Text(
-                    text = "현재 준비 중인 서비스에요!",
+                    text =  stringResource(id = R.string.dialog_ready),
                     style = ZipdabangandroidTheme.Typography.twentyfour_900_scdream,
                 )
                 Spacer(modifier = Modifier.height(10.dp))
                 Text(
-                    text = "곧 찾아뵙겠습니다. 기대해주세요:)",
+                    text =  stringResource(id = R.string.dialog_ready_detail),
                     style = ZipdabangandroidTheme.Typography.eighteen_300,
                     color = ZipdabangandroidTheme.Colors.Typo
                 )
@@ -972,7 +900,7 @@ fun CustomMarketReady(
                 onClick = { onCheckClick() }
             ) {
                 Text(
-                    text = "확인",
+                    text =  stringResource(id = R.string.dialog_ready_check),
                     style = ZipdabangandroidTheme.Typography.sixteen_700,
                     color = Color.White
                 )
@@ -1002,12 +930,12 @@ fun CustomBasketReady(
                     .padding(top = 50.dp)
             ) {
                 Text(
-                    text = "현재 준비 중인 서비스에요!",
+                    text = stringResource(id = R.string.dialog_ready),
                     style = ZipdabangandroidTheme.Typography.twentyfour_900_scdream,
                 )
                 Spacer(modifier = Modifier.height(10.dp))
                 Text(
-                    text = "곧 찾아뵙겠습니다. 기대해주세요:)",
+                    text = stringResource(id = R.string.dialog_ready_detail),
                     style = ZipdabangandroidTheme.Typography.eighteen_300,
                     color = ZipdabangandroidTheme.Colors.Typo
                 )
@@ -1034,7 +962,7 @@ fun CustomBasketReady(
                 onClick = { onCheckClick() }
             ) {
                 Text(
-                    text = "확인",
+                    text = stringResource(id = R.string.dialog_ready_check),
                     style = ZipdabangandroidTheme.Typography.sixteen_700,
                     color = Color.White
                 )
