@@ -13,6 +13,9 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.material3.Text
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.core.content.ContextCompat
@@ -45,24 +48,42 @@ class MainActivity : ComponentActivity() {
 
     companion object {
         private const val TAG = "MainActivity"
-        private const val NOTIFICATION_REQUEST_CODE = 1234
+        // private const val NOTIFICATION_REQUEST_CODE = 1234
     }
 
     @Inject
     lateinit var tokenDataStore: DataStore<Token>
+    private lateinit var title: String
+    private lateinit var body: String
+    private lateinit var targetCategory: String
+    private lateinit var targetId: String
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val fcmData = intent.extras?.let {
+            title = it.getString("title", "no title")
+            body = it.getString("body", "no body")
+            targetCategory = it.getString("targetView", "no body")
+            targetId = it.getString("targetPK", "no body")
+            Log.d(TAG, "title: $title, body: $body, targetCategory: $targetCategory, targetId: $targetId")
+
+            FCMData(
+                title = title,
+                body = body,
+                targetCategory = targetCategory,
+                targetId = targetId.toInt()
+            )
+        }
+        
         setContent {
             ZipdabangandroidTheme {
+                Log.d(TAG, "fcmData : $fcmData")
                 ZipdabangApp()
                 val navController = rememberNavController()
-                RootNavGraph(navController = navController)
-
+                RootNavGraph(outerNavController = navController, fcmData = fcmData)
             }
-
-            val tokenDataViewModel = hiltViewModel<ProtoDataViewModel>()
 
             LaunchedEffect(key1 = true) {
                 registerDeviceNumber()
@@ -105,11 +126,6 @@ class MainActivity : ComponentActivity() {
 
             // Get new FCM registration token
             val token = task.result
-
-            // 저장소에 업데이트
-            // viewModel.updateFcmToken(token)
-
-            // Log and toast
             val msg = "FCM Registration token: $token"
             Log.d(TAG, msg)
 
@@ -128,12 +144,10 @@ class MainActivity : ComponentActivity() {
 
                 Log.d(TAG, "fcm token update completed,\nfcm token is $fcmToken")
             }
-            // TODO 토큰 서버에 전송 api
         }
-        // [END log_reg_token]
     }
 
-    private fun askNotificationPermission() {
+/*    private fun askNotificationPermission() {
         // This is only necessary for API level >= 33 (TIRAMISU)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) ==
@@ -160,7 +174,5 @@ class MainActivity : ComponentActivity() {
         } else {
             // TODO: Inform user that that your app will not show notifications.
         }
-    }
-
-
+    }*/
 }

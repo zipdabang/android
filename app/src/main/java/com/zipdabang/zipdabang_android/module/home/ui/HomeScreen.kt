@@ -33,6 +33,7 @@ import com.zipdabang.zipdabang_android.module.guide.ui.HomeBanner.HomeGuideBanne
 import com.zipdabang.zipdabang_android.module.home.data.bestrecipe.BestRecipeDto
 import com.zipdabang.zipdabang_android.module.home.data.bestrecipe.Recipe
 import com.zipdabang.zipdabang_android.module.item.recipe.ui.RecipeCard
+import com.zipdabang.zipdabang_android.module.main.FCMData
 import com.zipdabang.zipdabang_android.ui.component.AppBarHome
 import com.zipdabang.zipdabang_android.ui.component.Banner
 import com.zipdabang.zipdabang_android.ui.component.GroupHeader
@@ -45,7 +46,6 @@ fun HomeScreen(
     navController : NavController,
     onGuide1Click : ()-> Unit,
     viewModel: HomeViewModel = hiltViewModel(),
-
 ){
     //drawer에 필요한 drawerState랑 scope
     val drawerState = rememberDrawerState(DrawerValue.Closed)

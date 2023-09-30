@@ -60,8 +60,9 @@ fun PrimaryButton(
         modifier = Modifier
             .fillMaxWidth(),
         colors = ButtonDefaults.buttonColors(
-            containerColor = backgroundColor
+            containerColor = backgroundColor.copy(alpha = 0.8f)
         ),
+        border = BorderStroke(width = 1.dp, backgroundColor.copy(alpha = 1f)),
         enabled = true
     ) {
         Box(
@@ -203,9 +204,9 @@ fun PrimaryButtonWithStatus(
         enabled = isFormFilled,
         modifier = Modifier
             .fillMaxWidth(),
-        border = BorderStroke(1.dp, colors.Strawberry),
+        border = BorderStroke(1.dp, colors.Strawberry.copy(alpha = 1f)),
         colors = ButtonDefaults.buttonColors(
-            containerColor = colors.Strawberry,
+            containerColor = colors.Strawberry.copy(alpha = 0.8f),
             disabledContainerColor = Color.White
         ),
     ) {
@@ -234,11 +235,12 @@ fun LoginButton(
 ) {
     Button(
         onClick = onClick,
+        border = BorderStroke(width = 1.dp, color = backgroundColor.copy(1f)),
         shape = ZipdabangandroidTheme.Shapes.thin,
         modifier = Modifier
             .fillMaxWidth(),
         colors = ButtonDefaults.buttonColors(
-            containerColor = backgroundColor
+            containerColor = backgroundColor.copy(alpha = 0.8f)
         ),
         enabled = true,
         contentPadding = PaddingValues(
