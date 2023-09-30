@@ -720,7 +720,7 @@ class DrawerUserInfoViewModel @Inject constructor(
                         Log.e("preferencesedit-viewmodel","에러 :  ${result.code} ${result.message}")
                     }
                     is Resource.Loading ->{
-                        stateUserInfoPreferences = stateUserInfoPreferences.copy(isLoading = true)
+                        stateUserInfoPreferences = stateUserInfoPreferences.copy(isLoading = false)
                         Log.e("preferencesedit-viewmodel","로딩중 :  ${result.code} ${result.message}")
                     }
                 }

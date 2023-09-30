@@ -240,7 +240,7 @@ fun UserInfoBasicScreen(
                             .weight(3.4f)
                             .padding(8.dp, 0.dp, 0.dp, 0.dp)){
                             PrimaryButtonOutLined(
-                                borderColor = ZipdabangandroidTheme.Colors.BlackSesame,
+                                borderColor = ZipdabangandroidTheme.Colors.Typo.copy(0.2f),
                                 text = stringResource(id = R.string.signup_userinfo_certificatecall),
                                 onClick = {
                                     drawerUserInfoViewModel.onUserInfoBasicEvent(UserInfoBasicEvent.PhoneNumberClicked(true))
@@ -289,7 +289,7 @@ fun UserInfoBasicScreen(
                             .weight(3.4f)
                             .padding(8.dp, 0.dp, 0.dp, 0.dp)){
                             PrimaryButtonOutLined(
-                                borderColor = ZipdabangandroidTheme.Colors.BlackSesame,
+                                borderColor = ZipdabangandroidTheme.Colors.Typo.copy(0.2f),
                                 text = stringResource(id = R.string.signup_userinfo_ok),
                                 onClick = {
                                     drawerUserInfoViewModel.onUserInfoBasicEvent(UserInfoBasicEvent.AuthNumberClicked(true))
@@ -297,19 +297,6 @@ fun UserInfoBasicScreen(
                             )
                         }
                     }
-                }
-                // api 로딩
-                if(stateUserInfoBasic.error.isNotBlank()){
-                    Text(
-                        text = stateUserInfoBasic.error,
-                        color = Color.Red,
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                    )
-                }
-                if(stateUserInfoBasic.isLoading) {
-                    CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
                 }
             }
 

@@ -128,14 +128,13 @@ fun MyScreen(
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
                             //닉네임 & 선호음료 & 팔로우팔로잉
-                            Column(){
+                            Column{
                                 Row(
                                     horizontalArrangement = Arrangement.spacedBy(4.dp),
                                     verticalAlignment = Alignment.CenterVertically,
                                     modifier = Modifier.padding(0.dp,0.dp,0.dp,2.dp)
                                 ){
                                     Text(text=stateMyUserInfo.nickname, style=ZipdabangandroidTheme.Typography.twentytwo_700, color=Color.White)
-                                    //Text(text= "("+ stateMyUserInfo.name +")", style=ZipdabangandroidTheme.Typography.sixteen_500, color=Color.White)
                                 }
                                 Row(
                                     horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -151,9 +150,7 @@ fun MyScreen(
                                         )
                                     }
                                 }
-                                Row(
-
-                                ){
+                                Row {
                                     Text(text="팔로우 000  |  팔로잉 000", style=ZipdabangandroidTheme.Typography.fourteen_300, color=Color.White)
                                 }
                             }
@@ -166,7 +163,7 @@ fun MyScreen(
                                         .size(104.dp, 104.dp)
                                         .clip(CircleShape),
                                 ){
-                                    CircleImage(imageUrl = R.drawable.img_profile, contentDescription = "")
+                                    CircleImage(imageUrl = R.drawable.img_profile, contentDescription = "") //stateMyUserInfo.profileUrl
                                 }
                                 Box(
                                     modifier = Modifier

@@ -145,7 +145,7 @@ fun DrawerContent(
                 }
                 Divider(
                     modifier = Modifier.fillMaxWidth(),
-                    color = ZipdabangandroidTheme.Colors.Typo.copy(0.1f),
+                    color = ZipdabangandroidTheme.Colors.Typo.copy(0.2f),
                 )
                 Box(
                     modifier = Modifier
@@ -197,7 +197,7 @@ fun DrawerContent(
                 }
                 Divider(
                     modifier = Modifier.fillMaxWidth(),
-                    color = ZipdabangandroidTheme.Colors.Typo.copy(0.1f),
+                    color = ZipdabangandroidTheme.Colors.Typo.copy(0.2f),
                 )
                 /*Box(
                     modifier = Modifier.fillMaxWidth()
