@@ -141,6 +141,37 @@
     <string name="my_dialog_permission">집다방’이(가) 사용자의 사진에\n접근하려고 합니다.</string>
     <string name="my_dialog_permission_detail">회원님이 집다방에 사진과 동영상을 공유하고 공유할 사진 및 동영상을 추천하는 등의 목적으로 집다방이 회원님의 카메라롤에 대한 액세스 권한을 요청합니다.</string>
 
+    <!-- for dialog -->
+    <string name="dialog_camera">카메라</string>
+    <string name="dialog_file">파일</string>
+    <string name="dialog_deleterecipe">작성 중인 레시피 삭제하기</string>
+    <string name="dialog_deleterecipe_detail">지금 돌아가면 작성 내용이 모두 삭제됩니다.\n작성 중인 레시피를 삭제하시겠습니까?</string>
+    <string name="dialog_deleterecipe_save">임시저장 하기</string>
+    <string name="dialog_deleterecipe_cancel">취소</string>
+    <string name="dialog_deleterecipe_delete">삭제하기</string>
+    <string name="dialog_upload">업로드 완료</string>
+    <string name="dialog_upload_detail">맛있는 레시피를 공유해줘서 고마워요!</string>
+    <string name="dialog_upload_gotouploadrecipe">업로드 레시피 보러가기</string>
+    <string name="dialog_upload_seenexttime">나중에 보기</string>
+    <string name="dialog_selectcategory">카테고리 선택</string>
+    <string name="dialog_selectcategory_detail">레시피의 카테고리를 선택해주세요</string>
+    <string name="dialog_selectcategory_upload">업로드 하기</string>
+    <string name="dialog_ready">현재 준비 중인 서비스예요!</string>
+    <string name="dialog_ready_detail">곧 찾아뵙겠습니다. 기대해주세요:)</string>
+    <string name="dialog_ready_check">확인</string>
+    <string name="dialog_permission">앱 접근 권한 안내</string>
+    <string name="dialog_permission_detail">집다방 이용을 위해 다음 접근 권한 허용이\n필요하오니 확인 부탁드립니다.</string>
+    <string name="dialog_permission_camera">카메라 (선택)</string>
+    <string name="dialog_permission_cameradetail">레시피 사진 등록에 필요합니다.</string>
+    <string name="dialog_permission_gallery">사진 (선택)</string>
+    <string name="dialog_permission_gallerydetail">레시피 사진 등록 등에 필요합니다.</string>
+    <string name="dialog_permission_address">위치 (선택)</string>
+    <string name="dialog_permission_addressdetail">위치 기반 정보 제공에 필요합니다.</string>
+    <string name="dialog_permission_alarm">알림 (선택)</string>
+    <string name="dialog_permission_alarmdetail">예약 확인, 이벤트 당첨 알림 정보, 베송 알림 등의\n알림을 제공합니다.</string>
+    <string name="dialog_permission_check">확인</string>
+
+
     <!--  for fcm  -->
     <string name="default_notification_channel_id" translatable="false">fcm_default_channel</string>
     <string name="default_notification_channel_name" translatable="true">Zipdabang</string>
