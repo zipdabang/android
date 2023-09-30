@@ -5,6 +5,7 @@ import com.zipdabang.zipdabang_android.module.comment.data.remote.EditCommentCon
 import com.zipdabang.zipdabang_android.module.comment.data.remote.PostCommentContent
 import com.zipdabang.zipdabang_android.module.comment.data.remote.PostCommentDto
 import com.zipdabang.zipdabang_android.module.comment.data.remote.RecipeCommentDto
+import com.zipdabang.zipdabang_android.module.comment.data.remote.UserBlockDto
 import com.zipdabang.zipdabang_android.module.detail.recipe.data.RecipeDetailDto
 import com.zipdabang.zipdabang_android.module.recipes.data.banner.RecipeBannerDto
 import com.zipdabang.zipdabang_android.module.recipes.data.category.RecipeCategoryDto
@@ -108,4 +109,10 @@ interface RecipeApi {
         @Path("commentId") commentId: Int,
         @Body comment: EditCommentContent
     ): PostCommentDto
+
+    @POST("members/block")
+    suspend fun blockUser(
+        @Header("Authorization") accessToken: String,
+        @Query("blocked") ownerId: Int
+    ): ResponseBody<UserBlockDto?>
 }

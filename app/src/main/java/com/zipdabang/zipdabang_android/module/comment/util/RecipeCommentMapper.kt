@@ -4,9 +4,11 @@ import com.zipdabang.zipdabang_android.common.ResponseBody
 import com.zipdabang.zipdabang_android.module.comment.data.local.RecipeCommentEntity
 import com.zipdabang.zipdabang_android.module.comment.data.remote.PostCommentDto
 import com.zipdabang.zipdabang_android.module.comment.data.remote.RecipeComment
+import com.zipdabang.zipdabang_android.module.comment.data.remote.UserBlockDto
 import com.zipdabang.zipdabang_android.module.comment.domain.DeleteResult
 import com.zipdabang.zipdabang_android.module.comment.domain.EditResult
 import com.zipdabang.zipdabang_android.module.comment.domain.PostResult
+import com.zipdabang.zipdabang_android.module.comment.domain.UserBlockResult
 import com.zipdabang.zipdabang_android.module.comment.ui.RecipeCommentState
 import java.util.Random
 import java.util.concurrent.ThreadLocalRandom
@@ -76,5 +78,14 @@ fun ResponseBody<String?>.toDeleteResult(): DeleteResult {
         message = message,
         isConnectionSuccessful = isSuccess,
         isDeleteSuccessful = result != null
+    )
+}
+
+fun ResponseBody<UserBlockDto?>.toUserBlockResult(): UserBlockResult {
+    return UserBlockResult(
+        code = code,
+        message = message,
+        isConnectionSuccessful = isSuccess,
+        isBlockSuccessful = result != null
     )
 }

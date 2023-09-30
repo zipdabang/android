@@ -11,6 +11,7 @@ import com.zipdabang.zipdabang_android.common.Resource
 import com.zipdabang.zipdabang_android.core.Paging3Database
 import com.zipdabang.zipdabang_android.module.comment.data.remote.PostCommentContent
 import com.zipdabang.zipdabang_android.module.comment.domain.RecipeCommentRepository
+import com.zipdabang.zipdabang_android.module.comment.use_case.BlockUserUseCase
 import com.zipdabang.zipdabang_android.module.comment.use_case.DeleteCommentUseCase
 import com.zipdabang.zipdabang_android.module.comment.use_case.EditCommentUseCase
 import com.zipdabang.zipdabang_android.module.comment.use_case.PostCommentUseCase
@@ -30,6 +31,7 @@ class RecipeCommentViewModel @Inject constructor(
     private val postCommentUseCase: PostCommentUseCase,
     private val deleteCommentUseCase: DeleteCommentUseCase,
     private val editCommentUseCase: EditCommentUseCase,
+    private val blockUserUseCase: BlockUserUseCase,
     private val database: Paging3Database,
     private val repository: RecipeCommentRepository
 ): ViewModel() {
@@ -47,6 +49,9 @@ class RecipeCommentViewModel @Inject constructor(
 
     private val _editResult = MutableStateFlow(EditCommentState())
     val editResult = _editResult.asStateFlow()
+
+    private val _blockResult = MutableStateFlow(BlockUserState())
+    val blockResult = _blockResult.asStateFlow()
 
     fun getComments(
         recipeId: Int
@@ -207,6 +212,42 @@ class RecipeCommentViewModel @Inject constructor(
                 database.recipeCommentDao().deleteComment(commentId)
             } catch (e: NullPointerException) {
                 Log.d(TAG, "no comment ${e.message}")
+            }
+        }
+    }
+
+    private suspend fun blockUser(
+        ownerId: Int
+    ) {
+        blockUserUseCase(ownerId).onEach { result ->
+            when (result) {
+                is Resource.Success -> {
+                    _blockResult.emit(
+                        BlockUserState(
+                            isLoading = false,
+                            isConnectionSuccessful = true,
+                            errorMessage = null,
+                            isBlockSuccessful = true
+                        )
+                    )
+                }
+                is Resource.Error -> {
+                    _blockResult.emit(
+                        BlockUserState(
+                            isLoading = false,
+                            isConnectionSuccessful = true,
+                            errorMessage = result.message,
+                            isBlockSuccessful = false
+                        )
+                    )
+                }
+                is Resource.Loading -> {
+                    _blockResult.emit(
+                        BlockUserState(
+                            isLoading = true
+                        )
+                    )
+                }
             }
         }
     }

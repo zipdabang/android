@@ -13,6 +13,7 @@ import com.zipdabang.zipdabang_android.module.comment.data.local.RecipeCommentEn
 import com.zipdabang.zipdabang_android.module.comment.data.remote.EditCommentContent
 import com.zipdabang.zipdabang_android.module.comment.data.remote.PostCommentContent
 import com.zipdabang.zipdabang_android.module.comment.data.remote.PostCommentDto
+import com.zipdabang.zipdabang_android.module.comment.data.remote.UserBlockDto
 import com.zipdabang.zipdabang_android.module.comment.domain.CommentMgtResult
 import com.zipdabang.zipdabang_android.module.comment.domain.RecipeCommentListMediator
 import com.zipdabang.zipdabang_android.module.comment.domain.RecipeCommentRepository
@@ -73,6 +74,15 @@ class RecipeCommentRepositoryImpl @Inject constructor(
     ): PostCommentDto {
         return recipeApi.editRecipeComment(
             accessToken, recipeId, commentId, EditCommentContent(newContent)
+        )
+    }
+
+    override suspend fun blockUser(
+        accessToken: String, ownerId: Int
+    ): ResponseBody<UserBlockDto?> {
+        return recipeApi.blockUser(
+            accessToken = accessToken,
+            ownerId = ownerId
         )
     }
 

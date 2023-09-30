@@ -19,3 +19,10 @@ data class EditResult(
     val isConnectionSuccessful: Boolean,
     val isEditSuccessful: Boolean
 )
+
+data class UserBlockResult(
+    val code: Int,
+    val message: String,
+    val isConnectionSuccessful: Boolean,
+    val isBlockSuccessful: Boolean
+)
