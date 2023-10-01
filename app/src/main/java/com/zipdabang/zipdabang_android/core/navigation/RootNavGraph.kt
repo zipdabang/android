@@ -91,24 +91,36 @@ fun RootNavGraph(
 
             val recipeCommentViewModel = hiltViewModel<RecipeCommentViewModel>()
 
+            val recipeId = backStackEntry.arguments?.getInt("recipeId")
+
             RecipeDetailScreen(
                 navController = outerNavController,
-                recipeId = backStackEntry.arguments?.getInt("recipeId"),
-                onClickBackIcon = {},
+                recipeId = recipeId,
+                onClickBackIcon = {
+                    outerNavController.popBackStack()
+                },
                 onClickProfile = { ownerId -> },
-                onClickCart = { keyword -> },
-                onClickDelete = { recipeId -> },
-                onClickEdit = { recipeId -> },
-                onClickBlock = { userId -> },
-                onClickReport = { recipeId -> },
-                onClickCommentBlock = { recipeId -> },
-                onClickCommentReport = { recipeId -> },
-                onClickCommentDelete = { recipeId, commentId ->
-                    recipeCommentViewModel.deleteComment(recipeId, commentId)
+                // onClickCart = { keyword -> },
+                onClickDelete = {
+
                 },
-                onClickCommentEdit = { recipeId, commentId, newContent ->
-                    recipeCommentViewModel.editComment(recipeId, commentId, newContent)
+                onClickEdit = {
+
                 },
+                onClickCommentReport = { reportRecipeId, commentId, reportId ->
+                    recipeCommentViewModel.reportComment(
+                        recipeId = reportRecipeId, commentId = commentId, reportId = reportId
+                    )
+                },
+                onClickCommentBlock = { ownerId ->
+                    recipeCommentViewModel.blockUser(ownerId)
+                },
+                onClickCommentDelete = { deleteRecipeId, commentId ->
+                    recipeCommentViewModel.deleteComment(deleteRecipeId, commentId)
+                },
+                onClickCommentEdit = { editRecipeId, commentId, newContent ->
+                    recipeCommentViewModel.editComment(editRecipeId, commentId, newContent)
+                }
             )
         }
     }

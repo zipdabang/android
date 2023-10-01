@@ -1,22 +1,36 @@
 package com.zipdabang.zipdabang_android.module.detail.recipe.ui
 
 import android.util.Log
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
+import androidx.datastore.core.DataStore
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.zipdabang.zipdabang_android.common.Resource
+import com.zipdabang.zipdabang_android.common.UiState
 import com.zipdabang.zipdabang_android.core.DeviceSize
+import com.zipdabang.zipdabang_android.core.data_store.proto.CurrentPlatform
+import com.zipdabang.zipdabang_android.core.data_store.proto.Token
+import com.zipdabang.zipdabang_android.module.comment.ui.BlockUserState
+import com.zipdabang.zipdabang_android.module.comment.ui.CommentReportState
+import com.zipdabang.zipdabang_android.module.comment.use_case.BlockUserUseCase
 import com.zipdabang.zipdabang_android.module.detail.recipe.common.DeviceScreenSize
 import com.zipdabang.zipdabang_android.module.detail.recipe.use_case.GetRecipeDetailUseCase
+import com.zipdabang.zipdabang_android.module.detail.recipe.use_case.ReportRecipeUseCase
 import com.zipdabang.zipdabang_android.module.recipes.ui.state.PreferenceToggleState
 import com.zipdabang.zipdabang_android.module.recipes.use_case.ToggleLikeUseCase
 import com.zipdabang.zipdabang_android.module.recipes.use_case.ToggleScrapUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
@@ -24,12 +38,18 @@ class RecipeDetailViewModel @Inject constructor(
     private val getRecipeDataUseCase: GetRecipeDetailUseCase,
     private val toggleLikeUseCase: ToggleLikeUseCase,
     private val toggleScrapUseCase: ToggleScrapUseCase,
+    private val reportRecipeUseCase: ReportRecipeUseCase,
+    private val blockUserUseCase: BlockUserUseCase,
+    private val tokens: DataStore<Token>,
     @DeviceSize private val deviceSize: DeviceScreenSize
 ) : ViewModel() {
 
     companion object {
         const val TAG = "RecipeDetailViewModel"
     }
+
+    private val _currentPlatform = mutableStateOf<CurrentPlatform?>(CurrentPlatform.TEMP)
+    val currentPlatform: State<CurrentPlatform?> = _currentPlatform
 
     private val _recipeDetailState = mutableStateOf(RecipeDetailState())
     val recipeDetailState: State<RecipeDetailState> = _recipeDetailState
@@ -39,6 +59,27 @@ class RecipeDetailViewModel @Inject constructor(
 
     private val _toggleScrapState = MutableStateFlow(PreferenceToggleState())
     val toggleScrapState: StateFlow<PreferenceToggleState> = _toggleScrapState
+
+    private val _recipeReportResult = MutableStateFlow(UiState<Boolean>())
+    val recipeReportResult = _recipeReportResult.asStateFlow()
+
+    private val _blockResult = MutableStateFlow(BlockUserState())
+    val blockResult = _blockResult.asStateFlow()
+
+    private val _isRecipeReportActivated = mutableStateOf(false)
+    val isRecipeReportActivated: State<Boolean> = _isRecipeReportActivated
+
+    private val _isRecipeBlockActivated = mutableStateOf(false)
+    val isRecipeBlockActivated: State<Boolean> = _isRecipeBlockActivated
+
+    private val _recipeReportState = mutableStateOf(RecipeReportState())
+    val recipeReportState: State<RecipeReportState> = _recipeReportState
+
+    init {
+        viewModelScope.launch {
+            _currentPlatform.value = getCurrentPlatform()
+        }
+    }
 
     fun getRecipeDetail(recipeId: Int) {
         Log.d(TAG, "get recipe detail start")
@@ -122,7 +163,100 @@ class RecipeDetailViewModel @Inject constructor(
         }.launchIn(viewModelScope)
     }
 
+    fun reportRecipe(
+        recipeId: Int, reportId: Int
+    ) {
+        reportRecipeUseCase(
+            recipeId = recipeId, reportId = reportId
+        ).onEach { result ->
+            when (result) {
+                is Resource.Loading -> {
+                    _recipeReportResult.emit(UiState(isLoading = true))
+                }
+                is Resource.Success -> {
+                    _recipeReportResult.emit(
+                        UiState(
+                            isLoading = false,
+                            errorMessage = null,
+                            isSuccessful = true,
+                            data = true
+                        )
+                    )
+                }
+                is Resource.Error -> {
+                    _recipeReportResult.emit(
+                        UiState(
+                            isLoading = false,
+                            errorMessage = result.message,
+                            isSuccessful = false,
+                            data = false
+                        )
+                    )
+                }
+            }
+        }
+    }
+
+    fun blockUser(
+        ownerId: Int
+    ) {
+        blockUserUseCase(ownerId).onEach { result ->
+            when (result) {
+                is Resource.Success -> {
+                    _blockResult.emit(
+                        BlockUserState(
+                            isLoading = false,
+                            isConnectionSuccessful = true,
+                            errorMessage = null,
+                            isBlockSuccessful = true
+                        )
+                    )
+                }
+                is Resource.Error -> {
+                    _blockResult.emit(
+                        BlockUserState(
+                            isLoading = false,
+                            isConnectionSuccessful = true,
+                            errorMessage = result.message,
+                            isBlockSuccessful = false
+                        )
+                    )
+                }
+                is Resource.Loading -> {
+                    _blockResult.emit(
+                        BlockUserState(
+                            isLoading = true
+                        )
+                    )
+                }
+            }
+        }
+    }
+
+    // dialog
+    fun setRecipeReportDialogStatus(activated: Boolean) {
+        _isRecipeReportActivated.value = activated
+    }
+
+    fun setRecipeBlockDialogStatus(activated: Boolean) {
+        _isRecipeBlockActivated.value = activated
+    }
+
+    fun setRecipeReportState(recipeReportState: RecipeReportState) {
+        _recipeReportState.value = recipeReportState
+    }
+
+    fun changeReportContent(reportId: Int) {
+        _recipeReportState.value = recipeReportState.value.copy(
+            reportId = reportId
+        )
+    }
+
     fun getDeviceSize(): DeviceScreenSize {
         return deviceSize
+    }
+
+    suspend fun getCurrentPlatform() = withContext(Dispatchers.IO) {
+        tokens.data.first().platformStatus ?: CurrentPlatform.TEMP
     }
 }

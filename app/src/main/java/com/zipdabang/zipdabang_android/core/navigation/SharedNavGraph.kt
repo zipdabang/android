@@ -1,5 +1,9 @@
 package com.zipdabang.zipdabang_android.core.navigation
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
@@ -9,6 +13,7 @@ import androidx.navigation.navArgument
 import androidx.navigation.navigation
 import com.zipdabang.zipdabang_android.module.comment.ui.RecipeCommentViewModel
 import com.zipdabang.zipdabang_android.module.detail.recipe.ui.RecipeDetailScreen
+import com.zipdabang.zipdabang_android.module.detail.recipe.ui.RecipeDetailViewModel
 import com.zipdabang.zipdabang_android.module.market.ui.CategoryMarketScreen
 import com.zipdabang.zipdabang_android.module.search.ui.SearchCategoryScreen
 import com.zipdabang.zipdabang_android.module.search.ui.SearchScreen
@@ -27,26 +32,44 @@ fun NavGraphBuilder.SharedNavGraph(navController: NavController){
             )
         ) { backStackEntry ->
 
+            val recipeId = backStackEntry.arguments?.getInt("recipeId")
+
             val recipeCommentViewModel = hiltViewModel<RecipeCommentViewModel>()
+            val recipeDetailViewModel = hiltViewModel<RecipeDetailViewModel>()
+
+            var commentReportActivated = remember { mutableStateOf(false) }
+            var commentBlockActivated = remember { mutableStateOf(false) }
+            var recipeReportActivated = remember { mutableStateOf(false) }
+            var recipeBlockActivated = remember { mutableStateOf(false) }
 
             RecipeDetailScreen(
                 navController = navController,
-                recipeId = backStackEntry.arguments?.getInt("recipeId"),
-                onClickBackIcon = {},
+                recipeId = recipeId,
+                onClickBackIcon = {
+                    navController.popBackStack()
+                },
                 onClickProfile = { ownerId -> },
-                onClickCart = { keyword -> },
-                onClickDelete = { recipeId -> },
-                onClickEdit = { recipeId -> },
-                onClickBlock = { userId -> },
-                onClickReport = { recipeId -> },
-                onClickCommentBlock = { recipeId -> },
-                onClickCommentReport = { recipeId -> },
-                onClickCommentDelete = { recipeId, commentId ->
-                    recipeCommentViewModel.deleteComment(recipeId, commentId)
+                // onClickCart = { keyword -> },
+                onClickDelete = {
+
                 },
-                onClickCommentEdit = { recipeId, commentId, newContent ->
-                    recipeCommentViewModel.editComment(recipeId, commentId, newContent)
+                onClickEdit = {
+
                 },
+                onClickCommentReport = { reportRecipeId, commentId, reportId ->
+                    recipeCommentViewModel.reportComment(
+                        recipeId = reportRecipeId, commentId = commentId, reportId = reportId
+                    )
+                },
+                onClickCommentBlock = { ownerId ->
+                    recipeCommentViewModel.blockUser(ownerId)
+                },
+                onClickCommentDelete = { deleteRecipeId, commentId ->
+                    recipeCommentViewModel.deleteComment(deleteRecipeId, commentId)
+                },
+                onClickCommentEdit = { editRecipeId, commentId, newContent ->
+                    recipeCommentViewModel.editComment(editRecipeId, commentId, newContent)
+                }
             )
         }
 
@@ -63,7 +86,7 @@ fun NavGraphBuilder.SharedNavGraph(navController: NavController){
         composable(SharedScreen.SearchRecipeCategory.route,
             arguments = listOf(
                 navArgument("categoryId"){ type = NavType.IntType },
-                navArgument("keyword") {type = NavType.StringType}
+                navArgument("keyword") { type = NavType.StringType }
             )){
                val categoryId = it.arguments?.getInt("categoryId")
                val keyword = it.arguments?.getString("keyword")

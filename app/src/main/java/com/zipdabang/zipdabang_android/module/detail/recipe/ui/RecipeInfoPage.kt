@@ -21,7 +21,7 @@ import com.zipdabang.zipdabang_android.ui.theme.DialogBackground
 @Composable
 fun RecipeInfoPage(
     recipeDetailState: RecipeDetailState,
-    onClickCart: (String) -> Unit
+    // onClickCart: (String) -> Unit
 ) {
     LazyColumn(
         modifier = Modifier.fillMaxSize()
@@ -32,8 +32,7 @@ fun RecipeInfoPage(
 
         item {
             RecipeIngredients(
-                ingredients = recipeDetailState.recipeDetailData?.recipeIngredients ?: emptyList(),
-                onClickCart = onClickCart
+                ingredients = recipeDetailState.recipeDetailData?.recipeIngredients ?: emptyList()
             )
         }
 

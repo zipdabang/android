@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -30,10 +31,11 @@ import kotlin.coroutines.suspendCoroutine
 fun RecipeCommentPage(
     commentCount: Int,
     recipeId: Int,
-    onClickReport: (Int) -> Unit,
+    onClickReport: (Int, Int, Int) -> Unit,
     onClickBlock: (Int) -> Unit,
     onClickEdit: (Int, Int, String) -> Unit,
-    onClickDelete: (Int, Int) -> Unit
+    onClickDelete: (Int, Int) -> Unit,
+    showCommentReport: (Int, Int, Int) -> Unit
 ) {
     val viewModel = hiltViewModel<RecipeCommentViewModel>()
     val tokenViewModel = hiltViewModel<ProtoDataViewModel>()
@@ -72,7 +74,8 @@ fun RecipeCommentPage(
             onClickEdit = onClickEdit,
             onClickDelete = onClickDelete,
             postResult = postResult.value,
-            recipeId = recipeId
+            recipeId = recipeId,
+            showCommentReport = showCommentReport,
         )
     }
 }

@@ -1,6 +1,8 @@
 package com.zipdabang.zipdabang_android.module.comment.ui
 
 import android.util.Log
+import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
@@ -57,6 +59,16 @@ class RecipeCommentViewModel @Inject constructor(
 
     private val _reportResult = MutableStateFlow(ReportCommentState())
     val reportResult = _reportResult.asStateFlow()
+
+    private val _commentReportState = mutableStateOf(CommentReportState())
+    val commentReportState: State<CommentReportState> = _commentReportState
+
+    private val _isCommentReportActivated = mutableStateOf(false)
+    val isCommentReportActivated: State<Boolean> = _isCommentReportActivated
+
+    private val _isCommentBlockActivated = mutableStateOf(false)
+    val isCommentBlockActivated: State<Boolean> = _isCommentBlockActivated
+
 
     fun getComments(
         recipeId: Int
@@ -221,7 +233,7 @@ class RecipeCommentViewModel @Inject constructor(
         }
     }
 
-    private suspend fun blockUser(
+    fun blockUser(
         ownerId: Int
     ) {
         blockUserUseCase(ownerId).onEach { result ->
@@ -257,7 +269,7 @@ class RecipeCommentViewModel @Inject constructor(
         }
     }
 
-    private suspend fun reportComment(
+    fun reportComment(
         recipeId: Int,
         commentId: Int,
         reportId: Int
@@ -297,5 +309,23 @@ class RecipeCommentViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    fun setCommentReportDialogStatus(activated: Boolean) {
+        _isCommentReportActivated.value = activated
+    }
+
+    fun setCommentBlockDialogStatus(activated: Boolean) {
+        _isCommentBlockActivated.value = activated
+    }
+
+    fun setCommentReportState(commentReportState: CommentReportState) {
+        _commentReportState.value = commentReportState
+    }
+
+    fun changeReportContent(reportId: Int) {
+        _commentReportState.value = commentReportState.value.copy(
+            reportId = reportId
+        )
     }
 }

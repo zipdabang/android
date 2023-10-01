@@ -19,6 +19,7 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -38,7 +39,9 @@ import com.zipdabang.zipdabang_android.R
 import com.zipdabang.zipdabang_android.core.data_store.proto.CurrentPlatform
 import com.zipdabang.zipdabang_android.core.data_store.proto.ProtoDataViewModel
 import com.zipdabang.zipdabang_android.module.comment.ui.RecipeCommentState
+import com.zipdabang.zipdabang_android.module.recipes.common.ReportContent
 import com.zipdabang.zipdabang_android.ui.component.CircleImage
+import com.zipdabang.zipdabang_android.ui.component.CommentReportDialog
 import com.zipdabang.zipdabang_android.ui.theme.DialogGray
 import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
 import kotlinx.coroutines.CoroutineScope
@@ -51,11 +54,12 @@ import kotlinx.coroutines.withContext
 fun CommentItem(
     recipeId: Int,
     commentItem: RecipeCommentState,
-    onClickReport: (Int) -> Unit,
+    onClickReport: (Int, Int, Int) -> Unit,
     onClickBlock: (Int) -> Unit,
     // 여기서 onClickEdit은 textfield 활성화를 의미
     onClickEdit: (Int, String) -> Unit,
-    onClickDelete: (Int, Int) -> Unit
+    onClickDelete: (Int, Int) -> Unit,
+    showCommentReport: (Int, Int, Int) -> Unit
 ) {
     val tokenViewModel = hiltViewModel<ProtoDataViewModel>()
 
@@ -65,6 +69,9 @@ fun CommentItem(
 
     var isExpandedForOwner by remember { mutableStateOf(false) }
     var isExpandedForNotOwner by remember { mutableStateOf(false) }
+
+
+    var reportId by remember { mutableStateOf(1) }
 
     Row(
         modifier = Modifier.fillMaxWidth()
@@ -112,7 +119,9 @@ fun CommentItem(
                     )
                 }
 
-                Box(modifier = Modifier.size(18.dp).wrapContentSize(Alignment.TopEnd)) {
+                Box(modifier = Modifier
+                    .size(18.dp)
+                    .wrapContentSize(Alignment.TopEnd)) {
                     IconButton(
                         modifier = Modifier.fillMaxSize(),
                         onClick = {
@@ -167,13 +176,14 @@ fun CommentItem(
                         DropdownMenuItem(
                             text = { Text("신고하기") },
                             onClick = {
-
+                                showCommentReport(recipeId, commentItem.commentId, 1)
+                                isExpandedForNotOwner = !isExpandedForNotOwner
                             }
                         )
                         DropdownMenuItem(
                             text = { Text("차단하기") },
                             onClick = {
-
+                                isExpandedForNotOwner = !isExpandedForNotOwner
                             }
                         )
                     }

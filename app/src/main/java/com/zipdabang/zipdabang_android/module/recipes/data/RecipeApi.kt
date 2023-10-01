@@ -80,6 +80,13 @@ interface RecipeApi {
         @Path("recipeId") recipeId: Int
     ): RecipeDetailDto
 
+    @GET("members/recipes/{recipeId}/report/{reportId}")
+    suspend fun reportRecipe(
+        @Header("Authorization") accessToken: String,
+        @Path("recipeId") recipeId: Int,
+        @Path("reportId") reportId: Int
+    ): ResponseBody<String?>
+
     // ---------------------------------------------------------------------------------------------
     @GET("members/recipes/{recipeId}/comments")
     suspend fun getRecipeComments(
