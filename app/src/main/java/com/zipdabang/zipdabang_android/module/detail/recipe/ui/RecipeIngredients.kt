@@ -97,7 +97,7 @@ fun IngredientItem(
             }
 
             Column(
-                modifier = Modifier.weight(4f)
+                modifier = Modifier.weight(5f)
             ) {
                 Text(
                     text = ingredient.quantity,
@@ -111,7 +111,7 @@ fun IngredientItem(
                 )
             }
 
-            Column(
+/*            Column(
                 modifier = Modifier.weight(1f)
             ) {
                 IconButton(
@@ -130,7 +130,7 @@ fun IngredientItem(
                         tint = ZipdabangandroidTheme.Colors.Typo
                     )
                 }
-            }
+            }*/
         }
         Divider(
             modifier = Modifier.fillMaxWidth()

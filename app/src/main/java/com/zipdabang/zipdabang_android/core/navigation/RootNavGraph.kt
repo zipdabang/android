@@ -94,7 +94,6 @@ fun RootNavGraph(
             val recipeId = backStackEntry.arguments?.getInt("recipeId")
 
             RecipeDetailScreen(
-                navController = outerNavController,
                 recipeId = recipeId,
                 onClickBackIcon = {
                     outerNavController.popBackStack()

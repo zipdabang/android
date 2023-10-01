@@ -35,7 +35,8 @@ fun RecipeCommentPage(
     onClickBlock: (Int) -> Unit,
     onClickEdit: (Int, Int, String) -> Unit,
     onClickDelete: (Int, Int) -> Unit,
-    showCommentReport: (Int, Int, Int) -> Unit
+    showCommentReport: (Int, Int, Int, Int) -> Unit,
+    showCommentBlock: (Int) -> Unit
 ) {
     val viewModel = hiltViewModel<RecipeCommentViewModel>()
     val tokenViewModel = hiltViewModel<ProtoDataViewModel>()
@@ -76,6 +77,7 @@ fun RecipeCommentPage(
             postResult = postResult.value,
             recipeId = recipeId,
             showCommentReport = showCommentReport,
+            showCommentBlock = showCommentBlock
         )
     }
 }

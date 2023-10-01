@@ -23,7 +23,8 @@ sealed class TabItem(val tabTitle: String, val screen: ComposableFun) {
         private val onClickBlock: (Int) -> Unit,
         private val onClickEdit: (Int, Int, String) -> Unit,
         private val onClickDelete: (Int, Int) -> Unit,
-        private val showCommentReport: (Int, Int, Int) -> Unit
+        private val showCommentReport: (Int, Int, Int, Int) -> Unit,
+        private val showCommentBlock: (Int) -> Unit
     ) : TabItem(
         tabTitle = "댓글 ${comments}개",
         screen = {
@@ -34,7 +35,8 @@ sealed class TabItem(val tabTitle: String, val screen: ComposableFun) {
                 onClickBlock = onClickBlock,
                 onClickDelete = onClickDelete,
                 onClickEdit = onClickEdit,
-                showCommentReport = showCommentReport
+                showCommentReport = showCommentReport,
+                showCommentBlock = showCommentBlock
             )
         }
     )

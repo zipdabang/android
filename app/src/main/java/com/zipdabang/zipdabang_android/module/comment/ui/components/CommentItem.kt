@@ -59,7 +59,8 @@ fun CommentItem(
     // 여기서 onClickEdit은 textfield 활성화를 의미
     onClickEdit: (Int, String) -> Unit,
     onClickDelete: (Int, Int) -> Unit,
-    showCommentReport: (Int, Int, Int) -> Unit
+    showCommentReport: (Int, Int, Int, Int) -> Unit,
+    showCommentBlock: (Int) -> Unit
 ) {
     val tokenViewModel = hiltViewModel<ProtoDataViewModel>()
 
@@ -174,15 +175,16 @@ fun CommentItem(
                         onDismissRequest = { isExpandedForNotOwner = false },
                     ) {
                         DropdownMenuItem(
-                            text = { Text("신고하기") },
+                            text = { Text("댓글 신고하기") },
                             onClick = {
-                                showCommentReport(recipeId, commentItem.commentId, 1)
+                                showCommentReport(recipeId, commentItem.commentId, 1, commentItem.ownerId)
                                 isExpandedForNotOwner = !isExpandedForNotOwner
                             }
                         )
                         DropdownMenuItem(
-                            text = { Text("차단하기") },
+                            text = { Text("이용자 차단하기") },
                             onClick = {
+                                showCommentBlock(commentItem.ownerId)
                                 isExpandedForNotOwner = !isExpandedForNotOwner
                             }
                         )

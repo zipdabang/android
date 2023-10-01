@@ -75,6 +75,9 @@ class RecipeDetailViewModel @Inject constructor(
     private val _recipeReportState = mutableStateOf(RecipeReportState())
     val recipeReportState: State<RecipeReportState> = _recipeReportState
 
+    private val _blockOwnerId = mutableStateOf(0)
+    val blockOwnerId: State<Int> = _blockOwnerId
+
     init {
         viewModelScope.launch {
             _currentPlatform.value = getCurrentPlatform()
@@ -256,7 +259,11 @@ class RecipeDetailViewModel @Inject constructor(
         return deviceSize
     }
 
-    suspend fun getCurrentPlatform() = withContext(Dispatchers.IO) {
+    private suspend fun getCurrentPlatform() = withContext(Dispatchers.IO) {
         tokens.data.first().platformStatus ?: CurrentPlatform.TEMP
+    }
+
+    fun changeBlockOwnerId(ownerId: Int) {
+        _blockOwnerId.value = ownerId
     }
 }

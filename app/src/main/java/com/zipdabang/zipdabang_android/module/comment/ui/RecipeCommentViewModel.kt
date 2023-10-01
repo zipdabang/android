@@ -69,6 +69,9 @@ class RecipeCommentViewModel @Inject constructor(
     private val _isCommentBlockActivated = mutableStateOf(false)
     val isCommentBlockActivated: State<Boolean> = _isCommentBlockActivated
 
+    private val _blockOwnerId = mutableStateOf(0)
+    val blockOwnerId: State<Int> = _blockOwnerId
+
 
     fun getComments(
         recipeId: Int
@@ -327,5 +330,9 @@ class RecipeCommentViewModel @Inject constructor(
         _commentReportState.value = commentReportState.value.copy(
             reportId = reportId
         )
+    }
+
+    fun setBlockOwnerId(ownerId: Int) {
+        _blockOwnerId.value = ownerId
     }
 }

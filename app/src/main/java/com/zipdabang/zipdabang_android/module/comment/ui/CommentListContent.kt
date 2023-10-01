@@ -32,7 +32,8 @@ fun CommentListContent(
     onClickDelete: (Int, Int) -> Unit,
     postResult: PostCommentState,
     recipeId: Int,
-    showCommentReport: (Int, Int, Int) -> Unit
+    showCommentReport: (Int, Int, Int, Int) -> Unit,
+    showCommentBlock: (Int) -> Unit
 ) {
 
     var text by rememberSaveable {
@@ -102,7 +103,8 @@ fun CommentListContent(
                         currentCommentId = commentId
                     },
                     onClickDelete = onClickDelete,
-                    showCommentReport = showCommentReport
+                    showCommentReport = showCommentReport,
+                    showCommentBlock = showCommentBlock
                 )
             }
         }

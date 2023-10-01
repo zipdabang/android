@@ -43,7 +43,6 @@ fun NavGraphBuilder.SharedNavGraph(navController: NavController){
             var recipeBlockActivated = remember { mutableStateOf(false) }
 
             RecipeDetailScreen(
-                navController = navController,
                 recipeId = recipeId,
                 onClickBackIcon = {
                     navController.popBackStack()
