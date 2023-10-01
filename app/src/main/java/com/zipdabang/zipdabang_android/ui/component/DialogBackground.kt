@@ -373,7 +373,11 @@ fun CustomDialogCameraFile(
                 ) {
                     TextButton(
                         shape = RectangleShape,
-                        onClick = { onCameraClick() }) {
+                        onClick = {
+                            onCameraClick()
+                            setShowDialog(false)
+                        }
+                    ) {
                         Column(
                             horizontalAlignment = Alignment.CenterHorizontally,
                             verticalArrangement = Arrangement.Center
@@ -395,7 +399,11 @@ fun CustomDialogCameraFile(
                     Spacer(modifier = Modifier.width(20.dp))
                     TextButton(
                         shape = RectangleShape,
-                        onClick = { onFileClick() }) {
+                        onClick = {
+                            onFileClick()
+                            setShowDialog(false)
+                        }
+                    ) {
                         Column(
                             horizontalAlignment = Alignment.CenterHorizontally,
                             verticalArrangement = Arrangement.Center
@@ -408,7 +416,7 @@ fun CustomDialogCameraFile(
                             )
                             Text(
                                 modifier = Modifier.padding(0.dp, 8.dp, 0.dp, 0.dp),
-                                text = "파일",
+                                text = "사진앱",
                                 color = ZipdabangandroidTheme.Colors.Typo.copy(0.5f),
                                 style = ZipdabangandroidTheme.Typography.sixteen_500
                             )

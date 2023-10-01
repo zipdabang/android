@@ -23,6 +23,7 @@ import com.zipdabang.zipdabang_android.module.drawer.ui.UserInfoDetailScreen
 import com.zipdabang.zipdabang_android.module.drawer.ui.UserInfoNicknameScreen
 import com.zipdabang.zipdabang_android.module.drawer.ui.UserInfoPreferencesScreen
 import com.zipdabang.zipdabang_android.module.drawer.ui.UserInfoScreen
+import com.zipdabang.zipdabang_android.module.drawer.ui.report.ErrorReportScreen
 import com.zipdabang.zipdabang_android.module.drawer.ui.viewmodel.DrawerUserInfoViewModel
 
 fun NavGraphBuilder.DrawerNavGraph(navController: NavHostController){
@@ -30,6 +31,9 @@ fun NavGraphBuilder.DrawerNavGraph(navController: NavHostController){
     navigation(startDestination = DrawerScreen.Notice.route, route = DRAWER_ROUTE){
         composable(DrawerScreen.Notice.route){
            NoticeScreen(navController)
+        }
+        composable(DrawerScreen.Report.route){
+            ErrorReportScreen()
         }
 
         composable(DrawerScreen.UserInfo.route){ navBackStackEntry ->

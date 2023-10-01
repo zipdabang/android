@@ -1,6 +1,7 @@
 package com.zipdabang.zipdabang_android.module.drawer.data.repository
 
 import com.zipdabang.zipdabang_android.module.drawer.data.remote.DrawerApi
+import com.zipdabang.zipdabang_android.module.drawer.data.remote.reporterror.reportDto
 import com.zipdabang.zipdabang_android.module.drawer.data.remote.userinfodto.UserInfoBasicRequest
 import com.zipdabang.zipdabang_android.module.drawer.data.remote.userinfodto.UserInfoDetailRequest
 import com.zipdabang.zipdabang_android.module.drawer.data.remote.userinfodto.UserInfoEditResponse
@@ -12,6 +13,8 @@ import com.zipdabang.zipdabang_android.module.sign_up.data.remote.AuthRequest
 import com.zipdabang.zipdabang_android.module.sign_up.data.remote.AuthResponse
 import com.zipdabang.zipdabang_android.module.sign_up.data.remote.NicknameResponse
 import com.zipdabang.zipdabang_android.module.sign_up.data.remote.PhoneRequest
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import javax.inject.Inject
 
 class DrawerRepositoryImpl @Inject constructor(
@@ -60,5 +63,16 @@ class DrawerRepositoryImpl @Inject constructor(
     ): UserInfoEditResponse {
         return api.patchUserInfoNickname(accessToken = accessToken, userInfoNickname = userInfoNickname)
     }
+
+    override suspend fun postErrorReport(
+        accessToken: String,
+        email: RequestBody,
+        title: RequestBody,
+        body: RequestBody,
+        imageList: List<MultipartBody.Part?>
+    ): reportDto {
+        return api.postErrorReport(accessToken = accessToken, email= email, title = title, body = body, imageList= imageList )
+    }
+
 
 }

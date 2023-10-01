@@ -1,5 +1,6 @@
 package com.zipdabang.zipdabang_android.module.drawer.data.remote
 
+import com.zipdabang.zipdabang_android.module.drawer.data.remote.reporterror.reportDto
 import com.zipdabang.zipdabang_android.module.drawer.data.remote.userinfodto.UserInfoBasicRequest
 import com.zipdabang.zipdabang_android.module.drawer.data.remote.userinfodto.UserInfoDetailRequest
 import com.zipdabang.zipdabang_android.module.drawer.data.remote.userinfodto.UserInfoEditResponse
@@ -11,11 +12,15 @@ import com.zipdabang.zipdabang_android.module.sign_up.data.remote.AuthRequest
 import com.zipdabang.zipdabang_android.module.sign_up.data.remote.AuthResponse
 import com.zipdabang.zipdabang_android.module.sign_up.data.remote.NicknameResponse
 import com.zipdabang.zipdabang_android.module.sign_up.data.remote.PhoneRequest
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Header
+import retrofit2.http.Multipart
 import retrofit2.http.PATCH
 import retrofit2.http.POST
+import retrofit2.http.Part
 import retrofit2.http.Query
 
 interface DrawerApi {
@@ -76,4 +81,15 @@ interface DrawerApi {
         @Header("Authorization") accessToken: String,
         @Body userPreferences : UserPreferencesRequest
     ) : UserInfoEditResponse
+
+    @Multipart
+    @POST("members/inquiries")
+    suspend fun postErrorReport(
+        @Header("Authorization") accessToken: String,
+        @Part("email") email : RequestBody,
+        @Part("title") title : RequestBody,
+        @Part("body") body : RequestBody,
+        @Part("imageList") imageList: List<MultipartBody.Part?>
+    ) : reportDto
+
 }
