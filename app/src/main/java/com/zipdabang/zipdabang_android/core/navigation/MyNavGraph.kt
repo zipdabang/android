@@ -70,7 +70,7 @@ fun NavGraphBuilder.MyNavGraph(
                         }
                     },
                     onClickEdit = {
-
+                        navController.navigate(DrawerScreen.UserInfoProfile.route)
                     },
                     onClickLike = {
                         navController.navigate(MyScreen.Like.route)

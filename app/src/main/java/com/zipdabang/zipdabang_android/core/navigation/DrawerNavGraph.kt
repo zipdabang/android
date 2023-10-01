@@ -22,6 +22,7 @@ import com.zipdabang.zipdabang_android.module.drawer.ui.UserInfoBasicScreen
 import com.zipdabang.zipdabang_android.module.drawer.ui.UserInfoDetailScreen
 import com.zipdabang.zipdabang_android.module.drawer.ui.UserInfoNicknameScreen
 import com.zipdabang.zipdabang_android.module.drawer.ui.UserInfoPreferencesScreen
+import com.zipdabang.zipdabang_android.module.drawer.ui.UserInfoProfileScreen
 import com.zipdabang.zipdabang_android.module.drawer.ui.UserInfoScreen
 import com.zipdabang.zipdabang_android.module.drawer.ui.viewmodel.DrawerUserInfoViewModel
 
@@ -41,7 +42,9 @@ fun NavGraphBuilder.DrawerNavGraph(navController: NavHostController){
                 onClickBack = {
                     navController.navigateUp()
                 },
-                onClickEdit = {},
+                onClickEdit = {
+                    navController.navigate(DrawerScreen.UserInfoProfile.route)
+                },
                 onClickEditBasic = {
                     drawerUserInfoViewModel.onCheckedEvent()
                     navController.navigate(DrawerScreen.UserInfoBasic.route)
@@ -130,6 +133,14 @@ fun NavGraphBuilder.DrawerNavGraph(navController: NavHostController){
                     navController.popBackStack(DrawerScreen.UserInfo.route, inclusive = false)
                 },
                 onClickEdit = {
+                    navController.popBackStack(DrawerScreen.UserInfo.route, inclusive = false)
+                }
+            )
+        }
+
+        composable(DrawerScreen.UserInfoProfile.route){ navBackStackEntry ->
+            UserInfoProfileScreen (
+                onClickBack = {
                     navController.popBackStack(DrawerScreen.UserInfo.route, inclusive = false)
                 }
             )

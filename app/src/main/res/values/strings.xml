@@ -140,6 +140,10 @@
     <string name="my_dialog_file">파일</string>
     <string name="my_dialog_permission">집다방’이(가) 사용자의 사진에\n접근하려고 합니다.</string>
     <string name="my_dialog_permission_detail">회원님이 집다방에 사진과 동영상을 공유하고 공유할 사진 및 동영상을 추천하는 등의 목적으로 집다방이 회원님의 카메라롤에 대한 액세스 권한을 요청합니다.</string>
+    <string name="my_profileedit">프로필 사진 변경</string>
+    <string name="my_profileedit_select">직접 선택</string>
+    <string name="my_profileedit_basicprofile">기본 프로필</string>
+
 
     <!-- for dialog -->
     <string name="dialog_camera">카메라</string>

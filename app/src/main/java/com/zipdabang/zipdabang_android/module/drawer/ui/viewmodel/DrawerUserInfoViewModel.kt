@@ -397,7 +397,7 @@ class DrawerUserInfoViewModel @Inject constructor(
                         isLoading = false,
                         size = result.data?.preferCategories?.size ?: 0,
                     )
-                    Log.e("drawer-userinfo-viewmodel", "성공 ${result.code} ${result.data?.profileUrl}")
+                    Log.e("drawer-userinfo-viewmodel", "성공 ${result.data}")
                 }
                 is Resource.Error ->{
                     stateUserInfo = stateUserInfo.copy(error = result.message ?: "An unexpeted error occured")
@@ -413,7 +413,7 @@ class DrawerUserInfoViewModel @Inject constructor(
                     stateUserInfoDetail = stateUserInfoDetail.copy(isLoading = true)
                     stateUserInfoNickname = stateUserInfoNickname.copy(isLoading = true)
                     stateUserInfoPreferences = stateUserInfoPreferences.copy(isLoading = true)
-                    Log.e("drawer-userinfo-viewmodel", "로딩중 ${accessToken} ${result.code} ${result.message} ${result.data}")
+                    Log.e("drawer-userinfo-viewmodel", "로딩중 ${accessToken}")
                 }
             }
         }.launchIn(viewModelScope)
