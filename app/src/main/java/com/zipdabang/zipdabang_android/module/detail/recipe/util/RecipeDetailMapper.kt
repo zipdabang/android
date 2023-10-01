@@ -1,7 +1,9 @@
-package com.zipdabang.zipdabang_android.module.detail.recipe.mapper
+package com.zipdabang.zipdabang_android.module.detail.recipe.util
 
+import com.zipdabang.zipdabang_android.common.ResponseBody
 import com.zipdabang.zipdabang_android.module.detail.recipe.data.RecipeDetailDto
 import com.zipdabang.zipdabang_android.module.detail.recipe.domain.RecipeDetailDomain
+import com.zipdabang.zipdabang_android.module.detail.recipe.domain.RecipeReportResult
 
 fun RecipeDetailDto.toRecipeDetailDomain(): RecipeDetailDomain {
     return RecipeDetailDomain(
@@ -14,5 +16,14 @@ fun RecipeDetailDto.toRecipeDetailDomain(): RecipeDetailDomain {
         recipeInfo = result?.recipeInfo,
         recipeSteps = result?.steps,
         recipeIngredients = result?.ingredients
+    )
+}
+
+fun ResponseBody<String?>.toRecipeReportResult(): RecipeReportResult {
+    return RecipeReportResult(
+        code = code,
+        message = message,
+        isConnectionSuccessful = isSuccess,
+        isReportSuccessful = result != null
     )
 }

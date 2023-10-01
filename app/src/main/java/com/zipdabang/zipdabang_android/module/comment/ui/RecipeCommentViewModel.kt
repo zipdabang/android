@@ -1,6 +1,8 @@
 package com.zipdabang.zipdabang_android.module.comment.ui
 
 import android.util.Log
+import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
@@ -11,9 +13,11 @@ import com.zipdabang.zipdabang_android.common.Resource
 import com.zipdabang.zipdabang_android.core.Paging3Database
 import com.zipdabang.zipdabang_android.module.comment.data.remote.PostCommentContent
 import com.zipdabang.zipdabang_android.module.comment.domain.RecipeCommentRepository
+import com.zipdabang.zipdabang_android.module.comment.use_case.BlockUserUseCase
 import com.zipdabang.zipdabang_android.module.comment.use_case.DeleteCommentUseCase
 import com.zipdabang.zipdabang_android.module.comment.use_case.EditCommentUseCase
 import com.zipdabang.zipdabang_android.module.comment.use_case.PostCommentUseCase
+import com.zipdabang.zipdabang_android.module.comment.use_case.ReportCommentUseCase
 import com.zipdabang.zipdabang_android.module.comment.util.toRecipeCommentState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
@@ -30,6 +34,8 @@ class RecipeCommentViewModel @Inject constructor(
     private val postCommentUseCase: PostCommentUseCase,
     private val deleteCommentUseCase: DeleteCommentUseCase,
     private val editCommentUseCase: EditCommentUseCase,
+    private val blockUserUseCase: BlockUserUseCase,
+    private val reportCommentUseCase: ReportCommentUseCase,
     private val database: Paging3Database,
     private val repository: RecipeCommentRepository
 ): ViewModel() {
@@ -47,6 +53,25 @@ class RecipeCommentViewModel @Inject constructor(
 
     private val _editResult = MutableStateFlow(EditCommentState())
     val editResult = _editResult.asStateFlow()
+
+    private val _blockResult = MutableStateFlow(BlockUserState())
+    val blockResult = _blockResult.asStateFlow()
+
+    private val _reportResult = MutableStateFlow(ReportCommentState())
+    val reportResult = _reportResult.asStateFlow()
+
+    private val _commentReportState = mutableStateOf(CommentReportState())
+    val commentReportState: State<CommentReportState> = _commentReportState
+
+    private val _isCommentReportActivated = mutableStateOf(false)
+    val isCommentReportActivated: State<Boolean> = _isCommentReportActivated
+
+    private val _isCommentBlockActivated = mutableStateOf(false)
+    val isCommentBlockActivated: State<Boolean> = _isCommentBlockActivated
+
+    private val _blockOwnerId = mutableStateOf(0)
+    val blockOwnerId: State<Int> = _blockOwnerId
+
 
     fun getComments(
         recipeId: Int
@@ -209,5 +234,105 @@ class RecipeCommentViewModel @Inject constructor(
                 Log.d(TAG, "no comment ${e.message}")
             }
         }
+    }
+
+    fun blockUser(
+        ownerId: Int
+    ) {
+        blockUserUseCase(ownerId).onEach { result ->
+            when (result) {
+                is Resource.Success -> {
+                    _blockResult.emit(
+                        BlockUserState(
+                            isLoading = false,
+                            isConnectionSuccessful = true,
+                            errorMessage = null,
+                            isBlockSuccessful = true
+                        )
+                    )
+                }
+                is Resource.Error -> {
+                    _blockResult.emit(
+                        BlockUserState(
+                            isLoading = false,
+                            isConnectionSuccessful = true,
+                            errorMessage = result.message,
+                            isBlockSuccessful = false
+                        )
+                    )
+                }
+                is Resource.Loading -> {
+                    _blockResult.emit(
+                        BlockUserState(
+                            isLoading = true
+                        )
+                    )
+                }
+            }
+        }
+    }
+
+    fun reportComment(
+        recipeId: Int,
+        commentId: Int,
+        reportId: Int
+    ) {
+        reportCommentUseCase(
+            recipeId = recipeId,
+            commentId = commentId,
+            reportId = reportId
+        ).onEach { result ->
+            when (result) {
+                is Resource.Success -> {
+                    _reportResult.emit(
+                        ReportCommentState(
+                            isLoading = false,
+                            isConnectionSuccessful = true,
+                            errorMessage = null,
+                            isReportSuccessful = true
+                        )
+                    )
+                }
+                is Resource.Error -> {
+                    _reportResult.emit(
+                        ReportCommentState(
+                            isLoading = false,
+                            isConnectionSuccessful = true,
+                            errorMessage = result.message,
+                            isReportSuccessful = false
+                        )
+                    )
+                }
+                is Resource.Loading -> {
+                    _reportResult.emit(
+                        ReportCommentState(
+                            isLoading = true
+                        )
+                    )
+                }
+            }
+        }
+    }
+
+    fun setCommentReportDialogStatus(activated: Boolean) {
+        _isCommentReportActivated.value = activated
+    }
+
+    fun setCommentBlockDialogStatus(activated: Boolean) {
+        _isCommentBlockActivated.value = activated
+    }
+
+    fun setCommentReportState(commentReportState: CommentReportState) {
+        _commentReportState.value = commentReportState
+    }
+
+    fun changeReportContent(reportId: Int) {
+        _commentReportState.value = commentReportState.value.copy(
+            reportId = reportId
+        )
+    }
+
+    fun setBlockOwnerId(ownerId: Int) {
+        _blockOwnerId.value = ownerId
     }
 }
