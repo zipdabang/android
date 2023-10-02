@@ -31,6 +31,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.zipdabang.zipdabang_android.R
 import com.zipdabang.zipdabang_android.core.navigation.AuthScreen
+import com.zipdabang.zipdabang_android.module.my.ui.state.recipewrite.RecipeWriteFormEvent
 import com.zipdabang.zipdabang_android.module.sign_up.ui.viewmodel.AuthSharedViewModel
 import com.zipdabang.zipdabang_android.module.sign_up.ui.state.UserInfoFormEvent
 import com.zipdabang.zipdabang_android.ui.component.AppBarSignUp
@@ -49,8 +50,8 @@ import kotlinx.coroutines.flow.onEach
 fun RegisterUserInfoScreen(
     navController: NavHostController,
     authSharedViewModel: AuthSharedViewModel = hiltViewModel(),
-    onClickBack: ()->Unit,
-    onClickNext: ()->Unit,
+    onClickBack: () -> Unit,
+    onClickNext: () -> Unit,
 ) {
     val stateUserInfoForm = authSharedViewModel.stateUserInfoForm
     val genderList = authSharedViewModel.genderList
@@ -62,7 +63,7 @@ fun RegisterUserInfoScreen(
                 authSharedViewModel.remainingTime = newTime
             }
     }
-    LaunchedEffect(key1 = stateUserInfoForm){
+    LaunchedEffect(key1 = stateUserInfoForm) {
         authSharedViewModel.onUserInfoEvent(UserInfoFormEvent.BtnChanged(true))
     }
 
@@ -105,12 +106,12 @@ fun RegisterUserInfoScreen(
                     modifier = Modifier
                         .fillMaxWidth(),
                     verticalArrangement = Arrangement.spacedBy(10.dp)
-                ){
+                ) {
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.Center,
                         verticalAlignment = Alignment.CenterVertically
-                    ){
+                    ) {
                         Icon(
                             painter = painterResource(id = R.drawable.ic_signup_name),
                             contentDescription = "Icon",
@@ -121,15 +122,22 @@ fun RegisterUserInfoScreen(
                         )
                         Box(
                             modifier = Modifier.weight(8.6f)
-                        ){
+                        ) {
                             TextFieldError(
                                 value = stateUserInfoForm.name,
-                                onValueChanged = {
-                                    authSharedViewModel.onUserInfoEvent(UserInfoFormEvent.NameChanged(it))
+                                maxLength = 20,
+                                onValueChanged = { newText, maxLength ->
+                                    if (newText.length <= maxLength) {
+                                        authSharedViewModel.onUserInfoEvent(
+                                            UserInfoFormEvent.NameChanged(
+                                                newText
+                                            )
+                                        )
+                                    }
                                 },
                                 labelValue = stringResource(id = R.string.signup_userinfo_name),
-                                placeHolderValue ="",
-                                isError = false ,
+                                placeHolderValue = "",
+                                isError = false,
                                 errorMessage = "",
                                 keyboardType = KeyboardType.Text,
                                 imeAction = ImeAction.Next,
@@ -141,7 +149,7 @@ fun RegisterUserInfoScreen(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.Center,
                         verticalAlignment = Alignment.CenterVertically
-                    ){
+                    ) {
                         Icon(
                             painter = painterResource(id = R.drawable.ic_signup_birthdaycake),
                             contentDescription = "Icon",
@@ -152,11 +160,18 @@ fun RegisterUserInfoScreen(
                         )
                         Box(
                             modifier = Modifier.weight(5.6f)
-                        ){
+                        ) {
                             TextFieldErrorAndCorrect(
                                 value = stateUserInfoForm.birthday,
-                                onValueChanged = {
-                                    authSharedViewModel.onUserInfoEvent(UserInfoFormEvent.BirthdayChanged(it))
+                                maxLength = 6,
+                                onValueChanged = { newText, maxLength ->
+                                    if (newText.length <= maxLength) {
+                                        authSharedViewModel.onUserInfoEvent(
+                                            UserInfoFormEvent.BirthdayChanged(
+                                                newText
+                                            )
+                                        )
+                                    }
                                 },
                                 labelValue = stringResource(id = R.string.signup_userinfo_birthday),
                                 placeHolderValue = stringResource(id = R.string.signup_userinfo_birthday_placeholder),
@@ -172,12 +187,16 @@ fun RegisterUserInfoScreen(
 
                         Box(
                             modifier = Modifier.weight(3.4f)
-                        ){
+                        ) {
                             RadioGroupHorizontal(
                                 selectedIndex = 0,
                                 optionList = genderList,
                                 onOptionChange = {
-                                    authSharedViewModel.onUserInfoEvent(UserInfoFormEvent.GenderChanged(it))
+                                    authSharedViewModel.onUserInfoEvent(
+                                        UserInfoFormEvent.GenderChanged(
+                                            it
+                                        )
+                                    )
                                 }
                             )
                         }
@@ -189,12 +208,12 @@ fun RegisterUserInfoScreen(
                     modifier = Modifier
                         .fillMaxWidth(),
                     verticalArrangement = Arrangement.spacedBy(10.dp)
-                ){
+                ) {
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.Center,
                         verticalAlignment = Alignment.CenterVertically
-                    ){
+                    ) {
                         Icon(
                             painter = painterResource(id = R.drawable.ic_signup_phone),
                             contentDescription = "Icon",
@@ -205,11 +224,14 @@ fun RegisterUserInfoScreen(
                         )
                         Box(
                             modifier = Modifier.weight(5.2f)
-                        ){
+                        ) {
                             TextFieldErrorAndCorrect(
                                 value = stateUserInfoForm.phoneNumber,
-                                onValueChanged = {
-                                    authSharedViewModel.onUserInfoEvent(UserInfoFormEvent.PhoneNumberChanged(it))
+                                maxLength = 11,
+                                onValueChanged = { newText, maxLength ->
+                                    if (newText.length <= maxLength) {
+                                        authSharedViewModel.onUserInfoEvent(UserInfoFormEvent.PhoneNumberChanged(newText))
+                                    }
                                 },
                                 labelValue = stringResource(id = R.string.signup_userinfo_phonenumber),
                                 placeHolderValue = stringResource(id = R.string.signup_userinfo_phonenumber_placeholder),
@@ -222,14 +244,20 @@ fun RegisterUserInfoScreen(
                                 imeAction = ImeAction.Done,
                             )
                         }
-                        Box(modifier = Modifier
-                            .weight(3.4f)
-                            .padding(8.dp, 0.dp, 0.dp, 0.dp)){
+                        Box(
+                            modifier = Modifier
+                                .weight(3.4f)
+                                .padding(8.dp, 0.dp, 0.dp, 0.dp)
+                        ) {
                             PrimaryButtonOutLined(
-                                borderColor =ZipdabangandroidTheme.Colors.BlackSesame,
+                                borderColor = ZipdabangandroidTheme.Colors.BlackSesame,
                                 text = stringResource(id = R.string.signup_userinfo_certificatecall),
                                 onClick = {
-                                    authSharedViewModel.onUserInfoEvent(UserInfoFormEvent.PhoneNumberClicked(true))
+                                    authSharedViewModel.onUserInfoEvent(
+                                        UserInfoFormEvent.PhoneNumberClicked(
+                                            true
+                                        )
+                                    )
                                 }
                             )
                         }
@@ -238,17 +266,20 @@ fun RegisterUserInfoScreen(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.Center,
                         verticalAlignment = Alignment.CenterVertically
-                    ){
+                    ) {
                         Spacer(
                             modifier = Modifier.weight(1.4f)
                         )
                         Box(
                             modifier = Modifier.weight(3.8f)
-                        ){
+                        ) {
                             TextFieldErrorAndCorrect(
                                 value = stateUserInfoForm.authNumber,
-                                onValueChanged = {
-                                    authSharedViewModel.onUserInfoEvent(UserInfoFormEvent.AuthNumberChanged(it))
+                                maxLength = 6,
+                                onValueChanged = { newText, maxLength ->
+                                    if (newText.length <= maxLength) {
+                                        authSharedViewModel.onUserInfoEvent(UserInfoFormEvent.AuthNumberChanged(newText))
+                                    }
                                 },
                                 isTried = stateUserInfoForm.authNumberIsTried,
                                 labelValue = stringResource(id = R.string.signup_userinfo_certificatenumber),
@@ -268,14 +299,20 @@ fun RegisterUserInfoScreen(
                             style = ZipdabangandroidTheme.Typography.fourteen_300,
                             textAlign = TextAlign.Center
                         )
-                        Box(modifier = Modifier
-                            .weight(3.4f)
-                            .padding(8.dp, 0.dp, 0.dp, 0.dp)){
+                        Box(
+                            modifier = Modifier
+                                .weight(3.4f)
+                                .padding(8.dp, 0.dp, 0.dp, 0.dp)
+                        ) {
                             PrimaryButtonOutLined(
-                                borderColor =ZipdabangandroidTheme.Colors.BlackSesame,
+                                borderColor = ZipdabangandroidTheme.Colors.BlackSesame,
                                 text = stringResource(id = R.string.signup_userinfo_ok),
                                 onClick = {
-                                    authSharedViewModel.onUserInfoEvent(UserInfoFormEvent.AuthNumberClicked(true))
+                                    authSharedViewModel.onUserInfoEvent(
+                                        UserInfoFormEvent.AuthNumberClicked(
+                                            true
+                                        )
+                                    )
                                 }
                             )
                         }
@@ -285,17 +322,21 @@ fun RegisterUserInfoScreen(
 
             Box(
                 contentAlignment = Alignment.BottomCenter,
-                modifier = Modifier.padding(16.dp,0.dp,16.dp, 12.dp)
-            ){
+                modifier = Modifier.padding(16.dp, 0.dp, 16.dp, 12.dp)
+            ) {
                 PrimaryButtonWithStatus(
-                    text= stringResource(id = R.string.signup_btn_inputdone),
-                    onClick={
+                    text = stringResource(id = R.string.signup_btn_inputdone),
+                    onClick = {
                         authSharedViewModel.updateValidateBirthday()
 
-                        if(authSharedViewModel.updateValidateUserInfo()){
+                        if (authSharedViewModel.updateValidateUserInfo()) {
                             onClickNext()
                         } else {
-                            authSharedViewModel.onUserInfoEvent(UserInfoFormEvent.ValidateChanged(true))
+                            authSharedViewModel.onUserInfoEvent(
+                                UserInfoFormEvent.ValidateChanged(
+                                    true
+                                )
+                            )
                         }
                     },
                     isFormFilled = stateUserInfoForm.btnEnabled
@@ -313,7 +354,7 @@ fun formatTime(seconds: Int): String {
 
 @Preview
 @Composable
-fun PreviewRegisterUserInfoScreen(){
+fun PreviewRegisterUserInfoScreen() {
     val navController = rememberNavController()
     RegisterUserInfoScreen(
         navController = navController,

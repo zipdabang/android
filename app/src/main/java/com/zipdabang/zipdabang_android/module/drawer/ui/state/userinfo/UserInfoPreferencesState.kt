@@ -5,8 +5,8 @@ import com.zipdabang.zipdabang_android.module.sign_up.data.remote.BeverageCatego
 data class UserInfoPreferencesState(
     val isLoading : Boolean = false,
 
-    val beverageList : List<BeverageCategory> = emptyList(),
-    val beverageCheckList : List<Boolean> = emptyList(),
+    val preferBeverageList : List<BeverageCategory> = emptyList(),
+    val preferBeverageCheckList : List<Boolean> = emptyList(),
     val size : Int = 0,
     val btnEnabled : Boolean = false,
 

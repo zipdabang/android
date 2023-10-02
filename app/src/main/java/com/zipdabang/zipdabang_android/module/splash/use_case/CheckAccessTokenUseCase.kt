@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import retrofit2.HttpException
 import java.io.IOException
+import java.util.concurrent.CancellationException
 import javax.inject.Inject
 
 class CheckAccessTokenUseCase @Inject constructor(
@@ -46,6 +47,9 @@ class CheckAccessTokenUseCase @Inject constructor(
             Log.d(TAG, e.message ?: "unexpected io error")
             emit(Resource.Error(message = e.message ?: "unexpected io exception"))
         } catch (e: Exception) {
+            if (e is CancellationException) {
+                throw e
+            }
             emit(Resource.Error(message = e.message ?: "unexpected etc exception"))
         }
     }

@@ -145,7 +145,7 @@ fun DrawerContent(
                 }
                 Divider(
                     modifier = Modifier.fillMaxWidth(),
-                    color = ZipdabangandroidTheme.Colors.Typo.copy(0.1f),
+                    color = ZipdabangandroidTheme.Colors.Typo.copy(0.2f),
                 )
                 Box(
                     modifier = Modifier
@@ -197,7 +197,7 @@ fun DrawerContent(
                 }
                 Divider(
                     modifier = Modifier.fillMaxWidth(),
-                    color = ZipdabangandroidTheme.Colors.Typo.copy(0.1f),
+                    color = ZipdabangandroidTheme.Colors.Typo.copy(0.2f),
                 )
                 /*Box(
                     modifier = Modifier.fillMaxWidth()
@@ -398,7 +398,7 @@ fun ModalDrawer(
                         privacyAgreeOnClick = { Log.d("drawer","개인정보 제 3자 동의")},
                         privacyOnClick = { Log.d("drawer","개인정보 처리방침")},
                         FAGOnClick = { Log.d("drawer","FAG")},
-                        inquiryOnClick = { Log.d("drawer","오류신고 및 문의하기")},
+                        inquiryOnClick = { navController.navigate(DrawerScreen.Report.route)},
                         loginOnClick = { Log.d("drawer","로그인하기")},
                         userOnClick = { navController.navigate(DrawerScreen.UserInfo.route) },
                         alarmOnClick = { Log.d("drawer","알림 정보")},

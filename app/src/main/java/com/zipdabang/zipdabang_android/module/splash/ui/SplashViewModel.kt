@@ -9,6 +9,7 @@ import com.zipdabang.zipdabang_android.common.Resource
 import com.zipdabang.zipdabang_android.common.ResponseCode
 import com.zipdabang.zipdabang_android.core.data_store.proto.CurrentPlatform
 import com.zipdabang.zipdabang_android.core.data_store.proto.Token
+import com.zipdabang.zipdabang_android.module.main.FCMData
 import com.zipdabang.zipdabang_android.module.splash.data.AutoLoginDto
 import com.zipdabang.zipdabang_android.module.splash.data.NewTokenDto
 import com.zipdabang.zipdabang_android.module.splash.use_case.CheckAccessTokenUseCase
@@ -35,7 +36,9 @@ class SplashViewModel @Inject constructor(
 
     fun checkAccessToken(
         onTokenValid: () -> Unit,
-        onTokenInvalid: () -> Unit
+        onTokenInvalid: () -> Unit,
+        onNotificationClick: () -> Unit,
+        fcmData: FCMData?
     ) {
         checkAccessTokenUseCase().onEach { result ->
             when (result) {
@@ -50,13 +53,19 @@ class SplashViewModel @Inject constructor(
                     checkAccessTokenState.value.apply {
                         if (isCheckSuccessful == true) {
                             if (isAccessTokenValid == true) {
-                                onTokenValid()
+                                if (fcmData != null) {
+                                    onNotificationClick()
+                                } else {
+                                    onTokenValid()
+                                }
                                 return@apply
                             }
 
                             getNewToken(
                                 onTokenValid = onTokenValid,
-                                onTokenInvalid = onTokenInvalid
+                                onTokenInvalid = onTokenInvalid,
+                                fcmData = fcmData,
+                                onNotificationClick = onNotificationClick
                             )
                         } else {
                             onTokenInvalid()
@@ -73,7 +82,9 @@ class SplashViewModel @Inject constructor(
 
     private fun getNewToken(
         onTokenValid: () -> Unit,
-        onTokenInvalid: () -> Unit
+        onTokenInvalid: () -> Unit,
+        fcmData: FCMData?,
+        onNotificationClick: () -> Unit
     ) {
         getNewTokenUseCase().onEach { result ->
             when (result) {
@@ -94,7 +105,13 @@ class SplashViewModel @Inject constructor(
                                     refreshToken = newTokens.refreshToken
                                 )
                             }
-                            onTokenValid()
+
+                            if (fcmData != null) {
+                                onNotificationClick()
+                            } else {
+                                onTokenValid()
+                            }
+
                             return@apply
                         }
 

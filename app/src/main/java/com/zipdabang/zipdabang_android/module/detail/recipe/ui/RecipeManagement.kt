@@ -17,12 +17,12 @@ fun RecipeManagement(
     recipeId: Int,
     deleteIcon: Int,
     editIcon: Int,
-    onClickDelete: (Int) -> Unit,
-    onClickEdit: (Int) -> Unit
+    onClickDelete: () -> Unit,
+    onClickEdit: () -> Unit
 ) {
     Row() {
         IconButton(onClick = {
-            onClickDelete(recipeId)
+            onClickDelete()
         }) {
             Icon(
                 painter = painterResource(id = deleteIcon),
@@ -34,7 +34,7 @@ fun RecipeManagement(
         }
 
         IconButton(onClick = {
-            onClickEdit(recipeId)
+            onClickEdit()
         }) {
             Icon(
                 painter = painterResource(id = editIcon),
@@ -54,7 +54,7 @@ fun RecipeManagementPreview() {
         recipeId = 1,
         deleteIcon = R.drawable.all_delete_black,
         editIcon = R.drawable.all_edit_black,
-        onClickDelete = { int -> },
-        onClickEdit = { int -> }
+        onClickDelete = {  },
+        onClickEdit = { }
     )
 }

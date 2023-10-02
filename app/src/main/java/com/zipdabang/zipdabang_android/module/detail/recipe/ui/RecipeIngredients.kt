@@ -32,7 +32,7 @@ import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
 @Composable
 fun RecipeIngredients(
     ingredients: List<Ingredient> = emptyList(),
-    onClickCart: (String) -> Unit
+    // onClickCart: (String) -> Unit
 ) {
     Column(
         Modifier
@@ -56,7 +56,7 @@ fun RecipeIngredients(
             modifier = Modifier.fillMaxWidth()
         ) {
             ingredients.forEach { item ->
-                IngredientItem(ingredient = item, onClickCart = onClickCart)
+                IngredientItem(ingredient = item)
             }
         }
 
@@ -67,7 +67,7 @@ fun RecipeIngredients(
 @Composable
 fun IngredientItem(
     ingredient: Ingredient,
-    onClickCart: (String) -> Unit
+    // onClickCart: (String) -> Unit
 ) {
     Column (
         modifier = Modifier
@@ -97,7 +97,7 @@ fun IngredientItem(
             }
 
             Column(
-                modifier = Modifier.weight(4f)
+                modifier = Modifier.weight(5f)
             ) {
                 Text(
                     text = ingredient.quantity,
@@ -111,7 +111,7 @@ fun IngredientItem(
                 )
             }
 
-            Column(
+/*            Column(
                 modifier = Modifier.weight(1f)
             ) {
                 IconButton(
@@ -119,7 +119,7 @@ fun IngredientItem(
                         .size(24.dp)
                         .fillMaxSize(),
                     onClick = {
-                        onClickCart(ingredient.ingredientName)
+//                        onClickCart(ingredient.ingredientName)
                     }
                 ) {
                     Icon(
@@ -130,7 +130,7 @@ fun IngredientItem(
                         tint = ZipdabangandroidTheme.Colors.Typo
                     )
                 }
-            }
+            }*/
         }
         Divider(
             modifier = Modifier.fillMaxWidth()
@@ -143,7 +143,7 @@ fun IngredientItem(
 @Preview(showBackground = true)
 @Composable
 fun IngredientItemPrev() {
-    IngredientItem(Ingredient("우유", "1ml"), { recipe -> })
+    IngredientItem(Ingredient("우유", "1ml"))
 }
 
 @Preview(showBackground = true)
@@ -167,8 +167,8 @@ fun RecipeIngredientsPreview() {
                 "우유", "1mL"
             ),
         ),
-        onClickCart = { keyword ->
+        /*onClickCart = { keyword ->
 
-        }
+        }*/
     )
 }

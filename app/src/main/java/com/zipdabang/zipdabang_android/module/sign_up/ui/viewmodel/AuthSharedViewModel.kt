@@ -72,6 +72,7 @@ class AuthSharedViewModel @Inject constructor(
 
     /*TermsScreen*/
     var stateTermsForm by mutableStateOf(TermsFormState())
+    var showPermissionDialog by mutableStateOf(false)
     fun onTermsEvent(event : TermsFormEvent){
         when(event){
             is TermsFormEvent.AllAgreeChanged -> {
@@ -441,7 +442,8 @@ class AuthSharedViewModel @Inject constructor(
                         choiceTitle = result.data?.termsList?.get(4)?.termsTitle ?: "",
                         choiceBody = result.data?.termsList?.get(4)?.termsBody ?: "",
                         isMoreToSeeChoice = result.data?.termsList?.get(4)?.isMoreToSee ?: false,
-                        )
+                         isLoading = false
+                     )
                     Log.e("terms-viewmodel", "성공 ${result.data?.termsList}")
                 }
                 is Resource.Error ->{
@@ -502,7 +504,7 @@ class AuthSharedViewModel @Inject constructor(
                     stateBeverageForm = BeverageFormState(
                         beverageList = result.data?.beverageCategoryList ?: emptyList(),
                         size = result.data?.size ?: 0,
-                        beverageCheckList = List(result.data?.size ?: 0) { false }
+                        beverageCheckList = List(result.data?.size ?: 0) { false },
                     )
                     Log.e("preferences-viewmodel", "성공 ${result.data?.beverageCategoryList}")
                 }
