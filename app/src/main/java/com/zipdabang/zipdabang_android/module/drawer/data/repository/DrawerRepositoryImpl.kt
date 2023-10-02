@@ -69,9 +69,9 @@ class DrawerRepositoryImpl @Inject constructor(
         email: RequestBody,
         title: RequestBody,
         body: RequestBody,
-        imageList: List<MultipartBody.Part?>
+        imageList: List<MultipartBody.Part>
     ): reportDto {
-        return api.postErrorReport(accessToken = accessToken, email= email, title = title, body = body, imageList= imageList )
+        return api.postErrorReport(accessToken = accessToken, email = email, title = title, body = body, imageList = imageList )
     }
 
 

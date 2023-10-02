@@ -1,4 +1,4 @@
-package com.zipdabang.zipdabang_android.module.drawer.data.remote.reporterror
+package com.zipdabang.zipdabang_android.module.drawer.ui.state
 
 data class ReportState(
     val isSuccess : Boolean = false,

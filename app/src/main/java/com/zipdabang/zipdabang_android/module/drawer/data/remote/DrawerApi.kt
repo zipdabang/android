@@ -86,10 +86,10 @@ interface DrawerApi {
     @POST("members/inquiries")
     suspend fun postErrorReport(
         @Header("Authorization") accessToken: String,
-        @Part("email") email : RequestBody,
-        @Part("title") title : RequestBody,
-        @Part("body") body : RequestBody,
-        @Part("imageList") imageList: List<MultipartBody.Part?>
+        @Part("email") email: RequestBody,
+        @Part("title") title: RequestBody,
+        @Part("body") body: RequestBody,
+        @Part imageList: List<MultipartBody.Part>
     ) : reportDto
 
 }

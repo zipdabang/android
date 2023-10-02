@@ -24,7 +24,7 @@ interface DrawerRepository {
     suspend fun patchUserInfoDetail(accessToken: String, userInfoDetail : UserInfoDetailRequest): UserInfoEditResponse
     suspend fun patchUserInfoNickname(accessToken: String, userInfoNickname : UserInfoNicknameRequest): UserInfoEditResponse
 
-    suspend fun postErrorReport(accessToken: String, email : RequestBody, title : RequestBody, body: RequestBody, imageList: List<MultipartBody.Part?>) : reportDto
+    suspend fun postErrorReport(accessToken: String, email: RequestBody, title: RequestBody, body: RequestBody, imageList: List<MultipartBody.Part>) : reportDto
 
 
 }

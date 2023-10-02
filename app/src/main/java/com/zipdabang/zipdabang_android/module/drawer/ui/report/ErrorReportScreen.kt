@@ -2,7 +2,6 @@ package com.zipdabang.zipdabang_android.module.drawer.ui.report
 
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.content.ContentResolver
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
@@ -14,7 +13,6 @@ import android.util.Patterns
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.result.launch
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
@@ -31,28 +29,23 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.internal.updateLiveLiteralValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.graphics.Outline
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -65,21 +58,21 @@ import com.zipdabang.zipdabang_android.ui.component.PrimaryButtonWithStatus
 import com.zipdabang.zipdabang_android.ui.component.TextFieldForDrawerMultiline
 import com.zipdabang.zipdabang_android.ui.component.TextFieldForDrawerSingleline
 import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
-import dagger.hilt.android.qualifiers.ApplicationContext
-import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.ByteArrayOutputStream
+import java.io.File
 import java.io.InputStream
-import java.net.URI
-import java.security.AccessController.getContext
 
 @SuppressLint("UnrememberedMutableState")
 @Composable
 fun ErrorReportScreen(
+     isReportSuccess : () -> Unit,
      reportViewModel: ErrorReportViewModel = hiltViewModel()
 ){
+    val reportState = reportViewModel.reportState
 
     val photoBitmap  = remember {
         mutableStateListOf<Bitmap?>()
@@ -103,19 +96,19 @@ fun ErrorReportScreen(
         // 카메라로 사진 찍어서 가져오기
         rememberLauncherForActivityResult(ActivityResultContracts.TakePicturePreview()) { takenPhoto ->
             if (takenPhoto != null) {
-                val byteOutputStream : ByteArrayOutputStream = ByteArrayOutputStream()
+                val byteOutputStream = ByteArrayOutputStream()
                 takenPhoto.compress(
                     Bitmap.CompressFormat.JPEG,
-                    30,
+                    10,
                     byteOutputStream
                 )
                 photoBitmap.add(takenPhoto)
-                val requestBody : RequestBody = RequestBody.create(
-                    "image/jpg".toMediaTypeOrNull(),
-                    byteOutputStream.toByteArray()
-                )
+                val requestBody : RequestBody = byteOutputStream.toByteArray()
+                    .toRequestBody(
+                        "image/jpeg".toMediaTypeOrNull()
+                    )
 
-                val uploadFile = MultipartBody.Part.createFormData("images","bg_${photoBitmap.size}.jpg",requestBody)
+                val uploadFile = MultipartBody.Part.createFormData("imageList","bg_${photoBitmap.size}.jpg",requestBody)
 
                 requestFileList.add(uploadFile)
             } else {
@@ -138,22 +131,24 @@ fun ErrorReportScreen(
     rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
             result.data?.data?.let { uri ->
+                val file : File? = uri.path?.let { File(it) }
+
                 gallaryUri= uri
                 val inputSteam : InputStream? = gallaryUri?.let {
-                    context?.contentResolver?.openInputStream(
+                    context.contentResolver?.openInputStream(
                         it
                     )
                 }
                 val  bitmap = BitmapFactory.decodeStream(inputSteam)
-                val byteOutputStream : ByteArrayOutputStream = ByteArrayOutputStream()
-                bitmap.compress(Bitmap.CompressFormat.JPEG,30,byteOutputStream)
+                val byteOutputStream = ByteArrayOutputStream()
+                bitmap.compress(Bitmap.CompressFormat.JPEG,10,byteOutputStream)
                 photoBitmap.add(bitmap)
-                val requestBody : RequestBody = RequestBody.create(
-                    "image/jpg".toMediaTypeOrNull(),
-                    byteOutputStream.toByteArray()
-                )
+                val requestBody : RequestBody = byteOutputStream.toByteArray()
+                    .toRequestBody(
+                        "image/jpeg".toMediaTypeOrNull()
+                    )
 
-                val uploadFile = MultipartBody.Part.createFormData("images","bg_${photoBitmap.size}.jpg",requestBody)
+                val uploadFile = MultipartBody.Part.createFormData("imageList","bg_${photoBitmap.size}.jpeg",requestBody)
 
                 requestFileList.add(uploadFile)
 
@@ -194,8 +189,9 @@ fun ErrorReportScreen(
     ) {
     Column(
         modifier = Modifier
-            .padding(top = it.calculateTopPadding(), start = 16.dp, end = 16.dp)
+            .padding(top = it.calculateTopPadding(), start = 16.dp, end = 16.dp, bottom = 40.dp)
             .verticalScroll(scrollState)
+            .background(color = Color.White)
     ) {
 
         Text(
@@ -336,46 +332,56 @@ fun ErrorReportScreen(
         Spacer(modifier = Modifier.height(10.dp))
 
         val rowScrollstate = rememberScrollState()
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(104.dp)
-                .horizontalScroll(rowScrollstate),
-            horizontalArrangement = Arrangement.spacedBy(6.dp)
-        ){
-            for(i in 0..4) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxHeight()
-                        .width(104.dp)
-                        .background(color = Color(0XFFF7F6F6), shape = RectangleShape)
-                        .clickable {
 
+        if(photoBitmap.size != 0) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(104.dp)
+                    .horizontalScroll(rowScrollstate),
+                horizontalArrangement = Arrangement.spacedBy(6.dp)
+            ) {
+                for (i in 0..4) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxHeight()
+                            .width(104.dp)
+                            .background(color = Color(0XFFF7F6F6), shape = RectangleShape)
+                            .clickable {
+
+                            }
+                    ) {
+                        if (photoBitmap.size > i) {
+                            AsyncImage(
+                                model = photoBitmap[i],
+                                contentDescription = "bitmap",
+                                modifier = Modifier.fillMaxSize()
+                            )
+
+                            Icon(
+                                painter = painterResource(id = R.drawable.ic_all_delete_white),
+                                contentDescription = null,
+                                tint = Color.White,
+                                modifier = Modifier
+                                    .align(Alignment.BottomEnd)
+                                    .padding(5.dp)
+                                    .clickable {
+                                        photoBitmap.remove(photoBitmap[i])
+                                        requestFileList.remove(requestFileList[i])
+                                    }
+                            )
                         }
-                ) {
-                    if (photoBitmap.size > i) {
-                        AsyncImage(
-                            model = photoBitmap[i],
-                            contentDescription = "bitmap",
-                            modifier = Modifier.fillMaxSize()
-                        )
-
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_all_delete_white),contentDescription = null,tint=Color.White,
-                            modifier = Modifier
-                                .align(Alignment.BottomEnd)
-                                .padding(5.dp)
-                                .clickable {
-                                    photoBitmap.remove(photoBitmap[i])
-                                }
-                        )
                     }
                 }
-            }
 
+            }
         }
+        Text(text= "첨부파일은 최대 5개, 각 3MB까지 등록 가능합니다.",
+            style = ZipdabangandroidTheme.Typography.twelve_300,
+            color= ZipdabangandroidTheme.Colors.Typo,modifier = Modifier.padding(vertical = 5.dp))
 
         Spacer(modifier = Modifier.height(40.dp))
+
         isFormFilled = emailText!="" && isError == false && titleText != "" && contentText != ""
 
         Box(modifier = Modifier
@@ -383,11 +389,14 @@ fun ErrorReportScreen(
             .height(36.dp)) {
             PrimaryButtonWithStatus(
                 text = "제출하기",
-                onClick = {reportViewModel.postReport(emailText,titleText,contentText,requestFileList)},
+                onClick = {reportViewModel.postReport(emailText,titleText,contentText,requestFileList.toList(),isReportSuccess)},
                 isFormFilled = isFormFilled
             )
         }
 
+        if(reportState.value.isLoading) {
+            CircularProgressIndicator()
+        }
 
 
     }
@@ -403,5 +412,5 @@ fun ErrorReportScreen(
 @Composable
 @Preview
 fun ErrorReportPreviewScreen(){
-    ErrorReportScreen()
+   // ErrorReportScreen()
 }

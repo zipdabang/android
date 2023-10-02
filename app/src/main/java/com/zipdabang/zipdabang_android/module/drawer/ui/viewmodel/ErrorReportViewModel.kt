@@ -1,40 +1,38 @@
 package com.zipdabang.zipdabang_android.module.drawer.ui.viewmodel
 
-import android.graphics.Bitmap
 import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.datastore.core.DataStore
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.zipdabang.zipdabang_android.common.Resource
 import com.zipdabang.zipdabang_android.core.data_store.proto.Token
-import com.zipdabang.zipdabang_android.module.drawer.data.remote.reporterror.ReportState
+import com.zipdabang.zipdabang_android.module.drawer.ui.state.ReportState
 import com.zipdabang.zipdabang_android.module.drawer.domain.usecase.PostReportUseCase
-import com.zipdabang.zipdabang_android.module.search.ui.SearchState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import okhttp3.MediaType
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
-import okhttp3.RequestBody
-import okhttp3.internal.EMPTY_REQUEST
 import javax.inject.Inject
 
 @HiltViewModel
 class ErrorReportViewModel @Inject constructor(
-    val reportUseCase: PostReportUseCase,
-    val dataStore : DataStore<Token>
+    private val reportUseCase: PostReportUseCase,
+    private val dataStore : DataStore<Token>
 )
 : ViewModel() {
 
     private var _reportState = mutableStateOf(ReportState())
     val reportState = _reportState
 
-    fun postReport(email:String, title: String, body: String, imageList : MutableList<MultipartBody.Part>){
-        val requestEmail : RequestBody= RequestBody.create("text/plain".toMediaTypeOrNull(),email)
-        val requestTitle = RequestBody.create("text/plain".toMediaTypeOrNull(),title)
-        val requestBody = RequestBody.create("text/plain".toMediaTypeOrNull(),body)
+    fun postReport(email:String, title: String, body: String, imageList: List<MultipartBody.Part>, isSuccess : ()-> Unit){
+        Log.e("report Api",imageList.size.toString())
+//        val requestEmail : RequestBody= RequestBody.create("text/plain".toMediaTypeOrNull(),email)
+//        val requestTitle = RequestBody.create("text/plain".toMediaTypeOrNull(),title)
+//        val requestBody = RequestBody.create("text/plain".toMediaTypeOrNull(),body)
+        Log.e("report Api",email.toString())
 
-        reportUseCase(requestEmail,requestTitle,requestBody,imageList).onEach {
+        reportUseCase(email, title, body, imageList).onEach {
             result ->
             when(result) {
                 is Resource.Success -> {
@@ -43,14 +41,17 @@ class ErrorReportViewModel @Inject constructor(
                             isSuccess = true,
                             isLoading = false
                         )
-                        Log.e("report Api",result.data.code.toString())
+
+                        isSuccess()
+
+                        Log.e("report Api in Success",result.data.code.toString())
                     }else{
                         _reportState.value= ReportState(
                             isSuccess = false,
                             isError = true,
                             error = result.data!!.message
                         )
-                        Log.e("report Api",result.data.code.toString())
+                        Log.e("report Api in Success",result.data.code.toString())
 
                     }
                 }
@@ -59,7 +60,7 @@ class ErrorReportViewModel @Inject constructor(
                         isError = true,
                         error = result.message ?: "An unexpected error occured"
                     )
-                    Log.e("report Api", result.data?.code.toString())
+                    Log.e("report Api in Error", result.message.toString())
 
                 }
 
@@ -69,7 +70,7 @@ class ErrorReportViewModel @Inject constructor(
                     )
                 }
             }
-        }
+        }.launchIn(viewModelScope)
 
     }
 
