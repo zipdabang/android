@@ -63,7 +63,6 @@ fun Step(
     maxLength: Int, //최대 글자수
     imeAction: ImeAction, //default,none이면 엔터키, next면 다음 텍스트필드로 넘어감, done면 완료키
     onClickImageAddBtn: () -> Unit,
-    onClickImageChangedBtn : ()->Unit,
     onClickDeleteStep: () -> Unit,
     onClickEditStep:()->Unit,
 ) {
@@ -117,7 +116,7 @@ fun Step(
                     ImageWithIcon(
                         imageUrl = stepImage,
                         onClick = {
-                            onClickImageChangedBtn()
+                            onClickImageAddBtn()
                         }
                     )
                 }
@@ -269,7 +268,6 @@ fun PreviewStep() {
             maxLines = 7,
             maxLength = 200,
             imeAction = ImeAction.None,
-            onClickImageChangedBtn = {},
             onClickImageAddBtn = { },
             onClickDeleteStep = {},
             onClickEditStep = {}

@@ -660,15 +660,12 @@ fun RecipeWriteScreen(
                                     textStateStep = newText
                                 }
                             },
-                            placeholderValue = "레시피를 만드는 Step "+stateRecipeWriteForm.stepsNum+"을 설명해 주세요. \n(최대 200자)",
+                            placeholderValue = "레시피를 만드는 Step "+(i+1)+"을 설명해 주세요. \n(최대 200자)",
                             height = 232.dp,
                             maxLines = 7,
                             maxLength = 200,
                             imeAction = ImeAction.None,
                             onClickImageAddBtn = {
-                                recipeWriteViewModel.onRecipeWriteFormEvent(RecipeWriteFormEvent.StepImageChangedToEmpty("", i+1))
-                            },
-                            onClickImageChangedBtn = {
                                 recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.StepFileSelectChanged(true, i+1))
                             },
                             onClickDeleteStep = {
