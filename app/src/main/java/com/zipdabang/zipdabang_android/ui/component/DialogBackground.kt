@@ -219,7 +219,7 @@ fun CustomDialogType2(
     }
 }
 
-//확인 버튼만 있는 알럿
+//확인버튼 하나만 있는 알럿
 @Composable
 fun CustomDialogOnlyConfirm(
     title: String,
@@ -274,6 +274,72 @@ fun CustomDialogOnlyConfirm(
                         containerColor = ZipdabangandroidTheme.Colors.Strawberry
                     )
                 ) {
+                    Text(
+                        text = acceptText,
+                        color = Color.White,
+                        style = ZipdabangandroidTheme.Typography.sixteen_500,
+                    )
+
+                }
+            }
+
+        }
+
+    }
+}
+//탈퇴하기 알럿
+@Composable
+fun CustomDialogQuitConfirm(
+    title: String,
+    text: String,
+    acceptText: String,
+    onAcceptClick: () -> Unit
+) {
+    Dialog(onDismissRequest = { onAcceptClick() }) {
+        Box(
+            modifier = Modifier
+                .size(width = 328.dp, height = 246.dp)
+                .fillMaxSize()
+                .background(color = DialogBackground, shape = ZipdabangandroidTheme.Shapes.small,)
+        ) {
+
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(190.dp)
+                    .padding(23.dp)
+            )
+            {
+                Text(
+                    text = title,
+                    textAlign = TextAlign.Center,
+                    color = ZipdabangandroidTheme.Colors.Typo,
+                    style = ZipdabangandroidTheme.Typography.eighteen_500,
+                )
+                Spacer(modifier = Modifier.height(20.dp))
+                Text(
+                    text = text,
+                    textAlign = TextAlign.Start,
+                    color = ZipdabangandroidTheme.Colors.Typo,
+                    style = ZipdabangandroidTheme.Typography.sixteen_300,
+                )
+            }
+            Spacer(modifier = Modifier.height(10.dp))
+            Row(
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .fillMaxWidth()
+                    .height(56.dp),
+            ) {
+
+                TextButton(
+                    modifier = Modifier
+                        .fillMaxSize(),
+                    shape = RectangleShape,
+                    onClick = { onAcceptClick() },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = ZipdabangandroidTheme.Colors.Strawberry
+                    )) {
                     Text(
                         text = acceptText,
                         color = Color.White,
