@@ -32,7 +32,7 @@ import com.zipdabang.zipdabang_android.module.drawer.ui.viewmodel.QuitViewModel
 import com.zipdabang.zipdabang_android.ui.component.AppBarSignUp
 import com.zipdabang.zipdabang_android.ui.component.CustomDialogOnlyConfirm
 import com.zipdabang.zipdabang_android.ui.component.CustomDialogQuitConfirm
-import com.zipdabang.zipdabang_android.ui.component.MainAndSubTitle
+gitimport com.zipdabang.zipdabang_android.ui.component.MainAndSubTitle
 import com.zipdabang.zipdabang_android.ui.component.PrimaryButtonWithStatus
 import com.zipdabang.zipdabang_android.ui.component.TextFieldForDrawerMultiline
 import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
