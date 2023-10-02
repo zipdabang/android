@@ -13,10 +13,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.zipdabang.zipdabang_android.R
+import com.zipdabang.zipdabang_android.module.recipes.common.OwnerCategory
 import com.zipdabang.zipdabang_android.module.recipes.common.OwnerType
 import com.zipdabang.zipdabang_android.module.recipes.ui.viewmodel.RecipeMainViewModel
 import com.zipdabang.zipdabang_android.ui.component.AppBarHome
 import com.zipdabang.zipdabang_android.ui.component.ModalDrawer
+import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
 import kotlinx.coroutines.launch
 
 @Composable
@@ -41,10 +43,34 @@ fun RecipeScreen(
     val likeState = viewModel.toggleLikeResult
     val scrapState = viewModel.toggleScrapResult
 
-    val recipeMapByOwnerType = mapOf(
-        OwnerType.ALL to everyoneRecipe,
-        OwnerType.INFLUENCER to influencerRecipe,
-        OwnerType.USER to userRecipe
+    val ownerTypeList = listOf(
+        OwnerCategory(
+            groupName = OwnerType.ALL.type,
+            title = OwnerType.ALL.title,
+            subTitle = OwnerType.ALL.subTitle,
+            borderColor = Color(0xFFB8AFAB),
+            backgroundColor = ZipdabangandroidTheme.Colors.BlackSesame,
+            textColor = ZipdabangandroidTheme.Colors.Typo,
+            drawable = R.drawable.recipe_category_zipdabang
+        ),
+        OwnerCategory(
+            groupName = OwnerType.INFLUENCER.type,
+            title = OwnerType.INFLUENCER.title,
+            subTitle = OwnerType.INFLUENCER.subTitle,
+            borderColor = Color(0xFFC29789),
+            backgroundColor = ZipdabangandroidTheme.Colors.Strawberry,
+            textColor = Color.White,
+            drawable = R.drawable.recipe_category_barista
+        ),
+        OwnerCategory(
+            groupName = OwnerType.USER.type,
+            title = OwnerType.USER.title,
+            subTitle = OwnerType.USER.subTitle,
+            borderColor = Color(0xFF856F65),
+            backgroundColor = ZipdabangandroidTheme.Colors.Choco,
+            textColor = Color.White,
+            drawable = R.drawable.recipe_category_our
+        )
     )
 
     ModalDrawer(
@@ -77,7 +103,7 @@ fun RecipeScreen(
                     },
                     banners = banners,
                     categories = categories,
-                    recipeMapByOwnerType = recipeMapByOwnerType,
+                    ownerTypeList = ownerTypeList,
                     likeState = likeState,
                     scrapState = scrapState
                 )
