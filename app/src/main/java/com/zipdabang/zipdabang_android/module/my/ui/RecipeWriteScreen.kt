@@ -61,6 +61,9 @@ import com.zipdabang.zipdabang_android.ui.component.PrimaryButtonWithStatus
 import com.zipdabang.zipdabang_android.ui.component.TextFieldForRecipeWriteMultiline
 import com.zipdabang.zipdabang_android.ui.component.TextFieldForRecipeWriteSingleline
 import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.io.ByteArrayOutputStream
 
 
@@ -75,6 +78,7 @@ fun bitmapToUri(context: Context, bitmap: Bitmap): Uri? {
 @Composable
 fun RecipeWriteScreen(
     onClickBack: () -> Unit,
+    onClickWrite: () -> Unit,
     recipeWriteViewModel: RecipeWriteViewModel = hiltViewModel()
 ) {
     val stateRecipeWriteForm = recipeWriteViewModel.stateRecipeWriteForm
@@ -753,9 +757,17 @@ fun RecipeWriteScreen(
                     modifier = Modifier.weight(1f)
                 ) {
                     PrimaryButtonWithStatus(
-                        isFormFilled = false,
+                        isFormFilled = stateRecipeWriteForm.btnEnabled,
                         text = stringResource(id = R.string.my_recipewrite_writedone),
-                        onClick = {},
+                        onClick = {
+                             CoroutineScope(Dispatchers.Main).launch{
+                                 try{
+                                     recipeWriteViewModel.postRecipeWrite()
+                                 } catch (e:Exception){
+
+                                 }
+                             }
+                        },
                     )
                 }
 
@@ -865,6 +877,7 @@ fun RecipeWriteScreen(
 @Composable
 fun PreviewRecipeWriteScreen() {
     RecipeWriteScreen(
-        onClickBack = {}
+        onClickBack = {},
+        onClickWrite = {}
     )
 }

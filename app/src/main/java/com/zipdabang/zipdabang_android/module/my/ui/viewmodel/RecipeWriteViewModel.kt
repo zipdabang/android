@@ -1,11 +1,18 @@
 package com.zipdabang.zipdabang_android.module.my.ui.viewmodel
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.datastore.core.DataStore
 import androidx.lifecycle.ViewModel
+import com.zipdabang.zipdabang_android.common.Resource
 import com.zipdabang.zipdabang_android.core.data_store.proto.Token
+import com.zipdabang.zipdabang_android.module.my.data.remote.RecipeWriteContent
+import com.zipdabang.zipdabang_android.module.my.data.remote.RecipeWriteIngredient
+import com.zipdabang.zipdabang_android.module.my.data.remote.RecipeWriteRequest
+import com.zipdabang.zipdabang_android.module.my.data.remote.RecipeWriteStep
+import com.zipdabang.zipdabang_android.module.my.domain.usecase.PostRecipeWriteUseCase
 import com.zipdabang.zipdabang_android.module.my.ui.state.recipewrite.Ingredient
 import com.zipdabang.zipdabang_android.module.my.ui.state.recipewrite.RecipeWriteDialogEvent
 import com.zipdabang.zipdabang_android.module.my.ui.state.recipewrite.RecipeWriteDialogState
@@ -13,11 +20,13 @@ import com.zipdabang.zipdabang_android.module.my.ui.state.recipewrite.RecipeWrit
 import com.zipdabang.zipdabang_android.module.my.ui.state.recipewrite.RecipeWriteFormState
 import com.zipdabang.zipdabang_android.module.my.ui.state.recipewrite.Step
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.first
 import javax.inject.Inject
 
 @HiltViewModel
 class RecipeWriteViewModel @Inject constructor(
     private val dataStore: DataStore<Token>,
+    private val postRecipeWriteUseCase: PostRecipeWriteUseCase,
 ) : ViewModel() {
 
     var stateRecipeWriteForm by mutableStateOf(
@@ -233,7 +242,61 @@ class RecipeWriteViewModel @Inject constructor(
     }
 
 
+    suspend fun postRecipeWrite(){
+        val ingredients = stateRecipeWriteForm.ingredients.map { ingredient ->
+            RecipeWriteIngredient(
+                ingredientName = ingredient.ingredientName,
+                quantity = ingredient.quantity
+            )
+        }
+        val steps = stateRecipeWriteForm.steps.mapIndexed { index, step ->
+            RecipeWriteStep(
+                description = step.description,
+                stepNum = index + 1
+            )
+        }
+        val stepImages = stateRecipeWriteForm.steps.map { step ->
+            step.stepImage as? String ?: ""
+        }
+        try{
+            val result = postRecipeWriteUseCase(
+                accessToken = "Bearer " + dataStore.data.first().accessToken.toString(),
+                recipeWriteForm = RecipeWriteRequest(
+                    content = RecipeWriteContent(
+                        categoryId = listOf(1,2),
+                        ingredientCount = stateRecipeWriteForm.ingredientsNum,
+                        ingredients = ingredients,
+                        intro = stateRecipeWriteForm.intro,
+                        name = stateRecipeWriteForm.title,
+                        recipeTip = stateRecipeWriteForm.recipeTip,
+                        stepCount = stateRecipeWriteForm.stepsNum,
+                        steps = steps,
+                        time = stateRecipeWriteForm.time
+                    ),
+                    stepImages = stepImages,
+                    thumbnail = stateRecipeWriteForm.thumbnail.toString()
+                )
+            )
 
+            result.collect{result->
+                when(result){
+                    is Resource.Success->{
+                        Log.e("recipewrite", "api는 성공 : ${result.message} ${result.code}")
+                        if(result.code == 2000){
+                            Log.e("recipewrite", "성공 : ${result.message}")
+                        }
+                    }
+                    is Resource.Error ->{
+                        Log.e("recipewrite", "에러 : ${result.message}")
+                    }
+                    is Resource.Loading ->{
+                        Log.e("recipewrite", "로딩중 : ${result.data}")
+                    }
+                }
+            }
+        }
+        catch (e: Exception) {}
+    }
 
 
 

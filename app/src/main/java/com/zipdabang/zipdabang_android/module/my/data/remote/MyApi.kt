@@ -16,4 +16,9 @@ interface MyApi {
         @Header("Authorization") accessToken: String
     ): CategoriesResponse
 
+    @POST("members/recipes")
+    suspend fun postRecipe(
+        @Header("Authorization") accessToken: String,
+        @Body recipeWriteForm : RecipeWriteRequest
+    ): RecipeWriteResponse
 }

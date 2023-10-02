@@ -151,6 +151,9 @@ fun NavGraphBuilder.MyNavGraph(
             RecipeWriteScreen(
                 onClickBack = {
                     navController.popBackStack(MyScreen.Myrecipe.route, inclusive = false)
+                },
+                onClickWrite = {
+                    navController.popBackStack(MyScreen.Myrecipe.route, inclusive = false)
                 }
             )
         }

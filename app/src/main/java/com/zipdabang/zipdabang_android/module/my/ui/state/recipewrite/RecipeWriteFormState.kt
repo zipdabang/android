@@ -22,7 +22,7 @@ data class RecipeWriteFormState(
     val stepsNum : Int = 1,
     val stepBtnEnabled : Boolean = false,
 
-    val btnEnabled : Boolean = false,
+    val btnEnabled : Boolean = true,
 
     val error : String = ""
 )
