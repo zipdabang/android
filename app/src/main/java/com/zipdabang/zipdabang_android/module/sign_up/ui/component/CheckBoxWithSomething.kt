@@ -26,6 +26,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.zipdabang.zipdabang_android.ui.component.CheckBoxCustom
+import com.zipdabang.zipdabang_android.ui.shimmeringEffect
 import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
 
 
@@ -34,6 +35,7 @@ fun CheckBoxWithText(
     isCheckBox: Boolean,
     isChecked : Boolean?,
     isCheckedChange : (Boolean) -> Unit,
+    shimmering : Boolean,
     mainValue : String,
     mainTextStyle : TextStyle,
     isDetailValue : Boolean,
@@ -82,7 +84,9 @@ fun CheckBoxWithText(
         )
         Text(
             text = mainValue,
-            modifier = Modifier.weight(0.9f),
+            modifier = Modifier
+                .weight(0.9f)
+                .then(if(shimmering){Modifier.shimmeringEffect()} else{Modifier}),
             style = mainTextStyle,
             color = ZipdabangandroidTheme.Colors.Typo
         )
@@ -108,7 +112,8 @@ fun CheckBoxWithText(
                         text = detailValue,
                         style = detailTextStyle,
                         color = ZipdabangandroidTheme.Colors.Typo,
-                        modifier = Modifier.weight(0.9f),
+                        modifier = Modifier.weight(0.9f)
+                            .then(if(shimmering){Modifier.shimmeringEffect()} else{Modifier}),
                     )
                 }
             }
@@ -121,6 +126,7 @@ fun CheckBoxWithText(
 fun CheckBoxWithTextAndButton(
     isChecked : Boolean,
     isCheckedChange : (Boolean) -> Unit,
+    shimmering : Boolean,
     mainValue : String,
     mainTextStyle: TextStyle,
     onClick : ()->Unit,
@@ -162,7 +168,8 @@ fun CheckBoxWithTextAndButton(
         )
         Text(
             text = mainValue,
-            modifier = Modifier.weight(0.7f),
+            modifier = Modifier.weight(0.7f)
+                .then(if(shimmering){Modifier.shimmeringEffect()} else{Modifier}),
             style = mainTextStyle,
             color = ZipdabangandroidTheme.Colors.Typo
         )
@@ -199,6 +206,7 @@ fun PreviewCheckBoxWithTextAndButton(){
             isCheckBox= false,
             isChecked = isCheckedSecond,
             isCheckedChange = {selectedChecked -> isCheckedSecond = selectedChecked },
+            shimmering = false,
             mainValue = "[필수] 필수 제공 항목",
             mainTextStyle = ZipdabangandroidTheme.Typography.fourteen_700,
             isDetailValue = true,
@@ -208,6 +216,7 @@ fun PreviewCheckBoxWithTextAndButton(){
         CheckBoxWithTextAndButton(
             isChecked = isChecked,
             isCheckedChange = {selectedChecked -> isChecked = selectedChecked },
+            shimmering = false,
             mainValue = "[필수] 필수 제공 항목",
             mainTextStyle = ZipdabangandroidTheme.Typography.fourteen_500,
             onClick = { }

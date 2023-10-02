@@ -144,7 +144,8 @@ fun TextFieldErrorAndCorrectIcon(
 @Composable
 fun TextFieldErrorAndCorrect(
     value : String,
-    onValueChanged : (String) -> Unit,
+    maxLength: Int,
+    onValueChanged : (String, Int) -> Unit,
     isTried : Boolean, //api 시도했으면 true, !!!!!이걸 true로 설정해야 error와 check가 표시되요!!!!!
     labelValue : String,
     placeHolderValue : String,
@@ -161,7 +162,7 @@ fun TextFieldErrorAndCorrect(
 
     TextField(
         value = value,
-        onValueChange = { onValueChanged(it) },
+        onValueChange = { onValueChanged(it , maxLength) },
         textStyle = ZipdabangandroidTheme.Typography.sixteen_300,
         modifier = Modifier
             .fillMaxWidth()
@@ -236,7 +237,8 @@ fun TextFieldErrorAndCorrect(
 @Composable
 fun TextFieldError(
     value : String,
-    onValueChanged : (String) -> Unit,
+    maxLength: Int,
+    onValueChanged : (String, Int) -> Unit,
     labelValue : String,
     placeHolderValue: String,
 
@@ -248,7 +250,9 @@ fun TextFieldError(
 ) {
         TextField(
             value = value,
-            onValueChange = { onValueChanged(it) },
+            onValueChange = {
+                onValueChanged(it, maxLength)
+            },
             textStyle = ZipdabangandroidTheme.Typography.sixteen_300,
             modifier = Modifier
                 .fillMaxWidth()
@@ -311,7 +315,12 @@ fun PreviewTextField(){
     ){
         TextFieldError(
             value = textState,
-            onValueChanged = {textState = it},
+            maxLength= 10,
+            onValueChanged = { newText, maxLength ->
+                if(newText.length <= maxLength){
+                    textState = newText
+                }
+            },
             labelValue = "생년월일",
             placeHolderValue = "6자리 입력부탁",
             isError = false,

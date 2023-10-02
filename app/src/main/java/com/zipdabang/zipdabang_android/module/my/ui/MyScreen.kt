@@ -120,20 +120,50 @@ fun MyScreen(
                             .verticalScroll(scrollState)
                     ) {
                         // 프로필 부분
-                        Column(
+                        Row(
                             modifier = Modifier
-                                .height(284.dp)
-                                .fillMaxWidth(),
-                            verticalArrangement = Arrangement.Center,
-                            horizontalAlignment = Alignment.CenterHorizontally
+                                .height(178.dp)
+                                .fillMaxWidth()
+                                .padding(16.dp, 30.dp, 16.dp,0.dp),
+                            horizontalArrangement = Arrangement.SpaceBetween
                         ) {
-                            Box{
+                            //닉네임 & 선호음료 & 팔로우팔로잉
+                            Column{
+                                Row(
+                                    horizontalArrangement = Arrangement.spacedBy(4.dp),
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    modifier = Modifier.padding(0.dp,0.dp,0.dp,2.dp)
+                                ){
+                                    Text(text=stateMyUserInfo.nickname, style=ZipdabangandroidTheme.Typography.twentytwo_700, color=Color.White)
+                                }
+                                Row(
+                                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    modifier = Modifier.padding(0.dp,0.dp,0.dp,10.dp)
+                                ){
+                                    Icon(painter = painterResource(id = R.drawable.ic_my_heart), contentDescription = "", tint = Color.White, modifier = Modifier.size(15.dp, 12.dp))
+                                    for(category in stateMyUserInfo.categoryList){
+                                        Text(
+                                            text = category,
+                                            style = ZipdabangandroidTheme.Typography.sixteen_500,
+                                            color = Color.White,
+                                        )
+                                    }
+                                }
+                                Row {
+                                    Text(text="팔로우 000  |  팔로잉 000", style=ZipdabangandroidTheme.Typography.fourteen_300, color=Color.White)
+                                }
+                            }
+                            //프로필
+                            Box(
+                                contentAlignment = Alignment.CenterEnd
+                            ){
                                 Box(
                                     modifier = Modifier
-                                        .size(120.dp, 120.dp)
-                                        .clip(CircleShape)
+                                        .size(104.dp, 104.dp)
+                                        .clip(CircleShape),
                                 ){
-                                    CircleImage(imageUrl = stateMyUserInfo.profileUrl, contentDescription = "")
+                                    CircleImage(imageUrl = R.drawable.img_profile, contentDescription = "") //stateMyUserInfo.profileUrl
                                 }
                                 Box(
                                     modifier = Modifier
@@ -157,27 +187,6 @@ fun MyScreen(
                                     }
                                 )
                             }
-                            Row(
-                                horizontalArrangement = Arrangement.spacedBy(4.dp),
-                                verticalAlignment = Alignment.CenterVertically,
-                                modifier = Modifier.padding(0.dp,24.dp,0.dp,0.dp)
-                            ){
-                                Text(text=stateMyUserInfo.nickname, style=ZipdabangandroidTheme.Typography.twentytwo_700, color=Color.White)
-                                Text(text= "("+ stateMyUserInfo.name +")", style=ZipdabangandroidTheme.Typography.sixteen_500, color=Color.White)
-                            }
-                            Row(
-                                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                                verticalAlignment = Alignment.CenterVertically
-                            ){
-                                Icon(painter = painterResource(id = R.drawable.ic_my_heart), contentDescription = "", tint = Color.White, modifier = Modifier.size(15.dp, 12.dp))
-                                for(category in stateMyUserInfo.categoryList){
-                                    Text(
-                                        text = category,
-                                        style = ZipdabangandroidTheme.Typography.sixteen_500,
-                                        color = Color.White,
-                                    )
-                                }
-                            }
                         }
 
                         //프로필 하단 부분
@@ -189,7 +198,18 @@ fun MyScreen(
                                     shape = RoundedCornerShape(12.dp, 12.dp, 0.dp, 0.dp)
                                 ),
                             verticalArrangement = Arrangement.Center
-                        ){
+                        ) {
+                            Box(
+                                modifier = Modifier.height(48.dp).fillMaxWidth(),
+                                contentAlignment = Alignment.Center
+                            ){
+                                Text(
+                                    text = "000 님의 홈카페에 어서오세요",
+                                    style = ZipdabangandroidTheme.Typography.sixteen_700,
+                                    color = ZipdabangandroidTheme.Colors.Strawberry,
+                                )
+                            }
+
                             Row(
                                 modifier = Modifier
                                     .height(120.dp)

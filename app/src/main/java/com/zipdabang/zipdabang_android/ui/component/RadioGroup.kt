@@ -30,6 +30,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.zipdabang.zipdabang_android.R
+import com.zipdabang.zipdabang_android.module.recipes.common.ReportContent
 import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
 
 @Composable
@@ -140,7 +141,62 @@ fun RadioGroupVertical(
     }
 }
 
+@Composable
+fun RadioGroupReportVertical(
+    optionList: List<ReportContent>,
+    onOptionChange: (Int) -> Unit
+) {
+    var selectedOption by remember {
+        mutableStateOf(optionList[0].id)
+    }
 
+    Column(
+        modifier = Modifier
+            .selectableGroup()
+            .fillMaxWidth()
+    ) {
+        optionList.forEach { option ->
+            Row(
+                modifier = Modifier
+                    .selectable(
+                        interactionSource = remember {
+                            MutableInteractionSource()
+                        },
+                        indication = null,
+                        selected = (selectedOption == option.id),
+                        onClick = {
+                            selectedOption = option.id
+                            onOptionChange(selectedOption)
+                        },
+                        role = Role.RadioButton
+                    )
+                    .padding(horizontal = 24.dp, vertical = 10.dp)
+                    .fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    painter = painterResource(
+                        id = if (selectedOption == option.id) R.drawable.ic_radio_checked else R.drawable.ic_radio_unchecked
+                    ),
+                    contentDescription = "radio",
+                    tint = ZipdabangandroidTheme.Colors.Strawberry
+                )
+
+                Spacer(modifier = Modifier.width(20.dp))
+
+                Text(
+                    text = option.content,
+                    textAlign = TextAlign.Center ,
+                    style=ZipdabangandroidTheme.Typography.fourteen_300)
+
+            }
+
+            Spacer(modifier = Modifier.width(12.dp))
+
+        }
+
+    }
+}
 
 
 @Preview(showBackground = true)
@@ -166,4 +222,23 @@ fun RadioGroupVerticalPreview() {
     }
 
 }
+
+@Preview(showBackground = true)
+@Composable
+fun RadioGroupReportVerticalPreview() {
+    Column(
+        modifier = Modifier.fillMaxSize()
+    ){
+        val options = ReportContent.contents
+        var state by remember {
+            mutableStateOf(options[0].id)
+        }
+
+        RadioGroupReportVertical(optionList = options, onOptionChange = { selectedValue -> state = selectedValue })
+        Spacer(modifier = Modifier.height(20.dp))
+        Text(text = state.toString())
+    }
+
+}
+
 

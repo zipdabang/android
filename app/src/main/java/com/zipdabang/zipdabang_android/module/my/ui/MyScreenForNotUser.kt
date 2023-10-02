@@ -66,6 +66,7 @@ import com.zipdabang.zipdabang_android.module.my.ui.viewmodel.MyViewModel
 import com.zipdabang.zipdabang_android.ui.component.AppBarMy
 import com.zipdabang.zipdabang_android.ui.component.CircleImage
 import com.zipdabang.zipdabang_android.ui.component.IconAndText
+import com.zipdabang.zipdabang_android.ui.component.IconAndTextNotClickable
 import com.zipdabang.zipdabang_android.ui.component.ImageIconAndText
 import com.zipdabang.zipdabang_android.ui.component.ModalDrawer
 import com.zipdabang.zipdabang_android.ui.component.PrimaryButton
@@ -78,12 +79,12 @@ import kotlinx.coroutines.launch
 @Composable
 fun MyScreenForNotUser(
     navController: NavController,
-    onClickLogin : ()->Unit,
+    onClickLogin: () -> Unit,
 ) {
     val drawerState = rememberDrawerState(DrawerValue.Closed)
 
     ModalDrawer(
-        scaffold={
+        scaffold = {
             Scaffold(
                 modifier = Modifier
                     .fillMaxSize()
@@ -111,11 +112,11 @@ fun MyScreenForNotUser(
                     .blur(edgeTreatment = BlurredEdgeTreatment.Rectangle, radius = 1.dp), // 블러 처리
                 topBar = {
                     AppBarMy(
-                    startIcon = R.drawable.ic_topbar_backbtn,
-                    endIcon = R.drawable.ic_topbar_menu,
-                    onClickStartIcon = {  },
-                    onClickEndIcon = {  },
-                    centerText = stringResource(id = R.string.zipdabang_title)
+                        startIcon = R.drawable.ic_topbar_backbtn,
+                        endIcon = R.drawable.ic_topbar_menu,
+                        onClickStartIcon = { },
+                        onClickEndIcon = { },
+                        centerText = stringResource(id = R.string.zipdabang_title)
                     )
                 },
                 containerColor = Color.Transparent,
@@ -127,7 +128,7 @@ fun MyScreenForNotUser(
                         modifier = Modifier
                             .fillMaxSize()
                             .padding(it)
-                            //.verticalScroll(scrollState)
+                        //.verticalScroll(scrollState)
                     ) {
                         // 프로필 부분
                         Column(
@@ -137,13 +138,16 @@ fun MyScreenForNotUser(
                             verticalArrangement = Arrangement.Center,
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
-                            Box{
+                            Box {
                                 Box(
                                     modifier = Modifier
                                         .size(120.dp, 120.dp)
                                         .clip(CircleShape)
-                                ){
-                                    CircleImage(imageUrl = R.drawable.img_profile, contentDescription = "")
+                                ) {
+                                    CircleImage(
+                                        imageUrl = R.drawable.img_profile,
+                                        contentDescription = ""
+                                    )
                                 }
                                 Box(
                                     modifier = Modifier
@@ -153,7 +157,6 @@ fun MyScreenForNotUser(
                                         .border(1.dp, Color.White, CircleShape)
                                         .align(Alignment.BottomEnd)
                                         .padding(0.dp)
-                                        .clickable(onClick = {})
                                         .zIndex(1f),
                                     content = {
                                         Icon(
@@ -170,16 +173,29 @@ fun MyScreenForNotUser(
                             Row(
                                 horizontalArrangement = Arrangement.spacedBy(4.dp),
                                 verticalAlignment = Alignment.CenterVertically,
-                                modifier = Modifier.padding(0.dp,24.dp,0.dp,0.dp)
-                            ){
-                                Text(text= "비니", style=ZipdabangandroidTheme.Typography.twentytwo_700, color= Color.White)
-                                Text(text= "(집다방)", style=ZipdabangandroidTheme.Typography.sixteen_500, color= Color.White)
+                                modifier = Modifier.padding(0.dp, 24.dp, 0.dp, 0.dp)
+                            ) {
+                                Text(
+                                    text = "비니",
+                                    style = ZipdabangandroidTheme.Typography.twentytwo_700,
+                                    color = Color.White
+                                )
+                                Text(
+                                    text = "(집다방)",
+                                    style = ZipdabangandroidTheme.Typography.sixteen_500,
+                                    color = Color.White
+                                )
                             }
                             Row(
                                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                                 verticalAlignment = Alignment.CenterVertically
-                            ){
-                                Icon(painter = painterResource(id = R.drawable.ic_my_heart), contentDescription = "", tint = Color.White, modifier = Modifier.size(15.dp, 12.dp))
+                            ) {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.ic_my_heart),
+                                    contentDescription = "",
+                                    tint = Color.White,
+                                    modifier = Modifier.size(15.dp, 12.dp)
+                                )
                                 Text(
                                     text = "커피   스무디",
                                     style = ZipdabangandroidTheme.Typography.sixteen_500,
@@ -197,7 +213,7 @@ fun MyScreenForNotUser(
                                     shape = RoundedCornerShape(12.dp, 12.dp, 0.dp, 0.dp)
                                 ),
                             verticalArrangement = Arrangement.Center
-                        ){
+                        ) {
                             Row(
                                 modifier = Modifier
                                     .height(120.dp)
@@ -209,58 +225,54 @@ fun MyScreenForNotUser(
                                     ),
                                 verticalAlignment = Alignment.CenterVertically,
                                 horizontalArrangement = Arrangement.Center
-                            ){
+                            ) {
                                 Spacer(modifier = Modifier.weight(0.02f))
                                 Box(
                                     modifier = Modifier.weight(0.25f)
                                 ) {
-                                    IconAndText(
+                                    IconAndTextNotClickable(
                                         iconImageVector = R.drawable.ic_my_favorite,
                                         iconColor = ZipdabangandroidTheme.Colors.Strawberry,
                                         iconModifier = Modifier.size(30.dp, 26.dp),
                                         text = stringResource(id = R.string.my_like),
                                         textColor = ZipdabangandroidTheme.Colors.Typo,
                                         textStyle = ZipdabangandroidTheme.Typography.fourteen_500,
-                                        onClick = {}
                                     )
                                 }
                                 Box(
                                     modifier = Modifier.weight(0.25f)
-                                ){
-                                    IconAndText(
+                                ) {
+                                    IconAndTextNotClickable(
                                         iconImageVector = R.drawable.ic_my_bookmark,
                                         iconColor = ZipdabangandroidTheme.Colors.Cream,
                                         iconModifier = Modifier.size(22.dp, 26.dp),
                                         text = stringResource(id = R.string.my_scrap),
                                         textColor = ZipdabangandroidTheme.Colors.Typo,
                                         textStyle = ZipdabangandroidTheme.Typography.fourteen_500,
-                                        onClick = {}
                                     )
                                 }
                                 Box(
                                     modifier = Modifier.weight(0.25f)
-                                ){
-                                    ImageIconAndText(
+                                ) {
+                                    IconAndTextNotClickable(
                                         iconImageVector = R.drawable.zipdabanglogo_white,
                                         iconColor = Color.Transparent,
                                         iconModifier = Modifier.size(40.dp, 40.dp),
                                         text = stringResource(id = R.string.my_myrecipe),
                                         textColor = ZipdabangandroidTheme.Colors.Typo,
                                         textStyle = ZipdabangandroidTheme.Typography.fourteen_500,
-                                        onClick = {}
                                     )
                                 }
                                 Box(
                                     modifier = Modifier.weight(0.25f)
-                                ){
-                                    IconAndText(
+                                ) {
+                                    IconAndTextNotClickable(
                                         iconImageVector = R.drawable.ic_my_shoppingcart,
                                         iconColor = ZipdabangandroidTheme.Colors.Choco,
                                         iconModifier = Modifier.size(40.dp, 40.dp),
                                         text = stringResource(id = R.string.my_shopping),
                                         textColor = ZipdabangandroidTheme.Colors.Typo,
                                         textStyle = ZipdabangandroidTheme.Typography.fourteen_500,
-                                        onClick = {}
                                     )
                                 }
                                 Spacer(modifier = Modifier.weight(0.02f))
@@ -272,27 +284,24 @@ fun MyScreenForNotUser(
                                     .fillMaxWidth()
                                     .padding(16.dp, 0.dp, 16.dp, 0.dp),
                                 verticalArrangement = Arrangement.spacedBy(8.dp)
-                            ){
+                            ) {
                                 Box(
                                     modifier = Modifier
                                         .fillMaxWidth()
                                         .weight(1f)
-                                        .clickable(
-                                            onClick = {},
-                                        )
                                         .background(
                                             color = Color.White,
                                             shape = ZipdabangandroidTheme.Shapes.small
                                         ),
                                     contentAlignment = Alignment.Center
-                                ){
+                                ) {
                                     Row(
                                         modifier = Modifier
                                             .fillMaxWidth()
                                             .padding(16.dp, 0.dp, 16.dp, 0.dp),
                                         verticalAlignment = Alignment.CenterVertically,
                                         horizontalArrangement = Arrangement.SpaceBetween,
-                                    ){
+                                    ) {
                                         Text(
                                             text = stringResource(id = R.string.my_friendlist),
                                             style = ZipdabangandroidTheme.Typography.fourteen_500,
@@ -300,7 +309,7 @@ fun MyScreenForNotUser(
                                         )
                                         Text(
                                             text = "0",
-                                            style =ZipdabangandroidTheme.Typography.fourteen_500,
+                                            style = ZipdabangandroidTheme.Typography.fourteen_500,
                                             color = ZipdabangandroidTheme.Colors.Typo
                                         )
                                     }
@@ -308,21 +317,20 @@ fun MyScreenForNotUser(
                                 Box(
                                     modifier = Modifier
                                         .fillMaxWidth()
-                                        .clickable(onClick = {})
                                         .weight(1f)
                                         .background(
                                             color = Color.White,
                                             shape = ZipdabangandroidTheme.Shapes.small
                                         ),
                                     contentAlignment = Alignment.Center
-                                ){
+                                ) {
                                     Row(
                                         modifier = Modifier
                                             .fillMaxWidth()
                                             .padding(16.dp, 0.dp, 16.dp, 0.dp),
                                         verticalAlignment = Alignment.CenterVertically,
                                         horizontalArrangement = Arrangement.SpaceBetween,
-                                    ){
+                                    ) {
                                         Text(
                                             text = stringResource(id = R.string.my_noticeandevent),
                                             style = ZipdabangandroidTheme.Typography.fourteen_500,
@@ -330,7 +338,7 @@ fun MyScreenForNotUser(
                                         )
                                         Text(
                                             text = "0",
-                                            style =ZipdabangandroidTheme.Typography.fourteen_500,
+                                            style = ZipdabangandroidTheme.Typography.fourteen_500,
                                             color = ZipdabangandroidTheme.Colors.Typo
                                         )
                                     }
@@ -344,14 +352,14 @@ fun MyScreenForNotUser(
                                             shape = ZipdabangandroidTheme.Shapes.small
                                         ),
                                     contentAlignment = Alignment.Center
-                                ){
+                                ) {
                                     Row(
                                         modifier = Modifier
                                             .fillMaxWidth()
                                             .padding(16.dp, 0.dp, 16.dp, 0.dp),
                                         verticalAlignment = Alignment.CenterVertically,
                                         horizontalArrangement = Arrangement.SpaceBetween,
-                                    ){
+                                    ) {
                                         Text(
                                             text = stringResource(id = R.string.my_alarm),
                                             style = ZipdabangandroidTheme.Typography.fourteen_500,
@@ -359,7 +367,7 @@ fun MyScreenForNotUser(
                                         )
                                         Text(
                                             text = "0",
-                                            style =ZipdabangandroidTheme.Typography.fourteen_500,
+                                            style = ZipdabangandroidTheme.Typography.fourteen_500,
                                             color = ZipdabangandroidTheme.Colors.Typo
                                         )
                                     }
@@ -372,7 +380,7 @@ fun MyScreenForNotUser(
                                     .padding(16.dp, 16.dp, 16.dp, 0.dp),
                                 verticalArrangement = Arrangement.spacedBy(2.dp),
                                 horizontalAlignment = Alignment.CenterHorizontally,
-                            ){
+                            ) {
                                 Row(
                                     modifier = Modifier
                                         .fillMaxWidth()
@@ -380,9 +388,18 @@ fun MyScreenForNotUser(
                                         .padding(2.dp, 0.dp, 0.dp, 0.dp),
                                     verticalAlignment = Alignment.CenterVertically,
                                     horizontalArrangement = Arrangement.spacedBy(4.dp)
-                                ){
-                                    Icon(painter = painterResource(id = R.drawable.ic_my_deliverytruck), contentDescription = "", tint = ZipdabangandroidTheme.Colors.Typo, modifier = Modifier.size(20.dp, 14.dp))
-                                    Text(text= stringResource(id = R.string.my_market_ing), style=ZipdabangandroidTheme.Typography.sixteen_700, color =ZipdabangandroidTheme.Colors.Typo)
+                                ) {
+                                    Icon(
+                                        painter = painterResource(id = R.drawable.ic_my_deliverytruck),
+                                        contentDescription = "",
+                                        tint = ZipdabangandroidTheme.Colors.Typo,
+                                        modifier = Modifier.size(20.dp, 14.dp)
+                                    )
+                                    Text(
+                                        text = stringResource(id = R.string.my_market_ing),
+                                        style = ZipdabangandroidTheme.Typography.sixteen_700,
+                                        color = ZipdabangandroidTheme.Colors.Typo
+                                    )
                                 }
                                 Box(
                                     modifier = Modifier
@@ -393,7 +410,7 @@ fun MyScreenForNotUser(
                                             shape = RoundedCornerShape(4.dp)
                                         ),
                                     contentAlignment = Alignment.Center
-                                ){
+                                ) {
                                     Text(
                                         text = stringResource(id = R.string.my_market_notdeploy),
                                         style = ZipdabangandroidTheme.Typography.fourteen_300,
@@ -408,10 +425,10 @@ fun MyScreenForNotUser(
                                     .padding(16.dp, 72.dp, 16.dp, 32.dp),
                                 verticalAlignment = Alignment.CenterVertically,
                                 horizontalArrangement = Arrangement.Center
-                            ){
+                            ) {
                                 ClickableText(
                                     text = AnnotatedString(text = stringResource(id = R.string.my_logout)),
-                                    style =  ZipdabangandroidTheme.Typography.fourteen_300,
+                                    style = ZipdabangandroidTheme.Typography.fourteen_300,
                                     onClick = {}
                                 )
                                 Text(
@@ -422,7 +439,7 @@ fun MyScreenForNotUser(
                                 )
                                 ClickableText(
                                     text = AnnotatedString(text = stringResource(id = R.string.my_myinfo)),
-                                    style =  ZipdabangandroidTheme.Typography.fourteen_300,
+                                    style = ZipdabangandroidTheme.Typography.fourteen_300,
                                     onClick = {}
                                 )
                             }
@@ -449,15 +466,17 @@ fun MyScreenForNotUser(
             ) {
                 Text(
                     textAlign = TextAlign.Center,
-                    text= stringResource(id = R.string.my_notuser),
-                    color=Color.White,
-                    style= ZipdabangandroidTheme.Typography.eighteen_700,
+                    text = stringResource(id = R.string.my_notuser),
+                    color = Color.White,
+                    style = ZipdabangandroidTheme.Typography.eighteen_700,
                     modifier = Modifier.padding(0.dp, 0.dp, 0.dp, 20.dp)
                 )
                 Button(
-                    onClick = {onClickLogin()},
+                    onClick = { onClickLogin() },
                     shape = ZipdabangandroidTheme.Shapes.medium,
-                    modifier = Modifier.fillMaxWidth().height(60.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(60.dp),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = ZipdabangandroidTheme.Colors.Strawberry,
                     ),

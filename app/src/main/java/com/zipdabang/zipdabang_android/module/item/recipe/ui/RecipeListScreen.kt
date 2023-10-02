@@ -104,7 +104,7 @@ fun RecipeListScreen(
                     FloatingActionButton(
                         isScrolled = isScrolled,
                         icon = R.drawable.zipdabanglogo_white,
-                        title = "레시피 공유하기"
+                        title = "나의 레시피 공유하기"
                     ) {
                         onShareClick()
                     }

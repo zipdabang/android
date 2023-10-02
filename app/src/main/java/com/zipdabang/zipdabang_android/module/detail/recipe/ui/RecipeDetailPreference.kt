@@ -45,8 +45,8 @@ fun RecipeDetailPreference(
     isScrapChecked: Boolean,
     onLikeClick: (Boolean) -> Unit,
     onScrapClick: (Boolean) -> Unit,
-    onDeleteClick: (Int) -> Unit,
-    onEditClick: (Int) -> Unit,
+    onDeleteClick: () -> Unit,
+    onEditClick: () -> Unit,
     likeStateFlow: StateFlow<PreferenceToggleState>,
     scrapStateFlow: StateFlow<PreferenceToggleState>,
 ) {
@@ -202,8 +202,8 @@ fun RecipeDetailPreferencePreview() {
             isScrapChecked = changed
             if (isScrapChecked) scraps += 1 else scraps -= 1
         },
-        onDeleteClick = { delete -> },
-        onEditClick = { edit -> },
+        onDeleteClick = { },
+        onEditClick = {  },
         isOwner = true,
         likeStateFlow = MutableStateFlow(PreferenceToggleState()).asStateFlow(),
         scrapStateFlow = MutableStateFlow(PreferenceToggleState()).asStateFlow(),
