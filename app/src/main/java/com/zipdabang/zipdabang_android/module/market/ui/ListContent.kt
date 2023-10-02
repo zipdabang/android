@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import androidx.paging.compose.LazyPagingItems
 import com.zipdabang.zipdabang_android.module.item.goods.ui.GoodsCard
 import com.zipdabang.zipdabang_android.module.market.data.marketCategory.Category_Product
+import com.zipdabang.zipdabang_android.ui.shimmeringEffect
 
 
 @Composable
@@ -37,32 +38,5 @@ fun ShimmeringMarketItem(){
         .shimmeringEffect())
 }
 
-fun Modifier.shimmeringEffect() : Modifier = composed {
-    var size by remember{
-        mutableStateOf(IntSize.Zero)
-    }
-    val transition = rememberInfiniteTransition()
-    val startOffsetX by transition.animateFloat(
-        initialValue = -2 * size.width.toFloat(),
-        targetValue = 2 * size.width.toFloat() ,
-        animationSpec =  infiniteRepeatable(
-            animation = tween(1000)
-        ), label = ""
-    )
 
-    background(
-        brush = Brush.linearGradient(
-            colors = listOf(
-                Color(0xFFFFB8B5B5),
-                Color(0xFFFF8F8B8B),
-                Color(0xFFFFB8B5B5),
-            ),
-            start = Offset(startOffsetX,0f),
-            end = Offset(startOffsetX + size.width.toFloat(),size.height.toFloat())
-        )
-    )
-        .onGloballyPositioned {
-            size = it.size
-        }
-}
 

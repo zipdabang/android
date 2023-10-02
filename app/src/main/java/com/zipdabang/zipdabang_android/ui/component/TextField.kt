@@ -144,7 +144,8 @@ fun TextFieldErrorAndCorrectIcon(
 @Composable
 fun TextFieldErrorAndCorrect(
     value : String,
-    onValueChanged : (String) -> Unit,
+    maxLength: Int,
+    onValueChanged : (String, Int) -> Unit,
     isTried : Boolean, //api 시도했으면 true, !!!!!이걸 true로 설정해야 error와 check가 표시되요!!!!!
     labelValue : String,
     placeHolderValue : String,
@@ -161,7 +162,7 @@ fun TextFieldErrorAndCorrect(
 
     TextField(
         value = value,
-        onValueChange = { onValueChanged(it) },
+        onValueChange = { onValueChanged(it , maxLength) },
         textStyle = ZipdabangandroidTheme.Typography.sixteen_300,
         modifier = Modifier
             .fillMaxWidth()
@@ -236,7 +237,8 @@ fun TextFieldErrorAndCorrect(
 @Composable
 fun TextFieldError(
     value : String,
-    onValueChanged : (String) -> Unit,
+    maxLength: Int,
+    onValueChanged : (String, Int) -> Unit,
     labelValue : String,
     placeHolderValue: String,
 
@@ -248,7 +250,9 @@ fun TextFieldError(
 ) {
         TextField(
             value = value,
-            onValueChange = { onValueChanged(it) },
+            onValueChange = {
+                onValueChanged(it, maxLength)
+            },
             textStyle = ZipdabangandroidTheme.Typography.sixteen_300,
             modifier = Modifier
                 .fillMaxWidth()
@@ -311,7 +315,12 @@ fun PreviewTextField(){
     ){
         TextFieldError(
             value = textState,
-            onValueChanged = {textState = it},
+            maxLength= 10,
+            onValueChanged = { newText, maxLength ->
+                if(newText.length <= maxLength){
+                    textState = newText
+                }
+            },
             labelValue = "생년월일",
             placeHolderValue = "6자리 입력부탁",
             isError = false,
@@ -342,7 +351,7 @@ fun TextFieldForDrawerSingleline( //한줄 textfield
     value : String,
     onValueChanged: (String, Int) -> Unit,
     placeholderValue: String,
-   //errorMessage : String,
+    errorMessage : String,
     maxLength : Int, //최대 글자수
     isError : Boolean,
     imeAction: ImeAction, //default,none이면 엔터키, next면 다음 텍스트필드로 넘어감, done면 완료키
@@ -354,23 +363,24 @@ fun TextFieldForDrawerSingleline( //한줄 textfield
             },
             textStyle = ZipdabangandroidTheme.Typography.sixteen_300,
             modifier = Modifier.fillMaxSize(),
-            placeholder = {
-                    Text(
-                        text = placeholderValue,
-                        style = ZipdabangandroidTheme.Typography.sixteen_300,
-                        color = ZipdabangandroidTheme.Colors.Typo.copy(0.5f)
-                    )
-            },
             isError = isError,
-            /*label = {
-                //에러일때 label
+            label = {
+                //에러일 때 label
                 if(isError){
                     Text(
                         text = errorMessage,
                         style = ZipdabangandroidTheme.Typography.twelve_500
                     )
                 }
-            },*/
+
+            },
+          /* placeholder = {
+               Text(
+                   text = placeholderValue,
+                   style = ZipdabangandroidTheme.Typography.sixteen_300,
+                   color = ZipdabangandroidTheme.Colors.Typo.copy(0.5f)
+               )
+           },*/
             singleLine = true,
             colors = OutlinedTextFieldDefaults.colors(
                 cursorColor = ZipdabangandroidTheme.Colors.Typo.copy(0.5f),
@@ -407,7 +417,7 @@ fun TextFieldForDrawerMultiline( //여러줄 textfield -> height이랑 maxLines�
         },
         textStyle = ZipdabangandroidTheme.Typography.sixteen_300,
         modifier = Modifier
-            .fillMaxSize()
+            .fillMaxWidth()
             .height(height),
         placeholder = {
             Text(
@@ -463,7 +473,7 @@ fun PreviewTextFieldForDrawerSingleline(){
                 }
             },
             placeholderValue = "레시피 제목 (최대 20자)",
-            //errorMessage = "이메일 형식에 맞지 않습니다",
+            errorMessage = "이메일 형식에 맞지 않습니다",
             maxLength = 8,
             isError = if(textState == "ㅁㄴㅇㄹ") true else false,
             imeAction = ImeAction.Default,

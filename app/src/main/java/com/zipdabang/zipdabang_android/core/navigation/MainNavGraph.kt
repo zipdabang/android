@@ -6,34 +6,37 @@ import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
+import com.zipdabang.zipdabang_android.module.main.FCMData
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun MainNavGraph(
-    navController: NavHostController,
+    innerNavController: NavHostController,
     outerNavController: NavHostController
 ){
-    NavHost(navController = navController, startDestination = HOME_ROUTE , route = MAIN_ROUTE)
+    NavHost(navController = innerNavController, startDestination = HOME_ROUTE , route = MAIN_ROUTE)
     {
 
+
         Log.d("auth graph", "home")
-        HomeNavGraph(navController = navController)
+        HomeNavGraph(navController = innerNavController,)
 
-        MarketNavGraph(navController = navController)
+        MarketNavGraph(navController = innerNavController)
 
-        BasketNavGraph(navController = navController)
+        BasketNavGraph(navController = innerNavController)
 
-        RecipeNavGraph(navController = navController)
+        RecipeNavGraph(navController = innerNavController)
 
         MyNavGraph(
-            navController = navController,
+            navController = innerNavController,
             outerNavController = outerNavController
         )
 
-        SharedNavGraph(navController)
+        SharedNavGraph(innerNavController)
 
-        DrawerNavGraph(navController = navController,
+        DrawerNavGraph(navController = innerNavController,
             outerNavController= outerNavController)
+
 
     }
 

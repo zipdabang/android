@@ -126,6 +126,7 @@ fun RegisterPreferencesScreen(
                                         RoundedButton(
                                             imageUrl = preference.imageUrl,
                                             buttonText = preference.categoryName,
+                                            shimmering = if(stateBeverageForm.isLoading || stateBeverageForm.error.isNotBlank()){true} else{false},
                                             isClicked = stateBeverageForm.beverageCheckList[index],
                                             isClickedChange = { selectedClicked ->
                                                 authSharedViewModel.onBeverageEvent(
@@ -135,17 +136,6 @@ fun RegisterPreferencesScreen(
                                         index ++
                                     }
                                 }
-                            }
-                            if (stateBeverageForm.error.isNotBlank()) {
-                                Text(
-                                    text = stateBeverageForm.error,
-                                    color = Color.Red,
-                                    textAlign = TextAlign.Center,
-                                    modifier = Modifier.fillMaxWidth()
-                                )
-                            }
-                            if (stateBeverageForm.isLoading) {
-                                CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
                             }
                         }
                     }

@@ -8,6 +8,7 @@ import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -16,6 +17,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -25,6 +27,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -33,8 +36,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
@@ -47,6 +53,7 @@ import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
 
 @Composable
 fun Step(
+    stepNum : Int,
     value: String,
     onValueChanged: (String, Int) -> Unit,
     placeholderValue: String,
@@ -54,32 +61,31 @@ fun Step(
     maxLines: Int,
     maxLength: Int, //최대 글자수
     imeAction: ImeAction, //default,none이면 엔터키, next면 다음 텍스트필드로 넘어감, done면 완료키
-    onClickAddBtn: () -> Unit,
+    onClickImageAddBtn: () -> Unit,
     onClickDeleteStep: () -> Unit,
+    onClickEditStep:()->Unit,
 ) {
     Column(
         verticalArrangement = Arrangement.spacedBy(4.dp)
     ) {
         Text(
-            text = stringResource(id = R.string.my_recipewrite_step),
+            text = "Step "+stepNum,
             style = ZipdabangandroidTheme.Typography.fourteen_500,
             color = ZipdabangandroidTheme.Colors.Typo
         )
         // Step 사진 추가 후
         Row(
-            modifier = Modifier.fillMaxWidth().wrapContentHeight(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(IntrinsicSize.Min),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             Box(
-                modifier = Modifier
-                    .weight(1.6f)
-                    .aspectRatio(1f)
+                modifier = Modifier.weight(1.6f)
             ) {
                 ImageWithIcon(
                     imageUrl = R.drawable.ic_launcher_background,
-                    onClick = {
-
-                    }
+                    onClick = { }
                 )
             }
             Box(
@@ -92,7 +98,8 @@ fun Step(
                         BorderStroke(1.dp, ZipdabangandroidTheme.Colors.Typo.copy(0.1f)),
                         ZipdabangandroidTheme.Shapes.small
                     )
-                    .weight(8.4f),
+                    .weight(8.4f)
+                    .height(51.dp),
                 contentAlignment = Alignment.Center
             ) {
                 Row(
@@ -117,7 +124,7 @@ fun Step(
         }
         // Step 사진 추가 버튼
         Button(
-            onClick = { onClickAddBtn() },
+            onClick = { onClickImageAddBtn() },
             shape = ZipdabangandroidTheme.Shapes.thin,
             modifier = Modifier
                 .fillMaxWidth()
@@ -171,13 +178,54 @@ fun Step(
                 imeAction = imeAction,
             ),
         )
+        // 수정, 삭제 버튼과 글자수
         Row(
+            modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween
-        ){
+        ) {
             Row(
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ){
-
+            ) {
+                Box(
+                    modifier = Modifier
+                        .width(48.dp)
+                        .wrapContentHeight()
+                        .padding(0.dp)
+                        .clickable(onClick={
+                            onClickEditStep()
+                        })
+                        .background(
+                            color = ZipdabangandroidTheme.Colors.Strawberry,
+                            shape = ZipdabangandroidTheme.Shapes.large,
+                        ),
+                    contentAlignment = Alignment.Center
+                ){
+                    Text(
+                        text = stringResource(R.string.my_recipewrite_edit),
+                        color = Color.White,
+                        style = ZipdabangandroidTheme.Typography.fourteen_300,
+                    )
+                }
+                Box(
+                    modifier = Modifier
+                        .width(48.dp)
+                        .wrapContentHeight()
+                        .padding(0.dp)
+                        .clickable(onClick={
+                            onClickDeleteStep()
+                        })
+                        .background(
+                            color = ZipdabangandroidTheme.Colors.Strawberry,
+                            shape = ZipdabangandroidTheme.Shapes.large,
+                        ),
+                    contentAlignment = Alignment.Center
+                ){
+                    Text(
+                        text = stringResource(R.string.my_recipewrite_delete),
+                        color = Color.White,
+                        style = ZipdabangandroidTheme.Typography.fourteen_300,
+                    )
+                }
             }
             Text(
                 modifier = Modifier.padding(0.dp, 0.dp, 4.dp, 0.dp),
@@ -186,12 +234,8 @@ fun Step(
                 color = ZipdabangandroidTheme.Colors.Typo
             )
         }
-
     }
 }
-
-
-
 
 
 @Preview
@@ -200,6 +244,7 @@ fun PreviewStep() {
     var textStateStep by remember { mutableStateOf("") }
     Box(modifier = Modifier.background(Color.White)) {
         Step(
+            stepNum = 1,
             value = textStateStep,
             onValueChanged = { newText, maxLength ->
                 if (newText.length <= maxLength) {
@@ -211,8 +256,9 @@ fun PreviewStep() {
             maxLines = 7,
             maxLength = 200,
             imeAction = ImeAction.None,
-            onClickAddBtn = { },
-            onClickDeleteStep = {}
+            onClickImageAddBtn = { },
+            onClickDeleteStep = {},
+            onClickEditStep = {}
         )
     }
 }

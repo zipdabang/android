@@ -22,19 +22,18 @@ import androidx.navigation.compose.rememberNavController
 import com.zipdabang.zipdabang_android.R
 import com.zipdabang.zipdabang_android.core.navigation.AuthScreen
 import com.zipdabang.zipdabang_android.core.navigation.SPLASH_ROUTE
+import com.zipdabang.zipdabang_android.module.main.FCMData
 import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
 import kotlinx.coroutines.delay
 
 @Composable
 fun SplashScreen(
-    navController: NavHostController,
     onTokenValid: () -> Unit,
     onTokenInvalid: () -> Unit,
+    fcmData: FCMData?,
+    onNotificationClick: () -> Unit
 ) {
-
-    val context = LocalContext.current
     val viewModel = hiltViewModel<SplashViewModel>()
-
     val thumbnail = R.drawable.splash_webp
 
     Box(modifier = Modifier
@@ -53,7 +52,9 @@ fun SplashScreen(
             LaunchedEffect(key1 = true) {
                 viewModel.checkAccessToken(
                     onTokenValid = onTokenValid,
-                    onTokenInvalid = onTokenInvalid
+                    onTokenInvalid = onTokenInvalid,
+                    onNotificationClick = onNotificationClick,
+                    fcmData = fcmData
                 )
             }
         }

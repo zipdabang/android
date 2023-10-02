@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -25,12 +26,14 @@ import com.zipdabang.zipdabang_android.module.comment.ui.components.CommentSubmi
 fun CommentListContent(
     commentCount: Int,
     comments: LazyPagingItems<RecipeCommentState>,
-    onClickReport: (Int) -> Unit,
+    onClickReport: (Int, Int, Int) -> Unit,
     onClickBlock: (Int) -> Unit,
     onClickEdit: (Int, Int, String) -> Unit,
     onClickDelete: (Int, Int) -> Unit,
     postResult: PostCommentState,
-    recipeId: Int
+    recipeId: Int,
+    showCommentReport: (Int, Int, Int, Int) -> Unit,
+    showCommentBlock: (Int) -> Unit
 ) {
 
     var text by rememberSaveable {
@@ -99,7 +102,9 @@ fun CommentListContent(
                         textMode = TextMode.EDIT
                         currentCommentId = commentId
                     },
-                    onClickDelete = onClickDelete
+                    onClickDelete = onClickDelete,
+                    showCommentReport = showCommentReport,
+                    showCommentBlock = showCommentBlock
                 )
             }
         }

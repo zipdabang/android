@@ -25,6 +25,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.zipdabang.zipdabang_android.R
+import com.zipdabang.zipdabang_android.module.drawer.ui.state.userinfo.UserInfoBasicEvent
 import com.zipdabang.zipdabang_android.module.drawer.ui.viewmodel.DrawerUserInfoViewModel
 import com.zipdabang.zipdabang_android.module.drawer.ui.state.userinfo.UserInfoDetailEvent
 import com.zipdabang.zipdabang_android.ui.component.AppBarSignUp
@@ -103,9 +104,12 @@ fun UserInfoDetailScreen(
                         ){
                             TextFieldError(
                                 value = stateUserInfoDetail.zipCode,
-                                onValueChanged = {
-                                    drawerUserInfoViewModel.onUserInfoDetailEvent(
-                                        UserInfoDetailEvent.ZipcodeChanged(it))
+                                maxLength = 5,
+                                onValueChanged = { newText, maxLength ->
+                                    if (newText.length <= maxLength) {
+                                        drawerUserInfoViewModel.onUserInfoDetailEvent(
+                                            UserInfoDetailEvent.ZipcodeChanged(newText))
+                                    }
                                 },
                                 labelValue = stringResource(id = R.string.signup_userinfo_zipcode),
                                 placeHolderValue = "",
@@ -119,7 +123,7 @@ fun UserInfoDetailScreen(
                             .weight(3.4f)
                             .padding(8.dp, 0.dp, 0.dp, 0.dp)){
                             PrimaryButtonOutLined(
-                                borderColor = ZipdabangandroidTheme.Colors.BlackSesame,
+                                borderColor =ZipdabangandroidTheme.Colors.Typo.copy(0.2f),
                                 text = stringResource(id = R.string.signup_userinfo_addresssearch),
                                 onClick = {
                                     drawerUserInfoViewModel.onUserInfoDetailEvent(
@@ -147,9 +151,12 @@ fun UserInfoDetailScreen(
                         ){
                             TextFieldError(
                                 value = stateUserInfoDetail.address,
-                                onValueChanged = {
-                                    drawerUserInfoViewModel.onUserInfoDetailEvent(
-                                        UserInfoDetailEvent.AddressChanged(it))
+                                maxLength = 50,
+                                onValueChanged = { newText, maxLength ->
+                                    if (newText.length <= maxLength) {
+                                        drawerUserInfoViewModel.onUserInfoDetailEvent(
+                                            UserInfoDetailEvent.AddressChanged(newText))
+                                    }
                                 },
                                 labelValue = stringResource(id = R.string.signup_userinfo_address),
                                 placeHolderValue = "",
@@ -173,9 +180,12 @@ fun UserInfoDetailScreen(
                         ){
                             TextFieldError(
                                 value = stateUserInfoDetail.detailAddress,
-                                onValueChanged = {
-                                    drawerUserInfoViewModel.onUserInfoDetailEvent(
-                                        UserInfoDetailEvent.DetailaddressChanged(it))
+                                maxLength = 50,
+                                onValueChanged = { newText, maxLength ->
+                                    if (newText.length <= maxLength) {
+                                        drawerUserInfoViewModel.onUserInfoDetailEvent(
+                                            UserInfoDetailEvent.DetailaddressChanged(newText))
+                                    }
                                 },
                                 labelValue = stringResource(id = R.string.signup_userinfo_detailaddress),
                                 placeHolderValue = stringResource(id = R.string.signup_userinfo_detailaddress_placeholder),

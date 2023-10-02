@@ -7,5 +7,5 @@ data class NewTokenDto(
     val code: Int,
     val isSuccess: Boolean,
     val message: String,
-    val result: NewTokens
+    val result: NewTokens?
 )

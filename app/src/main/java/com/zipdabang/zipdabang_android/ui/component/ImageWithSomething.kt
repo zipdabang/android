@@ -7,6 +7,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -45,6 +46,7 @@ fun ImageWithIcon(
 ){
     Box(
         modifier = Modifier
+            .aspectRatio(1f)
             .fillMaxSize()
             .border(
                 BorderStroke(1.dp, ZipdabangandroidTheme.Colors.Typo.copy(0.2f)),
@@ -111,7 +113,7 @@ fun PreviewImageWithIcon(){
 fun ImageWithIconAndText(
     addImageClick : () -> Unit, //image add할때 클릭이벤트
     deleteImageClick : () -> Unit, //image delete할때 클릭이벤트
-    imageUrl : String,
+    imageUrl : Any?,
     iconImageVector : Int,
     iconTint : Color,
     iconModifier : Modifier,
@@ -126,7 +128,7 @@ fun ImageWithIconAndText(
             .background(color = Color(0xFFF7F6F6)),
         contentAlignment = Alignment.Center,
     ){
-        if (imageUrl != ""){
+        if (imageUrl != null){
             AsyncImage(
                 model = imageUrl,
                 contentDescription = null,
