@@ -12,7 +12,10 @@ import com.zipdabang.zipdabang_android.module.item.recipe.ui.RecipeListScreen
 import com.zipdabang.zipdabang_android.module.recipes.ui.RecipeScreen
 
 
-fun NavGraphBuilder.RecipeNavGraph(navController: NavController) {
+fun NavGraphBuilder.RecipeNavGraph(
+    navController: NavController,
+    showSnackBar: (String) -> Unit
+) {
 
 
     navigation(startDestination = RecipeScreen.Home.route, route = RECIPES_ROUTE) {

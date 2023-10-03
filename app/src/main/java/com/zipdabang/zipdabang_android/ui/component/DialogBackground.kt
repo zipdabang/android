@@ -42,7 +42,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import coil.compose.AsyncImage
 import com.zipdabang.zipdabang_android.R
-import com.zipdabang.zipdabang_android.module.comment.ui.CommentReportState
 import com.zipdabang.zipdabang_android.module.recipes.common.ReportContent
 import com.zipdabang.zipdabang_android.ui.theme.DialogBackground
 import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
@@ -1057,6 +1056,94 @@ fun RecipeReportDialog(
     acceptText: String,
     reportContentList: List<ReportContent>,
     setShowDialog: (Boolean) -> Unit,
+    onReportClick: (Int) -> Unit,
+    onReportContentChange: (Int) -> Unit
+) {
+    Dialog(onDismissRequest = { setShowDialog(false) }) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth(0.95f)
+                .background(color = DialogBackground, shape = ZipdabangandroidTheme.Shapes.small)
+        ) {
+
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+            ) {
+                Text(
+                    text = title,
+                    textAlign = TextAlign.Center,
+                    color = ZipdabangandroidTheme.Colors.Typo,
+                    style = ZipdabangandroidTheme.Typography.eighteen_700,
+                    modifier = Modifier.padding(horizontal = 24.dp, vertical = 20.dp)
+                )
+
+                Spacer(modifier = Modifier.width(20.dp))
+
+                RadioGroupReportVertical(
+                    optionList = reportContentList,
+                    onOptionChange = onReportContentChange
+                )
+
+                Spacer(modifier = Modifier.height(10.dp))
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(56.dp),
+                ) {
+                    TextButton(
+                        modifier = Modifier
+                            .weight(1f)
+                            .fillMaxHeight(),
+                        shape = RectangleShape,
+                        onClick = { setShowDialog(false) },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color(0XFFF7F6F6)
+                        )
+                    ) {
+                        Text(
+                            text = declineText,
+                            color = ZipdabangandroidTheme.Colors.Typo,
+                            style = ZipdabangandroidTheme.Typography.sixteen_500,
+                        )
+                    }
+                    TextButton(
+                        modifier = Modifier
+                            .weight(1f)
+                            .fillMaxHeight(),
+                        shape = RectangleShape,
+                        onClick = {
+                            onReportClick(reportId)
+                            setShowDialog(false)
+                        },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = ZipdabangandroidTheme.Colors.Strawberry
+                        )
+                    ) {
+                        Text(
+                            text = acceptText,
+                            color = Color.White,
+                            style = ZipdabangandroidTheme.Typography.sixteen_500,
+                        )
+
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun CommentReportDialog(
+    title: String,
+    recipeId: Int,
+    commentId: Int,
+    reportId: Int,
+    declineText: String,
+    acceptText: String,
+    reportContentList: List<ReportContent>,
+    setShowDialog: (Boolean) -> Unit,
     onReportClick: (Int, Int) -> Unit,
     onReportContentChange: (Int) -> Unit
 ) {
@@ -1115,95 +1202,7 @@ fun RecipeReportDialog(
                             .fillMaxHeight(),
                         shape = RectangleShape,
                         onClick = {
-                            onReportClick(recipeId, reportId)
-                            setShowDialog(false)
-                        },
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = ZipdabangandroidTheme.Colors.Strawberry
-                        )
-                    ) {
-                        Text(
-                            text = acceptText,
-                            color = Color.White,
-                            style = ZipdabangandroidTheme.Typography.sixteen_500,
-                        )
-
-                    }
-                }
-            }
-        }
-    }
-}
-
-@Composable
-fun CommentReportDialog(
-    title: String,
-    recipeId: Int,
-    commentId: Int,
-    reportId: Int,
-    declineText: String,
-    acceptText: String,
-    reportContentList: List<ReportContent>,
-    setShowDialog: (Boolean) -> Unit,
-    onReportClick: (Int, Int, Int) -> Unit,
-    onReportContentChange: (Int) -> Unit
-) {
-    Dialog(onDismissRequest = { setShowDialog(false) }) {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth(0.95f)
-                .background(color = DialogBackground, shape = ZipdabangandroidTheme.Shapes.small)
-        ) {
-
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-            ) {
-                Text(
-                    text = title,
-                    textAlign = TextAlign.Center,
-                    color = ZipdabangandroidTheme.Colors.Typo,
-                    style = ZipdabangandroidTheme.Typography.eighteen_700,
-                    modifier = Modifier.padding(horizontal = 24.dp, vertical = 20.dp)
-                )
-
-                Spacer(modifier = Modifier.width(20.dp))
-
-                RadioGroupReportVertical(
-                    optionList = reportContentList,
-                    onOptionChange = onReportContentChange
-                )
-
-                Spacer(modifier = Modifier.height(10.dp))
-
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(56.dp),
-                ) {
-                    TextButton(
-                        modifier = Modifier
-                            .weight(1f)
-                            .fillMaxHeight(),
-                        shape = RectangleShape,
-                        onClick = { setShowDialog(false) },
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = Color(0XFFF7F6F6)
-                        )
-                    ) {
-                        Text(
-                            text = declineText,
-                            color = ZipdabangandroidTheme.Colors.Typo,
-                            style = ZipdabangandroidTheme.Typography.sixteen_500,
-                        )
-                    }
-                    TextButton(
-                        modifier = Modifier
-                            .weight(1f)
-                            .fillMaxHeight(),
-                        shape = RectangleShape,
-                        onClick = {
-                            onReportClick(recipeId, commentId, reportId)
+                            onReportClick(commentId, reportId)
                             setShowDialog(false)
                         },
                         colors = ButtonDefaults.buttonColors(
@@ -1546,7 +1545,7 @@ fun CommentReportDialogPreview() {
         acceptText = "신고하기",
         reportContentList = ReportContent.contents,
         setShowDialog = { boolean -> },
-        onReportClick = { report, repor, re ->},
+        onReportClick = { repor, re ->},
         onReportContentChange = { re -> }
     )
 }

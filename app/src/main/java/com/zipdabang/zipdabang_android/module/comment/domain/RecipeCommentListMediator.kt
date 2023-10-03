@@ -26,6 +26,10 @@ class RecipeCommentListMediator(
     private val recipeId: Int
 ): RemoteMediator<Int, RecipeCommentEntity>() {
 
+    companion object {
+        const val TAG = "RecipeCommentListMediator"
+    }
+
     private val recipeCommentDao = database.recipeCommentDao()
     private val remoteKeyDao = database.RemoteKeyDao()
 
@@ -36,6 +40,7 @@ class RecipeCommentListMediator(
         return try {
             val currentPage = when (loadType) {
                 LoadType.REFRESH -> {
+                    Log.i(TAG, "refresh")
                     val remoteKeys = getRemoteKeyClosestToCurrentPosition(state)
                     remoteKeys?.nextPage?.minus(1) ?: 1
                 }

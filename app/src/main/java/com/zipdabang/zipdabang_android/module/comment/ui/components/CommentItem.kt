@@ -54,12 +54,10 @@ import kotlinx.coroutines.withContext
 fun CommentItem(
     recipeId: Int,
     commentItem: RecipeCommentState,
-    onClickReport: (Int, Int, Int) -> Unit,
-    onClickBlock: (Int) -> Unit,
     // 여기서 onClickEdit은 textfield 활성화를 의미
     onClickEdit: (Int, String) -> Unit,
-    onClickDelete: (Int, Int) -> Unit,
-    showCommentReport: (Int, Int, Int, Int) -> Unit,
+    onClickDelete: (Int) -> Unit,
+    showCommentReport: (Int, Int, Int) -> Unit,
     showCommentBlock: (Int) -> Unit
 ) {
     val tokenViewModel = hiltViewModel<ProtoDataViewModel>()
@@ -156,7 +154,7 @@ fun CommentItem(
                         DropdownMenuItem(
                             text = { Text("댓글 삭제하기") },
                             onClick = {
-                                onClickDelete(recipeId, commentItem.commentId)
+                                onClickDelete(commentItem.commentId)
                                 isExpandedForOwner = !isExpandedForOwner
                             }
                         )
@@ -177,7 +175,7 @@ fun CommentItem(
                         DropdownMenuItem(
                             text = { Text("댓글 신고하기") },
                             onClick = {
-                                showCommentReport(recipeId, commentItem.commentId, 1, commentItem.ownerId)
+                                showCommentReport(commentItem.commentId, 1, commentItem.ownerId)
                                 isExpandedForNotOwner = !isExpandedForNotOwner
                             }
                         )

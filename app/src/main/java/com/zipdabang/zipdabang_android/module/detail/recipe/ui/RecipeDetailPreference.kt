@@ -47,8 +47,8 @@ fun RecipeDetailPreference(
     onScrapClick: (Boolean) -> Unit,
     onDeleteClick: () -> Unit,
     onEditClick: () -> Unit,
-    likeStateFlow: StateFlow<PreferenceToggleState>,
-    scrapStateFlow: StateFlow<PreferenceToggleState>,
+    likeStateFlow: PreferenceToggleState,
+    scrapStateFlow: PreferenceToggleState,
 ) {
 
     val thousands = DecimalFormat("##.0K")
@@ -89,7 +89,7 @@ fun RecipeDetailPreference(
                 verticalAlignment = Alignment.Bottom
             ) {
                 Box(modifier = Modifier.size(30.dp)) {
-                    if (likeStateFlow.collectAsState().value.isLoading) {
+                    if (likeStateFlow.isLoading) {
                         CircularProgressIndicator(color = ZipdabangandroidTheme.Colors.Strawberry)
                     } else {
                         IconToggle(
@@ -126,7 +126,7 @@ fun RecipeDetailPreference(
                 verticalAlignment = Alignment.Bottom
             ) {
                 Box(modifier = Modifier.size(30.dp)) {
-                    if (scrapStateFlow.collectAsState().value.isLoading) {
+                    if (scrapStateFlow.isLoading) {
                         CircularProgressIndicator(color = ZipdabangandroidTheme.Colors.Strawberry)
                     } else {
                         IconToggle(
@@ -205,7 +205,7 @@ fun RecipeDetailPreferencePreview() {
         onDeleteClick = { },
         onEditClick = {  },
         isOwner = true,
-        likeStateFlow = MutableStateFlow(PreferenceToggleState()).asStateFlow(),
-        scrapStateFlow = MutableStateFlow(PreferenceToggleState()).asStateFlow(),
+        likeStateFlow = PreferenceToggleState(),
+        scrapStateFlow = PreferenceToggleState(),
     )
 }

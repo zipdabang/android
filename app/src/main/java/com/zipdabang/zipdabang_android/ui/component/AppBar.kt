@@ -373,15 +373,6 @@ fun AppBarCollapsing(
     imageUrl: String,
     onClickStartIcon: () -> Unit,
     onClickEndIcon: () -> Unit,
-    deviceSize: DeviceScreenSize,
-    isExpandedForOwner: Boolean,
-    isExpandedForNotOwner: Boolean,
-    onDismissEndIcon: () -> Unit,
-    onDeleteClick: () -> Unit,
-    onEditClick: () -> Unit,
-    onReportClick: (Int, Int) -> Unit,
-    onBlockClick: (Int) -> Unit,
-    showRecipeReport: (Int, Int) -> Unit,
     content: @Composable () -> Unit
 ) {
     val state = rememberCollapsingToolbarScaffoldState()
@@ -465,57 +456,8 @@ fun AppBarCollapsing(
                                 .alpha(1f),
                             tint = if (state.toolbarState.progress > 0) Color.White else Color.Gray
                         )
-
                     }
-
-                    /*DropdownMenu(
-                        modifier = Modifier.background(Color.White).road(
-                            whenCollapsed = Alignment.TopEnd,
-                            whenExpanded = Alignment.TopEnd
-                        ),
-                        expanded = isExpandedForOwner,
-                        onDismissRequest = { onDismissEndIcon() },
-                    ) {
-                        DropdownMenuItem(
-                            text = { Text("게시글 수정하기") },
-                            onClick = {
-                                onDeleteClick()
-                                onDismissEndIcon()
-                            }
-                        )
-                        DropdownMenuItem(
-                            text = { Text("게시글 삭제하기") },
-                            onClick = {
-                                onEditClick()
-                                onDismissEndIcon()
-                            }
-                        )
-                    }
-
-                    DropdownMenu(
-                        modifier = Modifier.background(Color.White).road(
-                            whenCollapsed = Alignment.TopEnd,
-                            whenExpanded = Alignment.TopEnd
-                        ),
-                        expanded = isExpandedForNotOwner,
-                        onDismissRequest = { onDismissEndIcon() },
-                    ) {
-                        DropdownMenuItem(
-                            text = { Text("신고하기") },
-                            onClick = {
-                                // showCommentReport(recipeId, commentItem.commentId, 1)
-                                onDismissEndIcon()
-                            }
-                        )
-                        DropdownMenuItem(
-                            text = { Text("차단하기") },
-                            onClick = {
-                                onDismissEndIcon()
-                            }
-                        )
-                    }*/
                 }
-
             }
         }
     ) {
@@ -730,16 +672,7 @@ fun AppBarCollapsingPreview() {
         endIcon = loadXmlDrawable(resId = R.drawable.recipe_more_white),
         imageUrl = "https://github.com/kmkim2689/jetpack-compose-practice/assets/101035437/2bb0c4ab-e42b-4697-87c6-2fbe3c836cd7",
         onClickStartIcon = { /*TODO*/ },
-        onClickEndIcon = { /*TODO*/ },
-        isExpandedForOwner = false,
-        isExpandedForNotOwner = false,
-        onDismissEndIcon = {},
-        onDeleteClick = {},
-        onEditClick = {},
-        onReportClick = { a, b -> },
-        onBlockClick = { a -> },
-        deviceSize = DeviceScreenSize(1f, 1f),
-        showRecipeReport = { a, b -> }
+        onClickEndIcon = { /*TODO*/ }
     ) {
         LazyColumn(modifier = Modifier.fillMaxSize()) {
             items(100) {

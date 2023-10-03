@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.paint
@@ -19,6 +20,12 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import coil.compose.AsyncImage
+import com.airbnb.lottie.compose.LottieAnimation
+import com.airbnb.lottie.compose.LottieCompositionSpec
+import com.airbnb.lottie.compose.LottieConstants
+import com.airbnb.lottie.compose.animateLottieCompositionAsState
+import com.airbnb.lottie.compose.rememberLottieComposition
 import com.zipdabang.zipdabang_android.R
 import com.zipdabang.zipdabang_android.core.navigation.AuthScreen
 import com.zipdabang.zipdabang_android.core.navigation.SPLASH_ROUTE
@@ -34,16 +41,22 @@ fun SplashScreen(
     onNotificationClick: () -> Unit
 ) {
     val viewModel = hiltViewModel<SplashViewModel>()
-    val thumbnail = R.drawable.splash_webp
+    val composition = rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.splash_background))
+    val progress by animateLottieCompositionAsState(
+        composition = composition.value,
+        iterations = LottieConstants.IterateForever
+    )
 
     Box(modifier = Modifier
         .fillMaxSize()
-        .paint(
-            painter = painterResource(id = thumbnail),
-            sizeToIntrinsics = true,
-            contentScale = ContentScale.FillBounds
-        )
     ) {
+        LottieAnimation(
+            composition = composition.value,
+            progress = { progress },
+            modifier = Modifier.fillMaxSize(),
+            contentScale = ContentScale.Crop
+        )
+
         Column(
             modifier = Modifier
                 .padding(top = 100.dp, start = 20.dp)
@@ -61,9 +74,18 @@ fun SplashScreen(
     }
 }
 
-/*
 @Preview
 @Composable()
 fun SplashScreenPreview() {
-    SplashScreen(rememberNavController())
-}*/
+    SplashScreen(
+        onTokenValid = {},
+        onTokenInvalid = {},
+        fcmData = FCMData(
+            title = "String",
+            body = "String",
+            targetCategory = "String",
+            targetId = 1
+        ),
+        onNotificationClick = {}
+    )
+}

@@ -1,7 +1,6 @@
 package com.zipdabang.zipdabang_android.module.detail.recipe.ui
 
 import android.util.Log
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.datastore.core.DataStore
@@ -13,7 +12,6 @@ import com.zipdabang.zipdabang_android.core.DeviceSize
 import com.zipdabang.zipdabang_android.core.data_store.proto.CurrentPlatform
 import com.zipdabang.zipdabang_android.core.data_store.proto.Token
 import com.zipdabang.zipdabang_android.module.comment.ui.BlockUserState
-import com.zipdabang.zipdabang_android.module.comment.ui.CommentReportState
 import com.zipdabang.zipdabang_android.module.comment.use_case.BlockUserUseCase
 import com.zipdabang.zipdabang_android.module.detail.recipe.common.DeviceScreenSize
 import com.zipdabang.zipdabang_android.module.detail.recipe.use_case.GetRecipeDetailUseCase
@@ -78,6 +76,18 @@ class RecipeDetailViewModel @Inject constructor(
     private val _blockOwnerId = mutableStateOf(0)
     val blockOwnerId: State<Int> = _blockOwnerId
 
+    private val _likes = MutableStateFlow(0)
+    val likes = _likes.asStateFlow()
+
+    private val _scraps = MutableStateFlow(0)
+    val scraps = _scraps.asStateFlow()
+
+    private val _isLikeChecked = MutableStateFlow(false)
+    val isLikeChecked = _isLikeChecked.asStateFlow()
+
+    private val _isScrapChecked = MutableStateFlow(false)
+    val isScrapChecked = _isScrapChecked.asStateFlow()
+
     init {
         viewModelScope.launch {
             _currentPlatform.value = getCurrentPlatform()
@@ -99,6 +109,13 @@ class RecipeDetailViewModel @Inject constructor(
                             isLoading = false,
                             recipeDetailData = it
                         )
+
+                        _likes.emit(recipeDetailState.value.recipeDetailData?.recipeInfo?.likes ?: 0)
+                        _scraps.emit(recipeDetailState.value.recipeDetailData?.recipeInfo?.scraps ?: 0)
+                        _isLikeChecked.emit(recipeDetailState.value.recipeDetailData?.recipeInfo?.isLiked ?: false)
+                        _isScrapChecked.emit(recipeDetailState.value.recipeDetailData?.recipeInfo?.isScrapped ?: false)
+
+
                     }
                     is Resource.Error -> {
                         _recipeDetailState.value = RecipeDetailState(
@@ -125,6 +142,34 @@ class RecipeDetailViewModel @Inject constructor(
                             isLoading = false,
                             isSuccessful = true
                         )
+
+                        if (recipeDetailState.value.recipeDetailData?.recipeInfo?.isLiked == true) {
+                            _recipeDetailState.value.recipeDetailData?.recipeInfo?.isLiked = false
+                            _recipeDetailState.value.recipeDetailData?.recipeInfo?.likes =
+                                recipeDetailState.value.recipeDetailData?.recipeInfo?.likes?.minus(
+                                    1
+                                )!!
+                        } else {
+                            recipeDetailState.value.recipeDetailData?.recipeInfo?.isLiked = true
+                            _recipeDetailState.value.recipeDetailData?.recipeInfo?.likes =
+                                recipeDetailState.value.recipeDetailData?.recipeInfo?.likes?.plus(
+                                    1
+                                )!!
+                        }
+
+                        Log.d("RecipeDetail",
+                            "likes : ${recipeDetailState.value.recipeDetailData?.recipeInfo?.likes}, " +
+                                    "scraps: ${recipeDetailState.value.recipeDetailData?.recipeInfo?.scraps}, " +
+                                    "isLike: ${recipeDetailState.value.recipeDetailData?.recipeInfo?.isLiked}, " +
+                                    "isScrapChecked: ${recipeDetailState.value.recipeDetailData?.recipeInfo?.isScrapped}"
+                        )
+
+                        _likes.emit(recipeDetailState.value.recipeDetailData?.recipeInfo?.likes ?: 0)
+                        _scraps.emit(recipeDetailState.value.recipeDetailData?.recipeInfo?.scraps ?: 0)
+                        _isLikeChecked.emit(recipeDetailState.value.recipeDetailData?.recipeInfo?.isLiked ?: false)
+                        _isScrapChecked.emit(recipeDetailState.value.recipeDetailData?.recipeInfo?.isScrapped ?: false)
+
+
                     }
                     is Resource.Error -> {
                         _toggleLikeState.value = PreferenceToggleState(
@@ -152,6 +197,32 @@ class RecipeDetailViewModel @Inject constructor(
                             isLoading = false,
                             isSuccessful = true
                         )
+                        if (recipeDetailState.value.recipeDetailData?.recipeInfo?.isScrapped == true) {
+                            _recipeDetailState.value.recipeDetailData?.recipeInfo?.isScrapped = false
+                            _recipeDetailState.value.recipeDetailData?.recipeInfo?.scraps =
+                                recipeDetailState.value.recipeDetailData?.recipeInfo?.scraps?.minus(
+                                    1
+                                )!!
+                        } else {
+                            recipeDetailState.value.recipeDetailData?.recipeInfo?.isScrapped = true
+                            _recipeDetailState.value.recipeDetailData?.recipeInfo?.scraps =
+                                recipeDetailState.value.recipeDetailData?.recipeInfo?.scraps?.plus(
+                                    1
+                                )!!
+                        }
+
+                        Log.d("RecipeDetail",
+                            "likes : ${recipeDetailState.value.recipeDetailData?.recipeInfo?.likes}, " +
+                                    "scraps: ${recipeDetailState.value.recipeDetailData?.recipeInfo?.scraps}, " +
+                                    "isLike: ${recipeDetailState.value.recipeDetailData?.recipeInfo?.isLiked}, " +
+                                    "isScrapChecked: ${recipeDetailState.value.recipeDetailData?.recipeInfo?.isScrapped}"
+                        )
+
+                        _likes.emit(recipeDetailState.value.recipeDetailData?.recipeInfo?.likes ?: 0)
+                        _scraps.emit(recipeDetailState.value.recipeDetailData?.recipeInfo?.scraps ?: 0)
+                        _isLikeChecked.emit(recipeDetailState.value.recipeDetailData?.recipeInfo?.isLiked ?: false)
+                        _isScrapChecked.emit(recipeDetailState.value.recipeDetailData?.recipeInfo?.isScrapped ?: false)
+
 
                     }
                     is Resource.Error -> {
@@ -169,14 +240,19 @@ class RecipeDetailViewModel @Inject constructor(
     fun reportRecipe(
         recipeId: Int, reportId: Int
     ) {
+        Log.i(TAG, "report start")
+
         reportRecipeUseCase(
             recipeId = recipeId, reportId = reportId
         ).onEach { result ->
             when (result) {
                 is Resource.Loading -> {
+                    Log.i(TAG, "report loading")
                     _recipeReportResult.emit(UiState(isLoading = true))
                 }
                 is Resource.Success -> {
+                    Log.i(TAG, "report success")
+
                     _recipeReportResult.emit(
                         UiState(
                             isLoading = false,
@@ -187,6 +263,8 @@ class RecipeDetailViewModel @Inject constructor(
                     )
                 }
                 is Resource.Error -> {
+                    Log.i(TAG, "report error")
+
                     _recipeReportResult.emit(
                         UiState(
                             isLoading = false,
@@ -197,7 +275,7 @@ class RecipeDetailViewModel @Inject constructor(
                     )
                 }
             }
-        }
+        }.launchIn(viewModelScope)
     }
 
     fun blockUser(
@@ -233,7 +311,7 @@ class RecipeDetailViewModel @Inject constructor(
                     )
                 }
             }
-        }
+        }.launchIn(viewModelScope)
     }
 
     // dialog
