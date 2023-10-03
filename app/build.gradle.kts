@@ -169,6 +169,9 @@ android {
 
         //for coil
         implementation("io.coil-kt:coil-compose:1.3.2")
+
+        // lottie
+        implementation ("com.airbnb.android:lottie-compose:6.1.0")
     }
 
     kapt {

@@ -26,13 +26,11 @@ import com.zipdabang.zipdabang_android.module.comment.ui.components.CommentSubmi
 fun CommentListContent(
     commentCount: Int,
     comments: LazyPagingItems<RecipeCommentState>,
-    onClickReport: (Int, Int, Int) -> Unit,
-    onClickBlock: (Int) -> Unit,
-    onClickEdit: (Int, Int, String) -> Unit,
-    onClickDelete: (Int, Int) -> Unit,
+    onClickEdit: (Int, String) -> Unit,
+    onClickDelete: (Int) -> Unit,
     postResult: PostCommentState,
     recipeId: Int,
-    showCommentReport: (Int, Int, Int, Int) -> Unit,
+    showCommentReport: (Int, Int, Int) -> Unit,
     showCommentBlock: (Int) -> Unit
 ) {
 
@@ -73,7 +71,7 @@ fun CommentListContent(
                 currentText = text,
                 textMode = textMode,
                 onEdit = { recipeId, commentId, newContent ->
-                    onClickEdit(recipeId, commentId, newContent)
+                    onClickEdit(commentId, newContent)
                     text = ""
                     textMode = TextMode.POST
                 },
@@ -94,8 +92,6 @@ fun CommentListContent(
                 CommentItem(
                     recipeId = recipeId,
                     commentItem = commentItem,
-                    onClickReport = onClickReport,
-                    onClickBlock = onClickBlock,
                     onClickEdit = { commentId, currentContent ->
                         Log.d("recipe comment", currentContent)
                         text = currentContent

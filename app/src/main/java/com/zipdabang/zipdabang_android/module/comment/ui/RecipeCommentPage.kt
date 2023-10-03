@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.zipdabang.zipdabang_android.R
 import com.zipdabang.zipdabang_android.core.data_store.proto.CurrentPlatform
@@ -31,18 +32,13 @@ import kotlin.coroutines.suspendCoroutine
 fun RecipeCommentPage(
     commentCount: Int,
     recipeId: Int,
-    onClickReport: (Int, Int, Int) -> Unit,
-    onClickBlock: (Int) -> Unit,
-    onClickEdit: (Int, Int, String) -> Unit,
-    onClickDelete: (Int, Int) -> Unit,
-    showCommentReport: (Int, Int, Int, Int) -> Unit,
-    showCommentBlock: (Int) -> Unit
+    onClickEdit: (Int, String) -> Unit,
+    onClickDelete: (Int) -> Unit,
+    showCommentReport: (Int, Int, Int) -> Unit,
+    showCommentBlock: (Int) -> Unit,
+    postResult: PostCommentState,
+    comments: LazyPagingItems<RecipeCommentState>
 ) {
-    val viewModel = hiltViewModel<RecipeCommentViewModel>()
-    val tokenViewModel = hiltViewModel<ProtoDataViewModel>()
-    val postResult = viewModel.postResult.collectAsState()
-    val comments =
-        viewModel.getComments(recipeId).collectAsLazyPagingItems()
 
 /*
     suspend fun currentPlatform() = withContext(Dispatchers.IO) {
@@ -70,11 +66,9 @@ fun RecipeCommentPage(
         CommentListContent(
             commentCount = commentCount,
             comments = comments,
-            onClickReport = onClickReport,
-            onClickBlock = onClickBlock,
             onClickEdit = onClickEdit,
             onClickDelete = onClickDelete,
-            postResult = postResult.value,
+            postResult = postResult,
             recipeId = recipeId,
             showCommentReport = showCommentReport,
             showCommentBlock = showCommentBlock

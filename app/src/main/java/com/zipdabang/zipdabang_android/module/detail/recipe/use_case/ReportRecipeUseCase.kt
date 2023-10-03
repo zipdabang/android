@@ -1,5 +1,6 @@
 package com.zipdabang.zipdabang_android.module.detail.recipe.use_case
 
+import android.util.Log
 import androidx.datastore.core.DataStore
 import com.zipdabang.zipdabang_android.common.Resource
 import com.zipdabang.zipdabang_android.common.ResponseCode
@@ -19,6 +20,10 @@ class ReportRecipeUseCase @Inject constructor(
     private val tokens: DataStore<Token>,
     private val repository: RecipeDetailRepository
 ) {
+    companion object {
+        const val TAG = "ReportRecipeUseCase"
+    }
+
     operator fun invoke(
         recipeId: Int,
         reportId: Int
@@ -26,38 +31,42 @@ class ReportRecipeUseCase @Inject constructor(
         try {
             emit(Resource.Loading())
 
-            val result = tokens.data.first().accessToken?.let {
-                val accessToken = "Bearer $it"
-                repository.reportRecipe(
-                    accessToken = accessToken,
-                    recipeId = recipeId,
-                    reportId = reportId
-                ).toRecipeReportResult()
-            }
+            val accessToken = "Bearer ${tokens.data.first().accessToken}"
 
-            result?.let {
-                when (it.code) {
-                    ResponseCode.RESPONSE_DEFAULT.code -> {
-                        emit(Resource.Success(
-                            data = it,
-                            code = it.code,
-                            message = it.message
-                        ))
-                    }
-                    else -> {
-                        emit(Resource.Error(message = it.message))
-                    }
+            val result = repository.reportRecipe(
+                accessToken = accessToken,
+                recipeId = recipeId,
+                reportId = reportId
+            ).toRecipeReportResult()
+
+
+            when (result.code) {
+                ResponseCode.RESPONSE_DEFAULT.code -> {
+                    emit(Resource.Success(
+                        data = result,
+                        code = result.code,
+                        message = result.message
+                    ))
+                    Log.i(TAG, "report successful, $result")
+                }
+                else -> {
+                    emit(Resource.Error(message = result.message))
+                    Log.e(TAG, "report failure, $result")
                 }
             }
+
         } catch (e: HttpException) {
             emit(Resource.Error(message =  e.message ?: "unexpected http exception"))
+            Log.e(TAG, "report failure, ${e.message}")
         } catch (e: IOException) {
             emit(Resource.Error(message =  e.message ?: "unexpected io exception"))
+            Log.e(TAG, "report failure, ${e.message}")
         } catch (e: Exception) {
             if (e is CancellationException) {
                 throw e
             }
             emit(Resource.Error(message =  e.message ?: "unexpected exception"))
+            Log.e(TAG, "report failure, ${e.message}")
         }
     }
 }

@@ -11,7 +11,6 @@ import androidx.paging.map
 import androidx.room.withTransaction
 import com.zipdabang.zipdabang_android.common.Resource
 import com.zipdabang.zipdabang_android.core.Paging3Database
-import com.zipdabang.zipdabang_android.module.comment.data.remote.PostCommentContent
 import com.zipdabang.zipdabang_android.module.comment.domain.RecipeCommentRepository
 import com.zipdabang.zipdabang_android.module.comment.use_case.BlockUserUseCase
 import com.zipdabang.zipdabang_android.module.comment.use_case.DeleteCommentUseCase
@@ -60,8 +59,8 @@ class RecipeCommentViewModel @Inject constructor(
     private val _reportResult = MutableStateFlow(ReportCommentState())
     val reportResult = _reportResult.asStateFlow()
 
-    private val _commentReportState = mutableStateOf(CommentReportState())
-    val commentReportState: State<CommentReportState> = _commentReportState
+    private val _commentReportState = mutableStateOf(ReportCommentInfoState())
+    val commentReportState: State<ReportCommentInfoState> = _commentReportState
 
     private val _isCommentReportActivated = mutableStateOf(false)
     val isCommentReportActivated: State<Boolean> = _isCommentReportActivated
@@ -269,7 +268,7 @@ class RecipeCommentViewModel @Inject constructor(
                     )
                 }
             }
-        }
+        }.launchIn(viewModelScope)
     }
 
     fun reportComment(
@@ -311,7 +310,7 @@ class RecipeCommentViewModel @Inject constructor(
                     )
                 }
             }
-        }
+        }.launchIn(viewModelScope)
     }
 
     fun setCommentReportDialogStatus(activated: Boolean) {
@@ -322,7 +321,7 @@ class RecipeCommentViewModel @Inject constructor(
         _isCommentBlockActivated.value = activated
     }
 
-    fun setCommentReportState(commentReportState: CommentReportState) {
+    fun setCommentReportState(commentReportState: ReportCommentInfoState) {
         _commentReportState.value = commentReportState
     }
 
