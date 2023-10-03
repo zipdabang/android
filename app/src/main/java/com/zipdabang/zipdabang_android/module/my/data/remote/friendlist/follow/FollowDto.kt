@@ -1,4 +1,4 @@
-package com.zipdabang.zipdabang_android.module.my.data.remote.friendlist
+package com.zipdabang.zipdabang_android.module.my.data.remote.friendlist.follow
 
 data class FollowDto(
     val code: Int,

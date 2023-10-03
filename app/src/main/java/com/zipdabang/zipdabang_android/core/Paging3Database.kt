@@ -9,6 +9,10 @@ import com.zipdabang.zipdabang_android.core.remotekey.RemoteKeys
 import com.zipdabang.zipdabang_android.module.comment.data.local.RecipeCommentDao
 import com.zipdabang.zipdabang_android.module.comment.data.local.RecipeCommentEntity
 import com.zipdabang.zipdabang_android.module.market.domain.dao.MarketCategoryDao
+import com.zipdabang.zipdabang_android.module.my.data.remote.friendlist.follow.FollowDao
+import com.zipdabang.zipdabang_android.module.my.data.remote.friendlist.follow.Following
+import com.zipdabang.zipdabang_android.module.my.data.remote.friendlist.following.Follower
+import com.zipdabang.zipdabang_android.module.my.data.remote.friendlist.following.FollowingDao
 import com.zipdabang.zipdabang_android.module.recipes.data.common.RecipeItem
 import com.zipdabang.zipdabang_android.module.recipes.data.local.RecipeItemEntity
 import com.zipdabang.zipdabang_android.module.recipes.data.local.RecipeListDao
@@ -19,9 +23,10 @@ import com.zipdabang.zipdabang_android.module.search.domain.SearchDao
     entities = [
         Category_Product::class, RemoteKeys::class,
         RecipeItemEntity::class, SearchRecipe::class,
-        RecipeCommentEntity::class
+        RecipeCommentEntity::class , Following :: class,
+        Follower :: class
     ],
-    version = 9, exportSchema = false)
+    version = 10, exportSchema = false)
 @TypeConverters(ListConverter::class)
 abstract class Paging3Database : RoomDatabase() {
     abstract fun CategoryDao() : MarketCategoryDao
@@ -29,4 +34,7 @@ abstract class Paging3Database : RoomDatabase() {
     abstract fun recipeListDao(): RecipeListDao
     abstract fun SearchRecipeDao() : SearchDao
     abstract fun recipeCommentDao(): RecipeCommentDao
+    abstract fun followDao() : FollowDao
+    abstract fun followingDao() : FollowingDao
+
 }
