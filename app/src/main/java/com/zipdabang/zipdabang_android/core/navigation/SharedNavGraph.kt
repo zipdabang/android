@@ -102,7 +102,7 @@ fun NavGraphBuilder.SharedNavGraph(
                     if (currentPlatform == CurrentPlatform.NONE
                         || currentPlatform == CurrentPlatform.TEMP
                     ) {
-                        // 온보딩으로 이동 필요
+                        // 온보딩으로 이동 필요함
 
                     } else {
                         if (isOwner == true) {
