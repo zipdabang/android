@@ -40,7 +40,6 @@ class SearchRecipeCategoryMediator @Inject constructor(
         {
             val currentPage = when (loadType) {
                 LoadType.REFRESH -> {
-                    Log.e("Refresh","refresh")
                     val remoteKeys = getRemoteKeyClosestToCurrentPosition(state)
                     remoteKeys?.nextPage?.minus(1) ?: 1
                 }
@@ -113,7 +112,6 @@ class SearchRecipeCategoryMediator @Inject constructor(
 
                 paging3Database.withTransaction {
                     if(loadType == LoadType.REFRESH){
-
                         CategoryDao.deleteItems()
                         RemoteKeyDao.deleteRemoteKeys()
                     }
@@ -142,6 +140,7 @@ class SearchRecipeCategoryMediator @Inject constructor(
     private suspend fun getRemoteKeyClosestToCurrentPosition(
         state: PagingState<Int, SearchRecipe>
     ): RemoteKeys? {
+        //state.anchorposition은 현재 화면에 보이는 첫 번째 아이템의 포지션
         return state.anchorPosition?.let { position ->
             state.closestItemToPosition(position)?.recipeId?.let { id ->
                 RemoteKeyDao.getRemoteKeys(id = id)

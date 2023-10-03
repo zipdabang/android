@@ -90,7 +90,7 @@ fun NavGraphBuilder.SharedNavGraph(navController: NavController){
                val categoryId = it.arguments?.getInt("categoryId")
                val keyword = it.arguments?.getString("keyword")
 
-              SearchCategoryScreen(navController,
+              SearchCategoryScreen(
                   onRecipeItemClick = {
                           recipeid -> navController.navigate(SharedScreen.DetailRecipe.passRecipeId(recipeid))
                   }

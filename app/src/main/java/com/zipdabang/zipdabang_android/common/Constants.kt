@@ -21,7 +21,9 @@ object Constants {
     const val COMMENT_ITEM_TABLE = "comment_item_table"
     //----------------------------------------------------------------------------------------------
     const val SEARCH_RECIPE_TABLE = "search_recipe_table"
-
+    //----------------------------------------------------------------------------------------------
+    const val FOLLOW_TABLE = "follow_table"
+    const val FOLLOWING_TABLE = "following_table"
 
     const val ITEMS_PER_PAGE = 10
 
