@@ -41,7 +41,7 @@ import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
 //10번 -> 완성
 @Composable
 fun ImageWithIcon(
-    imageUrl : Any,
+    imageUrl : Any?,
     onClick : () -> Unit
 ){
     Box(

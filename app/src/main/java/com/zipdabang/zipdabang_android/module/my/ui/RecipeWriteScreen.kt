@@ -61,6 +61,9 @@ import com.zipdabang.zipdabang_android.ui.component.PrimaryButtonWithStatus
 import com.zipdabang.zipdabang_android.ui.component.TextFieldForRecipeWriteMultiline
 import com.zipdabang.zipdabang_android.ui.component.TextFieldForRecipeWriteSingleline
 import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.io.ByteArrayOutputStream
 
 
@@ -75,28 +78,30 @@ fun bitmapToUri(context: Context, bitmap: Bitmap): Uri? {
 @Composable
 fun RecipeWriteScreen(
     onClickBack: () -> Unit,
+    onClickWrite: () -> Unit,
     recipeWriteViewModel: RecipeWriteViewModel = hiltViewModel()
 ) {
     val stateRecipeWriteForm = recipeWriteViewModel.stateRecipeWriteForm
     val stateRecipeWriteDialog = recipeWriteViewModel.stateRecipeWriteDialog
-    LaunchedEffect(key1 = stateRecipeWriteForm.ingredientsNum) {
+    val context = LocalContext.current
+    val stateThumbnail = recipeWriteViewModel.stateRecipeWriteForm.thumbnail
 
+    LaunchedEffect(key1 = stateRecipeWriteForm.ingredients) {
+        recipeWriteViewModel.onRecipeWriteFormEvent(RecipeWriteFormEvent.BtnIngredientAddEnabled(stateRecipeWriteForm.ingredientsNum))
+    }
+    LaunchedEffect(key1 = stateRecipeWriteForm){
+        Log.e("recipeWriteForm", "${stateRecipeWriteForm}")
     }
 
     // textfield
-    var textStateIngredient by remember { mutableStateOf("") }
-    var textStateUnit by remember { mutableStateOf("") }
     var textStateStep by remember { mutableStateOf("") }
 
-
-    // 사진
-    var thumbnail by remember { mutableStateOf<Any?>(null) }
-    val context = LocalContext.current
+    // thumbnail
     // 갤러리->Uri 형태
     val takePhotoFromAlbumLauncher =
         rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
             if (uri != null) {
-                thumbnail = uri
+                recipeWriteViewModel.onRecipeWriteFormEvent(RecipeWriteFormEvent.ThumbnailChanged(uri))
                 val inputStream = context.contentResolver.openInputStream(uri)
 
                 if (inputStream != null) {
@@ -136,7 +141,7 @@ fun RecipeWriteScreen(
                     inputStream.close()
                 } else {
                     Log.e("사진-앨범", "Uri를 열 수 없음")
-                    thumbnail = uri
+                    recipeWriteViewModel.onRecipeWriteFormEvent(RecipeWriteFormEvent.ThumbnailChanged(uri))
                 }
             }
         }
@@ -144,7 +149,7 @@ fun RecipeWriteScreen(
     val takePhotoFromCameraLauncher =
         rememberLauncherForActivityResult(ActivityResultContracts.TakePicturePreview()) { bitmap: Bitmap? ->
             if (bitmap != null) {
-                thumbnail = bitmap
+                recipeWriteViewModel.onRecipeWriteFormEvent(RecipeWriteFormEvent.ThumbnailChanged(bitmap))
 
                 val baos = ByteArrayOutputStream()
                 bitmap.compress(
@@ -160,8 +165,134 @@ fun RecipeWriteScreen(
                 val compressedBitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size)
 
                 // compressedBitmap을 thumbnail 변수에 할당
-                thumbnail = compressedBitmap
+                recipeWriteViewModel.onRecipeWriteFormEvent(RecipeWriteFormEvent.ThumbnailChanged(compressedBitmap))
 
+
+
+
+
+                // 비트맵의 너비와 높이를 가져옵니다.
+                val width = bitmap.width
+                val height = bitmap.height
+
+                // 비트맵의 Config를 가져옵니다.
+                val config = bitmap.config ?: Bitmap.Config.ARGB_8888
+
+                // 비트맵의 비트 수를 계산합니다.
+                val bitsPerPixel = when (config) {
+                    Bitmap.Config.ALPHA_8 -> 8
+                    Bitmap.Config.RGB_565 -> 16
+                    else -> 32 // 기본적으로 ARGB_8888을 사용
+                }
+
+                val totalBits = width * height * bitsPerPixel
+
+                // 비트를 바이트로 변환하고, 메가바이트로 변환합니다.
+                val totalBytes = totalBits / 8
+                val totalMegabytes = totalBytes.toDouble() / (1024 * 1024)
+
+                // 로그로 비트맵 크기를 출력합니다.
+                Log.e("사진-카메라 압축 전", "${bitmap}, ${totalMegabytes} MB")
+
+
+                val quality = 100
+
+                // ByteArrayOutputStream을 사용하여 Bitmap을 JPEG으로 압축합니다.
+                val outputStream = ByteArrayOutputStream()
+                bitmap.compress(Bitmap.CompressFormat.JPEG, quality, outputStream)
+
+                // ByteArrayOutputStream을 ByteArray로 변환합니다.
+                val compressedImageByteArray = outputStream.toByteArray()
+                val compressedImageSizeInMB =
+                    compressedImageByteArray.size.toDouble() / (1024 * 1024)
+
+                // 이제 압축된 이미지 바이트 배열을 서버에 업로드하거나 저장할 수 있습니다.
+
+                // 예를 들어, 압축된 이미지 바이트 배열을 서버로 업로드하려면 다음과 같이 할 수 있습니다:
+                // uploadImageToServer(compressedImageByteArray)
+
+                // Bitmap을 띄울 때 사용할 수 있도록 이미지를 갱신합니다.
+                // thumbnailUri = bitmapToUri(context, bitmap)
+
+                Log.e("사진-카메라 압축 후", "${compressedImageByteArray}, ${compressedImageSizeInMB} MB")
+
+
+                // Bitmap -> jpeg로 변환해서 서버에 전송해야함
+                // 띄울때는 Bitmap 형태로 사진 띄우기
+            }
+        }
+
+    // step
+    // 갤러리->Uri 형태
+    val takePhotoFromAlbumStepLauncher =
+        rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
+            if (uri != null) {
+                recipeWriteViewModel.onRecipeWriteFormEvent(RecipeWriteFormEvent.StepImageChanged(uri, stateRecipeWriteDialog.stepNum))
+                val inputStream = context.contentResolver.openInputStream(uri)
+
+                if (inputStream != null) {
+                    // 파일 크기를 바이트로 계산
+                    val fileSizeInBytes = inputStream.available().toLong()
+
+                    // 바이트를 메가바이트(MB)로 변환
+                    val fileSizeInMB = fileSizeInBytes.toDouble() / (1024 * 1024)
+
+                    val bitmap = BitmapFactory.decodeStream(inputStream)
+
+                    // 이미지를 JPEG 형식으로 압축
+                    val quality = 100 // JPEG 압축 품질 (0-100)
+                    val outputStream = ByteArrayOutputStream()
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, quality, outputStream)
+
+                    // 압축된 이미지 바이트 배열
+                    val compressedImageByteArray = outputStream.toByteArray()
+                    val compressedImageSizeInMB =
+                        compressedImageByteArray.size.toDouble() / (1024 * 1024)
+                    Log.e("사진-앨범 압축 전", "$uri, $fileSizeInMB MB")
+                    Log.e(
+                        "사진-앨범 압축 후",
+                        "${compressedImageByteArray}, ${compressedImageSizeInMB} MB"
+                    )
+
+                    // 압축된 이미지를 파일로 저장하거나 서버에 업로드할 수 있습니다.
+
+                    // 예를 들어, 압축된 이미지 바이트 배열을 파일로 저장하려면:
+                    // val file = File(context.cacheDir, "compressed_image.jpg")
+                    // FileOutputStream(file).use { it.write(compressedImageByteArray) }
+
+                    // 예를 들어, 압축된 이미지 바이트 배열을 서버로 업로드하려면:
+                    // uploadImageToServer(compressedImageByteArray)
+
+                    // InputStream을 닫습니다.
+                    inputStream.close()
+                }
+                else {
+                    Log.e("사진-앨범", "Uri를 열 수 없음")
+                    recipeWriteViewModel.onRecipeWriteFormEvent(RecipeWriteFormEvent.StepImageChangedToEmpty("", stateRecipeWriteDialog.stepNum))
+                }
+            }
+        }
+    // 카메라->Bitmap 형태
+    val takePhotoFromCameraStepLauncher =
+        rememberLauncherForActivityResult(ActivityResultContracts.TakePicturePreview()) { bitmap: Bitmap? ->
+            if (bitmap != null) {
+                recipeWriteViewModel.onRecipeWriteFormEvent(RecipeWriteFormEvent.StepImageChanged(bitmap, stateRecipeWriteDialog.stepNum))
+
+                val baos = ByteArrayOutputStream()
+                bitmap.compress(
+                    Bitmap.CompressFormat.PNG,
+                    100,
+                    baos
+                )
+
+                // ByteArrayOutputStream을 ByteArray로 변환
+                val byteArray = baos.toByteArray()
+
+                // ByteArray를 다시 Bitmap으로 변환
+                val compressedBitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size)
+
+                // compressedBitmap을 thumbnail 변수에 할당
+                recipeWriteViewModel.onRecipeWriteFormEvent(RecipeWriteFormEvent.StepImageChanged(compressedBitmap, stateRecipeWriteDialog.stepNum))
 
 
 
@@ -219,7 +350,6 @@ fun RecipeWriteScreen(
 
 
 
-
     Scaffold(
         modifier = Modifier
             .fillMaxSize(),
@@ -261,9 +391,9 @@ fun RecipeWriteScreen(
                         recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.FileSelectChanged(true))
                     },
                     deleteImageClick = {
-                        thumbnail = null
+                        recipeWriteViewModel.onRecipeWriteFormEvent(RecipeWriteFormEvent.ThumbnailChangedToNull(null))
                     },
-                    imageUrl = thumbnail,
+                    imageUrl = stateThumbnail,
                     iconImageVector = R.drawable.ic_recipewrite_camera,
                     iconTint = ZipdabangandroidTheme.Colors.Typo.copy(0.5f),
                     iconModifier = Modifier.size(27.dp, 24.dp),
@@ -429,71 +559,83 @@ fun RecipeWriteScreen(
                     }
                     for (i in 0 until stateRecipeWriteForm.ingredientsNum) {
                         IngredientAndUnit(
+                            ingredientNum = i+1,
                             valueIngredient = stateRecipeWriteForm.ingredients[i].ingredientName,
                             onValueChangedIngredient = { newText, maxLength ->
                                 if (newText.length <= maxLength) {
-                                    textStateIngredient = newText
+                                    recipeWriteViewModel.onRecipeWriteFormEvent(RecipeWriteFormEvent.IngredientChanged(newText,i+1))
                                 }
                             },
                             placeholderValueIngredient = stringResource(id = R.string.my_recipewrite_milk),
                             maxLengthIngredient = 16,
                             imeActionIngredient = ImeAction.Default,
                             onClickTrailingiconIngredient = {
-                                textStateIngredient = ""
+                                recipeWriteViewModel.onRecipeWriteFormEvent(RecipeWriteFormEvent.IngredientChanged("",i+1))
                             },
-                            onClickCancelIngredient = {
 
+                            onClickCancelIngredient = {
+                                recipeWriteViewModel.onRecipeWriteFormEvent(RecipeWriteFormEvent.BtnIngredientDelete(i+1))
                             },
+
                             valueUnit = stateRecipeWriteForm.ingredients[i].quantity,
                             onValueChangedUnit = { newText, maxLength ->
                                 if (newText.length <= maxLength) {
-                                    textStateUnit = newText
+                                    recipeWriteViewModel.onRecipeWriteFormEvent(RecipeWriteFormEvent.QuantityChanged(newText,i+1))
                                 }
                             },
                             placeholderValueUnit = stringResource(id = R.string.my_recipewrite_hundredmilli),
                             maxLengthUnit = 16,
                             imeActionUnit = ImeAction.Default,
                             onClickTrailingiconUnit = {
-                                textStateUnit = ""
+                                recipeWriteViewModel.onRecipeWriteFormEvent(RecipeWriteFormEvent.QuantityChanged("",i+1))
                             }
                         )
                     }
-                    ButtonForIngredient(
-                        borderColor = ZipdabangandroidTheme.Colors.Strawberry,
-                        containerColor = Color.White,
-                        enabled = true,
-                        onClickBtn = {
-                            recipeWriteViewModel.onRecipeWriteFormEvent(
-                                RecipeWriteFormEvent.BtnIngredientAdd(
-                                    ingredientNum = stateRecipeWriteForm.ingredientsNum + 1
+                    if(stateRecipeWriteForm.ingredientsNum == 10){
+
+                    } else {
+                        ButtonForIngredient(
+                            enabled = stateRecipeWriteForm.ingredientBtnEnabled,
+                            onClickBtn = {
+                                recipeWriteViewModel.onRecipeWriteFormEvent(
+                                    RecipeWriteFormEvent.BtnIngredientAdd(
+                                        ingredientNum = stateRecipeWriteForm.ingredientsNum + 1
+                                    )
                                 )
-                            )
-                        }
-                    )
+                            }
+                        )
+                    }
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(0.dp, 0.dp, 0.dp, 4.dp),
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
-                        Row(
-                            horizontalArrangement = Arrangement.Center
-                        ) {
-                            Icon(
-                                painter = painterResource(R.drawable.ic_recipewrite_warning),
-                                contentDescription = "Icon",
-                                tint = Color(0xFFB00020),
-                                modifier = Modifier
-                                    .size(16.dp)
-                                    .padding(4.dp, 0.dp, 0.dp, 0.dp),
-                            )
-                            Text(
-                                modifier = Modifier.padding(2.dp, 0.dp, 0.dp, 0.dp),
-                                text = stringResource(id = R.string.my_recipewrite_warning_ingredient),
-                                style = ZipdabangandroidTheme.Typography.twelve_500,
-                                color = Color(0xFFB00020)
+                        if(stateRecipeWriteForm.ingredientsNum == 10){
+                            Row(
+                                horizontalArrangement = Arrangement.Center
+                            ) {
+                                Icon(
+                                    painter = painterResource(R.drawable.ic_recipewrite_warning),
+                                    contentDescription = "Icon",
+                                    tint = Color(0xFFB00020),
+                                    modifier = Modifier
+                                        .size(16.dp)
+                                        .padding(4.dp, 0.dp, 0.dp, 0.dp),
+                                )
+                                Text(
+                                    modifier = Modifier.padding(2.dp, 0.dp, 0.dp, 0.dp),
+                                    text = stringResource(id = R.string.my_recipewrite_warning_ingredient),
+                                    style = ZipdabangandroidTheme.Typography.twelve_500,
+                                    color = Color(0xFFB00020)
+                                )
+                            }
+                        } else{
+                            Box(
+                                modifier = Modifier.size(22.dp, 16.dp)
                             )
                         }
+
                         Text(
                             modifier = Modifier.padding(0.dp, 0.dp, 4.dp, 0.dp),
                             text = stateRecipeWriteForm.ingredientsNum.toString() + "/10",
@@ -514,33 +656,34 @@ fun RecipeWriteScreen(
                     )
                     for (i in 0 until stateRecipeWriteForm.stepsNum) {
                         Step(
-                            stepNum = stateRecipeWriteForm.stepsNum,
+                            stepNum = i+1,
+                            stepImage = stateRecipeWriteForm.steps[i].stepImage,
                             value = textStateStep,
                             onValueChanged = { newText, maxLength ->
                                 if (newText.length <= maxLength) {
                                     textStateStep = newText
                                 }
                             },
-                            placeholderValue = stringResource(id = R.string.my_recipewrite_step_hint),
+                            placeholderValue = "레시피를 만드는 Step "+(i+1)+"을 설명해 주세요. \n(최대 200자)",
                             height = 232.dp,
                             maxLines = 7,
                             maxLength = 200,
                             imeAction = ImeAction.None,
-                            onClickImageAddBtn = { },
-                            onClickDeleteStep = { },
-                            onClickEditStep = { }
+                            onClickImageAddBtn = {
+                                recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.StepFileSelectChanged(true, i+1))
+                            },
+                            onClickDeleteStep = {
+
+                            },
+                            onClickEditStep = {
+
+                            }
                         )
                     }
                     ButtonForStep(
-                        borderColor = ZipdabangandroidTheme.Colors.Strawberry,
-                        containerColor = Color.White,
                         enabled = true,
                         onClickBtn = {
-                            recipeWriteViewModel.onRecipeWriteFormEvent(
-                                RecipeWriteFormEvent.BtnStepAdd(
-                                    stepNum = stateRecipeWriteForm.stepsNum + 1
-                                )
-                            )
+                            recipeWriteViewModel.onRecipeWriteFormEvent(RecipeWriteFormEvent.BtnStepAdd(stepNum = stateRecipeWriteForm.stepsNum + 1))
                         }
                     )
                     Text(
@@ -614,9 +757,17 @@ fun RecipeWriteScreen(
                     modifier = Modifier.weight(1f)
                 ) {
                     PrimaryButtonWithStatus(
-                        isFormFilled = false,
+                        isFormFilled = stateRecipeWriteForm.btnEnabled,
                         text = stringResource(id = R.string.my_recipewrite_writedone),
-                        onClick = {},
+                        onClick = {
+                             CoroutineScope(Dispatchers.Main).launch{
+                                 try{
+                                     recipeWriteViewModel.postRecipeWrite()
+                                 } catch (e:Exception){
+
+                                 }
+                             }
+                        },
                     )
                 }
 
@@ -654,6 +805,23 @@ fun RecipeWriteScreen(
                     onFileClick = {
                         takePhotoFromAlbumLauncher.launch("image/*")
                         recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.FileSelectChanged(false))
+                    }
+                )
+            }
+            // Step 파일선택 알럿
+            if (stateRecipeWriteDialog.isOpenStepFileSelect) {
+                CustomDialogCameraFile(
+                    title = stringResource(id = R.string.my_dialog_fileselect),
+                    setShowDialog = {
+                        recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.StepFileSelectChanged(it, stateRecipeWriteDialog.stepNum))
+                    },
+                    onCameraClick = {
+                        takePhotoFromCameraStepLauncher.launch()
+                        recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.StepFileSelectChanged(false, stateRecipeWriteDialog.stepNum))
+                    },
+                    onFileClick = {
+                        takePhotoFromAlbumStepLauncher.launch("image/*")
+                        recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.StepFileSelectChanged(false, stateRecipeWriteDialog.stepNum))
                     }
                 )
             }
@@ -709,6 +877,7 @@ fun RecipeWriteScreen(
 @Composable
 fun PreviewRecipeWriteScreen() {
     RecipeWriteScreen(
-        onClickBack = {}
+        onClickBack = {},
+        onClickWrite = {}
     )
 }

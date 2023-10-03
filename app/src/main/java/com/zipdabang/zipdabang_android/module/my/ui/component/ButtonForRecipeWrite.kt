@@ -22,11 +22,20 @@ import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
 
 @Composable
 fun ButtonForIngredient(
-    borderColor: Color,
-    containerColor: Color,
     enabled : Boolean,
     onClickBtn : ()->Unit,
 ) {
+    var containerColor = Color.White
+    var borderColor = ZipdabangandroidTheme.Colors.Typo.copy(0.2f)
+    var textColor = ZipdabangandroidTheme.Colors.Typo.copy(0.2f)
+
+    if(enabled){
+        containerColor = ZipdabangandroidTheme.Colors.Strawberry
+        borderColor = ZipdabangandroidTheme.Colors.Strawberry.copy(0.5f)
+        textColor = Color.White
+    }
+
+
     Button(
         onClick = { onClickBtn() },
         shape = ZipdabangandroidTheme.Shapes.thin,
@@ -43,7 +52,7 @@ fun ButtonForIngredient(
         ) {
             Text(
                 text= stringResource(id = R.string.my_recipewrite_addingredient),
-                color = ZipdabangandroidTheme.Colors.Typo.copy(0.5f),
+                color = textColor,
                 style= ZipdabangandroidTheme.Typography.sixteen_500
             )
         }
@@ -52,11 +61,19 @@ fun ButtonForIngredient(
 
 @Composable
 fun ButtonForStep(
-    borderColor: Color,
-    containerColor: Color,
     enabled : Boolean,
     onClickBtn : ()->Unit,
 ) {
+    var containerColor = Color.White
+    var borderColor = ZipdabangandroidTheme.Colors.Typo.copy(0.2f)
+    var textColor = ZipdabangandroidTheme.Colors.Typo.copy(0.2f)
+
+    if(enabled){
+        containerColor = ZipdabangandroidTheme.Colors.Strawberry
+        borderColor = ZipdabangandroidTheme.Colors.Strawberry.copy(0.5f)
+        textColor = Color.White
+    }
+
     Button(
         onClick = { onClickBtn() },
         shape = ZipdabangandroidTheme.Shapes.thin,
@@ -71,14 +88,9 @@ fun ButtonForStep(
         Box(
             contentAlignment = Alignment.Center
         ) {
-            /*Text(
-                text= stringResource(id = R.string.my_recipewrite_addstep),
-                color = ZipdabangandroidTheme.Colors.Typo,
-                style= ZipdabangandroidTheme.Typography.sixteen_500
-            )*/
             Text(
                 text= stringResource(id = R.string.my_recipewrite_writedone),
-                color = ZipdabangandroidTheme.Colors.Typo.copy(0.5f),
+                color = textColor,
                 style= ZipdabangandroidTheme.Typography.sixteen_500
             )
         }
