@@ -2,7 +2,11 @@ package com.zipdabang.zipdabang_android.common
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.paging.compose.LazyPagingItems
+import com.zipdabang.zipdabang_android.module.comment.ui.PostCommentState
 import com.zipdabang.zipdabang_android.module.comment.ui.RecipeCommentPage
+import com.zipdabang.zipdabang_android.module.comment.ui.RecipeCommentState
+import com.zipdabang.zipdabang_android.module.detail.recipe.domain.RecipeDetailDomain
 import com.zipdabang.zipdabang_android.module.detail.recipe.ui.RecipeDetailState
 import com.zipdabang.zipdabang_android.module.detail.recipe.ui.RecipeInfoPage
 
@@ -10,20 +14,20 @@ typealias ComposableFun = @Composable () -> Unit
 sealed class TabItem(val tabTitle: String, val screen: ComposableFun) {
 
     class RecipeInfo(
-        private val recipeDetailState: RecipeDetailState,
+        private val recipeDetailData: RecipeDetailDomain?,
         // private val onClickCart: (String) -> Unit
     ): TabItem(
         tabTitle = "상세 정보",
-        screen = { RecipeInfoPage(recipeDetailState) }
+        screen = { RecipeInfoPage(recipeDetailData) }
     )
     class Comment(
         val comments: Int,
         val recipeId: Int,
-        private val onClickReport: (Int, Int, Int) -> Unit,
-        private val onClickBlock: (Int) -> Unit,
-        private val onClickEdit: (Int, Int, String) -> Unit,
-        private val onClickDelete: (Int, Int) -> Unit,
-        private val showCommentReport: (Int, Int, Int, Int) -> Unit,
+        private val postResult: PostCommentState,
+        private val commentItems: LazyPagingItems<RecipeCommentState>,
+        private val onClickEdit: (Int, String) -> Unit,
+        private val onClickDelete: (Int) -> Unit,
+        private val showCommentReport: (Int, Int, Int) -> Unit,
         private val showCommentBlock: (Int) -> Unit
     ) : TabItem(
         tabTitle = "댓글 ${comments}개",
@@ -31,12 +35,12 @@ sealed class TabItem(val tabTitle: String, val screen: ComposableFun) {
             RecipeCommentPage(
                 commentCount = comments,
                 recipeId = recipeId,
-                onClickReport = onClickReport,
-                onClickBlock = onClickBlock,
                 onClickDelete = onClickDelete,
                 onClickEdit = onClickEdit,
                 showCommentReport = showCommentReport,
-                showCommentBlock = showCommentBlock
+                showCommentBlock = showCommentBlock,
+                postResult = postResult,
+                comments = commentItems
             )
         }
     )

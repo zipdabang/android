@@ -12,7 +12,8 @@ import com.zipdabang.zipdabang_android.module.main.FCMData
 @Composable
 fun MainNavGraph(
     innerNavController: NavHostController,
-    outerNavController: NavHostController
+    outerNavController: NavHostController,
+    showSnackBar: (String) -> Unit
 ){
     NavHost(navController = innerNavController, startDestination = HOME_ROUTE , route = MAIN_ROUTE)
     {
@@ -25,14 +26,20 @@ fun MainNavGraph(
 
         BasketNavGraph(navController = innerNavController)
 
-        RecipeNavGraph(navController = innerNavController)
+        RecipeNavGraph(
+            navController = innerNavController,
+            showSnackBar = showSnackBar
+        )
 
         MyNavGraph(
             navController = innerNavController,
             outerNavController = outerNavController
         )
 
-        SharedNavGraph(innerNavController)
+        SharedNavGraph(
+            navController = innerNavController,
+            showSnackBar = showSnackBar
+        )
 
         DrawerNavGraph(navController = innerNavController)
 

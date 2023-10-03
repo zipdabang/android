@@ -11,8 +11,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.zipdabang.zipdabang_android.module.comment.ui.RecipeCommentViewModel
-import com.zipdabang.zipdabang_android.module.detail.recipe.ui.RecipeDetailScreen
 import com.zipdabang.zipdabang_android.module.main.FCMData
 import com.zipdabang.zipdabang_android.module.main.MainScreen
 import com.zipdabang.zipdabang_android.module.splash.ui.SplashScreen
@@ -82,7 +80,7 @@ fun RootNavGraph(
            )
         }
 
-        composable(
+        /* composable(
             route = SharedScreen.DetailRecipe.route,
             arguments = listOf(
                 navArgument(name = "recipeId") { type = NavType.IntType }
@@ -121,6 +119,6 @@ fun RootNavGraph(
                     recipeCommentViewModel.editComment(editRecipeId, commentId, newContent)
                 }
             )
-        }
+        }*/
     }
 }

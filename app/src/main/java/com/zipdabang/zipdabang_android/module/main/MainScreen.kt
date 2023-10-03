@@ -9,8 +9,11 @@ import androidx.compose.foundation.layout.padding
 import com.zipdabang.zipdabang_android.ui.component.ModalDrawer
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -19,6 +22,7 @@ import androidx.navigation.compose.rememberNavController
 import com.zipdabang.zipdabang_android.core.navigation.MainNavGraph
 import com.zipdabang.zipdabang_android.core.navigation.SharedScreen
 import com.zipdabang.zipdabang_android.module.bottom.ui.BottomNavigationBar
+import kotlinx.coroutines.launch
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -30,6 +34,9 @@ fun MainScreen(
   //  val drawerState = rememberDrawerState(DrawerValue.Closed)
   //  val scope = rememberCoroutineScope()
 
+    val snackbarHostState = remember { SnackbarHostState() }
+    val scope = rememberCoroutineScope()
+
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         containerColor = Color.White,
@@ -37,17 +44,24 @@ fun MainScreen(
         bottomBar = {
             BottomNavigationBar(navController = innerNavController)
         },
-        content = {
-            Box(
-             modifier = Modifier.padding(it)
-            ) {
-                MainNavGraph(
-                    innerNavController = innerNavController,
-                    outerNavController = outerNavController
-                )
-            }
-        },
-    )
+        snackbarHost = {
+            SnackbarHost(hostState = snackbarHostState)
+        }
+    ) {
+        Box(
+            modifier = Modifier.padding(it)
+        ) {
+            MainNavGraph(
+                innerNavController = innerNavController,
+                outerNavController = outerNavController,
+                showSnackBar = { text ->
+                    scope.launch {
+                        snackbarHostState.showSnackbar(text)
+                    }
+                }
+            )
+        }
+    }
 }
 
 

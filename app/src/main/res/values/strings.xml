@@ -188,5 +188,19 @@
     <!--  for drawer  -->
     <string name="drawer_quit">집다방 탈퇴</string>
 
+    <!--  dialog  -->
+    <string name="alert_block_content">해당 이용자를 차단하게되면,\n더이상 회원님에게 보이지 않게됩니다.\n이용자를 차단하시겠습니까?</string>
+    <string name="alert_block_user">차단하기</string>
+    <string name="alert_report">신고하기</string>
+    <string name="alert_report_recipe">게시글 신고하기</string>
+    <string name="alert_report_comment">댓글 신고하기</string>
+    <string name="alert_cancel">취소</string>
+
+    <!--  dropdown  -->
+    <string name="dropdown_delete_recipe">게시글 삭제하기</string>
+    <string name="dropdown_report_recipe">게시글 신고하기</string>
+    <string name="dropdown_edit_recipe">게시글 수정하기</string>
+    <string name="dropdown_block_user">이용자 차단하기</string>
+
 
 </resources>

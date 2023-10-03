@@ -16,11 +16,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.zipdabang.zipdabang_android.module.detail.recipe.domain.RecipeDetailDomain
 import com.zipdabang.zipdabang_android.ui.theme.DialogBackground
 
 @Composable
 fun RecipeInfoPage(
-    recipeDetailState: RecipeDetailState,
+    recipeDetailState: RecipeDetailDomain?,
     // onClickCart: (String) -> Unit
 ) {
     LazyColumn(
@@ -28,15 +29,11 @@ fun RecipeInfoPage(
     ) {
         item {
             Spacer(modifier = Modifier.height(20.dp))
-        }
 
-        item {
             RecipeIngredients(
-                ingredients = recipeDetailState.recipeDetailData?.recipeIngredients ?: emptyList()
+                ingredients = recipeDetailState?.recipeIngredients ?: emptyList()
             )
-        }
 
-        item {
             Divider(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -44,30 +41,16 @@ fun RecipeInfoPage(
                     .height(1.dp),
                 color = Color(0x1A262D31)
             )
-        }
 
-        item {
             RecipeSteps(
-                steps = recipeDetailState.recipeDetailData?.recipeSteps ?: emptyList()
+                steps = recipeDetailState?.recipeSteps ?: emptyList()
             )
-        }
 
-        item {
-            Spacer(modifier = Modifier
-                .height(20.dp)
-            )
-        }
+            Spacer(modifier = Modifier.height(20.dp))
 
-        item {
-            RecipeTip(recipeTip = recipeDetailState.recipeDetailData?.recipeInfo?.recipeTip ?: "")
-        }
+            RecipeTip(recipeTip = recipeDetailState?.recipeInfo?.recipeTip ?: "")
 
-        item {
-            Spacer(
-                modifier = Modifier
-                    .height(60.dp)
-            )
+            Spacer(modifier = Modifier.height(60.dp))
         }
-
     }
 }
