@@ -21,7 +21,6 @@ class SearchCategoryViewModel @OptIn(ExperimentalPagingApi::class)
 @Inject constructor(
     private val repository: PagingSearchRepository,
     private val savedStateHandle: SavedStateHandle,
-    paging3Database: Paging3Database
 ): ViewModel(){
 
     private var _categoryId = mutableStateOf(0)

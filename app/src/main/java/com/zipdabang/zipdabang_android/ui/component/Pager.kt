@@ -1,9 +1,12 @@
 package com.zipdabang.zipdabang_android.ui.component
 
+import android.provider.SyncStateContract.Columns
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.material.TabRow
 import androidx.compose.material3.Tab
@@ -49,6 +52,31 @@ fun LazyListScope.Pager(
         }
     }
 }
+
+@Composable
+@OptIn(ExperimentalPagerApi::class)
+fun ColumnPagers(
+    tabsList: List<TabItem>,
+    pagerState: PagerState,
+    deviceSize: DeviceScreenSize
+) {
+
+    Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height((deviceSize.height).dp)
+        ) {
+            Column(
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 40.dp)
+            ) {
+                Tabs(tabs = tabsList, pagerState = pagerState)
+            }
+
+            TabContent(tabs = tabsList, pagerState = pagerState)
+        }
+
+}
+
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
