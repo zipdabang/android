@@ -33,6 +33,7 @@ import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
 
 @Composable
 fun IngredientAndUnit(
+    ingredientNum : Int,
     valueIngredient : String,
     onValueChangedIngredient: (String, Int) -> Unit,
     placeholderValueIngredient: String,
@@ -156,19 +157,27 @@ fun IngredientAndUnit(
                 }
             )
         }
-        Icon(
-            modifier = Modifier
+        if(ingredientNum != 1){
+            Icon(
+                modifier = Modifier
+                    .weight(1f)
+                    .size(30.dp)
+                    .padding(0.dp)
+                    .align(Alignment.CenterVertically)
+                    .clickable(
+                        onClick = { onClickCancelIngredient() }
+                    ),
+                painter = painterResource(R.drawable.ic_recipewrite_trashcan),
+                contentDescription = "Icon",
+                tint = ZipdabangandroidTheme.Colors.Typo,
+            )
+        } else {
+            Box(
+                modifier = Modifier
                 .weight(1f)
                 .size(30.dp)
-                .padding(0.dp)
-                .align(Alignment.CenterVertically)
-                .clickable(
-                    onClick = { onClickCancelIngredient() }
-                ),
-            painter = painterResource(R.drawable.ic_recipewrite_trashcan),
-            contentDescription = "Icon",
-            tint = ZipdabangandroidTheme.Colors.Typo,
-        )
+            )
+        }
     }
 }
 
@@ -179,6 +188,7 @@ fun PreviewIngredientAndUnit() {
     var textStateUnit by remember { mutableStateOf("") }
 
     IngredientAndUnit(
+        ingredientNum =2,
         valueIngredient = textStateIngredient,
         onValueChangedIngredient = { newText, maxLength ->
             if (newText.length <= maxLength) {

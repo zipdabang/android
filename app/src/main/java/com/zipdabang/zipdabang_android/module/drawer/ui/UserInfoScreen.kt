@@ -751,43 +751,44 @@ fun UserInfoScreen(
                 }
             }
 
-        }
-
-
-        //로그아웃 | 탈퇴하기
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp, 48.dp, 16.dp, 40.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center
-        ) {
-            ClickableText(
-                text = AnnotatedString(text = stringResource(id = R.string.my_logout)),
-                style = ZipdabangandroidTheme.Typography.fourteen_300,
-                onClick = {
-                    CoroutineScope(Dispatchers.Main).launch {
-                        //tokenStoreViewModel.resetToken()
-                        Log.e("signup-tokens", "로그아웃 클릭, postJob 실행 중")
-                        onClickLogout()
-                        Log.e("signup-tokens", "로그아웃 클릭, onClick 실행 끝")
+            //로그아웃 | 탈퇴하기
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp, 48.dp, 16.dp, 40.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center
+            ) {
+                ClickableText(
+                    text = AnnotatedString(text = stringResource(id = R.string.my_logout)),
+                    style = ZipdabangandroidTheme.Typography.fourteen_300,
+                    onClick = {
+                        CoroutineScope(Dispatchers.Main).launch {
+                            //tokenStoreViewModel.resetToken()
+                            Log.e("signup-tokens", "로그아웃 클릭, postJob 실행 중")
+                            onClickLogout()
+                            Log.e("signup-tokens", "로그아웃 클릭, onClick 실행 끝")
+                        }
                     }
-                }
-            )
-            Text(
-                text = "|",
-                style = ZipdabangandroidTheme.Typography.twelve_300,
-                color = ZipdabangandroidTheme.Colors.Typo,
-                modifier = Modifier.padding(8.dp, 0.dp, 8.dp, 0.dp),
-            )
-            ClickableText(
-                text = AnnotatedString(text = stringResource(id = R.string.my_withdraw)),
-                style = ZipdabangandroidTheme.Typography.fourteen_300,
-                onClick = {
-                    onClickWithdraw()
-                }
-            )
+                )
+                Text(
+                    text = "|",
+                    style = ZipdabangandroidTheme.Typography.twelve_300,
+                    color = ZipdabangandroidTheme.Colors.Typo,
+                    modifier = Modifier.padding(8.dp, 0.dp, 8.dp, 0.dp),
+                )
+                ClickableText(
+                    text = AnnotatedString(text = stringResource(id = R.string.my_withdraw)),
+                    style = ZipdabangandroidTheme.Typography.fourteen_300,
+                    onClick = {
+                        onClickWithdraw()
+                    }
+                )
+            }
         }
+
+
+
     }
 }
 

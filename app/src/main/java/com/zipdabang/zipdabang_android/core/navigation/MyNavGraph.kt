@@ -70,7 +70,7 @@ fun NavGraphBuilder.MyNavGraph(
                         }
                     },
                     onClickEdit = {
-
+                        navController.navigate(DrawerScreen.UserInfoProfile.route)
                     },
                     onClickLike = {
                         navController.navigate(MyScreen.Like.route)
@@ -150,6 +150,9 @@ fun NavGraphBuilder.MyNavGraph(
         composable(MyScreen.RecipeWrite.route){
             RecipeWriteScreen(
                 onClickBack = {
+                    navController.popBackStack(MyScreen.Myrecipe.route, inclusive = false)
+                },
+                onClickWrite = {
                     navController.popBackStack(MyScreen.Myrecipe.route, inclusive = false)
                 }
             )

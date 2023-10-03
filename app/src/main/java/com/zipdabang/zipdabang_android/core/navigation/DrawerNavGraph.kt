@@ -13,6 +13,7 @@ import androidx.lifecycle.ViewModel
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
+import androidx.navigation.NavHost
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -22,14 +23,34 @@ import com.zipdabang.zipdabang_android.module.drawer.ui.UserInfoBasicScreen
 import com.zipdabang.zipdabang_android.module.drawer.ui.UserInfoDetailScreen
 import com.zipdabang.zipdabang_android.module.drawer.ui.UserInfoNicknameScreen
 import com.zipdabang.zipdabang_android.module.drawer.ui.UserInfoPreferencesScreen
+import com.zipdabang.zipdabang_android.module.drawer.ui.UserInfoProfileScreen
 import com.zipdabang.zipdabang_android.module.drawer.ui.UserInfoScreen
+import com.zipdabang.zipdabang_android.module.drawer.ui.quit.QuitScreen
+import com.zipdabang.zipdabang_android.module.drawer.ui.report.ErrorReportScreen
+import com.zipdabang.zipdabang_android.module.drawer.ui.report.ReportSuccessScreen
 import com.zipdabang.zipdabang_android.module.drawer.ui.viewmodel.DrawerUserInfoViewModel
 
-fun NavGraphBuilder.DrawerNavGraph(navController: NavHostController){
+fun NavGraphBuilder.DrawerNavGraph(navController: NavHostController,outerNavController: NavHostController){
 
     navigation(startDestination = DrawerScreen.Notice.route, route = DRAWER_ROUTE){
         composable(DrawerScreen.Notice.route){
            NoticeScreen(navController)
+        }
+        composable(DrawerScreen.Report.route){
+            ErrorReportScreen(
+                isReportSuccess = {
+                navController.navigate(DrawerScreen.ReportSuccess.route)
+            })
+        }
+        composable(DrawerScreen.ReportSuccess.route){
+            ReportSuccessScreen(
+                isGotoNewReport = {
+                    navController.navigate(DrawerScreen.Report.route)
+                },
+                isDone = {
+                    navController.navigate(HomeScreen.Home.route)
+                }
+            )
         }
 
         composable(DrawerScreen.UserInfo.route){ navBackStackEntry ->
@@ -41,7 +62,9 @@ fun NavGraphBuilder.DrawerNavGraph(navController: NavHostController){
                 onClickBack = {
                     navController.navigateUp()
                 },
-                onClickEdit = {},
+                onClickEdit = {
+                    navController.navigate(DrawerScreen.UserInfoProfile.route)
+                },
                 onClickEditBasic = {
                     drawerUserInfoViewModel.onCheckedEvent()
                     navController.navigate(DrawerScreen.UserInfoBasic.route)
@@ -59,7 +82,9 @@ fun NavGraphBuilder.DrawerNavGraph(navController: NavHostController){
                     navController.navigate(DrawerScreen.UserInfoPreferences.route)
                 },
                 onClickLogout = {},
-                onClickWithdraw = {}
+                onClickWithdraw = {
+                    navController.navigate(DrawerScreen.Quit.route)
+                }
             )
         }
 
@@ -133,6 +158,18 @@ fun NavGraphBuilder.DrawerNavGraph(navController: NavHostController){
                     navController.popBackStack(DrawerScreen.UserInfo.route, inclusive = false)
                 }
             )
+        }
+
+        composable(DrawerScreen.UserInfoProfile.route) { navBackStackEntry ->
+            UserInfoProfileScreen(
+                onClickBack = {
+                    navController.popBackStack(DrawerScreen.UserInfo.route, inclusive = false)
+                }
+            )
+        }
+
+        composable(DrawerScreen.Quit.route){
+           QuitScreen(onQuitClick = { outerNavController.navigate(AuthScreen.SignIn.route) })
         }
     }
 

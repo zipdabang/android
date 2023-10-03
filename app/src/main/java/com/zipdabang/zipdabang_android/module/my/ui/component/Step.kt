@@ -54,6 +54,7 @@ import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
 @Composable
 fun Step(
     stepNum : Int,
+    stepImage : Any?,
     value: String,
     onValueChanged: (String, Int) -> Unit,
     placeholderValue: String,
@@ -73,78 +74,88 @@ fun Step(
             style = ZipdabangandroidTheme.Typography.fourteen_500,
             color = ZipdabangandroidTheme.Colors.Typo
         )
-        // Step 사진 추가 후
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(IntrinsicSize.Min),
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            Box(
-                modifier = Modifier.weight(1.6f)
-            ) {
-                ImageWithIcon(
-                    imageUrl = R.drawable.ic_launcher_background,
-                    onClick = { }
-                )
-            }
-            Box(
+
+        if(stepImage == null){
+            // Step 사진 추가 버튼
+            Button(
+                onClick = {
+                    onClickImageAddBtn()
+                },
+                shape = ZipdabangandroidTheme.Shapes.thin,
                 modifier = Modifier
-                    .background(
-                        color = Color(0xFFF7F6F6),
-                        shape = ZipdabangandroidTheme.Shapes.small
-                    )
-                    .border(
-                        BorderStroke(1.dp, ZipdabangandroidTheme.Colors.Typo.copy(0.1f)),
-                        ZipdabangandroidTheme.Shapes.small
-                    )
-                    .weight(8.4f)
-                    .height(51.dp),
-                contentAlignment = Alignment.Center
+                    .fillMaxWidth()
+                    .height(48.dp),
+                enabled = true,
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color(0xFFF7F6F6)
+                )
             ) {
-                Row(
-                    horizontalArrangement = Arrangement.Center,
+                Box(
+                    contentAlignment = Alignment.Center
                 ) {
-                    Icon(
-                        painter = painterResource(R.drawable.ic_recipewrite_warning),
-                        contentDescription = "Icon",
-                        tint = Color(0xFFB00020),
-                        modifier = Modifier
-                            .size(16.dp)
-                            .padding(4.dp, 0.dp, 0.dp, 0.dp),
-                    )
                     Text(
-                        modifier = Modifier.padding(2.dp, 0.dp, 0.dp, 0.dp),
-                        text = stringResource(id = R.string.my_recipewrite_warning_step),
-                        style = ZipdabangandroidTheme.Typography.twelve_500,
-                        color = Color(0xFFB00020)
+                        textAlign = TextAlign.Center,
+                        text = "Step "+stepNum+" 사진 첨부",
+                        style = ZipdabangandroidTheme.Typography.sixteen_500,
+                        color = ZipdabangandroidTheme.Colors.Typo
                     )
                 }
             }
         }
-        // Step 사진 추가 버튼
-        Button(
-            onClick = { onClickImageAddBtn() },
-            shape = ZipdabangandroidTheme.Shapes.thin,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(48.dp),
-            enabled = true,
-            colors = ButtonDefaults.buttonColors(
-                containerColor = Color(0xFFF7F6F6)
-            )
-        ) {
-            Box(
-                contentAlignment = Alignment.Center
+        else {
+            // Step 사진 추가 후
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(IntrinsicSize.Min),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                Text(
-                    textAlign = TextAlign.Center,
-                    text = stringResource(id = R.string.my_recipewrite_step),
-                    style = ZipdabangandroidTheme.Typography.sixteen_500,
-                    color = ZipdabangandroidTheme.Colors.Typo
-                )
+                Box(
+                    modifier = Modifier.weight(1.6f)
+                ) {
+                    ImageWithIcon(
+                        imageUrl = stepImage,
+                        onClick = {
+                            onClickImageAddBtn()
+                        }
+                    )
+                }
+                Box(
+                    modifier = Modifier
+                        .background(
+                            color = Color(0xFFF7F6F6),
+                            shape = ZipdabangandroidTheme.Shapes.small
+                        )
+                        .border(
+                            BorderStroke(1.dp, ZipdabangandroidTheme.Colors.Typo.copy(0.1f)),
+                            ZipdabangandroidTheme.Shapes.small
+                        )
+                        .weight(8.4f)
+                        .height(51.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Row(
+                        horizontalArrangement = Arrangement.Center,
+                    ) {
+                        Icon(
+                            painter = painterResource(R.drawable.ic_recipewrite_warning),
+                            contentDescription = "Icon",
+                            tint = Color(0xFFB00020),
+                            modifier = Modifier
+                                .size(16.dp)
+                                .padding(4.dp, 0.dp, 0.dp, 0.dp),
+                        )
+                        Text(
+                            modifier = Modifier.padding(2.dp, 0.dp, 0.dp, 0.dp),
+                            text = stringResource(id = R.string.my_recipewrite_warning_step),
+                            style = ZipdabangandroidTheme.Typography.twelve_500,
+                            color = Color(0xFFB00020)
+                        )
+                    }
+                }
             }
         }
+
         // Step textfield
         OutlinedTextField(
             value = value,
@@ -245,6 +256,7 @@ fun PreviewStep() {
     Box(modifier = Modifier.background(Color.White)) {
         Step(
             stepNum = 1,
+            stepImage = null,
             value = textStateStep,
             onValueChanged = { newText, maxLength ->
                 if (newText.length <= maxLength) {

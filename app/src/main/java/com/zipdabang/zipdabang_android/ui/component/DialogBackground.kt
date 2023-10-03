@@ -218,7 +218,7 @@ fun CustomDialogType2(
     }
 }
 
-//확인 버튼만 있는 알럿
+//확인버튼 하나만 있는 알럿
 @Composable
 fun CustomDialogOnlyConfirm(
     title: String,
@@ -286,6 +286,72 @@ fun CustomDialogOnlyConfirm(
 
     }
 }
+//탈퇴하기 알럿
+@Composable
+fun CustomDialogQuitConfirm(
+    title: String,
+    text: String,
+    acceptText: String,
+    onAcceptClick: () -> Unit
+) {
+    Dialog(onDismissRequest = { onAcceptClick() }) {
+        Box(
+            modifier = Modifier
+                .size(width = 328.dp, height = 246.dp)
+                .fillMaxSize()
+                .background(color = DialogBackground, shape = ZipdabangandroidTheme.Shapes.small,)
+        ) {
+
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(190.dp)
+                    .padding(23.dp)
+            )
+            {
+                Text(
+                    text = title,
+                    textAlign = TextAlign.Center,
+                    color = ZipdabangandroidTheme.Colors.Typo,
+                    style = ZipdabangandroidTheme.Typography.eighteen_500,
+                )
+                Spacer(modifier = Modifier.height(20.dp))
+                Text(
+                    text = text,
+                    textAlign = TextAlign.Start,
+                    color = ZipdabangandroidTheme.Colors.Typo,
+                    style = ZipdabangandroidTheme.Typography.sixteen_300,
+                )
+            }
+            Spacer(modifier = Modifier.height(10.dp))
+            Row(
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .fillMaxWidth()
+                    .height(56.dp),
+            ) {
+
+                TextButton(
+                    modifier = Modifier
+                        .fillMaxSize(),
+                    shape = RectangleShape,
+                    onClick = { onAcceptClick() },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = ZipdabangandroidTheme.Colors.Strawberry
+                    )) {
+                    Text(
+                        text = acceptText,
+                        color = Color.White,
+                        style = ZipdabangandroidTheme.Typography.sixteen_500,
+                    )
+
+                }
+            }
+
+        }
+
+    }
+}
 
 //카메라, 파일 선택
 @Composable
@@ -317,7 +383,11 @@ fun CustomDialogCameraFile(
                 ) {
                     TextButton(
                         shape = RectangleShape,
-                        onClick = { onCameraClick() }) {
+                        onClick = {
+                            onCameraClick()
+                            setShowDialog(false)
+                        }
+                    ) {
                         Column(
                             horizontalAlignment = Alignment.CenterHorizontally,
                             verticalArrangement = Arrangement.Center
@@ -339,7 +409,11 @@ fun CustomDialogCameraFile(
                     Spacer(modifier = Modifier.width(80.dp))
                     TextButton(
                         shape = RectangleShape,
-                        onClick = { onFileClick() }) {
+                        onClick = {
+                            onFileClick()
+                            setShowDialog(false)
+                        }
+                    ) {
                         Column(
                             horizontalAlignment = Alignment.CenterHorizontally,
                             verticalArrangement = Arrangement.Center
@@ -352,7 +426,7 @@ fun CustomDialogCameraFile(
                             )
                             Text(
                                 modifier = Modifier.padding(0.dp, 8.dp, 0.dp, 0.dp),
-                                text = stringResource(id = R.string.dialog_file),
+                                text = "사진앱",
                                 color = ZipdabangandroidTheme.Colors.Typo.copy(0.5f),
                                 style = ZipdabangandroidTheme.Typography.sixteen_500
                             )

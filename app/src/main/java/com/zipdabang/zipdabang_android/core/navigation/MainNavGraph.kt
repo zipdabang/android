@@ -41,7 +41,9 @@ fun MainNavGraph(
             showSnackBar = showSnackBar
         )
 
-        DrawerNavGraph(navController = innerNavController)
+        DrawerNavGraph(navController = innerNavController,
+            outerNavController= outerNavController)
+
 
     }
 

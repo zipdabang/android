@@ -63,7 +63,10 @@ sealed class DrawerScreen(val route : String){
     //FAQ
     object FAQ : DrawerScreen(route = "drawer/faq")
     //오류문의 및 신고
-    object Inquery : DrawerScreen(route = "drawer/inquery")
+    object Report : DrawerScreen(route = "drawer/report")
+
+    object ReportSuccess : DrawerScreen(route = "drawer/report/success")
+
     //회원 정보
     object UserInfo : DrawerScreen(route = "drawer/userinfo")
     object UserInfoBasic : DrawerScreen(route="drawer/userinfo/basic")
@@ -71,6 +74,7 @@ sealed class DrawerScreen(val route : String){
     object UserInfoNickname : DrawerScreen(route="main/drawer/userinfo/nickname")
     object UserInfoPreferences : DrawerScreen(route="main/drawer/userinfo/preferences")
     object UserInfoProfile : DrawerScreen(route="main/drawer/userinfo/profile")
+    object Quit : DrawerScreen(route="main/drawer/quit")
 
 }
 
