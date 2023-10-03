@@ -1,6 +1,5 @@
 package com.zipdabang.zipdabang_android.module.market.di
 
-import com.google.firebase.crashlytics.buildtools.reloc.com.google.j2objc.annotations.Property
 import com.zipdabang.zipdabang_android.common.Constants
 import com.zipdabang.zipdabang_android.module.market.data.MarketApi
 import com.zipdabang.zipdabang_android.module.market.data.MarketRepositoryImpl

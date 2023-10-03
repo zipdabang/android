@@ -38,9 +38,6 @@ fun SearchBar(
 
     var text by remember { mutableStateOf(keyword) }
 
-
-
-
     OutlinedTextField(
         value = text,
         onValueChange =  { text= it},

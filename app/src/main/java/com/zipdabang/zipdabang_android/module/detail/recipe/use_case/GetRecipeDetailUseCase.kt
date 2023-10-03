@@ -7,7 +7,7 @@ import com.zipdabang.zipdabang_android.common.ResponseCode
 import com.zipdabang.zipdabang_android.core.data_store.proto.Token
 import com.zipdabang.zipdabang_android.module.detail.recipe.domain.RecipeDetailDomain
 import com.zipdabang.zipdabang_android.module.detail.recipe.domain.RecipeDetailRepository
-import com.zipdabang.zipdabang_android.module.detail.recipe.mapper.toRecipeDetailDomain
+import com.zipdabang.zipdabang_android.module.detail.recipe.util.toRecipeDetailDomain
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.first

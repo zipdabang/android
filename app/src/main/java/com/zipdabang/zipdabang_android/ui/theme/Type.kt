@@ -188,6 +188,13 @@ data class ZipdabangTypography (
         letterSpacing = 0.sp,
     ),
 
+    val ten_500 : TextStyle = defaultTextStyle.copy(
+        fontFamily = Kopubworld,
+        fontWeight = FontWeight.Medium,
+        fontSize = 10.sp,
+        letterSpacing = 0.sp,
+    ),
+
     val eight_300 : TextStyle = defaultTextStyle.copy(
         fontFamily = Kopubworld,
         fontWeight = FontWeight.Light,

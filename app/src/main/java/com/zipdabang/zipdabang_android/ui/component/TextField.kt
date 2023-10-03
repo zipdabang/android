@@ -351,7 +351,7 @@ fun TextFieldForDrawerSingleline( //한줄 textfield
     value : String,
     onValueChanged: (String, Int) -> Unit,
     placeholderValue: String,
-   //errorMessage : String,
+    errorMessage : String,
     maxLength : Int, //최대 글자수
     isError : Boolean,
     imeAction: ImeAction, //default,none이면 엔터키, next면 다음 텍스트필드로 넘어감, done면 완료키
@@ -363,23 +363,24 @@ fun TextFieldForDrawerSingleline( //한줄 textfield
             },
             textStyle = ZipdabangandroidTheme.Typography.sixteen_300,
             modifier = Modifier.fillMaxSize(),
-            placeholder = {
-                    Text(
-                        text = placeholderValue,
-                        style = ZipdabangandroidTheme.Typography.sixteen_300,
-                        color = ZipdabangandroidTheme.Colors.Typo.copy(0.5f)
-                    )
-            },
             isError = isError,
-            /*label = {
-                //에러일때 label
+            label = {
+                //에러일 때 label
                 if(isError){
                     Text(
                         text = errorMessage,
                         style = ZipdabangandroidTheme.Typography.twelve_500
                     )
                 }
-            },*/
+
+            },
+          /* placeholder = {
+               Text(
+                   text = placeholderValue,
+                   style = ZipdabangandroidTheme.Typography.sixteen_300,
+                   color = ZipdabangandroidTheme.Colors.Typo.copy(0.5f)
+               )
+           },*/
             singleLine = true,
             colors = OutlinedTextFieldDefaults.colors(
                 cursorColor = ZipdabangandroidTheme.Colors.Typo.copy(0.5f),
@@ -416,7 +417,7 @@ fun TextFieldForDrawerMultiline( //여러줄 textfield -> height이랑 maxLines�
         },
         textStyle = ZipdabangandroidTheme.Typography.sixteen_300,
         modifier = Modifier
-            .fillMaxSize()
+            .fillMaxWidth()
             .height(height),
         placeholder = {
             Text(
@@ -472,7 +473,7 @@ fun PreviewTextFieldForDrawerSingleline(){
                 }
             },
             placeholderValue = "레시피 제목 (최대 20자)",
-            //errorMessage = "이메일 형식에 맞지 않습니다",
+            errorMessage = "이메일 형식에 맞지 않습니다",
             maxLength = 8,
             isError = if(textState == "ㅁㄴㅇㄹ") true else false,
             imeAction = ImeAction.Default,

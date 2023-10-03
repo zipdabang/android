@@ -1,10 +1,8 @@
 package com.zipdabang.zipdabang_android.module.drawer.ui.quit
 
-import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
@@ -24,9 +22,9 @@ import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
 
 @Composable
 fun QuitCheckBoxComponent(
-    reason : String,
-    addReason : () -> Unit,
-    removeReason : () -> Unit
+    reason: String,
+    ischeckedChange : () -> Unit,
+    isNotChecked : () -> Unit
 ){
     var isChecked by remember { mutableStateOf(false) }
 
@@ -42,13 +40,13 @@ fun QuitCheckBoxComponent(
           isCheckedChange =
         {
                 selectedChecked ->
-
             isChecked = selectedChecked
-            if(isChecked) addReason()
-            else removeReason()
-            Log.e("quit_log",selectedChecked.toString())
-
-
+            if(selectedChecked) {
+                ischeckedChange()
+            }
+            else {
+                isNotChecked()
+            }
         }
 
     )

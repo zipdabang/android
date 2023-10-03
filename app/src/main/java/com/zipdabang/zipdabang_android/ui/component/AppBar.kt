@@ -14,8 +14,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -53,6 +56,7 @@ import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
 import me.onebone.toolbar.CollapsingToolbarScaffold
 import me.onebone.toolbar.ScrollStrategy
 import me.onebone.toolbar.rememberCollapsingToolbarScaffoldState
+import org.intellij.lang.annotations.JdkConstants.HorizontalAlignment
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -370,6 +374,14 @@ fun AppBarCollapsing(
     onClickStartIcon: () -> Unit,
     onClickEndIcon: () -> Unit,
     deviceSize: DeviceScreenSize,
+    isExpandedForOwner: Boolean,
+    isExpandedForNotOwner: Boolean,
+    onDismissEndIcon: () -> Unit,
+    onDeleteClick: () -> Unit,
+    onEditClick: () -> Unit,
+    onReportClick: (Int, Int) -> Unit,
+    onBlockClick: (Int) -> Unit,
+    showRecipeReport: (Int, Int) -> Unit,
     content: @Composable () -> Unit
 ) {
     val state = rememberCollapsingToolbarScaffoldState()
@@ -432,24 +444,78 @@ fun AppBarCollapsing(
 
 
             endIcon?.let {
-                IconButton(
-                    modifier = Modifier
-                        .padding(8.dp)
-                        .road(
+                Box(
+                    contentAlignment = Alignment.TopEnd,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    IconButton(
+                        modifier = Modifier
+                            .padding(8.dp)
+                            .road(
+                                whenCollapsed = Alignment.TopEnd,
+                                whenExpanded = Alignment.TopEnd
+                            ),
+                        onClick = { onClickEndIcon() }
+                    ) {
+                        Icon(
+                            bitmap = endIcon,
+                            contentDescription = "search",
+                            modifier = Modifier
+                                .padding(4.dp)
+                                .alpha(1f),
+                            tint = if (state.toolbarState.progress > 0) Color.White else Color.Gray
+                        )
+
+                    }
+
+                    /*DropdownMenu(
+                        modifier = Modifier.background(Color.White).road(
                             whenCollapsed = Alignment.TopEnd,
                             whenExpanded = Alignment.TopEnd
                         ),
-                    onClick = { onClickEndIcon() }
-                ) {
-                    Icon(
-                        bitmap = endIcon,
-                        contentDescription = "search",
-                        modifier = Modifier
-                            .padding(4.dp)
-                            .alpha(1f),
-                        tint = if (state.toolbarState.progress > 0) Color.White else Color.Gray
-                    )
+                        expanded = isExpandedForOwner,
+                        onDismissRequest = { onDismissEndIcon() },
+                    ) {
+                        DropdownMenuItem(
+                            text = { Text("게시글 수정하기") },
+                            onClick = {
+                                onDeleteClick()
+                                onDismissEndIcon()
+                            }
+                        )
+                        DropdownMenuItem(
+                            text = { Text("게시글 삭제하기") },
+                            onClick = {
+                                onEditClick()
+                                onDismissEndIcon()
+                            }
+                        )
+                    }
+
+                    DropdownMenu(
+                        modifier = Modifier.background(Color.White).road(
+                            whenCollapsed = Alignment.TopEnd,
+                            whenExpanded = Alignment.TopEnd
+                        ),
+                        expanded = isExpandedForNotOwner,
+                        onDismissRequest = { onDismissEndIcon() },
+                    ) {
+                        DropdownMenuItem(
+                            text = { Text("신고하기") },
+                            onClick = {
+                                // showCommentReport(recipeId, commentItem.commentId, 1)
+                                onDismissEndIcon()
+                            }
+                        )
+                        DropdownMenuItem(
+                            text = { Text("차단하기") },
+                            onClick = {
+                                onDismissEndIcon()
+                            }
+                        )
+                    }*/
                 }
+
             }
         }
     ) {
@@ -481,7 +547,8 @@ fun CollapsingAppbar(
             toolbarHeightPx = toolbarHeightPx,
             actionIcon = endIcon,
             onClickNavigationIcon = onClickStartIcon,
-            onClickActionIcon = onClickEndIcon)
+            onClickActionIcon = onClickEndIcon
+        )
     }
 }
 
@@ -664,7 +731,15 @@ fun AppBarCollapsingPreview() {
         imageUrl = "https://github.com/kmkim2689/jetpack-compose-practice/assets/101035437/2bb0c4ab-e42b-4697-87c6-2fbe3c836cd7",
         onClickStartIcon = { /*TODO*/ },
         onClickEndIcon = { /*TODO*/ },
-        deviceSize = DeviceScreenSize(1f, 1f)
+        isExpandedForOwner = false,
+        isExpandedForNotOwner = false,
+        onDismissEndIcon = {},
+        onDeleteClick = {},
+        onEditClick = {},
+        onReportClick = { a, b -> },
+        onBlockClick = { a -> },
+        deviceSize = DeviceScreenSize(1f, 1f),
+        showRecipeReport = { a, b -> }
     ) {
         LazyColumn(modifier = Modifier.fillMaxSize()) {
             items(100) {

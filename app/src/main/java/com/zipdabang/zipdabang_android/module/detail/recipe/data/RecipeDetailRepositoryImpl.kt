@@ -1,5 +1,6 @@
 package com.zipdabang.zipdabang_android.module.detail.recipe.data
 
+import com.zipdabang.zipdabang_android.common.ResponseBody
 import com.zipdabang.zipdabang_android.module.detail.recipe.domain.RecipeDetailRepository
 import com.zipdabang.zipdabang_android.module.recipes.data.RecipeApi
 import javax.inject.Inject
@@ -9,5 +10,17 @@ class RecipeDetailRepositoryImpl @Inject constructor(
 ): RecipeDetailRepository {
     override suspend fun getRecipeDetail(accessToken: String, recipeId: Int): RecipeDetailDto {
         return recipeApi.getRecipeDetail(accessToken, recipeId)
+    }
+
+    override suspend fun reportRecipe(
+        accessToken: String,
+        recipeId: Int,
+        reportId: Int
+    ): ResponseBody<String?> {
+        return recipeApi.reportRecipe(
+            accessToken = accessToken,
+            recipeId = recipeId,
+            reportId = reportId
+        )
     }
 }

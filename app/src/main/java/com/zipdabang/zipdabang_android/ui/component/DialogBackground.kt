@@ -42,6 +42,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import coil.compose.AsyncImage
 import com.zipdabang.zipdabang_android.R
+import com.zipdabang.zipdabang_android.module.comment.ui.CommentReportState
+import com.zipdabang.zipdabang_android.module.recipes.common.ReportContent
 import com.zipdabang.zipdabang_android.ui.theme.DialogBackground
 import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
 
@@ -217,7 +219,7 @@ fun CustomDialogType2(
     }
 }
 
-//확인 버튼만 있는 알럿
+//확인버튼 하나만 있는 알럿
 @Composable
 fun CustomDialogOnlyConfirm(
     title: String,
@@ -285,6 +287,72 @@ fun CustomDialogOnlyConfirm(
 
     }
 }
+//탈퇴하기 알럿
+@Composable
+fun CustomDialogQuitConfirm(
+    title: String,
+    text: String,
+    acceptText: String,
+    onAcceptClick: () -> Unit
+) {
+    Dialog(onDismissRequest = { onAcceptClick() }) {
+        Box(
+            modifier = Modifier
+                .size(width = 328.dp, height = 246.dp)
+                .fillMaxSize()
+                .background(color = DialogBackground, shape = ZipdabangandroidTheme.Shapes.small,)
+        ) {
+
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(190.dp)
+                    .padding(23.dp)
+            )
+            {
+                Text(
+                    text = title,
+                    textAlign = TextAlign.Center,
+                    color = ZipdabangandroidTheme.Colors.Typo,
+                    style = ZipdabangandroidTheme.Typography.eighteen_500,
+                )
+                Spacer(modifier = Modifier.height(20.dp))
+                Text(
+                    text = text,
+                    textAlign = TextAlign.Start,
+                    color = ZipdabangandroidTheme.Colors.Typo,
+                    style = ZipdabangandroidTheme.Typography.sixteen_300,
+                )
+            }
+            Spacer(modifier = Modifier.height(10.dp))
+            Row(
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .fillMaxWidth()
+                    .height(56.dp),
+            ) {
+
+                TextButton(
+                    modifier = Modifier
+                        .fillMaxSize(),
+                    shape = RectangleShape,
+                    onClick = { onAcceptClick() },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = ZipdabangandroidTheme.Colors.Strawberry
+                    )) {
+                    Text(
+                        text = acceptText,
+                        color = Color.White,
+                        style = ZipdabangandroidTheme.Typography.sixteen_500,
+                    )
+
+                }
+            }
+
+        }
+
+    }
+}
 
 //카메라, 파일 선택
 @Composable
@@ -316,7 +384,11 @@ fun CustomDialogCameraFile(
                 ) {
                     TextButton(
                         shape = RectangleShape,
-                        onClick = { onCameraClick() }) {
+                        onClick = {
+                            onCameraClick()
+                            setShowDialog(false)
+                        }
+                    ) {
                         Column(
                             horizontalAlignment = Alignment.CenterHorizontally,
                             verticalArrangement = Arrangement.Center
@@ -338,7 +410,11 @@ fun CustomDialogCameraFile(
                     Spacer(modifier = Modifier.width(80.dp))
                     TextButton(
                         shape = RectangleShape,
-                        onClick = { onFileClick() }) {
+                        onClick = {
+                            onFileClick()
+                            setShowDialog(false)
+                        }
+                    ) {
                         Column(
                             horizontalAlignment = Alignment.CenterHorizontally,
                             verticalArrangement = Arrangement.Center
@@ -351,7 +427,7 @@ fun CustomDialogCameraFile(
                             )
                             Text(
                                 modifier = Modifier.padding(0.dp, 8.dp, 0.dp, 0.dp),
-                                text = stringResource(id = R.string.dialog_file),
+                                text = "사진앱",
                                 color = ZipdabangandroidTheme.Colors.Typo.copy(0.5f),
                                 style = ZipdabangandroidTheme.Typography.sixteen_500
                             )
@@ -972,6 +1048,270 @@ fun CustomBasketReady(
     }
 }
 
+@Composable
+fun RecipeReportDialog(
+    title: String,
+    recipeId: Int,
+    reportId: Int,
+    declineText: String,
+    acceptText: String,
+    reportContentList: List<ReportContent>,
+    setShowDialog: (Boolean) -> Unit,
+    onReportClick: (Int, Int) -> Unit,
+    onReportContentChange: (Int) -> Unit
+) {
+    Dialog(onDismissRequest = { setShowDialog(false) }) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth(0.95f)
+                .background(color = DialogBackground, shape = ZipdabangandroidTheme.Shapes.small)
+        ) {
+
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+            ) {
+                Text(
+                    text = title,
+                    textAlign = TextAlign.Center,
+                    color = ZipdabangandroidTheme.Colors.Typo,
+                    style = ZipdabangandroidTheme.Typography.eighteen_700,
+                    modifier = Modifier.padding(horizontal = 24.dp, vertical = 20.dp)
+                )
+
+                Spacer(modifier = Modifier.width(20.dp))
+
+                RadioGroupReportVertical(
+                    optionList = reportContentList,
+                    onOptionChange = onReportContentChange
+                )
+
+                Spacer(modifier = Modifier.height(10.dp))
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(56.dp),
+                ) {
+                    TextButton(
+                        modifier = Modifier
+                            .weight(1f)
+                            .fillMaxHeight(),
+                        shape = RectangleShape,
+                        onClick = { setShowDialog(false) },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color(0XFFF7F6F6)
+                        )
+                    ) {
+                        Text(
+                            text = declineText,
+                            color = ZipdabangandroidTheme.Colors.Typo,
+                            style = ZipdabangandroidTheme.Typography.sixteen_500,
+                        )
+                    }
+                    TextButton(
+                        modifier = Modifier
+                            .weight(1f)
+                            .fillMaxHeight(),
+                        shape = RectangleShape,
+                        onClick = {
+                            onReportClick(recipeId, reportId)
+                            setShowDialog(false)
+                        },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = ZipdabangandroidTheme.Colors.Strawberry
+                        )
+                    ) {
+                        Text(
+                            text = acceptText,
+                            color = Color.White,
+                            style = ZipdabangandroidTheme.Typography.sixteen_500,
+                        )
+
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun CommentReportDialog(
+    title: String,
+    recipeId: Int,
+    commentId: Int,
+    reportId: Int,
+    declineText: String,
+    acceptText: String,
+    reportContentList: List<ReportContent>,
+    setShowDialog: (Boolean) -> Unit,
+    onReportClick: (Int, Int, Int) -> Unit,
+    onReportContentChange: (Int) -> Unit
+) {
+    Dialog(onDismissRequest = { setShowDialog(false) }) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth(0.95f)
+                .background(color = DialogBackground, shape = ZipdabangandroidTheme.Shapes.small)
+        ) {
+
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+            ) {
+                Text(
+                    text = title,
+                    textAlign = TextAlign.Center,
+                    color = ZipdabangandroidTheme.Colors.Typo,
+                    style = ZipdabangandroidTheme.Typography.eighteen_700,
+                    modifier = Modifier.padding(horizontal = 24.dp, vertical = 20.dp)
+                )
+
+                Spacer(modifier = Modifier.width(20.dp))
+
+                RadioGroupReportVertical(
+                    optionList = reportContentList,
+                    onOptionChange = onReportContentChange
+                )
+
+                Spacer(modifier = Modifier.height(10.dp))
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(56.dp),
+                ) {
+                    TextButton(
+                        modifier = Modifier
+                            .weight(1f)
+                            .fillMaxHeight(),
+                        shape = RectangleShape,
+                        onClick = { setShowDialog(false) },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color(0XFFF7F6F6)
+                        )
+                    ) {
+                        Text(
+                            text = declineText,
+                            color = ZipdabangandroidTheme.Colors.Typo,
+                            style = ZipdabangandroidTheme.Typography.sixteen_500,
+                        )
+                    }
+                    TextButton(
+                        modifier = Modifier
+                            .weight(1f)
+                            .fillMaxHeight(),
+                        shape = RectangleShape,
+                        onClick = {
+                            onReportClick(recipeId, commentId, reportId)
+                            setShowDialog(false)
+                        },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = ZipdabangandroidTheme.Colors.Strawberry
+                        )
+                    ) {
+                        Text(
+                            text = acceptText,
+                            color = Color.White,
+                            style = ZipdabangandroidTheme.Typography.sixteen_500,
+                        )
+
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun UserBlockDialog(
+    title: String,
+    text: String,
+    declineText: String,
+    acceptText: String,
+    setShowDialog: (Boolean) -> Unit,
+    onAcceptClick: () -> Unit
+) {
+    Dialog(onDismissRequest = { setShowDialog(false) }) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth(0.95f)
+                .background(color = DialogBackground, shape = ZipdabangandroidTheme.Shapes.small)
+        ) {
+
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+
+            ) {
+                Text(
+                    text = title,
+                    textAlign = TextAlign.Center,
+                    color = ZipdabangandroidTheme.Colors.Typo,
+                    style = ZipdabangandroidTheme.Typography.eighteen_700,
+                    modifier = Modifier.padding(horizontal = 24.dp, vertical = 20.dp)
+                )
+
+                Spacer(modifier = Modifier.width(10.dp))
+
+                Text(
+                    text = text,
+                    textAlign = TextAlign.Start,
+                    color = ZipdabangandroidTheme.Colors.Typo,
+                    style = ZipdabangandroidTheme.Typography.sixteen_500,
+                    modifier = Modifier.padding(horizontal = 24.dp, vertical = 20.dp)
+                )
+
+
+                Spacer(modifier = Modifier.height(10.dp))
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(56.dp),
+                ) {
+                    TextButton(
+                        modifier = Modifier
+                            .weight(1f)
+                            .fillMaxHeight(),
+                        shape = RectangleShape,
+                        onClick = { setShowDialog(false) },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color(0XFFF7F6F6)
+                        )
+                    ) {
+                        Text(
+                            text = declineText,
+                            color = ZipdabangandroidTheme.Colors.Typo,
+                            style = ZipdabangandroidTheme.Typography.sixteen_500,
+                        )
+                    }
+                    TextButton(
+                        modifier = Modifier
+                            .weight(1f)
+                            .fillMaxHeight(),
+                        shape = RectangleShape,
+                        onClick = {
+                            onAcceptClick()
+                            setShowDialog(false)
+                        },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = ZipdabangandroidTheme.Colors.Strawberry
+                        )
+                    ) {
+                        Text(
+                            text = acceptText,
+                            color = Color.White,
+                            style = ZipdabangandroidTheme.Typography.sixteen_500,
+                        )
+
+                    }
+                }
+            }
+        }
+    }
+}
+
 
 @Preview
 @Composable
@@ -1192,4 +1532,36 @@ fun PreviewCustomDialogSelectCategory() {
             },
         )
     }
+}
+
+@Preview
+@Composable
+fun CommentReportDialogPreview() {
+    CommentReportDialog(
+        title = "댓글 신고하기",
+        recipeId = 1,
+        commentId = 1,
+        reportId = 1,
+        declineText = "취소",
+        acceptText = "신고하기",
+        reportContentList = ReportContent.contents,
+        setShowDialog = { boolean -> },
+        onReportClick = { report, repor, re ->},
+        onReportContentChange = { re -> }
+    )
+}
+
+@Preview
+@Composable
+fun BlockDialogPreview() {
+    UserBlockDialog(
+        title = "댓글 신고하기",
+        declineText = "취소",
+        acceptText = "신고하기",
+        setShowDialog = { boolean -> },
+        text = "해당 게시글을 차단하게되면,\n" +
+                "더이상 회원님에게 보이지 않게됩니다.\n" +
+                "게시글을 차단하시겠습니까?",
+        onAcceptClick = {}
+    )
 }
