@@ -4,5 +4,5 @@ data class FollowingDto(
     val code: Int,
     val isSuccess: Boolean,
     val message: String,
-    val result: FollowingResult
+    val result: FollowingResult?
 )

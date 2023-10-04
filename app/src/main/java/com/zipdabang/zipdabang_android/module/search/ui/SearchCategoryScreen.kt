@@ -39,6 +39,7 @@ fun SearchCategoryScreen(
    searchViewModel: SearchCategoryViewModel = hiltViewModel()
 ){
     val allItems = searchViewModel.getSearchRecipeCategoryItems.collectAsLazyPagingItems()
+    
     val categoryId = searchViewModel.categoryId
     val isLoading by remember {
         mutableStateOf(false)
