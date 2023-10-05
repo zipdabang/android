@@ -24,6 +24,7 @@ import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import java.util.concurrent.TimeUnit
 import javax.inject.Qualifier
@@ -78,22 +79,24 @@ object AppModule {
 
     @Provides
     @Singleton // have a singleton...
-    fun provideHttpClient(
-        tokenDataStore: DataStore<Token>
-    ): OkHttpClient {
+    fun provideHttpClient(): OkHttpClient {
 
-        // val accessToken = tokenDataStore.data.first().accessToken
+        val interceptor = HttpLoggingInterceptor().apply {
+            // level : BODY -> logs headers + bodies of request, response
+            // NONE, BASIC, HEADERS, BODY
+            level = HttpLoggingInterceptor.Level.BODY
+        }
 
-        return OkHttpClient.Builder()
-/*            .addInterceptor(Interceptor { chain ->
-                val newRequest = chain.request().newBuilder()
-                    .addHeader("Authorization", )
-                    .build()
-                chain.proceed(newRequest);
-            })*/
-            .readTimeout(15, TimeUnit.SECONDS)
-            .connectTimeout(15, TimeUnit.SECONDS)
-            .build()
+        val client = OkHttpClient.Builder().apply {
+            addInterceptor(interceptor)
+            connectTimeout(30, TimeUnit.SECONDS)
+            // readTimeout : maximum time gap between 'arrivals' of two data packets when waiting for the server's response
+            readTimeout(20, TimeUnit.SECONDS)
+            // writeTimeout : maximum time gap between two data packets when 'sending' them to the server
+            writeTimeout(25, TimeUnit.SECONDS)
+        }.build()
+
+        return client
     }
 
     @OptIn(ExperimentalSerializationApi::class)

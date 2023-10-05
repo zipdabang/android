@@ -8,11 +8,16 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.zipdabang.zipdabang_android.common.Resource
 import com.zipdabang.zipdabang_android.common.ResponseCode
+import com.zipdabang.zipdabang_android.common.UiState
+import com.zipdabang.zipdabang_android.core.DeviceSize
+import com.zipdabang.zipdabang_android.module.detail.recipe.common.DeviceScreenSize
 import com.zipdabang.zipdabang_android.module.recipes.common.OwnerType
+import com.zipdabang.zipdabang_android.module.recipes.data.hot.HotRecipeItem
 import com.zipdabang.zipdabang_android.module.recipes.ui.state.PreferenceToggleState
 import com.zipdabang.zipdabang_android.module.recipes.ui.state.RecipeBannerState
 import com.zipdabang.zipdabang_android.module.recipes.ui.state.RecipeCategoryState
 import com.zipdabang.zipdabang_android.module.recipes.ui.state.RecipePreviewState
+import com.zipdabang.zipdabang_android.module.recipes.use_case.GetHotRecipesByCategoryUseCase
 import com.zipdabang.zipdabang_android.module.recipes.use_case.GetRecipeBannerUseCase
 import com.zipdabang.zipdabang_android.module.recipes.use_case.GetRecipeCategoryUseCase
 import com.zipdabang.zipdabang_android.module.recipes.use_case.GetRecipePreviewUseCase
@@ -32,6 +37,8 @@ class RecipeMainViewModel @Inject constructor(
     private val getRecipePreviewUseCase: GetRecipePreviewUseCase,
     private val toggleLikeUseCase: ToggleLikeUseCase,
     private val toggleScrapUseCase: ToggleScrapUseCase,
+    private val getHotRecipesByCategoryUseCase: GetHotRecipesByCategoryUseCase,
+    @DeviceSize private val deviceSize: DeviceScreenSize,
     private val savedState: SavedStateHandle
 ): ViewModel() {
 
@@ -54,6 +61,9 @@ class RecipeMainViewModel @Inject constructor(
 
     private val _userRecipeState = mutableStateOf(RecipePreviewState())
     val userRecipeState: State<RecipePreviewState> = _userRecipeState
+
+    private val _hotRecipeState = mutableStateOf(UiState<List<HotRecipeItem>>())
+    val hotRecipeState: State<UiState<List<HotRecipeItem>>> = _hotRecipeState
 
     private val _toggleLikeResult = MutableStateFlow(PreferenceToggleState())
     val toggleLikeResult: StateFlow<PreferenceToggleState>
@@ -246,7 +256,32 @@ class RecipeMainViewModel @Inject constructor(
         }.launchIn(viewModelScope)
     }
 
+    fun getHotRecipesByCategory(categoryId: Int) {
+        getHotRecipesByCategoryUseCase(categoryId).onEach { result ->
+        when (result) {
+            is Resource.Loading -> {
+                _hotRecipeState.value = UiState(
+                    isLoading = true
+                )
+            }
+            is Resource.Success -> {
+                _hotRecipeState.value = UiState(
+                    isLoading = false,
+                    isSuccessful = true,
+                    data = result.data?.result ?: emptyList()
+                )
+            }
+            is Resource.Error -> {
+                _hotRecipeState.value = UiState(
+                    isLoading = false,
+                    isSuccessful = false,
+                    errorMessage = result.message
+                )
+            }
+        }
 
+        }.launchIn(viewModelScope)
+    }
 
     fun toggleLike(recipeId: Int) {
         toggleLikeUseCase(recipeId).onEach { result ->
@@ -427,5 +462,9 @@ class RecipeMainViewModel @Inject constructor(
                 }
             }
         }.launchIn(viewModelScope)
+    }
+
+    fun getDeviceSize(): DeviceScreenSize {
+        return deviceSize
     }
 }

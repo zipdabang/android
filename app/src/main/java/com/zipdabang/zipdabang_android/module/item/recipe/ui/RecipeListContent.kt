@@ -82,9 +82,7 @@ fun RecipeListContent(
                 contentType = items.itemContentType { "images" }
             ) { index: Int ->
                 val recipeItem = items[index]
-
-
-
+                
                 if (recipeItem != null) {
 
                     var isLiked by remember { mutableStateOf(recipeItem.isLiked) }
