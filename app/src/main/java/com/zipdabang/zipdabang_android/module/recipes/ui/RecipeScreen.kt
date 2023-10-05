@@ -1,5 +1,6 @@
 package com.zipdabang.zipdabang_android.module.recipes.ui
 
+import android.util.Log
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.DrawerValue
@@ -12,15 +13,22 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.google.accompanist.pager.ExperimentalPagerApi
+import com.google.accompanist.pager.rememberPagerState
 import com.zipdabang.zipdabang_android.R
+import com.zipdabang.zipdabang_android.common.TabItem
 import com.zipdabang.zipdabang_android.module.recipes.common.OwnerCategory
 import com.zipdabang.zipdabang_android.module.recipes.common.OwnerType
+import com.zipdabang.zipdabang_android.module.recipes.data.hot.HotRecipeItem
+import com.zipdabang.zipdabang_android.module.recipes.domain.HotRecipe
+import com.zipdabang.zipdabang_android.module.recipes.ui.viewmodel.HotRecipeViewModel
 import com.zipdabang.zipdabang_android.module.recipes.ui.viewmodel.RecipeMainViewModel
 import com.zipdabang.zipdabang_android.ui.component.AppBarHome
 import com.zipdabang.zipdabang_android.ui.component.ModalDrawer
 import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
 import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalPagerApi::class)
 @Composable
 fun RecipeScreen(
     navController: NavController,
@@ -33,15 +41,37 @@ fun RecipeScreen(
     val scope = rememberCoroutineScope()
 
     val viewModel = hiltViewModel<RecipeMainViewModel>()
+    val hotRecipeViewModel = hiltViewModel<HotRecipeViewModel>()
+
+    val hotAllRecipes = hotRecipeViewModel.hotAllRecipeState.value
+    val hotCoffeeRecipes = hotRecipeViewModel.hotCoffeeRecipeState.value
+    val hotCaffeineFreeRecipes = hotRecipeViewModel.hotCaffeineFreeRecipeState.value
+    val hotTeaRecipes = hotRecipeViewModel.hotTeaRecipeState.value
+    val hotAdeRecipes = hotRecipeViewModel.hotAdeRecipeState.value
+    val hotSmoothieRecipes = hotRecipeViewModel.hotSmoothieRecipeState.value
+    val hotFruitRecipes = hotRecipeViewModel.hotFruitRecipeState.value
+    val hotWellBeingRecipes = hotRecipeViewModel.hotWellBeingRecipeState.value
+
+
+    Log.d("recipeScreen", "${hotCoffeeRecipes}")
 
     val banners = viewModel.banners.value
     val categories = viewModel.categoryList.value
-    val everyoneRecipe = viewModel.everyRecipeState.value
-    val influencerRecipe = viewModel.influencerRecipeState.value
-    val userRecipe = viewModel.userRecipeState.value
 
     val likeState = viewModel.toggleLikeResult
     val scrapState = viewModel.toggleScrapResult
+
+    val deviceSize = viewModel.getDeviceSize()
+
+    val pagerState =  rememberPagerState()
+
+    val onLikeClick = { recipeId: Int ->
+        viewModel.toggleLike(recipeId = recipeId)
+    }
+
+    val onScrapClick = { recipeId: Int ->
+        viewModel.toggleScrap(recipeId = recipeId)
+    }
 
     val ownerTypeList = listOf(
         OwnerCategory(
@@ -70,6 +100,73 @@ fun RecipeScreen(
             backgroundColor = ZipdabangandroidTheme.Colors.Choco,
             textColor = Color.White,
             drawable = R.drawable.recipe_category_our
+        )
+    )
+
+    val tabs = listOf(
+        TabItem.Coffee(
+            hotItems = hotCoffeeRecipes,
+            onRecipeClick = onRecipeClick,
+            onScrapClick = onScrapClick,
+            onLikeClick = onLikeClick,
+            likeState = likeState,
+            scrapState = scrapState
+        ),
+        TabItem.CaffeineFree(
+            hotItems = hotCaffeineFreeRecipes,
+            onRecipeClick = onRecipeClick,
+            onScrapClick = onScrapClick,
+            onLikeClick = onLikeClick,
+            likeState = likeState,
+            scrapState = scrapState
+        ),
+        TabItem.Tea(
+            hotItems = hotTeaRecipes,
+            onRecipeClick = onRecipeClick,
+            onScrapClick = onScrapClick,
+            onLikeClick = onLikeClick,
+            likeState = likeState,
+            scrapState = scrapState
+        ),
+        TabItem.Ade(
+            hotItems = hotAdeRecipes,
+            onRecipeClick = onRecipeClick,
+            onScrapClick = onScrapClick,
+            onLikeClick = onLikeClick,
+            likeState = likeState,
+            scrapState = scrapState
+        ),
+        TabItem.Smoothie(
+            hotItems = hotSmoothieRecipes,
+            onRecipeClick = onRecipeClick,
+            onScrapClick = onScrapClick,
+            onLikeClick = onLikeClick,
+            likeState = likeState,
+            scrapState = scrapState
+        ),
+        TabItem.Fruit(
+            hotItems = hotFruitRecipes,
+            onRecipeClick = onRecipeClick,
+            onScrapClick = onScrapClick,
+            onLikeClick = onLikeClick,
+            likeState = likeState,
+            scrapState = scrapState
+        ),
+        TabItem.WellBeing(
+            hotItems = hotWellBeingRecipes,
+            onRecipeClick = onRecipeClick,
+            onScrapClick = onScrapClick,
+            onLikeClick = onLikeClick,
+            likeState = likeState,
+            scrapState = scrapState
+        ),
+        TabItem.All(
+            hotItems = hotAllRecipes,
+            onRecipeClick = onRecipeClick,
+            onScrapClick = onScrapClick,
+            onLikeClick = onLikeClick,
+            likeState = likeState,
+            scrapState = scrapState
         )
     )
 
@@ -104,8 +201,11 @@ fun RecipeScreen(
                     banners = banners,
                     categories = categories,
                     ownerTypeList = ownerTypeList,
+                    hotRecipes = tabs,
                     likeState = likeState,
-                    scrapState = scrapState
+                    scrapState = scrapState,
+                    deviceSize = deviceSize,
+                    pagerState = pagerState
                 )
             }
         },

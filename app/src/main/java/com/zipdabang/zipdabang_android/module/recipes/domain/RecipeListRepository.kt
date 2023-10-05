@@ -2,8 +2,10 @@ package com.zipdabang.zipdabang_android.module.recipes.domain
 
 import androidx.paging.Pager
 import androidx.paging.PagingData
+import com.zipdabang.zipdabang_android.common.ResponseBody
 import com.zipdabang.zipdabang_android.module.recipes.common.OwnerType
 import com.zipdabang.zipdabang_android.module.recipes.data.common.RecipeItem
+import com.zipdabang.zipdabang_android.module.recipes.data.hot.HotRecipeDto
 import com.zipdabang.zipdabang_android.module.recipes.data.local.RecipeItemEntity
 import com.zipdabang.zipdabang_android.module.recipes.data.preference.PreferenceResultDto
 import com.zipdabang.zipdabang_android.module.recipes.data.preview.RecipePreviewItemsDto
@@ -22,6 +24,11 @@ interface RecipeListRepository {
         categoryId: Int,
         orderBy: String
     ): Pager<Int, RecipeItemEntity>
+
+    suspend fun getHotRecipeListByCategory(
+        accessToken: String,
+        categoryId: Int
+    ): ResponseBody<HotRecipeDto>
 
     suspend fun toggleLikeRemote(
         accessToken: String,
