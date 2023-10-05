@@ -3,29 +3,36 @@ package com.zipdabang.zipdabang_android.module.recipes.ui
 import android.util.Log
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.DrawerState
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.google.accompanist.pager.ExperimentalPagerApi
+import com.google.accompanist.pager.PagerState
 import com.google.accompanist.pager.rememberPagerState
 import com.zipdabang.zipdabang_android.R
 import com.zipdabang.zipdabang_android.common.TabItem
+import com.zipdabang.zipdabang_android.module.detail.recipe.common.DeviceScreenSize
 import com.zipdabang.zipdabang_android.module.recipes.common.OwnerCategory
 import com.zipdabang.zipdabang_android.module.recipes.common.OwnerType
-import com.zipdabang.zipdabang_android.module.recipes.data.hot.HotRecipeItem
-import com.zipdabang.zipdabang_android.module.recipes.domain.HotRecipe
+import com.zipdabang.zipdabang_android.module.recipes.ui.state.PreferenceToggleState
+import com.zipdabang.zipdabang_android.module.recipes.ui.state.RecipeBannerState
+import com.zipdabang.zipdabang_android.module.recipes.ui.state.RecipeCategoryState
 import com.zipdabang.zipdabang_android.module.recipes.ui.viewmodel.HotRecipeViewModel
 import com.zipdabang.zipdabang_android.module.recipes.ui.viewmodel.RecipeMainViewModel
 import com.zipdabang.zipdabang_android.ui.component.AppBarHome
 import com.zipdabang.zipdabang_android.ui.component.ModalDrawer
 import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalPagerApi::class)
@@ -52,17 +59,13 @@ fun RecipeScreen(
     val hotFruitRecipes = hotRecipeViewModel.hotFruitRecipeState.value
     val hotWellBeingRecipes = hotRecipeViewModel.hotWellBeingRecipeState.value
 
-
-    Log.d("recipeScreen", "${hotCoffeeRecipes}")
-
     val banners = viewModel.banners.value
     val categories = viewModel.categoryList.value
 
-    val likeState = viewModel.toggleLikeResult
-    val scrapState = viewModel.toggleScrapResult
+    val likeState = viewModel.toggleLikeResult.collectAsState().value
+    val scrapState = viewModel.toggleScrapResult.collectAsState().value
 
     val deviceSize = viewModel.getDeviceSize()
-
     val pagerState =  rememberPagerState()
 
     val onLikeClick = { recipeId: Int ->
@@ -190,20 +193,11 @@ fun RecipeScreen(
                     modifier = Modifier.padding(padding),
                     onCategoryClick = onCategoryClick,
                     onOwnerTypeClick = onOwnerTypeClick,
-                    onRecipeClick = onRecipeClick,
                     onBannerClick = onBannerClick,
-                    onLikeClick = { recipeId ->
-                        viewModel.toggleLike(recipeId = recipeId)
-                    },
-                    onScrapClick = { recipeId ->
-                        viewModel.toggleScrap(recipeId = recipeId)
-                    },
                     banners = banners,
                     categories = categories,
                     ownerTypeList = ownerTypeList,
                     hotRecipes = tabs,
-                    likeState = likeState,
-                    scrapState = scrapState,
                     deviceSize = deviceSize,
                     pagerState = pagerState
                 )

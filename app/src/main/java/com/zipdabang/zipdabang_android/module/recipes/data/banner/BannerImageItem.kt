@@ -7,4 +7,4 @@ data class BannerImageItem(
     val imageUrl: String,
     val order: Int,
     val searchKeyword: String
-)
+): java.io.Serializable
