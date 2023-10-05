@@ -46,7 +46,9 @@ fun FollowItem(
     imageUrl : String,
     nickName : String,
     isFollow : Boolean,
-    isFollowEach : Boolean = false
+    isFollowEach : Boolean = false,
+    followOrCancelClick : () -> Unit,
+    userReport : () -> Unit
 ) {
 
     //for DropDown
@@ -121,11 +123,16 @@ fun FollowItem(
             ) {
 
             if (isFollow) {
-                isFollowDropDown.forEach {
+                isFollowDropDown.forEachIndexed {
+                        index, text ->
                     DropdownMenuItem(
-                        onClick = { /*TODO*/ }) {
+                        onClick = {
+                            if(index == 0) followOrCancelClick()
+                            else userReport()
+                        }
+                    ) {
                         Text(
-                            text = it, style = ZipdabangandroidTheme.Typography.fourteen_500,
+                            text = text, style = ZipdabangandroidTheme.Typography.fourteen_500,
                             color = ZipdabangandroidTheme.Colors.Typo
                         )
                     }
@@ -146,7 +153,10 @@ fun FollowItem(
                     //맞팔로우 아닌 상태
                     isFollowingDropDown.forEachIndexed { index, text ->
                         DropdownMenuItem(
-                            onClick = { /*TODO*/ }
+                            onClick = {
+                                if(index == 0) followOrCancelClick()
+                                else userReport()
+                            }
                         ) {
                             Text(
                                 text = text,
