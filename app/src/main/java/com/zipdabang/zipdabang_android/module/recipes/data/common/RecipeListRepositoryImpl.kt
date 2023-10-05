@@ -9,10 +9,12 @@ import androidx.paging.PagingData
 import androidx.paging.map
 import androidx.room.util.copy
 import com.zipdabang.zipdabang_android.common.Constants.ITEMS_PER_PAGE
+import com.zipdabang.zipdabang_android.common.ResponseBody
 import com.zipdabang.zipdabang_android.core.Paging3Database
 import com.zipdabang.zipdabang_android.core.data_store.proto.Token
 import com.zipdabang.zipdabang_android.module.recipes.common.OwnerType
 import com.zipdabang.zipdabang_android.module.recipes.data.RecipeApi
+import com.zipdabang.zipdabang_android.module.recipes.data.hot.HotRecipeDto
 import com.zipdabang.zipdabang_android.module.recipes.data.local.RecipeItemEntity
 import com.zipdabang.zipdabang_android.module.recipes.data.preference.PreferenceResultDto
 import com.zipdabang.zipdabang_android.module.recipes.data.preference.PreferenceToggleResult
@@ -85,6 +87,13 @@ class RecipeListRepositoryImpl(
             ),
             pagingSourceFactory = pagingSourceFactory
         )
+    }
+
+    override suspend fun getHotRecipeListByCategory(
+        accessToken: String,
+        categoryId: Int
+    ): ResponseBody<HotRecipeDto> {
+        return recipeApi.getHotRecipesByCategory(accessToken, categoryId)
     }
 
     override suspend fun toggleLikeRemote(

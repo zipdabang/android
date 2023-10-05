@@ -1,8 +1,11 @@
 package com.zipdabang.zipdabang_android.module.recipes.mapper
 
+import com.zipdabang.zipdabang_android.common.ResponseBody
 import com.zipdabang.zipdabang_android.module.recipes.data.banner.RecipeBannerDto
 import com.zipdabang.zipdabang_android.module.recipes.data.category.RecipeCategoryDto
 import com.zipdabang.zipdabang_android.module.recipes.data.common.RecipeItem
+import com.zipdabang.zipdabang_android.module.recipes.data.hot.HotRecipeDto
+import com.zipdabang.zipdabang_android.module.recipes.data.hot.HotRecipeItem
 import com.zipdabang.zipdabang_android.module.recipes.data.local.RecipeItemEntity
 import com.zipdabang.zipdabang_android.module.recipes.data.preference.PreferenceResultDto
 import com.zipdabang.zipdabang_android.module.recipes.data.preview.RecipePreviewItemsDto
@@ -86,5 +89,14 @@ fun RecipeItemEntity.toRecipeItem(): RecipeItem {
         recipeName = recipeName,
         scraps = scraps,
         thumbnailUrl = thumbnailUrl
+    )
+}
+
+fun ResponseBody<HotRecipeDto>.toHotRecipes(): ResponseBody<List<HotRecipeItem>> {
+    return ResponseBody(
+        isSuccess = isSuccess,
+        code = code,
+        message = message,
+        result = result?.recipeList ?: emptyList()
     )
 }

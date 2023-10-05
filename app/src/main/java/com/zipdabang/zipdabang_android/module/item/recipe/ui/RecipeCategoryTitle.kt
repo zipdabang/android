@@ -395,3 +395,36 @@ fun OurSubtitle() {
         )
     }
 }
+
+@Composable
+fun HotRecipeTitle() {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(
+                start = 16.dp,
+                top = 20.dp,
+                bottom = 10.dp
+            ),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = AnnotatedString(
+                text = "카테고리별 ",
+                spanStyle = SpanStyle(
+                    color = ZipdabangandroidTheme.Colors.Choco,
+                    fontFamily = FontFamily(Font(R.font.kopubworlddotum_bold)),
+                    fontSize = 16.sp
+                )
+            ) + AnnotatedString(
+                text = "인기 레시피",
+                spanStyle = SpanStyle(
+                    color = ZipdabangandroidTheme.Colors.Strawberry,
+                    fontFamily = FontFamily(Font(R.font.kopubworlddotum_bold)),
+                    fontSize = 16.sp
+                )
+            )
+        )
+    }
+}

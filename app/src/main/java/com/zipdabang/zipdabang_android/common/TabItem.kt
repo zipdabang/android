@@ -1,17 +1,18 @@
 package com.zipdabang.zipdabang_android.common
 
-import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.paging.compose.LazyPagingItems
 import com.zipdabang.zipdabang_android.module.comment.ui.PostCommentState
 import com.zipdabang.zipdabang_android.module.comment.ui.RecipeCommentPage
 import com.zipdabang.zipdabang_android.module.comment.ui.RecipeCommentState
 import com.zipdabang.zipdabang_android.module.detail.recipe.domain.RecipeDetailDomain
-import com.zipdabang.zipdabang_android.module.detail.recipe.ui.RecipeDetailState
 import com.zipdabang.zipdabang_android.module.detail.recipe.ui.RecipeInfoPage
 import com.zipdabang.zipdabang_android.module.my.ui.FollowScreen
 import com.zipdabang.zipdabang_android.module.my.ui.FollowingScreen
+import com.zipdabang.zipdabang_android.module.recipes.data.hot.HotRecipeItem
+import com.zipdabang.zipdabang_android.module.recipes.ui.hot.HotRecipeList
+import com.zipdabang.zipdabang_android.module.recipes.ui.state.PreferenceToggleState
+import kotlinx.coroutines.flow.StateFlow
 
 typealias ComposableFun = @Composable () -> Unit
 sealed class TabItem(val tabTitle: String, val screen: ComposableFun) {
@@ -61,4 +62,176 @@ sealed class TabItem(val tabTitle: String, val screen: ComposableFun) {
             FollowingScreen()
         }
     )
+
+    class Coffee(
+        hotItems:  UiState<List<HotRecipeItem>>,
+        onRecipeClick: (Int) -> Unit,
+        onScrapClick: (Int) -> Unit,
+        onLikeClick: (Int) -> Unit,
+        likeState: StateFlow<PreferenceToggleState>,
+        scrapState: StateFlow<PreferenceToggleState>
+    ): TabItem(
+        tabTitle = "커피",
+        screen = {
+            HotRecipeList(
+                hotItems = hotItems,
+                onRecipeClick = onRecipeClick,
+                onScrapClick = onScrapClick,
+                onLikeClick = onLikeClick,
+                likeState = likeState,
+                scrapState = scrapState
+            )
+        }
+    )
+
+    class CaffeineFree(
+        hotItems:  UiState<List<HotRecipeItem>>,
+        onRecipeClick: (Int) -> Unit,
+        onScrapClick: (Int) -> Unit,
+        onLikeClick: (Int) -> Unit,
+        likeState: StateFlow<PreferenceToggleState>,
+        scrapState: StateFlow<PreferenceToggleState>
+    ): TabItem(
+        tabTitle = "논카페인",
+        screen = {
+            HotRecipeList(
+                hotItems = hotItems,
+                onRecipeClick = onRecipeClick,
+                onScrapClick = onScrapClick,
+                onLikeClick = onLikeClick,
+                likeState = likeState,
+                scrapState = scrapState
+            )
+        }
+    )
+
+    class Tea(
+        hotItems:  UiState<List<HotRecipeItem>>,
+        onRecipeClick: (Int) -> Unit,
+        onScrapClick: (Int) -> Unit,
+        onLikeClick: (Int) -> Unit,
+        likeState: StateFlow<PreferenceToggleState>,
+        scrapState: StateFlow<PreferenceToggleState>
+    ): TabItem(
+        tabTitle = "차",
+        screen = {
+            HotRecipeList(
+                hotItems = hotItems,
+                onRecipeClick = onRecipeClick,
+                onScrapClick = onScrapClick,
+                onLikeClick = onLikeClick,
+                likeState = likeState,
+                scrapState = scrapState
+            )
+        }
+    )
+
+    class Ade(
+        hotItems:  UiState<List<HotRecipeItem>>,
+        onRecipeClick: (Int) -> Unit,
+        onScrapClick: (Int) -> Unit,
+        onLikeClick: (Int) -> Unit,
+        likeState: StateFlow<PreferenceToggleState>,
+        scrapState: StateFlow<PreferenceToggleState>
+    ): TabItem(
+        tabTitle = "에이드",
+        screen = {
+            HotRecipeList(
+                hotItems = hotItems,
+                onRecipeClick = onRecipeClick,
+                onScrapClick = onScrapClick,
+                onLikeClick = onLikeClick,
+                likeState = likeState,
+                scrapState = scrapState
+            )
+        }
+    )
+
+    class Smoothie(
+        hotItems:  UiState<List<HotRecipeItem>>,
+        onRecipeClick: (Int) -> Unit,
+        onScrapClick: (Int) -> Unit,
+        onLikeClick: (Int) -> Unit,
+        likeState: StateFlow<PreferenceToggleState>,
+        scrapState: StateFlow<PreferenceToggleState>
+    ): TabItem(
+        tabTitle = "스무디",
+        screen = {
+            HotRecipeList(
+                hotItems = hotItems,
+                onRecipeClick = onRecipeClick,
+                onScrapClick = onScrapClick,
+                onLikeClick = onLikeClick,
+                likeState = likeState,
+                scrapState = scrapState
+            )
+        }
+    )
+
+    class Fruit(
+        hotItems:  UiState<List<HotRecipeItem>>,
+        onRecipeClick: (Int) -> Unit,
+        onScrapClick: (Int) -> Unit,
+        onLikeClick: (Int) -> Unit,
+        likeState: StateFlow<PreferenceToggleState>,
+        scrapState: StateFlow<PreferenceToggleState>
+    ): TabItem(
+        tabTitle = "과일음료",
+        screen = {
+            HotRecipeList(
+                hotItems = hotItems,
+                onRecipeClick = onRecipeClick,
+                onScrapClick = onScrapClick,
+                onLikeClick = onLikeClick,
+                likeState = likeState,
+                scrapState = scrapState
+            )
+        }
+    )
+
+    class WellBeing(
+        hotItems:  UiState<List<HotRecipeItem>>,
+        onRecipeClick: (Int) -> Unit,
+        onScrapClick: (Int) -> Unit,
+        onLikeClick: (Int) -> Unit,
+        likeState: StateFlow<PreferenceToggleState>,
+        scrapState: StateFlow<PreferenceToggleState>
+    ): TabItem(
+        tabTitle = "건강음료",
+        screen = {
+            HotRecipeList(
+                hotItems = hotItems,
+                onRecipeClick = onRecipeClick,
+                onScrapClick = onScrapClick,
+                onLikeClick = onLikeClick,
+                likeState = likeState,
+                scrapState = scrapState
+            )
+        }
+    )
+
+    class All(
+        hotItems:  UiState<List<HotRecipeItem>>,
+        onRecipeClick: (Int) -> Unit,
+        onScrapClick: (Int) -> Unit,
+        onLikeClick: (Int) -> Unit,
+        likeState: StateFlow<PreferenceToggleState>,
+        scrapState: StateFlow<PreferenceToggleState>
+    ): TabItem(
+        tabTitle = "전체",
+        screen = {
+            HotRecipeList(
+                hotItems = hotItems,
+                onRecipeClick = onRecipeClick,
+                onScrapClick = onScrapClick,
+                onLikeClick = onLikeClick,
+                likeState = likeState,
+                scrapState = scrapState
+            )
+        }
+    )
+}
+
+sealed class HotRecipeTabItem(val tabTitle: String, val screen: ComposableFun) {
+
 }
