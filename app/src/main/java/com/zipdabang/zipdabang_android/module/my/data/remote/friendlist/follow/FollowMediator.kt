@@ -69,7 +69,8 @@ class FollowMediator @Inject constructor(
                 page = currentPage
             )
             if (response.result ==null) {
-
+                followDao.deleteItems()
+                RemoteKeyDao.deleteRemoteKeys()
                 MediatorResult.Success(endOfPaginationReached = true)
 
             } else {
