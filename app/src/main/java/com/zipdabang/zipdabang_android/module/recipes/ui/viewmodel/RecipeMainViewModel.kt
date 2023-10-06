@@ -35,10 +35,8 @@ import javax.inject.Inject
 class RecipeMainViewModel @Inject constructor(
     private val getRecipeBannerUseCase: GetRecipeBannerUseCase,
     private val getRecipeCategoryUseCase: GetRecipeCategoryUseCase,
-    private val getRecipePreviewUseCase: GetRecipePreviewUseCase,
     private val toggleLikeUseCase: ToggleLikeUseCase,
     private val toggleScrapUseCase: ToggleScrapUseCase,
-    private val getHotRecipesByCategoryUseCase: GetHotRecipesByCategoryUseCase,
     @DeviceSize private val deviceSize: DeviceScreenSize,
     private val savedStateHandle: SavedStateHandle
 ): ViewModel() {

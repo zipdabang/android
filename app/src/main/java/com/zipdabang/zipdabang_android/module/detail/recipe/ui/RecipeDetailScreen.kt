@@ -77,6 +77,7 @@ fun RecipeDetailScreen(
     Log.i("RecipeDetail", "recipeId : $recipeId")
 
     val isOwner = recipeDetailState.recipeDetailData?.isOwner ?: false
+
     val numOfComments = recipeDetailState.recipeDetailData?.recipeInfo?.comments ?: 0
     val thumbnailUrl = recipeDetailState.recipeDetailData?.recipeInfo?.thumbnailUrl ?: ""
     val profileUrl = recipeDetailState.recipeDetailData?.profileUrl ?: ""

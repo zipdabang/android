@@ -26,7 +26,6 @@ import com.zipdabang.zipdabang_android.R
 import com.zipdabang.zipdabang_android.module.item.recipe.common.RecipeSubtitleState
 import com.zipdabang.zipdabang_android.module.recipes.common.OwnerType
 import com.zipdabang.zipdabang_android.module.recipes.ui.viewmodel.RecipeListViewModel
-import com.zipdabang.zipdabang_android.ui.component.AppBarHome
 import com.zipdabang.zipdabang_android.ui.component.AppBarWithFullFunction
 import com.zipdabang.zipdabang_android.ui.component.FloatingActionButton
 import com.zipdabang.zipdabang_android.ui.component.ModalDrawer
@@ -118,8 +117,8 @@ fun RecipeListScreen(
                     categoryState.let {
                         if (it.categoryId == -1 && it.ownerType != null) {
                             when (it.ownerType) {
-                                OwnerType.ALL.type -> EveryoneSubtitle()
-                                OwnerType.INFLUENCER.type -> InfluencerSubtitle()
+                                OwnerType.OFFICIAL.type -> EveryoneSubtitle()
+                                OwnerType.BARISTA.type -> InfluencerSubtitle()
                                 OwnerType.USER.type -> OurSubtitle()
                             }
                         } else if (it.categoryId != null && it.ownerType == null) {

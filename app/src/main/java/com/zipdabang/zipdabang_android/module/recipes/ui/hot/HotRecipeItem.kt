@@ -173,7 +173,7 @@ fun HotRecipeItem(
                     Spacer(modifier = Modifier.width(2.dp))
                     Text(
                         // TODO comment 수 추가하기
-                        text = "",
+                        text = item.comments.toString(),
                         style = TextStyle(
                             color = ZipdabangandroidTheme.Colors.Typo,
                             fontSize = 8.sp,

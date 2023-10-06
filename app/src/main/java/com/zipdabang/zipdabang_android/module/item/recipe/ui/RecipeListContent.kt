@@ -28,6 +28,7 @@ import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.itemContentType
 import androidx.paging.compose.itemKey
 import com.zipdabang.zipdabang_android.common.TogglePreferenceException
+import com.zipdabang.zipdabang_android.module.item.recipe.common.RecipeSubtitleState
 import com.zipdabang.zipdabang_android.module.recipes.data.common.RecipeItem
 import com.zipdabang.zipdabang_android.module.recipes.ui.viewmodel.RecipeListViewModel
 import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
@@ -37,6 +38,7 @@ fun RecipeListContent(
     items: LazyPagingItems<RecipeItem>,
     onItemClick: (Int) -> Unit,
     content: @Composable() () -> Unit,
+    category: RecipeSubtitleState
 ) {
 
     val TAG = "RecipeListContent"
@@ -114,7 +116,7 @@ fun RecipeListContent(
                         onLikeClick = { recipeId ->
                             Log.d("RecipeCard Status-before", "$isLiked")
                             try {
-                                viewModel.toggleLike(recipeId)
+                                viewModel.toggleLike(recipeId, category.categoryId, category.ownerType)
                                 recipeItem.isLiked = !recipeItem.isLiked
                                 isLiked = recipeItem.isLiked
                                 if (isLiked) {
@@ -131,7 +133,7 @@ fun RecipeListContent(
                         },
                         onScrapClick = { recipeId ->
                             try {
-                                viewModel.toggleScrap(recipeId)
+                                viewModel.toggleScrap(recipeId, category.categoryId, category.ownerType)
                                 recipeItem.isScrapped = !recipeItem.isScrapped
                                 isScraped = recipeItem.isScrapped
                             } catch (e: TogglePreferenceException) {

@@ -1,14 +1,17 @@
 package com.zipdabang.zipdabang_android.module.item.recipe.ui
 
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.zipdabang.zipdabang_android.module.item.recipe.common.RecipeSubtitleState
 import com.zipdabang.zipdabang_android.module.recipes.ui.viewmodel.RecipeListViewModel
@@ -23,6 +26,9 @@ fun RecipeList(
 ) {
 
     val viewModel = hiltViewModel<RecipeListViewModel>()
+
+    val isNetworkAvailable = viewModel.isNetworkAvailable()
+
     val recipeList =
         if (category.categoryId == -1 && category.ownerType != null) {
             Log.d("RecipeList", "ownerType")
@@ -41,7 +47,8 @@ fun RecipeList(
         RecipeListContent(
             items = recipeList,
             onItemClick = onItemClick,
-            content = content
+            content = content,
+            category = category
         )
     }
 }

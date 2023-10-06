@@ -7,35 +7,34 @@ import androidx.paging.LoadType
 import androidx.paging.PagingState
 import androidx.paging.RemoteMediator
 import androidx.room.withTransaction
-import com.zipdabang.zipdabang_android.core.Paging3Database
 import com.zipdabang.zipdabang_android.core.data_store.proto.Token
 import com.zipdabang.zipdabang_android.core.remotekey.RemoteKeys
+import com.zipdabang.zipdabang_android.core.storage.recipe.RecipeDatabase
+import com.zipdabang.zipdabang_android.entity.recipe.RecipeCommentsEntity
+import com.zipdabang.zipdabang_android.entity.recipe.RemoteKeysEntity
 import com.zipdabang.zipdabang_android.module.comment.data.local.RecipeCommentEntity
-import com.zipdabang.zipdabang_android.module.comment.util.toRecipeCommentEntity
+import com.zipdabang.zipdabang_android.module.comment.util.recipeCommentsEntity
 import com.zipdabang.zipdabang_android.module.recipes.data.RecipeApi
-import com.zipdabang.zipdabang_android.module.recipes.data.common.RecipeItem
-import com.zipdabang.zipdabang_android.module.recipes.data.local.RecipeItemEntity
-import com.zipdabang.zipdabang_android.module.recipes.mapper.toRecipeItemEntity
 import kotlinx.coroutines.flow.first
 
 @OptIn(ExperimentalPagingApi::class)
 class RecipeCommentListMediator(
     private val recipeApi: RecipeApi,
-    private val database: Paging3Database,
+    private val database: RecipeDatabase,
     private val datastore: DataStore<Token>,
     private val recipeId: Int
-): RemoteMediator<Int, RecipeCommentEntity>() {
+): RemoteMediator<Int, RecipeCommentsEntity>() {
 
     companion object {
         const val TAG = "RecipeCommentListMediator"
     }
 
-    private val recipeCommentDao = database.recipeCommentDao()
-    private val remoteKeyDao = database.RemoteKeyDao()
+    private val recipeCommentDao = database.recipeCommentsDao()
+    private val remoteKeyDao = database.recipeRemoteKeyDao()
 
     override suspend fun load(
         loadType: LoadType,
-        state: PagingState<Int, RecipeCommentEntity>
+        state: PagingState<Int, RecipeCommentsEntity>
     ): MediatorResult {
         return try {
             val currentPage = when (loadType) {
@@ -63,7 +62,7 @@ class RecipeCommentListMediator(
                 recipeId = recipeId,
                 pageIndex = currentPage
             ).result?.commentList?.map {
-                it.toRecipeCommentEntity()
+                it.recipeCommentsEntity()
             } ?: emptyList()
 
             Log.d("comments list", "$response")
@@ -84,7 +83,7 @@ class RecipeCommentListMediator(
                 val keys = response.map { commentItem ->
                     Log.d("commentItem id", "${commentItem.commentId}")
                     val itemId = recipeCommentDao.getItemIdByCommentId(commentItem.commentId)
-                    RemoteKeys(
+                    RemoteKeysEntity(
                         id = itemId,
                         prevPage = prevPage,
                         nextPage = nextPage
@@ -102,7 +101,7 @@ class RecipeCommentListMediator(
         }
     }
 
-    private suspend fun getRemoteKeyForLastItem(state: PagingState<Int, RecipeCommentEntity>): RemoteKeys? {
+    private suspend fun getRemoteKeyForLastItem(state: PagingState<Int, RecipeCommentsEntity>): RemoteKeysEntity? {
         return state.pages.lastOrNull {
             it.data.isNotEmpty()
         }?.data?.lastOrNull() ?.let { commentItem ->
@@ -110,7 +109,7 @@ class RecipeCommentListMediator(
         }
     }
 
-    private suspend fun getRemoteKeyForFirstItem(state: PagingState<Int, RecipeCommentEntity>): RemoteKeys? {
+    private suspend fun getRemoteKeyForFirstItem(state: PagingState<Int, RecipeCommentsEntity>): RemoteKeysEntity? {
         return state.pages.firstOrNull {
             it.data.isNotEmpty()
         }?.data?.firstOrNull()?.let { commentItem ->
@@ -118,7 +117,7 @@ class RecipeCommentListMediator(
         }
     }
 
-    private suspend fun getRemoteKeyClosestToCurrentPosition(state: PagingState<Int, RecipeCommentEntity>): RemoteKeys? {
+    private suspend fun getRemoteKeyClosestToCurrentPosition(state: PagingState<Int, RecipeCommentsEntity>): RemoteKeysEntity? {
         return state.anchorPosition?.let { position ->
             state.closestItemToPosition(position)?.itemId?.let { itemId ->
                 remoteKeyDao.getRemoteKeys(id = itemId)
