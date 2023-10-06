@@ -1,7 +1,7 @@
 package com.zipdabang.zipdabang_android.module.home.ui
 
 import com.zipdabang.zipdabang_android.module.home.data.banner.BannerDto
-import com.zipdabang.zipdabang_android.module.home.data.bestrecipe.Recipe
+import com.zipdabang.zipdabang_android.module.home.data.bestrecipe.BestRecipe
 
 data class HomeBannerState(
     val isLoading: Boolean = false,
@@ -12,7 +12,7 @@ data class HomeBannerState(
 
 data class HomeRecipeState(
     val isLoading: Boolean = false,
-   val recipeList: List<Recipe> = emptyList(),
+   val recipeList: List<BestRecipe> = emptyList(),
     val isError : Boolean = false,
     val error : String = ""
 )
