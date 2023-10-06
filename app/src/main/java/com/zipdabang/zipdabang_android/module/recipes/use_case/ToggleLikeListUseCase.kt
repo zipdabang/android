@@ -19,7 +19,11 @@ class ToggleLikeListUseCase @Inject constructor(
     private val recipeListRepository: RecipeListRepository,
     private val tokenDataStore: DataStore<Token>
 ) {
-    operator fun invoke(recipeId: Int): Flow<Resource<PreferenceToggle>> = flow {
+    operator fun invoke(
+        recipeId: Int,
+        categoryId: Int?,
+        ownerType: String?
+    ): Flow<Resource<PreferenceToggle>> = flow {
         try {
             val accessToken = ("Bearer " + tokenDataStore.data.first().accessToken)
 
@@ -27,15 +31,25 @@ class ToggleLikeListUseCase @Inject constructor(
             val remoteResult = recipeListRepository
                 .toggleLikeRemote(accessToken = accessToken, recipeId = recipeId)
             if (remoteResult.isSuccess && remoteResult.result != null) {
-                val localResult = recipeListRepository.toggleLikeLocal(recipeId, remoteResult)
-                    .toPreferenceToggle()
-                emit(
-                    Resource.Success(
+                if (categoryId != null && ownerType == null) {
+                    val localResult = recipeListRepository
+                        .toggleLikeLocalByCategory(recipeId, remoteResult, categoryId)
+                        .toPreferenceToggle()
+                    emit(Resource.Success(
                         code = localResult.code,
                         message = localResult.message,
                         data = localResult
-                    )
-                )
+                    ))
+                } else if (categoryId == null && ownerType != null) {
+                    val localResult = recipeListRepository
+                        .toggleLikeLocalByUser(recipeId, remoteResult, ownerType)
+                        .toPreferenceToggle()
+                    emit(Resource.Success(
+                        code = localResult.code,
+                        message = localResult.message,
+                        data = localResult
+                    ))
+                }
             } else {
                 emit(Resource.Error(message = "network failure"))
             }

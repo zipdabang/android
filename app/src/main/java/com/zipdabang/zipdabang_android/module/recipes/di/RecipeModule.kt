@@ -1,8 +1,10 @@
 package com.zipdabang.zipdabang_android.module.recipes.di
 
 import androidx.datastore.core.DataStore
+import com.zipdabang.zipdabang_android.core.NetworkConnection
 import com.zipdabang.zipdabang_android.core.Paging3Database
 import com.zipdabang.zipdabang_android.core.data_store.proto.Token
+import com.zipdabang.zipdabang_android.core.storage.recipe.RecipeDatabase
 import com.zipdabang.zipdabang_android.module.comment.data.RecipeCommentRepositoryImpl
 import com.zipdabang.zipdabang_android.module.comment.domain.RecipeCommentRepository
 import com.zipdabang.zipdabang_android.module.detail.recipe.data.RecipeDetailRepositoryImpl
@@ -43,10 +45,11 @@ object RecipeModule {
     @Provides
     fun provideRecipeListRepository(
         recipeApi: RecipeApi,
-        database: Paging3Database,
-        dataStore: DataStore<Token>
+        database: RecipeDatabase,
+        dataStore: DataStore<Token>,
+        @NetworkConnection isNetworkAvailable: Boolean
     ): RecipeListRepository {
-        return RecipeListRepositoryImpl(recipeApi, database, dataStore)
+        return RecipeListRepositoryImpl(recipeApi, database, dataStore, isNetworkAvailable)
     }
 
     @Provides
@@ -76,7 +79,7 @@ object RecipeModule {
     @Provides
     @Singleton
     fun provideRecipeCommentRepository(
-        database: Paging3Database,
+        database: RecipeDatabase,
         recipeApi: RecipeApi,
         dataStore: DataStore<Token>,
     ): RecipeCommentRepository {

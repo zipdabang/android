@@ -1,16 +1,23 @@
 package com.zipdabang.zipdabang_android.module.item.recipe.ui
 
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.paging.LoadState
+import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.zipdabang.zipdabang_android.module.item.recipe.common.RecipeSubtitleState
+import com.zipdabang.zipdabang_android.module.recipes.data.common.RecipeItem
+import com.zipdabang.zipdabang_android.module.recipes.ui.state.PreferenceToggleState
 import com.zipdabang.zipdabang_android.module.recipes.ui.viewmodel.RecipeListViewModel
 
 @Composable
@@ -19,21 +26,14 @@ fun RecipeList(
     onItemClick: (Int) -> Unit,
     category: RecipeSubtitleState,
     // 매개변수 명을 content로 해야 composable을 넣을 수 있음
+    recipeList: LazyPagingItems<RecipeItem>,
+    likeState: PreferenceToggleState,
+    scrapState: PreferenceToggleState,
+    onToggleLike: (Int, Int?, String?) -> Unit,
+    onToggleScrap: (Int, Int?, String?) -> Unit,
+    lazyGridState: LazyGridState,
     content: @Composable() () -> Unit,
 ) {
-
-    val viewModel = hiltViewModel<RecipeListViewModel>()
-    val recipeList =
-        if (category.categoryId == -1 && category.ownerType != null) {
-            Log.d("RecipeList", "ownerType")
-            viewModel.getRecipeListByOwnerType(
-                ownerType = category.ownerType
-            ).collectAsLazyPagingItems()
-        } else {
-            viewModel.getRecipeListByCategory(
-                categoryId = category.categoryId!!
-            ).collectAsLazyPagingItems()
-        }
 
     Column(
         modifier = modifier.fillMaxSize()
@@ -41,6 +41,12 @@ fun RecipeList(
         RecipeListContent(
             items = recipeList,
             onItemClick = onItemClick,
+            category = category,
+            likeState = likeState,
+            scrapState = scrapState,
+            onToggleLike = onToggleLike,
+            onToggleScrap = onToggleScrap,
+            lazyGridState = lazyGridState,
             content = content
         )
     }

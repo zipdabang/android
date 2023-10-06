@@ -7,7 +7,7 @@ import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -19,8 +19,6 @@ import com.zipdabang.zipdabang_android.R
 import com.zipdabang.zipdabang_android.common.TabItem
 import com.zipdabang.zipdabang_android.module.recipes.common.OwnerCategory
 import com.zipdabang.zipdabang_android.module.recipes.common.OwnerType
-import com.zipdabang.zipdabang_android.module.recipes.data.hot.HotRecipeItem
-import com.zipdabang.zipdabang_android.module.recipes.domain.HotRecipe
 import com.zipdabang.zipdabang_android.module.recipes.ui.viewmodel.HotRecipeViewModel
 import com.zipdabang.zipdabang_android.module.recipes.ui.viewmodel.RecipeMainViewModel
 import com.zipdabang.zipdabang_android.ui.component.AppBarHome
@@ -52,17 +50,15 @@ fun RecipeScreen(
     val hotFruitRecipes = hotRecipeViewModel.hotFruitRecipeState.value
     val hotWellBeingRecipes = hotRecipeViewModel.hotWellBeingRecipeState.value
 
-
-    Log.d("recipeScreen", "${hotCoffeeRecipes}")
+    Log.i("recipescreen", "$hotAllRecipes")
 
     val banners = viewModel.banners.value
     val categories = viewModel.categoryList.value
 
-    val likeState = viewModel.toggleLikeResult
-    val scrapState = viewModel.toggleScrapResult
+    val likeState = viewModel.toggleLikeResult.collectAsState().value
+    val scrapState = viewModel.toggleScrapResult.collectAsState().value
 
     val deviceSize = viewModel.getDeviceSize()
-
     val pagerState =  rememberPagerState()
 
     val onLikeClick = { recipeId: Int ->
@@ -75,18 +71,18 @@ fun RecipeScreen(
 
     val ownerTypeList = listOf(
         OwnerCategory(
-            groupName = OwnerType.ALL.type,
-            title = OwnerType.ALL.title,
-            subTitle = OwnerType.ALL.subTitle,
+            groupName = OwnerType.OFFICIAL.type,
+            title = OwnerType.OFFICIAL.title,
+            subTitle = OwnerType.OFFICIAL.subTitle,
             borderColor = Color(0xFFB8AFAB),
             backgroundColor = ZipdabangandroidTheme.Colors.BlackSesame,
             textColor = ZipdabangandroidTheme.Colors.Typo,
             drawable = R.drawable.recipe_category_zipdabang
         ),
         OwnerCategory(
-            groupName = OwnerType.INFLUENCER.type,
-            title = OwnerType.INFLUENCER.title,
-            subTitle = OwnerType.INFLUENCER.subTitle,
+            groupName = OwnerType.BARISTA.type,
+            title = OwnerType.BARISTA.title,
+            subTitle = OwnerType.BARISTA.subTitle,
             borderColor = Color(0xFFC29789),
             backgroundColor = ZipdabangandroidTheme.Colors.Strawberry,
             textColor = Color.White,
@@ -190,20 +186,11 @@ fun RecipeScreen(
                     modifier = Modifier.padding(padding),
                     onCategoryClick = onCategoryClick,
                     onOwnerTypeClick = onOwnerTypeClick,
-                    onRecipeClick = onRecipeClick,
                     onBannerClick = onBannerClick,
-                    onLikeClick = { recipeId ->
-                        viewModel.toggleLike(recipeId = recipeId)
-                    },
-                    onScrapClick = { recipeId ->
-                        viewModel.toggleScrap(recipeId = recipeId)
-                    },
                     banners = banners,
                     categories = categories,
                     ownerTypeList = ownerTypeList,
                     hotRecipes = tabs,
-                    likeState = likeState,
-                    scrapState = scrapState,
                     deviceSize = deviceSize,
                     pagerState = pagerState
                 )
