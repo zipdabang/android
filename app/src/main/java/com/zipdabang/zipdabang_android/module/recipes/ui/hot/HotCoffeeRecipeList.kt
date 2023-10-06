@@ -17,8 +17,8 @@ fun HotRecipeList(
     onRecipeClick: (Int) -> Unit,
     onScrapClick: (Int) -> Unit,
     onLikeClick: (Int) -> Unit,
-    likeState: StateFlow<PreferenceToggleState>,
-    scrapState: StateFlow<PreferenceToggleState>
+    likeState: PreferenceToggleState,
+    scrapState: PreferenceToggleState
 ) {
 
     Column(

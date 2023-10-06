@@ -33,11 +33,11 @@ class GetRecipePreviewUseCase @Inject constructor(
             val accessToken = ("Bearer " + tokenDataStore.data.first().accessToken)
 
             emit(Resource.Loading())
-            val previewData = repository.getRecipePreviewList(
+/*            val previewData = repository.getRecipePreviewList(
                 accessToken = accessToken,
                 ownerType = ownerType.type
-            ).toRecipePreview()
-
+            ).toRecipePreview()*/
+/*
             Log.d(TAG, "data : $previewData")
 
             emit(
@@ -46,7 +46,7 @@ class GetRecipePreviewUseCase @Inject constructor(
                     code = previewData.code,
                     message = previewData.message
                 )
-            )
+            )*/
         } catch (e: HttpException) {
             emit(
                 Resource.Error(

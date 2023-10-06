@@ -7,4 +7,4 @@ data class BeverageCategory(
     val categoryName: String,
     val id: Int,
     val imageUrl: String?
-)
+): java.io.Serializable

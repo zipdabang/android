@@ -68,8 +68,8 @@ sealed class TabItem(val tabTitle: String, val screen: ComposableFun) {
         onRecipeClick: (Int) -> Unit,
         onScrapClick: (Int) -> Unit,
         onLikeClick: (Int) -> Unit,
-        likeState: StateFlow<PreferenceToggleState>,
-        scrapState: StateFlow<PreferenceToggleState>
+        likeState: PreferenceToggleState,
+        scrapState: PreferenceToggleState
     ): TabItem(
         tabTitle = "커피",
         screen = {
@@ -89,8 +89,8 @@ sealed class TabItem(val tabTitle: String, val screen: ComposableFun) {
         onRecipeClick: (Int) -> Unit,
         onScrapClick: (Int) -> Unit,
         onLikeClick: (Int) -> Unit,
-        likeState: StateFlow<PreferenceToggleState>,
-        scrapState: StateFlow<PreferenceToggleState>
+        likeState: PreferenceToggleState,
+        scrapState: PreferenceToggleState
     ): TabItem(
         tabTitle = "논카페인",
         screen = {
@@ -110,8 +110,8 @@ sealed class TabItem(val tabTitle: String, val screen: ComposableFun) {
         onRecipeClick: (Int) -> Unit,
         onScrapClick: (Int) -> Unit,
         onLikeClick: (Int) -> Unit,
-        likeState: StateFlow<PreferenceToggleState>,
-        scrapState: StateFlow<PreferenceToggleState>
+        likeState: PreferenceToggleState,
+        scrapState: PreferenceToggleState
     ): TabItem(
         tabTitle = "차",
         screen = {
@@ -131,8 +131,8 @@ sealed class TabItem(val tabTitle: String, val screen: ComposableFun) {
         onRecipeClick: (Int) -> Unit,
         onScrapClick: (Int) -> Unit,
         onLikeClick: (Int) -> Unit,
-        likeState: StateFlow<PreferenceToggleState>,
-        scrapState: StateFlow<PreferenceToggleState>
+        likeState: PreferenceToggleState,
+        scrapState: PreferenceToggleState
     ): TabItem(
         tabTitle = "에이드",
         screen = {
@@ -152,8 +152,8 @@ sealed class TabItem(val tabTitle: String, val screen: ComposableFun) {
         onRecipeClick: (Int) -> Unit,
         onScrapClick: (Int) -> Unit,
         onLikeClick: (Int) -> Unit,
-        likeState: StateFlow<PreferenceToggleState>,
-        scrapState: StateFlow<PreferenceToggleState>
+        likeState: PreferenceToggleState,
+        scrapState: PreferenceToggleState
     ): TabItem(
         tabTitle = "스무디",
         screen = {
@@ -173,8 +173,8 @@ sealed class TabItem(val tabTitle: String, val screen: ComposableFun) {
         onRecipeClick: (Int) -> Unit,
         onScrapClick: (Int) -> Unit,
         onLikeClick: (Int) -> Unit,
-        likeState: StateFlow<PreferenceToggleState>,
-        scrapState: StateFlow<PreferenceToggleState>
+        likeState: PreferenceToggleState,
+        scrapState: PreferenceToggleState
     ): TabItem(
         tabTitle = "과일음료",
         screen = {
@@ -194,8 +194,8 @@ sealed class TabItem(val tabTitle: String, val screen: ComposableFun) {
         onRecipeClick: (Int) -> Unit,
         onScrapClick: (Int) -> Unit,
         onLikeClick: (Int) -> Unit,
-        likeState: StateFlow<PreferenceToggleState>,
-        scrapState: StateFlow<PreferenceToggleState>
+        likeState: PreferenceToggleState,
+        scrapState: PreferenceToggleState
     ): TabItem(
         tabTitle = "건강음료",
         screen = {
@@ -215,8 +215,8 @@ sealed class TabItem(val tabTitle: String, val screen: ComposableFun) {
         onRecipeClick: (Int) -> Unit,
         onScrapClick: (Int) -> Unit,
         onLikeClick: (Int) -> Unit,
-        likeState: StateFlow<PreferenceToggleState>,
-        scrapState: StateFlow<PreferenceToggleState>
+        likeState: PreferenceToggleState,
+        scrapState: PreferenceToggleState
     ): TabItem(
         tabTitle = "전체",
         screen = {

@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import retrofit2.HttpException
 import java.io.IOException
+import java.util.concurrent.CancellationException
 import javax.inject.Inject
 
 class GetAuthResultUseCase @Inject constructor(
@@ -30,6 +31,11 @@ class GetAuthResultUseCase @Inject constructor(
             emit(Resource.Error(e.localizedMessage ?: "unexpected error"))
         } catch (e: IOException) {
             emit(Resource.Error("couldn't reach server, check internet connection"))
+        } catch (e: Exception) {
+            if (e is CancellationException) {
+                throw e
+            }
+            emit(Resource.Error(e.message ?: "unexpected error"))
         }
 
     }

@@ -5,13 +5,13 @@ enum class OwnerType(
     val title: String,
     val subTitle: String
 ) {
-    ALL(
-        type = "all",
+    OFFICIAL(
+        type = "official",
         title = "집다방의\n모든 레시피",
         subTitle = "맛있는 것만 골라 골라온",
     ),
-    INFLUENCER(
-        type = "influencer",
+    BARISTA(
+        type = "barista",
         title = "집다방 바리스타의\n연구 레시피",
         subTitle = "집다방이 심사숙고해 선정한"
     ),
