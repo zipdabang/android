@@ -9,6 +9,8 @@ import com.zipdabang.zipdabang_android.common.ResponseBody
 import com.zipdabang.zipdabang_android.core.Paging3Database
 import com.zipdabang.zipdabang_android.core.data_store.proto.Token
 import com.zipdabang.zipdabang_android.core.remotekey.RemoteKeys
+import com.zipdabang.zipdabang_android.core.storage.recipe.RecipeDatabase
+import com.zipdabang.zipdabang_android.entity.recipe.RecipeCommentsEntity
 import com.zipdabang.zipdabang_android.module.comment.data.local.RecipeCommentEntity
 import com.zipdabang.zipdabang_android.module.comment.data.remote.EditCommentContent
 import com.zipdabang.zipdabang_android.module.comment.data.remote.PostCommentContent
@@ -22,14 +24,14 @@ import kotlinx.coroutines.CancellationException
 import javax.inject.Inject
 
 class RecipeCommentRepositoryImpl @Inject constructor(
-    private val database: Paging3Database,
+    private val database: RecipeDatabase,
     private val recipeApi: RecipeApi,
     private val dataStore: DataStore<Token>,
 ): RecipeCommentRepository {
     @OptIn(ExperimentalPagingApi::class)
-    override fun getRecipeComments(recipeId: Int): Pager<Int, RecipeCommentEntity> {
+    override fun getRecipeComments(recipeId: Int): Pager<Int, RecipeCommentsEntity> {
         val pagingSourceFactory = {
-            database.recipeCommentDao().getAllComments()
+            database.recipeCommentsDao().getAllComments()
         }
 
         return Pager(
@@ -99,6 +101,4 @@ class RecipeCommentRepositoryImpl @Inject constructor(
             reportId = reportId
         )
     }
-
-
 }

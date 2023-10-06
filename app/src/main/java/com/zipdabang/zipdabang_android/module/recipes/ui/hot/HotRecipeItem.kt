@@ -59,20 +59,20 @@ fun HotRecipeItem(
     onRecipeClick: (Int) -> Unit,
     onScrapClick: (Int) -> Unit,
     onLikeClick: (Int) -> Unit,
-    likeState: StateFlow<PreferenceToggleState>,
-    scrapState: StateFlow<PreferenceToggleState>
+    likeState: PreferenceToggleState,
+    scrapState: PreferenceToggleState
 ) {
 
     var isLiked by remember { mutableStateOf(item.isLiked) }
     var isScraped by remember { mutableStateOf(item.isScrapped) }
     var likes by remember { mutableStateOf(item.likes) }
 
-    if (likeState.collectAsState().value.errorMessage != null
-        || scrapState.collectAsState().value.errorMessage != null) {
+    if (likeState.errorMessage != null
+        || scrapState.errorMessage != null) {
         throw TogglePreferenceException
     }
 
-    if (likeState.collectAsState().value.isLoading || likeState.collectAsState().value.isLoading) {
+    if (likeState.isLoading || likeState.isLoading) {
         CircularProgressIndicator(color = ZipdabangandroidTheme.Colors.Strawberry)
     }
 
@@ -173,7 +173,7 @@ fun HotRecipeItem(
                     Spacer(modifier = Modifier.width(2.dp))
                     Text(
                         // TODO comment 수 추가하기
-                        text = "",
+                        text = item.comments.toString(),
                         style = TextStyle(
                             color = ZipdabangandroidTheme.Colors.Typo,
                             fontSize = 8.sp,
@@ -251,7 +251,7 @@ fun HotRecipeItemPreview() {
         onRecipeClick = { int -> },
         onScrapClick = { int -> },
         onLikeClick = { int -> },
-        likeState = MutableStateFlow(PreferenceToggleState()),
-        scrapState = MutableStateFlow(PreferenceToggleState())
+        likeState = PreferenceToggleState(),
+        scrapState = PreferenceToggleState()
     )
 }

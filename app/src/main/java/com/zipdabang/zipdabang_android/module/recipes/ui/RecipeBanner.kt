@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -24,6 +25,7 @@ fun RecipeBanner(
     Column(
         modifier = Modifier
             .aspectRatio(9 / 5f)
+            .padding(bottom = 16.dp)
     ) {
         if (bannerState.isLoading) {
             BannerLoading()

@@ -11,6 +11,7 @@ import androidx.paging.map
 import androidx.room.withTransaction
 import com.zipdabang.zipdabang_android.common.Resource
 import com.zipdabang.zipdabang_android.core.Paging3Database
+import com.zipdabang.zipdabang_android.core.storage.recipe.RecipeDatabase
 import com.zipdabang.zipdabang_android.module.comment.domain.RecipeCommentRepository
 import com.zipdabang.zipdabang_android.module.comment.use_case.BlockUserUseCase
 import com.zipdabang.zipdabang_android.module.comment.use_case.DeleteCommentUseCase
@@ -35,7 +36,7 @@ class RecipeCommentViewModel @Inject constructor(
     private val editCommentUseCase: EditCommentUseCase,
     private val blockUserUseCase: BlockUserUseCase,
     private val reportCommentUseCase: ReportCommentUseCase,
-    private val database: Paging3Database,
+    private val database: RecipeDatabase,
     private val repository: RecipeCommentRepository
 ): ViewModel() {
 
@@ -212,9 +213,9 @@ class RecipeCommentViewModel @Inject constructor(
     ) {
         database.withTransaction {
             try {
-                val currentComment = database.recipeCommentDao().getCommentItemById(commentId = commentId)
+                val currentComment = database.recipeCommentsDao().getCommentItemById(commentId = commentId)
                     ?: throw NullPointerException()
-                database.recipeCommentDao().updateComment(
+                database.recipeCommentsDao().updateComment(
                     currentComment.copy(content = newContent)
                 )
             } catch (e: NullPointerException) {
@@ -228,7 +229,7 @@ class RecipeCommentViewModel @Inject constructor(
     ) {
         database.withTransaction {
             try {
-                database.recipeCommentDao().deleteComment(commentId)
+                database.recipeCommentsDao().deleteComment(commentId)
             } catch (e: NullPointerException) {
                 Log.d(TAG, "no comment ${e.message}")
             }

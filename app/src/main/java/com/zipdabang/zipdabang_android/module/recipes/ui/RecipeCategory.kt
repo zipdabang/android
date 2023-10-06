@@ -28,7 +28,12 @@ fun RecipeCategoryList(
         maxItemsInEachRow = 4,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 6.dp),
+            .padding(
+                top = 6.dp,
+                bottom = 20.dp,
+                start = 16.dp,
+                end = 16.dp
+            ),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
 

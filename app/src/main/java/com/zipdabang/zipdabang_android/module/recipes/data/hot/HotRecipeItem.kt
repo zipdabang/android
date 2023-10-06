@@ -10,6 +10,6 @@ data class HotRecipeItem(
     val nickname: String,
     val recipeId: Int,
     val recipeName: String,
-    var scraps: Int,
+    val comments: Int,
     val thumbnailUrl: String?
 )

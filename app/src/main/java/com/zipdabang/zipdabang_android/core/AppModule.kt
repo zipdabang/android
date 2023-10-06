@@ -1,7 +1,12 @@
 package com.zipdabang.zipdabang_android.core
 
 import android.content.Context
+import android.net.ConnectivityManager
+import android.net.Network
+import android.net.NetworkCapabilities
+import android.net.NetworkInfo
 import android.util.DisplayMetrics
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.datastore.core.DataStore
 import androidx.datastore.core.DataStoreFactory
 import androidx.datastore.dataStoreFile
@@ -10,10 +15,12 @@ import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFact
 import com.zipdabang.zipdabang_android.common.Constants
 import com.zipdabang.zipdabang_android.common.Constants.PAGING3_DATABASE
 import com.zipdabang.zipdabang_android.common.Constants.BASE_URL
+import com.zipdabang.zipdabang_android.common.Constants.RECIPE_DATABASE
 import com.zipdabang.zipdabang_android.core.data_store.proto.ProtoRepository
 import com.zipdabang.zipdabang_android.core.data_store.proto.ProtoRepositoryImpl
 import com.zipdabang.zipdabang_android.core.data_store.proto.ProtoSerializer
 import com.zipdabang.zipdabang_android.core.data_store.proto.Token
+import com.zipdabang.zipdabang_android.core.storage.recipe.RecipeDatabase
 import com.zipdabang.zipdabang_android.module.detail.recipe.common.DeviceScreenSize
 import dagger.Module
 import dagger.Provides
@@ -74,6 +81,21 @@ object AppModule {
             )
             .fallbackToDestructiveMigration()
 //            .addMigrations(MIGRATION_1_2)
+            .build()
+    }
+
+    @Provides
+    @Singleton
+    fun provideRecipeDatabase(
+        @ApplicationContext context: Context
+    ): RecipeDatabase {
+
+        return Room
+            .databaseBuilder(
+                context,
+                RecipeDatabase::class.java,
+                RECIPE_DATABASE
+            )
             .build()
     }
 
@@ -157,6 +179,25 @@ object AppModule {
 
         return result
     }*/
+
+    @Provides
+    @Singleton
+    @NetworkConnection
+    fun checkNetworkState(
+        @ApplicationContext context: Context
+    ): Boolean {
+        val connectivityManager: ConnectivityManager =
+            context.getSystemService(ConnectivityManager::class.java)
+        val network: Network = connectivityManager.activeNetwork ?: return false
+        val actNetwork: NetworkCapabilities =
+            connectivityManager.getNetworkCapabilities(network) ?: return false
+
+        return when {
+            actNetwork.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> true
+            actNetwork.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> true
+            else -> false
+        }
+    }
 }
 
 @Qualifier
@@ -166,3 +207,7 @@ annotation class DeviceSize
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
 annotation class DeviceHeight
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class NetworkConnection

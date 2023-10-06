@@ -80,7 +80,7 @@ fun CategoryPager(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .height(460.dp)
+            .height(420.dp)
     ) {
         Column(
             modifier = Modifier

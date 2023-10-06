@@ -84,6 +84,7 @@ fun NavGraphBuilder.SharedNavGraph(
 
             val currentPlatform = recipeDetailViewModel.currentPlatform.value
             val isOwner = recipeDetailState.recipeDetailData?.isOwner
+            val ownerId = recipeDetailState.recipeDetailData?.ownerId ?: 0
             var isExpandedForOwner by remember { mutableStateOf(false) }
             var isExpandedForNotOwner by remember { mutableStateOf(false) }
 
@@ -143,9 +144,11 @@ fun NavGraphBuilder.SharedNavGraph(
                     }
                 },
                 onClickRecipeBlock = {
-                    // recipeDetailViewModel.blockUser()
-                    // TODO 서버에서 ownerId 추가하면 그 때 blockuser 메소드 추가
-
+                    recipeDetailViewModel.blockUser(ownerId)
+                    scope.launch {
+                        showSnackBar("해당 이용자를 차단했어요")
+                    }
+                    navController.popBackStack()
                 },
                 onClickCommentReport = { commentId, reportId ->
 
