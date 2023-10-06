@@ -41,7 +41,10 @@ class RecipeWriteViewModel @Inject constructor(
                 Step(
                     stepImage = null,
                     description = "",
-                    stepWordCount = 0
+                    stepWordCount = 0,
+                    textfieldEnabled = true,
+                    completeBtnEnabled = false,
+                    completeBtnVisible = true
                 )
             ),
         ),
@@ -158,12 +161,21 @@ class RecipeWriteViewModel @Inject constructor(
 
             // 스텝
             is RecipeWriteFormEvent.BtnStepAdd->{
+                val stepNumToChange = event.stepNum
                 val currentSteps = stateRecipeWriteForm.steps.toMutableList()
+                val preStep = currentSteps[stepNumToChange - 1].copy(
+                    textfieldEnabled = false,
+                    completeBtnVisible = false,
+                )
                 val newStep = Step(
                     stepImage = null,
                     description = "",
-                    stepWordCount = 0
+                    stepWordCount = 0,
+                    textfieldEnabled = true,
+                    completeBtnEnabled = false,
+                    completeBtnVisible = true
                 )
+                currentSteps[stepNumToChange - 1] = preStep
                 currentSteps.add(newStep)
                 stateRecipeWriteForm = stateRecipeWriteForm.copy(
                     steps = currentSteps,
@@ -171,13 +183,47 @@ class RecipeWriteViewModel @Inject constructor(
                 )
             }
             is RecipeWriteFormEvent.BtnStepDelete ->{
+                val stepNumToDelete = event.stepNum
+                val currentSteps = stateRecipeWriteForm.steps.toMutableList()
 
+                if(currentSteps.size != 1){
+                    currentSteps.removeAt(stepNumToDelete -1 )
+                    stateRecipeWriteForm = stateRecipeWriteForm.copy(
+                        steps = currentSteps,
+                        stepsNum = currentSteps.size
+                    )
+                }
             }
             is RecipeWriteFormEvent.BtnStepEdit ->{
+                val stepNumToEdit = event.stepNum
+                val currentSteps = stateRecipeWriteForm.steps.toMutableList()
 
+                val editStep = currentSteps[stepNumToEdit - 1].copy(
+                    textfieldEnabled = true,
+                    completeBtnVisible = true,
+                    completeBtnEnabled = false,
+                )
+                currentSteps[stepNumToEdit -1] = editStep
+
+                stateRecipeWriteForm = stateRecipeWriteForm.copy(
+                    steps = currentSteps,
+                    stepsNum = currentSteps.size
+                )
             }
             is RecipeWriteFormEvent.StepChanged->{
+                val stepNumToChange = event.stepNum
+                val newStepDescription = event.stepDescription
 
+                val currentSteps = stateRecipeWriteForm.steps.toMutableList()
+                val updatedStep = currentSteps[stepNumToChange -1].copy(
+                    description = newStepDescription,
+                    stepWordCount = newStepDescription.length
+                )
+                Log.e("recipewriteform","${updatedStep}")
+                currentSteps[stepNumToChange -1] = updatedStep
+                stateRecipeWriteForm = stateRecipeWriteForm.copy(
+                    steps = currentSteps
+                )
             }
             is RecipeWriteFormEvent.StepImageChanged->{
                 val stepNumToChange = event.stepNum
@@ -207,7 +253,28 @@ class RecipeWriteViewModel @Inject constructor(
                     steps = currentSteps
                 )
             }
+            is RecipeWriteFormEvent.StepIsValidate->{
+                var allStepsValid = true // 모든 스텝이 유효한지 여부를 저장할 변수
+                val stepNumToChange = event.stepNum
 
+                for(i in 0 until event.stepNum){
+                    if(stateRecipeWriteForm.steps[i].description.isEmpty()
+                        || stateRecipeWriteForm.steps[i].stepImage == null){
+                        allStepsValid = false
+                        break
+                    }
+                }
+
+                val currentSteps = stateRecipeWriteForm.steps.toMutableList()
+                val updatedStep = currentSteps[stepNumToChange - 1].copy(
+                    completeBtnEnabled = allStepsValid
+                )
+                currentSteps[stepNumToChange - 1] = updatedStep
+
+                stateRecipeWriteForm = stateRecipeWriteForm.copy(
+                    steps = currentSteps
+                )
+            }
 
             is RecipeWriteFormEvent.BtnEnabled->{
 

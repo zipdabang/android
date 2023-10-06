@@ -34,6 +34,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.zipdabang.zipdabang_android.R
 import com.zipdabang.zipdabang_android.core.navigation.DrawerScreen
+import com.zipdabang.zipdabang_android.core.navigation.MyScreen
 import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
 
 @Composable
@@ -400,7 +401,7 @@ fun ModalDrawer(
                         FAGOnClick = { Log.d("drawer","FAG")},
                         inquiryOnClick = { navController.navigate(DrawerScreen.Report.route)},
                         loginOnClick = { Log.d("drawer","로그인하기")},
-                        userOnClick = { navController.navigate(DrawerScreen.UserInfo.route) },
+                        userOnClick = { navController.navigate(MyScreen.RecipeWrite.route) },
                         alarmOnClick = { Log.d("drawer","알림 정보")},
                         etcOnClick = { Log.d("drawer","기타 정보")},
                     )
