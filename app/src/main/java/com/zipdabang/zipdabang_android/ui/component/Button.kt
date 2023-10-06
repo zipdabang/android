@@ -285,8 +285,7 @@ fun FloatingActionButton(
 ) {
     ExtendedFloatingActionButton(
         onClick = onClick,
-        modifier = modifier
-            .padding(bottom = 16.dp),
+        modifier = modifier,
         shape = RoundedCornerShape(percent = 50),
         text = {
             Text(

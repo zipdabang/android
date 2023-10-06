@@ -39,7 +39,6 @@ class RecipeListViewModel @Inject constructor(
     private val toggleLikeListUseCase: ToggleLikeListUseCase,
     private val toggleScrapListUseCase: ToggleScrapListUseCase,
     private val savedState: SavedStateHandle,
-    private val database: Paging3Database,
     @NetworkConnection
     private val isNetworkAvailable: Boolean
 ) : ViewModel() {
@@ -281,15 +280,6 @@ class RecipeListViewModel @Inject constructor(
                         isLoading = true
                     )
                 }
-            }
-        }
-    }
-
-    fun deleteAllRecipes() {
-        viewModelScope.launch {
-            database.withTransaction {
-                database.recipeListDao().deleteAllRecipes()
-                database.RemoteKeyDao().deleteRemoteKeys()
             }
         }
     }

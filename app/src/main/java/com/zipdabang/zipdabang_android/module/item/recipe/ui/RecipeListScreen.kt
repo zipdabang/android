@@ -3,8 +3,10 @@ package com.zipdabang.zipdabang_android.module.item.recipe.ui
 import android.util.Log
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.Scaffold
@@ -12,16 +14,20 @@ import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.zipdabang.zipdabang_android.R
 import com.zipdabang.zipdabang_android.module.item.recipe.common.RecipeSubtitleState
 import com.zipdabang.zipdabang_android.module.recipes.common.OwnerType
@@ -43,7 +49,7 @@ fun RecipeListScreen(
 
     val scope = rememberCoroutineScope()
     val drawerState = rememberDrawerState(DrawerValue.Closed)
-    val lazyListState = rememberLazyListState()
+
     val viewModel = hiltViewModel<RecipeListViewModel>()
 
     val type: RecipeSubtitleState by remember {
@@ -54,12 +60,31 @@ fun RecipeListScreen(
 
     Log.d("ownerType - on screen", "$type")
 
+
+
+    val recipeList =
+        if (categoryState.categoryId == -1 && categoryState.ownerType != null) {
+            Log.d("RecipeList", "ownerType")
+            viewModel.getRecipeListByOwnerType(
+                ownerType = categoryState.ownerType
+            ).collectAsLazyPagingItems()
+        } else {
+            viewModel.getRecipeListByCategory(
+                categoryId = categoryState.categoryId!!
+            ).collectAsLazyPagingItems()
+        }
+
+    val lazyGridState = rememberLazyGridState()
+
     val isScrolled: Boolean by remember {
         derivedStateOf {
             // lazyList의 첫번째 아이템의 좌표가 0을 넘어서면 true
-            lazyListState.firstVisibleItemIndex > 0
+            lazyGridState.firstVisibleItemIndex > 0
         }
     }
+
+    val likeState = viewModel.toggleLikeResult.collectAsState().value
+    val scrapState = viewModel.toggleScrapResult.collectAsState().value
 
     ModalDrawer(
         scaffold = {
@@ -72,7 +97,6 @@ fun RecipeListScreen(
                         endIcon2 = R.drawable.ic_topbar_menu,
                         onClickStartIcon = {
                             onBackClick()
-                            viewModel.deleteAllRecipes()
                         },
                         onClickEndIcon1 = {},
                         onClickEndIcon2 = { scope.launch { drawerState.open() } },
@@ -100,42 +124,62 @@ fun RecipeListScreen(
                 containerColor = Color.White,
                 contentColor = Color.Black,
                 floatingActionButton = {
+
+                }
+            ) { padding ->
+                Box(modifier = Modifier
+                    .fillMaxSize()
+                    .padding(padding)
+                ) {
+                    RecipeList(
+                        modifier = Modifier,
+                        onItemClick = onItemClick,
+                        category = categoryState,
+                        recipeList = recipeList,
+                        likeState = likeState,
+                        scrapState = scrapState,
+                        onToggleLike = { recipeId, categoryId, ownerType ->
+                            viewModel.toggleLike(recipeId, categoryId, ownerType)
+                        },
+                        onToggleScrap = { recipeId, categoryId, ownerType ->
+                            viewModel.toggleScrap(recipeId, categoryId, ownerType)
+                        },
+                        lazyGridState = lazyGridState
+                    ) {
+                        categoryState.let {
+                            if (it.categoryId == -1 && it.ownerType != null) {
+                                when (it.ownerType) {
+                                    OwnerType.OFFICIAL.type -> EveryoneSubtitle()
+                                    OwnerType.BARISTA.type -> InfluencerSubtitle()
+                                    OwnerType.USER.type -> OurSubtitle()
+                                }
+                            } else if (it.categoryId != null && it.ownerType == null) {
+                                when (it.categoryId) {
+                                    0 -> AllSubtitle()
+                                    1 -> CoffeeSubtitle()
+                                    2 -> NonCaffeineSubtitle()
+                                    3 -> TeaSubtitle()
+                                    4 -> AdeSubtitle()
+                                    5 -> SmoothieSubtitle()
+                                    6 -> FruitSubtitle()
+                                    7 -> WellBeingSubtitle()
+                                    else -> WellBeingSubtitle()
+                                }
+                            } else {
+                                AllSubtitle()
+                            }
+                        }
+                    }
+
                     FloatingActionButton(
+                        modifier = Modifier
+                            .align(Alignment.BottomEnd)
+                            .padding(bottom = 40.dp, end = 16.dp),
                         isScrolled = isScrolled,
                         icon = R.drawable.zipdabanglogo_white,
                         title = "나의 레시피 공유하기"
                     ) {
                         onShareClick()
-                    }
-                }
-            ) { padding ->
-                RecipeList(
-                    modifier = Modifier.padding(padding),
-                    onItemClick = onItemClick,
-                    category = categoryState
-                ) {
-                    categoryState.let {
-                        if (it.categoryId == -1 && it.ownerType != null) {
-                            when (it.ownerType) {
-                                OwnerType.OFFICIAL.type -> EveryoneSubtitle()
-                                OwnerType.BARISTA.type -> InfluencerSubtitle()
-                                OwnerType.USER.type -> OurSubtitle()
-                            }
-                        } else if (it.categoryId != null && it.ownerType == null) {
-                            when (it.categoryId) {
-                                0 -> AllSubtitle()
-                                1 -> CoffeeSubtitle()
-                                2 -> NonCaffeineSubtitle()
-                                3 -> TeaSubtitle()
-                                4 -> AdeSubtitle()
-                                5 -> SmoothieSubtitle()
-                                6 -> FruitSubtitle()
-                                7 -> WellBeingSubtitle()
-                                else -> WellBeingSubtitle()
-                            }
-                        } else {
-                            AllSubtitle()
-                        }
                     }
                 }
             }
@@ -144,7 +188,7 @@ fun RecipeListScreen(
         navController = navController
     )
 
-    val currentOnBack by rememberUpdatedState(onBackClick)
+/*    val currentOnBack by rememberUpdatedState(onBackClick)
 
     // 뒤로가기 버튼을 눌렀을 때 callback을 실행
     val backCallback = remember {
@@ -173,5 +217,5 @@ fun RecipeListScreen(
         onDispose {
             backCallback.remove()
         }
-    }
+    }*/
 }
