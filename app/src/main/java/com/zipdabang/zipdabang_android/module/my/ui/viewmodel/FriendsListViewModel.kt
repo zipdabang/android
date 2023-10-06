@@ -37,7 +37,7 @@ class FriendsListViewModel @OptIn(ExperimentalPagingApi::class)
 
     @OptIn(ExperimentalPagingApi::class)
     val getFollowItems = followRepository.getFollowItems().cachedIn(viewModelScope)
-    val getFollowingItems = followingRepository.getFollowItems().cachedIn(viewModelScope)
+    val getFollowingItems = followingRepository.getFollowingItems().cachedIn(viewModelScope)
 
     fun followOrCancel(targetId : Int, isToast : () -> Unit){
         followOrCancelUseCase(targetId).onEach {

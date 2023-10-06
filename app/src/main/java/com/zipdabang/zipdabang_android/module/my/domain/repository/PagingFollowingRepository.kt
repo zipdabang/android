@@ -22,7 +22,7 @@ class PagingFollowingRepository @Inject constructor(
     private val tokenDataStore : DataStore<Token>
 ){
     @OptIn(ExperimentalPagingApi::class)
-    fun getFollowItems(): Flow<PagingData<Follower>> {
+    fun getFollowingItems(): Flow<PagingData<Follower>> {
 
         val pagingSourceFactory = { paging3Database.followingDao().getAllItem() }
         return Pager(
