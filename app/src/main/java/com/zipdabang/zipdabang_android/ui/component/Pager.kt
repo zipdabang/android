@@ -98,13 +98,12 @@ fun CategoryPager(
 fun ColumnPagers(
     tabsList: List<TabItem>,
     pagerState: PagerState,
-    deviceSize: DeviceScreenSize
+   // deviceSize: DeviceScreenSize
 ) {
 
     Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .height((deviceSize.height).dp)
+                .fillMaxSize()
         ) {
             Column(
                 modifier = Modifier

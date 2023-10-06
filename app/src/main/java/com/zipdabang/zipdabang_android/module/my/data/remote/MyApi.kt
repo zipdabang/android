@@ -1,11 +1,13 @@
 package com.zipdabang.zipdabang_android.module.my.data.remote
 
+import com.zipdabang.zipdabang_android.module.my.data.remote.followorcancel.FollowOrCancelDto
 import com.zipdabang.zipdabang_android.module.my.data.remote.friendlist.follow.FollowDto
 import com.zipdabang.zipdabang_android.module.my.data.remote.friendlist.following.FollowingDto
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.POST
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface MyApi {
@@ -36,4 +38,11 @@ interface MyApi {
         @Header("Authorization") accessToken: String,
         @Query("page") page : Int
     ) : FollowingDto
+
+    @POST("members/followings/{targetId}")
+    suspend fun postFollowOrCancel(
+        @Header("Authorization") accessToken: String,
+        @Path(value = "targetId") targetId : Int
+    ) : FollowOrCancelDto
+
 }

@@ -28,7 +28,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun MainScreen(
     outerNavController: NavHostController,
-    innerNavController: NavHostController
+  //  innerNavController: NavHostController
 ){
     //drawer에 필요한 drawerState랑 scope
   //  val drawerState = rememberDrawerState(DrawerValue.Closed)
@@ -36,7 +36,7 @@ fun MainScreen(
 
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
-
+    val innerNavController = rememberNavController()
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         containerColor = Color.White,

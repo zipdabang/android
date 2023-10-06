@@ -48,10 +48,6 @@ fun Spinner(
                 mutableStateOf(optionList[0])
             }
 
-            // alpha
-
-            // rotateX
-
             ExposedDropdownMenuBox(
                 expanded = expanded,
                 onExpandedChange = { expanded = !expanded }
