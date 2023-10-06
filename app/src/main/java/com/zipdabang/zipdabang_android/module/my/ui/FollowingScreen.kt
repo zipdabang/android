@@ -28,6 +28,7 @@ fun FollowingScreen(
 ){
 
     val followingItem= viewModel.getFollowingItems.collectAsLazyPagingItems()
+
     val followOrCancelState = viewModel.followOrCancelSuccessState
     val context = LocalContext.current
 
@@ -47,10 +48,12 @@ fun FollowingScreen(
                             Toast.makeText(
                                 context,
                                 "팔로우를 성공했습니다!",
-                                Toast.LENGTH_LONG
+                                Toast.LENGTH_SHORT
                             ).show()
                         }
                     )
+                    followingItem.refresh()
+                    viewModel.refresh()
 
 
 

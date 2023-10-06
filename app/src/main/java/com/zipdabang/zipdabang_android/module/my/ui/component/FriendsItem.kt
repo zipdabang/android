@@ -117,7 +117,9 @@ fun FollowItem(
             )
             DropdownMenu(
                     expanded = isContextMenuVisible,
-            onDismissRequest = { isContextMenuVisible = false },
+            onDismissRequest = {
+                isContextMenuVisible = false
+                               },
             modifier = Modifier.align(Alignment.CenterEnd),
   //
             ) {
@@ -127,8 +129,10 @@ fun FollowItem(
                         index, text ->
                     DropdownMenuItem(
                         onClick = {
+                            isContextMenuVisible = false
                             if(index == 0) followOrCancelClick()
                             else userReport()
+
                         }
                     ) {
                         Text(
@@ -142,7 +146,10 @@ fun FollowItem(
                 if (isFollowEach) {
                     //맞팔로우된 상태
                     DropdownMenuItem(
-                        onClick = { /*TODO*/ }) {
+                        onClick = {
+                            isContextMenuVisible = false
+                        }
+                    ) {
                         Text(
                             text = "신고하기",
                             style = ZipdabangandroidTheme.Typography.fourteen_500,
@@ -154,6 +161,7 @@ fun FollowItem(
                     isFollowingDropDown.forEachIndexed { index, text ->
                         DropdownMenuItem(
                             onClick = {
+                                isContextMenuVisible = false
                                 if(index == 0) followOrCancelClick()
                                 else userReport()
                             }

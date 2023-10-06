@@ -42,7 +42,7 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 fun FriendListScreen(
-    viewModel : FriendsListViewModel = hiltViewModel(),
+   // viewModel : FriendsListViewModel = hiltViewModel(),
     onClickBack : ()->Unit,
     navController: NavController,
 ) {
@@ -87,8 +87,7 @@ fun FriendListScreen(
 
                     ColumnPagers(
                         tabsList = listOf(TabItem.followList(), TabItem.followingList()),
-                        pagerState = pagerState,
-                        deviceSize = viewModel.getDeviceSize()
+                        pagerState = pagerState
                     )
                 }
 

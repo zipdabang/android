@@ -24,8 +24,8 @@ import javax.inject.Inject
 class FriendsListViewModel @OptIn(ExperimentalPagingApi::class)
 @Inject constructor(
     @DeviceSize private val deviceSize: DeviceScreenSize,
-    followRepository: PagingFollowRepository,
-    followingRepository: PagingFollowingRepository,
+    val followRepository: PagingFollowRepository,
+    val followingRepository: PagingFollowingRepository,
     val followOrCancelUseCase: PostFollowOrCancelUseCase
 ) : ViewModel() {
 
@@ -35,10 +35,15 @@ class FriendsListViewModel @OptIn(ExperimentalPagingApi::class)
         return deviceSize
     }
 
-    @OptIn(ExperimentalPagingApi::class)
-    val getFollowItems = followRepository.getFollowItems().cachedIn(viewModelScope)
-    val getFollowingItems = followingRepository.getFollowingItems().cachedIn(viewModelScope)
 
+    @OptIn(ExperimentalPagingApi::class)
+    var getFollowItems = followRepository.getFollowItems().cachedIn(viewModelScope)
+    var getFollowingItems = followingRepository.getFollowingItems().cachedIn(viewModelScope)
+    @OptIn(ExperimentalPagingApi::class)
+    fun refresh(){
+        getFollowItems = followRepository.getFollowItems().cachedIn(viewModelScope)
+        getFollowingItems = followingRepository.getFollowingItems().cachedIn(viewModelScope)
+    }
     fun followOrCancel(targetId : Int, isToast : () -> Unit){
         followOrCancelUseCase(targetId).onEach {
             result ->

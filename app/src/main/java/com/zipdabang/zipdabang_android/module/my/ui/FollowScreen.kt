@@ -1,5 +1,6 @@
 package com.zipdabang.zipdabang_android.module.my.ui
 
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -21,12 +22,9 @@ fun FollowScreen(
     viewModel : FriendsListViewModel = hiltViewModel()
 ) {
     val followItem = viewModel.getFollowItems.collectAsLazyPagingItems()
-    val followOrCancelState = viewModel.followOrCancelSuccessState
+
     val context = LocalContext.current
-
-    LaunchedEffect(key1 =followOrCancelState.value.isSuccess){
-
-    }
+    Log.e("followItem",followItem.itemCount.toString())
     LazyColumn(modifier = Modifier.padding(30.dp)
     ) {
         items(followItem.itemCount){
@@ -37,9 +35,11 @@ fun FollowScreen(
                followOrCancelClick= {
                    viewModel.followOrCancel(followItem[it]!!.id,
                        isToast = {
-                           Toast.makeText(context,"팔로우를 취소했습니다.", Toast.LENGTH_LONG).show()
-                       })
-
+                           Toast.makeText(context,"팔로우를 취소했습니다.", Toast.LENGTH_SHORT).show()
+                       }
+                   )
+                   followItem.refresh()
+                   viewModel.refresh()
                },
                userReport = {
 
