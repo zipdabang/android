@@ -21,6 +21,7 @@ import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -35,6 +36,7 @@ import com.zipdabang.zipdabang_android.module.home.data.bestrecipe.BestRecipe
 import com.zipdabang.zipdabang_android.module.home.data.bestrecipe.BestRecipeDto
 import com.zipdabang.zipdabang_android.module.item.recipe.ui.RecipeCard
 import com.zipdabang.zipdabang_android.module.main.FCMData
+import com.zipdabang.zipdabang_android.module.recipes.ui.viewmodel.RecipeMainViewModel
 import com.zipdabang.zipdabang_android.ui.component.AppBarHome
 import com.zipdabang.zipdabang_android.ui.component.Banner
 import com.zipdabang.zipdabang_android.ui.component.GroupHeader
@@ -47,7 +49,9 @@ import kotlinx.coroutines.launch
 fun HomeScreen(
     navController : NavController,
     onGuide1Click : ()-> Unit,
+    onRecipeItemClick : (Int) -> Unit,
     viewModel: HomeViewModel = hiltViewModel(),
+    recipeMainViewModel : RecipeMainViewModel = hiltViewModel()
 ){
     //drawer에 필요한 drawerState랑 scope
     val drawerState = rememberDrawerState(DrawerValue.Closed)
@@ -55,6 +59,9 @@ fun HomeScreen(
 
     val bannerState = viewModel.bannerState
     val recipeState = viewModel.recipeState
+
+    val likeState = recipeMainViewModel.toggleLikeResult.collectAsState().value
+    val scrapState = recipeMainViewModel.toggleScrapResult.collectAsState().value
 
     ModalDrawer(
         scaffold = {
@@ -151,17 +158,23 @@ fun HomeScreen(
                                             user = item.nickname,
                                             thumbnail = item.thumbnailUrl,
                                             date = item.createdAt,
-                                            likes = item.likes,
+                                            likes  = item.likes,
                                             comments = item.comments,
-                                            isLikeSelected = item.isLiked,
+                                            isLikeSelected = ,
                                             isScrapSelected = item.isScrapped,
                                             onLikeClick = {
-                                                true // 예은 임시로 해둠
+                                                recipeMainViewModel.toggleLike(item.recipeId)
+
+
+                                                 // 예은 임시로 해둠
                                             },
                                             onScrapClick = {
-                                                true // 예은 임시로 해둠
+                                                recipeMainViewModel.toggleScrap(item.recipeId)
+                                                // 예은 임시로 해둠
                                             },
-                                            onItemClick = {}
+                                            onItemClick = {
+                                                onRecipeItemClick(item.recipeId)
+                                            }
                                         )
                                     }
                                 }

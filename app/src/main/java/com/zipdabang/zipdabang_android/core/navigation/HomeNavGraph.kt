@@ -22,6 +22,9 @@ fun NavGraphBuilder.HomeNavGraph(
                 navController = navController,
                 onGuide1Click = {
                     (navController.navigate(HomeScreen.Guide1.route))
+                },
+                onRecipeItemClick = {
+                        recipeid -> navController.navigate(SharedScreen.DetailRecipe.passRecipeId(recipeid))
                 }
             )
         }

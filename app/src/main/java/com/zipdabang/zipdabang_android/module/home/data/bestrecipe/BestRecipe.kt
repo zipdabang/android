@@ -7,10 +7,10 @@ data class BestRecipe(
     val thumbnailUrl : String,
     val createdAt : String,
     val updateAt : String,
-    val likes : Int,
+    var likes : Int,
     val comments : Int,
     val scraps : Int,
-    val isLiked : Boolean,
+    var isLiked : Boolean,
     val isScrapped : Boolean,
     val rank : Int
 )
