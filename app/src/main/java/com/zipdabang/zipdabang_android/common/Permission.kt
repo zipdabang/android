@@ -12,6 +12,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCompositionContext
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -22,19 +23,29 @@ import androidx.core.content.ContextCompat
 fun checkAndRequestPermissions(
     context : Context,
     permissions : Array<String>,
-    launcher : ManagedActivityResultLauncher<Array<String>, Map<String, Boolean>>
+    launcher : ManagedActivityResultLauncher<Array<String>, Map<String, Boolean>>,
+    isPermissionExist : () -> Unit = {}
 ){
     // 권한이 이미 있는 경우
-    if(permissions.all{
+    if(
+        permissions.all
+        {
         ContextCompat.checkSelfPermission(context, it) == PackageManager.PERMISSION_GRANTED
-    }){
+    }
+        ){
         Log.d("권한","권한이 이미 존재합니다.")
+        //권한 있는 경우 실행
+        isPermissionExist()
     }
     // 권한이 없는 경우
     else {
+        Log.d("권한","권한이 존재하지 않습니다.")
+
         launcher.launch(permissions)
     }
 }
+
+
 
 @Preview
 @Composable
