@@ -85,6 +85,7 @@ class RecipeDetailViewModel @Inject constructor(
     private val _isLikeChecked = MutableStateFlow(false)
     val isLikeChecked = _isLikeChecked.asStateFlow()
 
+
     private val _isScrapChecked = MutableStateFlow(false)
     val isScrapChecked = _isScrapChecked.asStateFlow()
 

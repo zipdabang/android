@@ -7,6 +7,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.zipdabang.zipdabang_android.common.HomeResource
+import com.zipdabang.zipdabang_android.common.Resource
 import com.zipdabang.zipdabang_android.common.SearchResource
 import com.zipdabang.zipdabang_android.module.home.ui.HomeBannerState
 import com.zipdabang.zipdabang_android.module.home.ui.HomeRecipeState
@@ -34,7 +35,7 @@ class SearchViewModel @Inject constructor(
     fun getSearchList() {
         getSearchUseCase(searchText.value).onEach { result ->
             when (result) {
-                is SearchResource.SearchSuccess -> {
+                is Resource.Success -> {
                     if (result.data?.isSuccess == true) {
                         val searchList = result.data.result.recipeList
                         Log.e("searchResult", result.data.result.toString())
@@ -42,22 +43,19 @@ class SearchViewModel @Inject constructor(
                             searchList = searchList,
                             isLoading = false
                         )
-                    } else {
-                        Log.e("Search Api Error", result.data!!.message)
                     }
                 }
 
-                is SearchResource.SearchError -> {
+                is Resource.Error -> {
                     _searchState.value = SearchState(
                         isError = true,
-                        error = result.message ?: "An unexpected error occured"
+                        error = result.message.toString()
                     )
                 }
 
-                is SearchResource.SearchLoading -> {
+                is Resource.Loading-> {
                     _searchState.value = SearchState(isLoading = true)
                 }
-
 
             }
 

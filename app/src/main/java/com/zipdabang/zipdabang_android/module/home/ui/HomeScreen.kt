@@ -21,7 +21,13 @@ import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
@@ -29,12 +35,14 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.zipdabang.zipdabang_android.R
 import com.zipdabang.zipdabang_android.core.navigation.SharedScreen
+import com.zipdabang.zipdabang_android.module.detail.recipe.ui.RecipeDetailViewModel
 import com.zipdabang.zipdabang_android.module.guide.ui.HomeBanner.GuideBannerSlider
 import com.zipdabang.zipdabang_android.module.guide.ui.HomeBanner.HomeGuideBanner_1
 import com.zipdabang.zipdabang_android.module.home.data.bestrecipe.BestRecipe
 import com.zipdabang.zipdabang_android.module.home.data.bestrecipe.BestRecipeDto
 import com.zipdabang.zipdabang_android.module.item.recipe.ui.RecipeCard
 import com.zipdabang.zipdabang_android.module.main.FCMData
+import com.zipdabang.zipdabang_android.module.recipes.ui.viewmodel.RecipeMainViewModel
 import com.zipdabang.zipdabang_android.ui.component.AppBarHome
 import com.zipdabang.zipdabang_android.ui.component.Banner
 import com.zipdabang.zipdabang_android.ui.component.GroupHeader
@@ -47,7 +55,9 @@ import kotlinx.coroutines.launch
 fun HomeScreen(
     navController : NavController,
     onGuide1Click : ()-> Unit,
+    onRecipeItemClick : (Int) -> Unit,
     viewModel: HomeViewModel = hiltViewModel(),
+    recipeMainViewModel : RecipeMainViewModel = hiltViewModel(),
 ){
     //drawer에 필요한 drawerState랑 scope
     val drawerState = rememberDrawerState(DrawerValue.Closed)
@@ -55,6 +65,7 @@ fun HomeScreen(
 
     val bannerState = viewModel.bannerState
     val recipeState = viewModel.recipeState
+
 
     ModalDrawer(
         scaffold = {
@@ -81,7 +92,8 @@ fun HomeScreen(
                    ) {
 
                             if (bannerState.value.isLoading) {
-                           //Shimmering Effect
+
+                            //Shimmering Effect
                             }
                             else if(bannerState.value.isError){
                                 val imageUrlList = emptyList<String>()
@@ -126,10 +138,14 @@ fun HomeScreen(
                                 Log.e("HomeScreen Error",bannerState.value.error)
                             }
                             else {
+
+
                                 LazyRow(
                                     modifier = Modifier.padding(horizontal = 8.dp),
                                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                                     ) {
+
+
                                     item {
                                         if (recipeState.value.recipeList.isEmpty()) {
                                             Box(
@@ -145,23 +161,43 @@ fun HomeScreen(
 
                                     itemsIndexed(recipeState.value.recipeList) {
                                             index, item ->
+
+                                        var isLiked by rememberSaveable { mutableStateOf(item.isLiked) }
+                                        var isScraped by rememberSaveable { mutableStateOf(item.isScrapped) }
+                                        var likes by rememberSaveable { mutableStateOf(item.likes) }
                                         RecipeCard(
                                             recipeId = item.recipeId,
                                             title = item.recipeName,
                                             user = item.nickname,
                                             thumbnail = item.thumbnailUrl,
                                             date = item.createdAt,
-                                            likes = item.likes,
+                                            likes  = likes ,
                                             comments = item.comments,
-                                            isLikeSelected = item.isLiked,
-                                            isScrapSelected = item.isScrapped,
+                                            isLikeSelected = isLiked,
+                                            isScrapSelected = isScraped,
                                             onLikeClick = {
-                                                true // 예은 임시로 해둠
+                                                recipeMainViewModel.toggleLike(item.recipeId)
+                                                isLiked = !isLiked
+                                               item.isLiked = !item.isLiked
+                                                if (isLiked) {
+                                                    item.likes += 1
+                                                } else {
+                                                    item.likes -= 1
+                                                }
+                                                likes = item.likes
+
+                                                 // 예은 임시로 해둠
                                             },
                                             onScrapClick = {
-                                                true // 예은 임시로 해둠
+                                                recipeMainViewModel.toggleScrap(item.recipeId)
+                                                isScraped = !isScraped
+                                             //   item.isScrapped=  !item.isScrapped
+
+                                                // 예은 임시로 해둠
                                             },
-                                            onItemClick = {}
+                                            onItemClick = {
+                                                onRecipeItemClick(item.recipeId)
+                                            }
                                         )
                                     }
                                 }

@@ -2,7 +2,9 @@ package com.zipdabang.zipdabang_android.module.search.domain.usecase
 
 import android.util.Log
 import androidx.datastore.core.DataStore
+import com.zipdabang.zipdabang_android.common.Resource
 import com.zipdabang.zipdabang_android.common.SearchResource
+import com.zipdabang.zipdabang_android.common.getErrorCode
 import com.zipdabang.zipdabang_android.core.data_store.proto.Token
 import com.zipdabang.zipdabang_android.module.search.data.dto.searchpreview.SearchDto
 import com.zipdabang.zipdabang_android.module.search.domain.SearchRepository
@@ -20,17 +22,28 @@ class GetSearchPreviewUseCase @Inject constructor(
 ) {
 
 
-    operator fun invoke(keyword: String?) : Flow<SearchResource<SearchDto>> = flow {
+    operator fun invoke(keyword: String?) : Flow<Resource<SearchDto>> = flow {
         try{
-            emit(SearchResource.SearchLoading(true))
+            emit(Resource.Loading())
             val accessToken = ("Bearer " + tokenDataStore.data.first().accessToken)
             Log.e("token",accessToken)
             val data = repository.getSearchPreview(accessToken,keyword)!!
-            emit(SearchResource.SearchSuccess(data))
+            emit(Resource.Success(data =data ,code =data.code, message = data.message))
         } catch (e : HttpException){
-            emit(SearchResource.SearchError(e.localizedMessage ?: "An unexpected error occured"))
+            val errorBody = e.response()?.errorBody()
+            val errorCode = errorBody?.getErrorCode()
+            errorCode?.let {
+                emit(
+                    Resource.Error(
+                        message = e.response()?.errorBody().toString(),
+                        code = errorCode
+                    )
+                )
+                return@flow
+            }
+            emit(Resource.Error(message = e.message ?: "unexpected http error"))
         } catch(e : IOException){
-            emit(SearchResource.SearchError("Couldn't reach server. Check your internal code"))
+            emit(Resource.Error("Couldn't reach server. Check your internal code"))
         }
 
     }

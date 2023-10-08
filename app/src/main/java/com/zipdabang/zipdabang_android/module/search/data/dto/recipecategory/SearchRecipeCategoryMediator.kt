@@ -102,8 +102,9 @@ class SearchRecipeCategoryMediator @Inject constructor(
 
 
             if(!response.isSuccess){
+
                         Log.e("Error in SearchCategoryMediator", response.message)
-                    }
+            }
 
             val endOfPaginationReached = response.result!!.isLast
 

@@ -1,5 +1,6 @@
 package com.zipdabang.zipdabang_android.module.drawer.ui.report
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
@@ -7,12 +8,15 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
+import android.os.Build
 import android.provider.MediaStore
+import android.provider.Settings
 import android.util.Log
 import android.util.Patterns
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.result.launch
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
@@ -48,9 +52,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat.startActivity
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.zipdabang.zipdabang_android.R
+import com.zipdabang.zipdabang_android.common.checkAndRequestPermissions
 import com.zipdabang.zipdabang_android.module.drawer.ui.viewmodel.ErrorReportViewModel
 import com.zipdabang.zipdabang_android.ui.component.AppBarSignUp
 import com.zipdabang.zipdabang_android.ui.component.CustomDialogCameraFile
@@ -66,6 +72,7 @@ import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.InputStream
 
+@RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @SuppressLint("UnrememberedMutableState")
 @Composable
 fun ErrorReportScreen(
@@ -83,6 +90,10 @@ fun ErrorReportScreen(
     }
 
     val context : Context =  LocalContext.current
+
+    var permissonRequest = remember{
+        mutableStateOf("camera")
+    }
 
     var gallaryUri : Uri?  by remember{
         mutableStateOf(null)
@@ -161,15 +172,55 @@ fun ErrorReportScreen(
 
         }
     }
-    if(dialogShow){
+    // 권한이 없을 경우 실행할 launcher 정의
+    val launcherMultiplePermissions = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestMultiplePermissions()
+    ){ permissionsMap ->
+        val areGranted = permissionsMap.values.reduce { acc, next -> acc&&next }
 
+        if(areGranted) {
+
+            if(permissonRequest.value =="camera")takePhotoFromCameraLauncher.launch()
+            else takePhotoFromAlbumLauncher.launch(takePhotoFromAlbumIntent)
+
+            Log.d("권한","권한이 동의되었습니다.")
+        } else{
+            Log.d("권한","권한이 거부되었습니다.")
+        }
+    }
+    if(dialogShow){
+        val cameraPermission = arrayOf(Manifest.permission.CAMERA)
+        val gallaryPermission = arrayOf(Manifest.permission.READ_MEDIA_IMAGES)
         CustomDialogCameraFile(
             title ="파일 선택",
             setShowDialog = {
                             dialogShow = it
             } ,
-            onCameraClick = { takePhotoFromCameraLauncher.launch()  },
-            onFileClick = { takePhotoFromAlbumLauncher.launch(takePhotoFromAlbumIntent) }
+            onCameraClick = {
+                checkAndRequestPermissions(
+                    context,
+                    cameraPermission,
+                    launcherMultiplePermissions,
+                    isPermissionExist = {
+                        permissonRequest.value = "camera"
+                        takePhotoFromCameraLauncher.launch()
+                    },
+                )
+//                takePhotoFromCameraLauncher.launch()
+                },
+            onFileClick = {
+                checkAndRequestPermissions(
+                    context,
+                    gallaryPermission,
+                    launcherMultiplePermissions,
+                    isPermissionExist = {
+                        permissonRequest.value = "gallary"
+                        takePhotoFromAlbumLauncher.launch(takePhotoFromAlbumIntent)
+
+                    },
+                )
+
+            }
             )
 
     }

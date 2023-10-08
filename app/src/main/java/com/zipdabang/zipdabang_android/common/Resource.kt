@@ -4,8 +4,8 @@ sealed class Resource<T>(val data: T? = null, val code: Int? = null, val message
     class Success<T>(data: T, code: Int, message: String)
         : Resource<T>(data = data, code = code, message = message)
 
-    class Error<T>(message: String, data: T? = null)
-        : Resource<T>(message = message, data = data)
+    class Error<T>(message: String, data: T? = null, code : Int? =null )
+        : Resource<T>(code = code, message = message, data = data)
 
     class Loading<T>(data: T? = null): Resource<T>(data)
 }

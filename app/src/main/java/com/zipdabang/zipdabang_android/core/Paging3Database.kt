@@ -13,11 +13,10 @@ import com.zipdabang.zipdabang_android.module.my.data.remote.friendlist.follow.F
 import com.zipdabang.zipdabang_android.module.my.data.remote.friendlist.follow.Following
 import com.zipdabang.zipdabang_android.module.my.data.remote.friendlist.following.Follower
 import com.zipdabang.zipdabang_android.module.my.data.remote.friendlist.following.FollowingDao
-import com.zipdabang.zipdabang_android.module.recipes.data.common.RecipeItem
 import com.zipdabang.zipdabang_android.module.recipes.data.local.RecipeItemEntity
 import com.zipdabang.zipdabang_android.module.recipes.data.local.RecipeListDao
 import com.zipdabang.zipdabang_android.module.search.data.dto.common.SearchRecipe
-import com.zipdabang.zipdabang_android.module.search.domain.SearchDao
+import com.zipdabang.zipdabang_android.module.search.data.SearchDao
 
 @Database(
     entities = [
