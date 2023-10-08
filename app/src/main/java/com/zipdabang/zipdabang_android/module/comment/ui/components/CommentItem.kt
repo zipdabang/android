@@ -1,5 +1,6 @@
 package com.zipdabang.zipdabang_android.module.comment.ui.components
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -36,6 +37,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.zipdabang.zipdabang_android.R
+import com.zipdabang.zipdabang_android.common.CommentMgtFailureException
 import com.zipdabang.zipdabang_android.core.data_store.proto.CurrentPlatform
 import com.zipdabang.zipdabang_android.core.data_store.proto.ProtoDataViewModel
 import com.zipdabang.zipdabang_android.module.comment.ui.RecipeCommentState
@@ -154,8 +156,15 @@ fun CommentItem(
                         DropdownMenuItem(
                             text = { Text("댓글 삭제하기") },
                             onClick = {
-                                onClickDelete(commentItem.commentId)
-                                isExpandedForOwner = !isExpandedForOwner
+                                try {
+                                    onClickDelete(commentItem.commentId)
+                                    isExpandedForOwner = !isExpandedForOwner
+                                } catch (e: CommentMgtFailureException) {
+                                    Log.d("comment submit", "delete failure")
+                                } catch (e: Exception) {
+                                    Log.d("comment submit", "delete failure")
+
+                                }
                             }
                         )
                         DropdownMenuItem(

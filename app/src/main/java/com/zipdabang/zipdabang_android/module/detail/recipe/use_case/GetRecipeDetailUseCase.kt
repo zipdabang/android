@@ -4,7 +4,9 @@ import android.util.Log
 import androidx.datastore.core.DataStore
 import com.zipdabang.zipdabang_android.common.Resource
 import com.zipdabang.zipdabang_android.common.ResponseCode
+import com.zipdabang.zipdabang_android.common.getErrorCode
 import com.zipdabang.zipdabang_android.core.data_store.proto.Token
+import com.zipdabang.zipdabang_android.module.comment.use_case.BlockUserUseCase
 import com.zipdabang.zipdabang_android.module.detail.recipe.domain.RecipeDetailDomain
 import com.zipdabang.zipdabang_android.module.detail.recipe.domain.RecipeDetailRepository
 import com.zipdabang.zipdabang_android.module.detail.recipe.util.toRecipeDetailDomain
@@ -40,6 +42,13 @@ class GetRecipeDetailUseCase @Inject constructor(
             Log.d(TAG, "recipeDetail : $recipeDetail")
 
         } catch (e: HttpException) {
+            val errorBody = e.response()?.errorBody()
+            Log.e(TAG, errorBody?.string() ?: "error body is null")
+            val errorCode = errorBody?.getErrorCode()
+            errorCode?.let {
+                emit(Resource.Error(message = ResponseCode.getMessageByCode(errorCode)))
+                return@flow
+            }
             emit(Resource.Error(
                 message = e.message ?: "unexpected http exception"
             ))
