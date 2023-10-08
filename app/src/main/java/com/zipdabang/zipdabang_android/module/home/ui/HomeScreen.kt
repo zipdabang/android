@@ -1,6 +1,7 @@
 package com.zipdabang.zipdabang_android.module.home.ui
 
 import android.util.Log
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -30,14 +31,15 @@ import com.zipdabang.zipdabang_android.R
 import com.zipdabang.zipdabang_android.core.navigation.SharedScreen
 import com.zipdabang.zipdabang_android.module.guide.ui.HomeBanner.GuideBannerSlider
 import com.zipdabang.zipdabang_android.module.guide.ui.HomeBanner.HomeGuideBanner_1
+import com.zipdabang.zipdabang_android.module.home.data.bestrecipe.BestRecipe
 import com.zipdabang.zipdabang_android.module.home.data.bestrecipe.BestRecipeDto
-import com.zipdabang.zipdabang_android.module.home.data.bestrecipe.Recipe
 import com.zipdabang.zipdabang_android.module.item.recipe.ui.RecipeCard
 import com.zipdabang.zipdabang_android.module.main.FCMData
 import com.zipdabang.zipdabang_android.ui.component.AppBarHome
 import com.zipdabang.zipdabang_android.ui.component.Banner
 import com.zipdabang.zipdabang_android.ui.component.GroupHeader
 import com.zipdabang.zipdabang_android.ui.component.GroupHeaderReversed
+import com.zipdabang.zipdabang_android.ui.component.GroupHeaderReversedNoIcon
 import com.zipdabang.zipdabang_android.ui.component.ModalDrawer
 import kotlinx.coroutines.launch
 
@@ -83,6 +85,7 @@ fun HomeScreen(
                             }
                             else if(bannerState.value.isError){
                                 val imageUrlList = emptyList<String>()
+
                                 Box(
                                     modifier = Modifier
                                         .fillMaxWidth()
@@ -102,18 +105,16 @@ fun HomeScreen(
                             }
 
 
-                            GroupHeaderReversed(
-                                groupName = "Home_Title",
+                            GroupHeaderReversedNoIcon(
                                 formerHeaderChoco = "주간 베스트 ",
                                 latterHeaderStrawberry = "레시피",
-                                onClick = { }
                             )
 
                             if (recipeState.value.isLoading) {
                                 //Shimmering Effect
                             }
                             else if(recipeState.value.isError){
-                                val recipeList = emptyList<Recipe>()
+                                val recipeList = emptyList<BestRecipe>()
                                 Box(
                                     modifier = Modifier
                                         .fillMaxWidth()
@@ -125,7 +126,10 @@ fun HomeScreen(
                                 Log.e("HomeScreen Error",bannerState.value.error)
                             }
                             else {
-                                LazyRow(modifier = Modifier.padding(horizontal = 4.dp)) {
+                                LazyRow(
+                                    modifier = Modifier.padding(horizontal = 8.dp),
+                                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                                    ) {
                                     item {
                                         if (recipeState.value.recipeList.isEmpty()) {
                                             Box(
@@ -139,11 +143,12 @@ fun HomeScreen(
                                         }
                                     }
 
-                                    itemsIndexed(recipeState.value.recipeList) { index, item ->
+                                    itemsIndexed(recipeState.value.recipeList) {
+                                            index, item ->
                                         RecipeCard(
                                             recipeId = item.recipeId,
                                             title = item.recipeName,
-                                            user = item.owner,
+                                            user = item.nickname,
                                             thumbnail = item.thumbnailUrl,
                                             date = item.createdAt,
                                             likes = item.likes,

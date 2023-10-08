@@ -9,6 +9,8 @@ import com.zipdabang.zipdabang_android.module.comment.data.remote.UserBlockDto
 import com.zipdabang.zipdabang_android.module.detail.recipe.data.RecipeDetailDto
 import com.zipdabang.zipdabang_android.module.recipes.data.banner.RecipeBannerDto
 import com.zipdabang.zipdabang_android.module.recipes.data.category.RecipeCategoryDto
+import com.zipdabang.zipdabang_android.module.recipes.data.hot.HotRecipeDto
+import com.zipdabang.zipdabang_android.module.recipes.data.hot.HotRecipeItem
 import com.zipdabang.zipdabang_android.module.recipes.data.preference.PreferenceResultDto
 import com.zipdabang.zipdabang_android.module.recipes.data.preview.RecipePreviewItemsDto
 import com.zipdabang.zipdabang_android.module.recipes.data.recipe_list.RecipeListDto
@@ -55,6 +57,12 @@ interface RecipeApi {
         @Path("recipeId") recipeId: Int
     ): PreferenceResultDto
 
+    // 카테고리별 인기 레시피
+    @GET("members/recipes/categories/{categoryId}/top5")
+    suspend fun getHotRecipesByCategory(
+        @Header("Authorization") accessToken: String,
+        @Path("categoryId") categoryId: Int
+    ): ResponseBody<HotRecipeDto>
     //----------------------------------------------------------------------------------------------
 
     @GET("members/recipes/types")

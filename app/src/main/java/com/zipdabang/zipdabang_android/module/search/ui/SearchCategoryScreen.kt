@@ -35,15 +35,13 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun SearchCategoryScreen(
-    navController: NavController,
     onRecipeItemClick : (Int) -> Unit,
    searchViewModel: SearchCategoryViewModel = hiltViewModel()
-
 ){
     val allItems = searchViewModel.getSearchRecipeCategoryItems.collectAsLazyPagingItems()
-    val context = LocalContext.current
+    
     val categoryId = searchViewModel.categoryId
-    var isLoading by remember {
+    val isLoading by remember {
         mutableStateOf(false)
     }
 

@@ -8,6 +8,7 @@ data class RecipeDetailDomain(
     val code: Int,
     val isSuccessful: Boolean,
     val message: String,
+    val ownerId: Int?,
     val isOwner: Boolean?,
     val profileUrl: String?,
     val recipeInfo: RecipeInfo?,

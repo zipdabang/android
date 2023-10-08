@@ -80,8 +80,9 @@ class MainActivity : ComponentActivity() {
         setContent {
             ZipdabangandroidTheme {
                 Log.d(TAG, "fcmData : $fcmData")
-                ZipdabangApp()
                 val navController = rememberNavController()
+                ZipdabangApp(navController)
+
                 RootNavGraph(outerNavController = navController, fcmData = fcmData)
             }
 

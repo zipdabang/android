@@ -18,7 +18,6 @@ class CheckAccessTokenUseCase @Inject constructor(
     private val autoLoginRepository: AutoLoginRepositoryImpl,
     private val tokenDataStore: DataStore<Token>
 ) {
-
     companion object {
         const val TAG = "CheckAccessTokenUseCase"
     }

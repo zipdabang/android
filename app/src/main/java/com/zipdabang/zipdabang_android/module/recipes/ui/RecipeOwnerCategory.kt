@@ -103,7 +103,7 @@ fun RecipeOwnerCategory(
 fun RecipeOwnerCategoryPreview() {
     Column {
         RecipeOwnerCategory(
-            groupName = "influencer",
+            groupName = "zipdabang",
             title = "집다방의\n모든 레시피",
             subTitle = "맛있는 것만 골라 모아온",
             borderColor = Color(0xFFB8AFAB),
@@ -114,7 +114,7 @@ fun RecipeOwnerCategoryPreview() {
         )
 
         RecipeOwnerCategory(
-            groupName = "influencer",
+            groupName = "barista",
             title = "집다방 바리스타의\n" +
                     "연구 레시피",
             subTitle = "집다방이 심사숙고해 선정한",
@@ -126,7 +126,7 @@ fun RecipeOwnerCategoryPreview() {
         )
 
         RecipeOwnerCategory(
-            groupName = "influencer",
+            groupName = "user",
             title = "우리들의\n" +
                     "자체 제작 레시피",
             subTitle = "언제든지 만들어 먹을 수 있는",

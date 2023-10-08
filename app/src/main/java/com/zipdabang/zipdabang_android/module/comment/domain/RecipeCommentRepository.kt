@@ -2,6 +2,7 @@ package com.zipdabang.zipdabang_android.module.comment.domain
 
 import androidx.paging.Pager
 import com.zipdabang.zipdabang_android.common.ResponseBody
+import com.zipdabang.zipdabang_android.entity.recipe.RecipeCommentsEntity
 import com.zipdabang.zipdabang_android.module.comment.data.local.RecipeCommentEntity
 import com.zipdabang.zipdabang_android.module.comment.data.remote.PostCommentContent
 import com.zipdabang.zipdabang_android.module.comment.data.remote.PostCommentDto
@@ -9,7 +10,7 @@ import com.zipdabang.zipdabang_android.module.comment.data.remote.UserBlockDto
 import retrofit2.http.Path
 
 interface RecipeCommentRepository {
-    fun getRecipeComments(recipeId: Int): Pager<Int, RecipeCommentEntity>
+    fun getRecipeComments(recipeId: Int): Pager<Int, RecipeCommentsEntity>
 
     suspend fun postRecipeComment(
         accessToken: String, recipeId: Int, commentBody: String

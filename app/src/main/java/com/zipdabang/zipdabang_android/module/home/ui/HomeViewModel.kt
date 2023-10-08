@@ -78,9 +78,11 @@ class HomeViewModel @Inject constructor(
                         is HomeResource.HomeSuccess ->{
                             if(result.data?.isSuccess == true){
                                 Log.e("Bannerresult",result.data.result.toString())
-                                _recipeState.value = HomeRecipeState(
+                                _recipeState.value =
+                                    HomeRecipeState(
                                     recipeList = result.data.result.recipeList,
-                                    isLoading = false)
+                                    isLoading = false
+                                    )
                             }else{
                                 Log.e("Home Api Error", result.data!!.message)
                             }

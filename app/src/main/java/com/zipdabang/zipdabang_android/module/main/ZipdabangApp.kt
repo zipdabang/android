@@ -11,6 +11,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.zipdabang.zipdabang_android.module.bottom.BottomMenuContent
@@ -18,10 +20,10 @@ import com.zipdabang.zipdabang_android.module.bottom.ui.BottomNavigationBar
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ZipdabangApp(){
+fun ZipdabangApp(navController: NavHostController){
     //navigation에 필요한 변수들
     var isBottomNavigationSelected = remember { mutableStateOf<BottomMenuContent>(BottomMenuContent.home) }
-    val navController = rememberNavController()
+  //  val navController = rememberNavController()
 
     val backStackEntry = navController.currentBackStackEntryAsState()
     val currentRoute = backStackEntry.value?.destination?.route
@@ -29,13 +31,14 @@ fun ZipdabangApp(){
 
     Scaffold(
         bottomBar = {
-            BottomNavigationBar(
-                navController = navController,
-//                onItemClick = {
-//                    navController.navigate(it.route)
-//                              },
-//                backStackEntry = backStackEntry
-                )},
+//            BottomNavigationBar(
+//                navController = navController,
+////                onItemClick = {
+////                    navController.navigate(it.route)
+////                              },
+////                backStackEntry = backStackEntry
+//                )
+                },
         snackbarHost={ /*밑에 알람 뜨는거 여기서 커스텀 가능함*/ },
         containerColor = Color.White,
         contentColor = Color.Black,
@@ -52,5 +55,5 @@ fun ZipdabangApp(){
 @Preview
 @Composable
 fun PreviewBottomNav(){
-    ZipdabangApp()
+   // ZipdabangApp()
 }

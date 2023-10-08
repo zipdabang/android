@@ -56,7 +56,7 @@ import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
 fun RecipeCard(
     recipeId: Int,
     title: String,
-    user: String,
+    user: String?,
     thumbnail: String,
     date: String,
     // likes, comments : Int or Long?
@@ -89,7 +89,7 @@ fun RecipeCard(
             modifier = Modifier
                 .padding(top = 2.dp, start = 4.dp, end = 4.dp)
         ) {
-            CardTitleDefault(title = title, subTitle = user)
+            CardTitleDefault(title = title, subTitle = user ?: "")
         }
 
         Column(

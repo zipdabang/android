@@ -34,7 +34,7 @@ fun GroupHeader(
     groupName: String,
     formerHeaderStrawberry: String,
     latterHeaderChoco: String,
-    onClick: (String) -> Unit
+    onClick: (String) -> Unit,
 ) {
     Row(
         modifier = modifier
@@ -147,6 +147,79 @@ fun GroupHeaderReversed(
         )
     }
 }
+@Composable
+fun GroupHeaderNoIcon(
+    modifier: Modifier = Modifier,
+    formerHeaderStrawberry: String,
+    latterHeaderChoco: String,
+) {
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(
+                start = 16.dp,
+                top = 6.dp,
+                bottom = 6.dp
+            ),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+            Text(
+                text = AnnotatedString(
+                    text = formerHeaderStrawberry,
+                    spanStyle = SpanStyle(
+                        color = ZipdabangandroidTheme.Colors.Strawberry,
+                        fontFamily = FontFamily(Font(R.font.kopubworlddotum_bold)),
+                        fontSize = 16.sp
+                    )
+                ) + AnnotatedString(
+                    text = latterHeaderChoco,
+                    spanStyle = SpanStyle(
+                        color = ZipdabangandroidTheme.Colors.Choco,
+                        fontFamily = FontFamily(Font(R.font.kopubworlddotum_bold)),
+                        fontSize = 16.sp
+                    )
+                )
+            )
+        }
+    }
+
+
+@Composable
+fun GroupHeaderReversedNoIcon(
+    modifier: Modifier = Modifier,
+    formerHeaderChoco: String,
+    latterHeaderStrawberry: String,
+) {
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(
+                start = 16.dp,
+                top = 10.dp,
+                bottom = 10.dp
+            ),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+            Text(
+                text = AnnotatedString(
+                    text = formerHeaderChoco,
+                    spanStyle = SpanStyle(
+                        color = ZipdabangandroidTheme.Colors.Choco,
+                        fontFamily = FontFamily(Font(R.font.kopubworlddotum_bold)),
+                        fontSize = 16.sp
+                    )
+                ) + AnnotatedString(
+                    text = latterHeaderStrawberry,
+                    spanStyle = SpanStyle(
+                        color = ZipdabangandroidTheme.Colors.Strawberry,
+                        fontFamily = FontFamily(Font(R.font.kopubworlddotum_bold)),
+                        fontSize = 16.sp
+                    )
+                )
+            )
+        }
+    }
+
 
 @Preview
 @Composable

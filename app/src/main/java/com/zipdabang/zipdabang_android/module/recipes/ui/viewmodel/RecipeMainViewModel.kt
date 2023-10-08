@@ -8,11 +8,16 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.zipdabang.zipdabang_android.common.Resource
 import com.zipdabang.zipdabang_android.common.ResponseCode
+import com.zipdabang.zipdabang_android.common.UiState
+import com.zipdabang.zipdabang_android.core.DeviceSize
+import com.zipdabang.zipdabang_android.module.detail.recipe.common.DeviceScreenSize
 import com.zipdabang.zipdabang_android.module.recipes.common.OwnerType
+import com.zipdabang.zipdabang_android.module.recipes.data.hot.HotRecipeItem
 import com.zipdabang.zipdabang_android.module.recipes.ui.state.PreferenceToggleState
 import com.zipdabang.zipdabang_android.module.recipes.ui.state.RecipeBannerState
 import com.zipdabang.zipdabang_android.module.recipes.ui.state.RecipeCategoryState
 import com.zipdabang.zipdabang_android.module.recipes.ui.state.RecipePreviewState
+import com.zipdabang.zipdabang_android.module.recipes.use_case.GetHotRecipesByCategoryUseCase
 import com.zipdabang.zipdabang_android.module.recipes.use_case.GetRecipeBannerUseCase
 import com.zipdabang.zipdabang_android.module.recipes.use_case.GetRecipeCategoryUseCase
 import com.zipdabang.zipdabang_android.module.recipes.use_case.GetRecipePreviewUseCase
@@ -23,16 +28,17 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import java.io.Serializable
 import javax.inject.Inject
 
 @HiltViewModel
 class RecipeMainViewModel @Inject constructor(
     private val getRecipeBannerUseCase: GetRecipeBannerUseCase,
     private val getRecipeCategoryUseCase: GetRecipeCategoryUseCase,
-    private val getRecipePreviewUseCase: GetRecipePreviewUseCase,
     private val toggleLikeUseCase: ToggleLikeUseCase,
     private val toggleScrapUseCase: ToggleScrapUseCase,
-    private val savedState: SavedStateHandle
+    @DeviceSize private val deviceSize: DeviceScreenSize,
+    private val savedStateHandle: SavedStateHandle
 ): ViewModel() {
 
     companion object {
@@ -40,21 +46,16 @@ class RecipeMainViewModel @Inject constructor(
     }
 
     // mutableStateOf<List<RecipeResult>>(mutableListOf())
-    private val _banners = mutableStateOf(RecipeBannerState())
+    private val _banners = mutableStateOf(
+        savedStateHandle["banners"] ?: RecipeBannerState()
+    )
     val banners: State<RecipeBannerState> = _banners
 
-    private val _categoryList = mutableStateOf(RecipeCategoryState())
+    private val _categoryList = mutableStateOf(
+        savedStateHandle["categories"] ?: RecipeCategoryState()
+    )
     val categoryList: State<RecipeCategoryState> = _categoryList
-
-    private val _everyRecipeState = mutableStateOf(RecipePreviewState())
-    val everyRecipeState: State<RecipePreviewState> = _everyRecipeState
-
-    private val _influencerRecipeState = mutableStateOf(RecipePreviewState())
-    val influencerRecipeState: State<RecipePreviewState> = _influencerRecipeState
-
-    private val _userRecipeState = mutableStateOf(RecipePreviewState())
-    val userRecipeState: State<RecipePreviewState> = _userRecipeState
-
+    
     private val _toggleLikeResult = MutableStateFlow(PreferenceToggleState())
     val toggleLikeResult: StateFlow<PreferenceToggleState>
         get() = _toggleLikeResult
@@ -66,187 +67,117 @@ class RecipeMainViewModel @Inject constructor(
     private val _errorMessage = mutableStateOf("")
     val errorMessage: State<String?> = _errorMessage
 
-    private val ownerTypeMap = mapOf(
-        OwnerType.ALL to _everyRecipeState,
-        OwnerType.INFLUENCER to _influencerRecipeState,
-        OwnerType.USER to _userRecipeState
-    )
-
     init {
         getRecipeBanners()
         getRecipeCategoryList()
-        getRecipesByOwnerType(OwnerType.ALL)
-        getRecipesByOwnerType(OwnerType.INFLUENCER)
-        getRecipesByOwnerType(OwnerType.USER)
     }
 
     fun getRecipeBanners() {
-        getRecipeBannerUseCase().onEach { result ->
-            when (result) {
-                is Resource.Success -> {
-                    Log.d(TAG, "recipe banner result : $result")
-                    when (result.code) {
-                        ResponseCode.RESPONSE_DEFAULT.code -> {
-                            result.data?.let {
-                                _banners.value = RecipeBannerState(
-                                    isLoading = false,
-                                    banners = it
-                                )
-                            }
-                        }
-
-                        ResponseCode.SERVER_ERROR.code -> {
-                            _banners.value = RecipeBannerState(
-                                isLoading = false,
-                                errorMessage = ResponseCode.SERVER_ERROR.message
-                            )
-                        }
-
-                        else -> {
-                            _banners.value = RecipeBannerState(
-                                isLoading = false,
-                                errorMessage = "unexpected error"
-                            )
-                        }
-                    }
-
-                }
-                is Resource.Error -> {
-                    _banners.value = RecipeBannerState(
-                        isLoading = false,
-                        errorMessage = result.message
-                    )
-                    result.message?.let {
-                        _errorMessage.value = it
-                    }
-                }
-                is Resource.Loading -> {
-                    _banners.value = RecipeBannerState(
-                        isLoading = true
-                    )
-                }
-            }
-        }.launchIn(viewModelScope)
-    }
-
-    fun getRecipeCategoryList() {
-        getRecipeCategoryUseCase().onEach { result ->
-            when (result) {
-                is Resource.Success -> {
-                    Log.d(TAG, "recipe category result : $result")
-                    result.data?.let {
-                        when (it.code) {
+        if (banners.value.banners?.isEmpty()!!) {
+            getRecipeBannerUseCase().onEach { result ->
+                when (result) {
+                    is Resource.Success -> {
+                        Log.d(TAG, "recipe banner result : $result")
+                        when (result.code) {
                             ResponseCode.RESPONSE_DEFAULT.code -> {
-                                _categoryList.value = RecipeCategoryState(
-                                    isLoading = false,
-                                    recipeCategories = it.categoryList
-                                )
+                                result.data?.let {
+                                    savedStateHandle["banners"] = it
+                                    _banners.value = RecipeBannerState(
+                                        isLoading = false,
+                                        banners = it
+                                    )
+                                }
                             }
 
                             ResponseCode.SERVER_ERROR.code -> {
-                                _categoryList.value = RecipeCategoryState(
+                                _banners.value = RecipeBannerState(
                                     isLoading = false,
                                     errorMessage = ResponseCode.SERVER_ERROR.message
                                 )
-                                _errorMessage.value = it.message
                             }
 
                             else -> {
-                                _categoryList.value = RecipeCategoryState(
+                                _banners.value = RecipeBannerState(
                                     isLoading = false,
-                                    errorMessage = "알 수 없는 오류가 발생하였습니다."
+                                    errorMessage = "unexpected error"
                                 )
-                                _errorMessage.value = "알 수 없는 오류가 발생하였습니다."
                             }
                         }
-                    }
-                }
-                is Resource.Error -> {
-                    _categoryList.value = RecipeCategoryState(
-                        isLoading = false,
-                        errorMessage = result.message
-                    )
-                    result.message?.let {
-                        _errorMessage.value = it
-                    }
-                }
-                is Resource.Loading -> {
-                    _categoryList.value = RecipeCategoryState(
-                        isLoading = true
-                    )
-                }
-            }
 
-        }.launchIn(viewModelScope)
+                    }
+                    is Resource.Error -> {
+                        _banners.value = RecipeBannerState(
+                            isLoading = false,
+                            errorMessage = result.message
+                        )
+                        result.message?.let {
+                            _errorMessage.value = it
+                        }
+                    }
+                    is Resource.Loading -> {
+                        _banners.value = RecipeBannerState(
+                            isLoading = true
+                        )
+                    }
+                }
+            }.launchIn(viewModelScope)
+
+        }
     }
 
-    fun getRecipesByOwnerType(ownerType: OwnerType) {
-        getRecipePreviewUseCase(
-            ownerType = ownerType
-        ).onEach { result ->
-            when (result) {
-                is Resource.Success -> {
-                    Log.d(TAG, "recipe owner result : $result")
-                    result.data?.let { recipePreview ->
-                        when (recipePreview.code) {
-                            ResponseCode.RESPONSE_DEFAULT.code -> {
-                                ownerTypeMap[ownerType]?.value =
-                                    RecipePreviewState(
+    fun getRecipeCategoryList() {
+        if (categoryList.value.recipeCategories?.isEmpty()!!) {
+            getRecipeCategoryUseCase().onEach { result ->
+                when (result) {
+                    is Resource.Success -> {
+                        Log.d(TAG, "recipe category result : $result")
+                        result.data?.let {
+                            when (it.code) {
+                                ResponseCode.RESPONSE_DEFAULT.code -> {
+                                    savedStateHandle["categories"] = it
+                                    _categoryList.value = RecipeCategoryState(
                                         isLoading = false,
-                                        data = recipePreview.recipeList
+                                        recipeCategories = it.categoryList
                                     )
-                            }
+                                }
 
-                            ResponseCode.RESPONSE_NO_DATA.code -> {
-                                ownerTypeMap[ownerType]?.value = RecipePreviewState(
-                                    isLoading = false,
-                                    data = null,
-                                    errorMessage = ResponseCode.RESPONSE_NO_DATA.message
-                                )
-                                _errorMessage.value = ResponseCode.RESPONSE_NO_DATA.message
-                            }
-                            ResponseCode.UNAUTHORIZED_TOKEN_NOT_EXISTS.code -> {
-                                ownerTypeMap[ownerType]?.value = RecipePreviewState(
-                                    isLoading = false,
-                                    data = null,
-                                    errorMessage =
-                                        ResponseCode.UNAUTHORIZED_TOKEN_NOT_EXISTS.message
-                                )
-                                _errorMessage.value =
-                                    ResponseCode.UNAUTHORIZED_TOKEN_NOT_EXISTS.message
+                                ResponseCode.SERVER_ERROR.code -> {
+                                    _categoryList.value = RecipeCategoryState(
+                                        isLoading = false,
+                                        errorMessage = ResponseCode.SERVER_ERROR.message
+                                    )
+                                    _errorMessage.value = it.message
+                                }
 
-                                // TODO 온보딩으로 보내기
-
-                            }
-                            else -> {
-
+                                else -> {
+                                    _categoryList.value = RecipeCategoryState(
+                                        isLoading = false,
+                                        errorMessage = "알 수 없는 오류가 발생하였습니다."
+                                    )
+                                    _errorMessage.value = "알 수 없는 오류가 발생하였습니다."
+                                }
                             }
                         }
                     }
-
-                }
-
-                is Resource.Error -> {
-                    ownerTypeMap[ownerType]?.value = RecipePreviewState(
-                        isLoading = false,
-                        errorMessage = result.data?.message
-                    )
-
-                    result.data?.let {
-                        _errorMessage.value = it.message
+                    is Resource.Error -> {
+                        _categoryList.value = RecipeCategoryState(
+                            isLoading = false,
+                            errorMessage = result.message
+                        )
+                        result.message?.let {
+                            _errorMessage.value = it
+                        }
+                    }
+                    is Resource.Loading -> {
+                        _categoryList.value = RecipeCategoryState(
+                            isLoading = true
+                        )
                     }
                 }
 
-                is Resource.Loading -> {
-                    ownerTypeMap[ownerType]?.value = RecipePreviewState(
-                        isLoading = true
-                    )
-                }
-            }
-        }.launchIn(viewModelScope)
+            }.launchIn(viewModelScope)
+        }
     }
-
-
 
     fun toggleLike(recipeId: Int) {
         toggleLikeUseCase(recipeId).onEach { result ->
@@ -427,5 +358,9 @@ class RecipeMainViewModel @Inject constructor(
                 }
             }
         }.launchIn(viewModelScope)
+    }
+
+    fun getDeviceSize(): DeviceScreenSize {
+        return deviceSize
     }
 }
