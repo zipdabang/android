@@ -442,12 +442,12 @@ class AuthSharedViewModel @Inject constructor(
                         choiceTitle = result.data?.termsList?.get(4)?.termsTitle ?: "",
                         choiceBody = result.data?.termsList?.get(4)?.termsBody ?: "",
                         isMoreToSeeChoice = result.data?.termsList?.get(4)?.isMoreToSee ?: false,
-                         isLoading = false
+                        isLoading = false
                      )
                     Log.e("terms-viewmodel", "성공 ${result.data?.termsList}")
                 }
                 is Resource.Error ->{
-                    stateTermsForm = TermsFormState(error = result.message ?:"An unexpeted error occured")
+                    stateTermsForm = TermsFormState(error = result.message ?: "An unexpeted error occured")
                     Log.e("terms-viewmodel", "에러")
                 }
                 is Resource.Loading ->{

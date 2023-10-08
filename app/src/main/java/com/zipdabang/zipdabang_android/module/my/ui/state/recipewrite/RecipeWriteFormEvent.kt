@@ -20,7 +20,8 @@ sealed class RecipeWriteFormEvent{
     data class BtnStepAdd(val stepNum : Int) : RecipeWriteFormEvent()
     data class BtnStepDelete(val stepNum: Int) : RecipeWriteFormEvent()
     data class BtnStepEdit(val stepNum : Int) : RecipeWriteFormEvent()
-    data class StepChanged(val step : Step, val stepNum: Int) : RecipeWriteFormEvent()
+    data class StepChanged(val stepDescription : String, val stepNum: Int) : RecipeWriteFormEvent()
+    data class StepIsValidate(val stepNum : Int) : RecipeWriteFormEvent()
     data class StepImageChanged(val stepImage : Any?, val stepNum : Int) : RecipeWriteFormEvent()
     data class StepImageChangedToEmpty(val stepImage : Any? ,val stepNum : Int) : RecipeWriteFormEvent()
 

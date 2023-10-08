@@ -18,6 +18,7 @@ data class UserInfoState(
     val zipcode : String = "",
     val address : String = "",
     val detailAddress : String = "",
+    val oneline : String =  "",
 
     val error : String = ""
 )

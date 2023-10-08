@@ -34,6 +34,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.zipdabang.zipdabang_android.R
 import com.zipdabang.zipdabang_android.core.navigation.DrawerScreen
+import com.zipdabang.zipdabang_android.core.navigation.MyScreen
 import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
 
 @Composable
