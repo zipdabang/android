@@ -1,6 +1,7 @@
 package com.zipdabang.zipdabang_android.module.my.ui
 
 import android.util.Log
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -14,6 +15,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
@@ -22,6 +24,8 @@ import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.BackdropScaffold
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.Icon
@@ -40,6 +44,9 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
@@ -62,19 +69,19 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun MyScreen(
-    myViewModel : MyViewModel = hiltViewModel(),
+    myViewModel: MyViewModel = hiltViewModel(),
     navController: NavController,
-    onClickBack : ()->Unit,
-    onClickEdit : ()->Unit,
-    onClickLike : ()->Unit,
-    onClickScrap : ()->Unit,
-    onClickMyrecipe : ()->Unit,
-    onClickShopping : ()->Unit,
-    onClickFriendList : ()->Unit,
-    onClickNotice : ()->Unit,
-    onClickLogout : ()->Unit,
-    onClickUserInfo : () -> Unit,
-){
+    onClickBack: () -> Unit,
+    onClickEdit: () -> Unit,
+    onClickLike: () -> Unit,
+    onClickScrap: () -> Unit,
+    onClickMyrecipe: () -> Unit,
+    onClickShopping: () -> Unit,
+    onClickFriendList: () -> Unit,
+    onClickNotice: () -> Unit,
+    onClickLogout: () -> Unit,
+    onClickUserInfo: () -> Unit,
+) {
     //drawer에 필요한 drawerState랑 scope
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
@@ -121,48 +128,68 @@ fun MyScreen(
                         // 프로필 부분
                         Row(
                             modifier = Modifier
-                                .height(178.dp)
+                                .height(182.dp)
                                 .fillMaxWidth()
-                                .padding(16.dp, 30.dp, 16.dp,0.dp),
+                                .padding(16.dp, 30.dp, 16.dp, 0.dp),
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
                             //닉네임 & 선호음료 & 팔로우팔로잉
-                            Column{
+                            Column {
                                 Row(
                                     horizontalArrangement = Arrangement.spacedBy(4.dp),
                                     verticalAlignment = Alignment.CenterVertically,
-                                    modifier = Modifier.padding(0.dp,0.dp,0.dp,2.dp)
-                                ){
-                                    Text(text=stateMyUserInfo.nickname, style=ZipdabangandroidTheme.Typography.twentytwo_700, color=Color.White)
+                                ) {
+                                    Text(
+                                        text = stateMyUserInfo.nickname,
+                                        style = ZipdabangandroidTheme.Typography.thirtytwo_700,
+                                        color = Color.White
+                                    )
                                 }
                                 Row(
-                                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    modifier = Modifier.padding(0.dp,0.dp,0.dp,10.dp)
-                                ){
-                                    Icon(painter = painterResource(id = R.drawable.ic_my_heart), contentDescription = "", tint = Color.White, modifier = Modifier.size(15.dp, 12.dp))
-                                    for(category in stateMyUserInfo.categoryList){
-                                        Text(
-                                            text = category,
-                                            style = ZipdabangandroidTheme.Typography.sixteen_500,
+                                    modifier = Modifier.padding(6.dp, 2.dp, 0.dp, 0.dp)
+                                ) {
+                                    Text(
+                                        text = "팔로우 000    |    팔로잉 000",
+                                        style = ZipdabangandroidTheme.Typography.fourteen_300,
+                                        color = Color.White
+                                    )
+                                }
+                                Box(
+                                    contentAlignment = Alignment.Center,
+                                    modifier = Modifier
+                                        .clickable(onClick={ })
+                                        .padding(0.dp, 16.dp, 0.dp, 0.dp)
+                                        .width(200.dp)
+                                        .height(28.dp)
+                                        .background(
                                             color = Color.White,
-                                        )
-                                    }
+                                            shape = ZipdabangandroidTheme.Shapes.medium
+                                        ),
+                                ) {
+                                    Text(
+                                        text = "프로필 편집하기",
+                                        textAlign = TextAlign.Center,
+                                        color = ZipdabangandroidTheme.Colors.Typo,
+                                        style = ZipdabangandroidTheme.Typography.fourteen_500,
+                                        maxLines = 1,
+                                        modifier = Modifier,
+                                    )
                                 }
-                                Row {
-                                    Text(text="팔로우 000  |  팔로잉 000", style=ZipdabangandroidTheme.Typography.fourteen_300, color=Color.White)
-                                }
+
                             }
                             //프로필
                             Box(
                                 contentAlignment = Alignment.CenterEnd
-                            ){
+                            ) {
                                 Box(
                                     modifier = Modifier
                                         .size(104.dp, 104.dp)
                                         .clip(CircleShape),
-                                ){
-                                    CircleImage(imageUrl = R.drawable.img_profile, contentDescription = "") //stateMyUserInfo.profileUrl
+                                ) {
+                                    CircleImage(
+                                        imageUrl = R.drawable.img_profile,
+                                        contentDescription = ""
+                                    ) //stateMyUserInfo.profileUrl
                                 }
                                 Box(
                                     modifier = Modifier
@@ -194,14 +221,15 @@ fun MyScreen(
                                 .fillMaxWidth()
                                 .background(
                                     color = ZipdabangandroidTheme.Colors.SubBackground,
-                                    shape = RoundedCornerShape(12.dp, 12.dp, 0.dp, 0.dp)
                                 ),
                             verticalArrangement = Arrangement.Center
                         ) {
                             Box(
-                                modifier = Modifier.height(48.dp).fillMaxWidth(),
+                                modifier = Modifier
+                                    .height(48.dp)
+                                    .fillMaxWidth(),
                                 contentAlignment = Alignment.Center
-                            ){
+                            ) {
                                 Text(
                                     text = "000 님의 홈카페에 어서오세요",
                                     style = ZipdabangandroidTheme.Typography.sixteen_700,
@@ -220,7 +248,7 @@ fun MyScreen(
                                     ),
                                 verticalAlignment = Alignment.CenterVertically,
                                 horizontalArrangement = Arrangement.Center
-                            ){
+                            ) {
                                 Spacer(modifier = Modifier.weight(0.02f))
                                 Box(
                                     modifier = Modifier.weight(0.25f)
@@ -239,7 +267,7 @@ fun MyScreen(
                                 }
                                 Box(
                                     modifier = Modifier.weight(0.25f)
-                                ){
+                                ) {
                                     IconAndText(
                                         iconImageVector = R.drawable.ic_my_bookmark,
                                         iconColor = ZipdabangandroidTheme.Colors.Cream,
@@ -254,7 +282,7 @@ fun MyScreen(
                                 }
                                 Box(
                                     modifier = Modifier.weight(0.25f)
-                                ){
+                                ) {
                                     ImageIconAndText(
                                         iconImageVector = R.drawable.zipdabanglogo_white,
                                         iconColor = Color.Transparent,
@@ -269,7 +297,7 @@ fun MyScreen(
                                 }
                                 Box(
                                     modifier = Modifier.weight(0.25f)
-                                ){
+                                ) {
                                     IconAndText(
                                         iconImageVector = R.drawable.ic_my_shoppingcart,
                                         iconColor = ZipdabangandroidTheme.Colors.Choco,
@@ -291,7 +319,7 @@ fun MyScreen(
                                     .fillMaxWidth()
                                     .padding(16.dp, 0.dp, 16.dp, 0.dp),
                                 verticalArrangement = Arrangement.spacedBy(8.dp)
-                            ){
+                            ) {
                                 Box(
                                     modifier = Modifier
                                         .fillMaxWidth()
@@ -306,14 +334,14 @@ fun MyScreen(
                                             shape = ZipdabangandroidTheme.Shapes.small
                                         ),
                                     contentAlignment = Alignment.Center
-                                ){
+                                ) {
                                     Row(
                                         modifier = Modifier
                                             .fillMaxWidth()
                                             .padding(16.dp, 0.dp, 16.dp, 0.dp),
                                         verticalAlignment = Alignment.CenterVertically,
                                         horizontalArrangement = Arrangement.SpaceBetween,
-                                    ){
+                                    ) {
                                         Text(
                                             text = stringResource(id = R.string.my_friendlist),
                                             style = ZipdabangandroidTheme.Typography.fourteen_500,
@@ -321,7 +349,7 @@ fun MyScreen(
                                         )
                                         Text(
                                             text = "0",
-                                            style =ZipdabangandroidTheme.Typography.fourteen_500,
+                                            style = ZipdabangandroidTheme.Typography.fourteen_500,
                                             color = ZipdabangandroidTheme.Colors.Typo
                                         )
                                     }
@@ -338,14 +366,14 @@ fun MyScreen(
                                             shape = ZipdabangandroidTheme.Shapes.small
                                         ),
                                     contentAlignment = Alignment.Center
-                                ){
+                                ) {
                                     Row(
                                         modifier = Modifier
                                             .fillMaxWidth()
                                             .padding(16.dp, 0.dp, 16.dp, 0.dp),
                                         verticalAlignment = Alignment.CenterVertically,
                                         horizontalArrangement = Arrangement.SpaceBetween,
-                                    ){
+                                    ) {
                                         Text(
                                             text = stringResource(id = R.string.my_noticeandevent),
                                             style = ZipdabangandroidTheme.Typography.fourteen_500,
@@ -353,7 +381,7 @@ fun MyScreen(
                                         )
                                         Text(
                                             text = "0",
-                                            style =ZipdabangandroidTheme.Typography.fourteen_500,
+                                            style = ZipdabangandroidTheme.Typography.fourteen_500,
                                             color = ZipdabangandroidTheme.Colors.Typo
                                         )
                                     }
@@ -367,14 +395,14 @@ fun MyScreen(
                                             shape = ZipdabangandroidTheme.Shapes.small
                                         ),
                                     contentAlignment = Alignment.Center
-                                ){
+                                ) {
                                     Row(
                                         modifier = Modifier
                                             .fillMaxWidth()
                                             .padding(16.dp, 0.dp, 16.dp, 0.dp),
                                         verticalAlignment = Alignment.CenterVertically,
                                         horizontalArrangement = Arrangement.SpaceBetween,
-                                    ){
+                                    ) {
                                         Text(
                                             text = stringResource(id = R.string.my_alarm),
                                             style = ZipdabangandroidTheme.Typography.fourteen_500,
@@ -382,7 +410,7 @@ fun MyScreen(
                                         )
                                         Text(
                                             text = "0",
-                                            style =ZipdabangandroidTheme.Typography.fourteen_500,
+                                            style = ZipdabangandroidTheme.Typography.fourteen_500,
                                             color = ZipdabangandroidTheme.Colors.Typo
                                         )
                                     }
@@ -395,7 +423,7 @@ fun MyScreen(
                                     .padding(16.dp, 16.dp, 16.dp, 0.dp),
                                 verticalArrangement = Arrangement.spacedBy(2.dp),
                                 horizontalAlignment = Alignment.CenterHorizontally,
-                            ){
+                            ) {
                                 Row(
                                     modifier = Modifier
                                         .fillMaxWidth()
@@ -403,9 +431,18 @@ fun MyScreen(
                                         .padding(2.dp, 0.dp, 0.dp, 0.dp),
                                     verticalAlignment = Alignment.CenterVertically,
                                     horizontalArrangement = Arrangement.spacedBy(4.dp)
-                                ){
-                                    Icon(painter = painterResource(id = R.drawable.ic_my_deliverytruck), contentDescription = "", tint = ZipdabangandroidTheme.Colors.Typo, modifier = Modifier.size(20.dp, 14.dp))
-                                    Text(text= stringResource(id = R.string.my_market_ing), style=ZipdabangandroidTheme.Typography.sixteen_700, color =ZipdabangandroidTheme.Colors.Typo)
+                                ) {
+                                    Icon(
+                                        painter = painterResource(id = R.drawable.ic_my_deliverytruck),
+                                        contentDescription = "",
+                                        tint = ZipdabangandroidTheme.Colors.Typo,
+                                        modifier = Modifier.size(20.dp, 14.dp)
+                                    )
+                                    Text(
+                                        text = stringResource(id = R.string.my_market_ing),
+                                        style = ZipdabangandroidTheme.Typography.sixteen_700,
+                                        color = ZipdabangandroidTheme.Colors.Typo
+                                    )
                                 }
                                 Box(
                                     modifier = Modifier
@@ -416,7 +453,7 @@ fun MyScreen(
                                             shape = RoundedCornerShape(4.dp)
                                         ),
                                     contentAlignment = Alignment.Center
-                                ){
+                                ) {
                                     Text(
                                         text = stringResource(id = R.string.my_market_notdeploy),
                                         style = ZipdabangandroidTheme.Typography.fourteen_300,
@@ -431,11 +468,11 @@ fun MyScreen(
                                     .padding(16.dp, 72.dp, 16.dp, 32.dp),
                                 verticalAlignment = Alignment.CenterVertically,
                                 horizontalArrangement = Arrangement.Center
-                            ){
+                            ) {
                                 ClickableText(
                                     modifier = Modifier,
                                     text = AnnotatedString(text = stringResource(id = R.string.my_logout)),
-                                    style =  ZipdabangandroidTheme.Typography.fourteen_300,
+                                    style = ZipdabangandroidTheme.Typography.fourteen_300,
                                     onClick = {
                                         Log.d("logout", "clicked")
                                         myViewModel.signOut(onClickLogout)
@@ -449,7 +486,7 @@ fun MyScreen(
                                 )
                                 ClickableText(
                                     text = AnnotatedString(text = stringResource(id = R.string.my_myinfo)),
-                                    style =  ZipdabangandroidTheme.Typography.fourteen_300,
+                                    style = ZipdabangandroidTheme.Typography.fourteen_300,
                                     onClick = {
                                         onClickUserInfo()
                                     }
@@ -479,7 +516,7 @@ fun PreviewMyScreen() {
         onClickMyrecipe = {},
         onClickShopping = {},
         onClickFriendList = {},
-        onClickNotice={},
+        onClickNotice = {},
         onClickLogout = {},
         onClickUserInfo = {},
     )
