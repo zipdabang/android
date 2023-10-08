@@ -22,6 +22,7 @@ import com.zipdabang.zipdabang_android.module.drawer.ui.NoticeScreen
 import com.zipdabang.zipdabang_android.module.drawer.ui.UserInfoBasicScreen
 import com.zipdabang.zipdabang_android.module.drawer.ui.UserInfoDetailScreen
 import com.zipdabang.zipdabang_android.module.drawer.ui.UserInfoNicknameScreen
+import com.zipdabang.zipdabang_android.module.drawer.ui.UserInfoOneLineScreen
 import com.zipdabang.zipdabang_android.module.drawer.ui.UserInfoPreferencesScreen
 import com.zipdabang.zipdabang_android.module.drawer.ui.UserInfoProfileScreen
 import com.zipdabang.zipdabang_android.module.drawer.ui.UserInfoScreen
@@ -76,6 +77,10 @@ fun NavGraphBuilder.DrawerNavGraph(navController: NavHostController,outerNavCont
                 onClickEditNickname = {
                     drawerUserInfoViewModel.onCheckedEvent()
                     navController.navigate(DrawerScreen.UserInfoNickname.route)
+                },
+                onClickEditOneLine = {
+                    drawerUserInfoViewModel.onCheckedEvent()
+                    navController.navigate(DrawerScreen.UserInfoOneLine.route)
                 },
                 onClickEditPreferences = {
                     drawerUserInfoViewModel.onCheckedEvent()
@@ -147,6 +152,24 @@ fun NavGraphBuilder.DrawerNavGraph(navController: NavHostController,outerNavCont
                 .drawerUserInfoViewModel<DrawerUserInfoViewModel>(navController = navController)
 
             UserInfoPreferencesScreen(
+                drawerUserInfoViewModel = drawerUserInfoViewModel,
+                onClickBack = {
+                    navController.popBackStack(DrawerScreen.UserInfo.route, inclusive = false)
+                },
+                onClickCancel = {
+                    navController.popBackStack(DrawerScreen.UserInfo.route, inclusive = false)
+                },
+                onClickEdit = {
+                    navController.popBackStack(DrawerScreen.UserInfo.route, inclusive = false)
+                }
+            )
+        }
+
+        composable(DrawerScreen.UserInfoOneLine.route) {navBackStackEntry ->
+            val drawerUserInfoViewModel = navBackStackEntry
+                .drawerUserInfoViewModel<DrawerUserInfoViewModel>(navController = navController)
+
+            UserInfoOneLineScreen(
                 drawerUserInfoViewModel = drawerUserInfoViewModel,
                 onClickBack = {
                     navController.popBackStack(DrawerScreen.UserInfo.route, inclusive = false)

@@ -690,14 +690,44 @@ fun RecipeWriteScreen(
                             }
                         )
                     }
-                    Text(
+                    Row(
                         modifier = Modifier
-                            .align(Alignment.End)
-                            .padding(0.dp, 0.dp, 4.dp, 0.dp),
-                        text = "Step" + stateRecipeWriteForm.stepsNum + "/Step10",
-                        style = ZipdabangandroidTheme.Typography.fourteen_300,
-                        color = ZipdabangandroidTheme.Colors.Typo
-                    )
+                            .fillMaxWidth()
+                            .padding(0.dp, 0.dp, 0.dp, 4.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        if(stateRecipeWriteForm.stepsNum == 10){
+                            Row(
+                                horizontalArrangement = Arrangement.Center
+                            ) {
+                                Icon(
+                                    painter = painterResource(R.drawable.ic_recipewrite_warning),
+                                    contentDescription = "Icon",
+                                    tint = Color(0xFFB00020),
+                                    modifier = Modifier
+                                        .size(16.dp)
+                                        .padding(4.dp, 0.dp, 0.dp, 0.dp),
+                                )
+                                Text(
+                                    modifier = Modifier.padding(2.dp, 0.dp, 0.dp, 0.dp),
+                                    text = stringResource(id = R.string.my_recipewrite_warning_step),
+                                    style = ZipdabangandroidTheme.Typography.twelve_500,
+                                    color = Color(0xFFB00020)
+                                )
+                            }
+                        } else{
+                            Box(
+                                modifier = Modifier.size(22.dp, 16.dp)
+                            )
+                        }
+                        Text(
+                            modifier = Modifier.padding(0.dp, 0.dp, 4.dp, 0.dp),
+                            text = "Step" + stateRecipeWriteForm.stepsNum + "/Step10",
+                            style = ZipdabangandroidTheme.Typography.fourteen_300,
+                            color = ZipdabangandroidTheme.Colors.Typo
+                        )
+                    }
+
                 }
 
                 // 레시피 Tip

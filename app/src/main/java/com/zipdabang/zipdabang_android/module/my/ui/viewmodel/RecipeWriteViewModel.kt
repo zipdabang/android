@@ -176,7 +176,10 @@ class RecipeWriteViewModel @Inject constructor(
                     completeBtnVisible = true
                 )
                 currentSteps[stepNumToChange - 1] = preStep
-                currentSteps.add(newStep)
+                if(stepNumToChange <= 10){
+                    currentSteps.add(newStep)
+                }
+
                 stateRecipeWriteForm = stateRecipeWriteForm.copy(
                     steps = currentSteps,
                     stepsNum = currentSteps.size
@@ -201,7 +204,7 @@ class RecipeWriteViewModel @Inject constructor(
                 val editStep = currentSteps[stepNumToEdit - 1].copy(
                     textfieldEnabled = true,
                     completeBtnVisible = true,
-                    completeBtnEnabled = false,
+                    completeBtnEnabled = true,
                 )
                 currentSteps[stepNumToEdit -1] = editStep
 
@@ -254,21 +257,19 @@ class RecipeWriteViewModel @Inject constructor(
                 )
             }
             is RecipeWriteFormEvent.StepIsValidate->{
-                var allStepsValid = true // 모든 스텝이 유효한지 여부를 저장할 변수
                 val stepNumToChange = event.stepNum
 
-                for(i in 0 until event.stepNum){
-                    if(stateRecipeWriteForm.steps[i].description.isEmpty()
-                        || stateRecipeWriteForm.steps[i].stepImage == null){
-                        allStepsValid = false
-                        break
-                    }
-                }
-
                 val currentSteps = stateRecipeWriteForm.steps.toMutableList()
+
+                // 스텝의 유효성을 개별적으로 확인
+                val stepIsValid = stateRecipeWriteForm.steps[stepNumToChange - 1].description.isNotEmpty()
+                        && stateRecipeWriteForm.steps[stepNumToChange - 1].stepImage != null
+
+                // 해당 스텝의 completeBtnEnabled 업데이트
                 val updatedStep = currentSteps[stepNumToChange - 1].copy(
-                    completeBtnEnabled = allStepsValid
+                    completeBtnEnabled = stepIsValid
                 )
+
                 currentSteps[stepNumToChange - 1] = updatedStep
 
                 stateRecipeWriteForm = stateRecipeWriteForm.copy(

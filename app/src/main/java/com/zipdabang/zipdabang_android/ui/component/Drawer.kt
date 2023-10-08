@@ -401,7 +401,7 @@ fun ModalDrawer(
                         FAGOnClick = { Log.d("drawer","FAG")},
                         inquiryOnClick = { navController.navigate(DrawerScreen.Report.route)},
                         loginOnClick = { Log.d("drawer","로그인하기")},
-                        userOnClick = { navController.navigate(MyScreen.RecipeWrite.route) },
+                        userOnClick = { navController.navigate(DrawerScreen.UserInfo.route) },
                         alarmOnClick = { Log.d("drawer","알림 정보")},
                         etcOnClick = { Log.d("drawer","기타 정보")},
                     )
