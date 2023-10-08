@@ -1,9 +1,12 @@
 package com.zipdabang.zipdabang_android.module.login.use_case
 
+import android.util.Log
 import androidx.datastore.core.DataStore
 import com.zipdabang.zipdabang_android.common.Resource
 import com.zipdabang.zipdabang_android.common.ResponseCode
+import com.zipdabang.zipdabang_android.common.getErrorCode
 import com.zipdabang.zipdabang_android.core.data_store.proto.Token
+import com.zipdabang.zipdabang_android.module.comment.use_case.BlockUserUseCase
 import com.zipdabang.zipdabang_android.module.login.domain.AuthRepository
 import com.zipdabang.zipdabang_android.module.login.domain.TempToken
 import com.zipdabang.zipdabang_android.module.login.mapper.toTempToken
@@ -16,6 +19,9 @@ import javax.inject.Inject
 class GetTempLoginResultUseCase @Inject constructor(
     private val authRepository: AuthRepository
 ) {
+    companion object {
+        const val TAG = "GetTempLoginResultUseCase"
+    }
     operator fun invoke(): Flow<Resource<TempToken>> = flow {
         try {
             emit(Resource.Loading())
@@ -43,6 +49,13 @@ class GetTempLoginResultUseCase @Inject constructor(
             }
 
         } catch (e: HttpException) {
+            val errorBody = e.response()?.errorBody()
+            Log.e(TAG, errorBody?.string() ?: "error body is null")
+            val errorCode = errorBody?.getErrorCode()
+            errorCode?.let {
+                emit(Resource.Error(message = ResponseCode.getMessageByCode(errorCode)))
+                return@flow
+            }
             emit(Resource.Error(message = e.message ?: "unexpected http exception"))
         } catch (e: IOException) {
             emit(Resource.Error(message = e.message ?: "unexpected io exception"))

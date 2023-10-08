@@ -1,9 +1,13 @@
 package com.zipdabang.zipdabang_android.module.recipes.use_case
 
+import android.util.Log
 import androidx.datastore.core.DataStore
 import com.zipdabang.zipdabang_android.common.Constants.TOKEN_NULL
 import com.zipdabang.zipdabang_android.common.Resource
+import com.zipdabang.zipdabang_android.common.ResponseCode
+import com.zipdabang.zipdabang_android.common.getErrorCode
 import com.zipdabang.zipdabang_android.core.data_store.proto.Token
+import com.zipdabang.zipdabang_android.module.login.use_case.GetTempLoginResultUseCase
 import com.zipdabang.zipdabang_android.module.recipes.domain.PreferenceToggle
 import com.zipdabang.zipdabang_android.module.recipes.domain.RecipeListRepository
 import com.zipdabang.zipdabang_android.module.recipes.mapper.toPreferenceToggle
@@ -19,6 +23,9 @@ class ToggleScrapListUseCase @Inject constructor(
     private val recipeListRepository: RecipeListRepository,
     private val tokenDataStore: DataStore<Token>
 ) {
+    companion object {
+        const val TAG = "ToggleScrapListUseCase"
+    }
     operator fun invoke(
         recipeId: Int,
         categoryId: Int?,
@@ -54,6 +61,13 @@ class ToggleScrapListUseCase @Inject constructor(
                 emit(Resource.Error(message = "network failure"))
             }
         } catch (e: HttpException) {
+            val errorBody = e.response()?.errorBody()
+            Log.e(TAG, errorBody?.string() ?: "error body is null")
+            val errorCode = errorBody?.getErrorCode()
+            errorCode?.let {
+                emit(Resource.Error(message = ResponseCode.getMessageByCode(errorCode)))
+                return@flow
+            }
             emit(Resource.Error(message = e.message ?: "unknown http exception"))
         } catch (e: IOException) {
             emit(Resource.Error(message = e.message ?: "unknown io exception"))

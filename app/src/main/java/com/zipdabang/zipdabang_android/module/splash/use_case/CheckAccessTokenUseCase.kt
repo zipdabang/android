@@ -3,7 +3,10 @@ package com.zipdabang.zipdabang_android.module.splash.use_case
 import android.util.Log
 import androidx.datastore.core.DataStore
 import com.zipdabang.zipdabang_android.common.Resource
+import com.zipdabang.zipdabang_android.common.ResponseCode
+import com.zipdabang.zipdabang_android.common.getErrorCode
 import com.zipdabang.zipdabang_android.core.data_store.proto.Token
+import com.zipdabang.zipdabang_android.module.login.use_case.GetTempLoginResultUseCase
 import com.zipdabang.zipdabang_android.module.splash.data.AutoLoginDto
 import com.zipdabang.zipdabang_android.module.splash.data.AutoLoginRepositoryImpl
 import kotlinx.coroutines.flow.Flow
@@ -40,6 +43,29 @@ class CheckAccessTokenUseCase @Inject constructor(
                 emit(Resource.Error(message = "result is nothing"))
             }
         } catch (e: HttpException) {
+            val errorBody = e.response()?.errorBody()
+            Log.e(TAG, errorBody?.string() ?: "error body is null")
+            val errorCode = errorBody?.getErrorCode()
+            errorCode?.let {
+                when (it) {
+                    ResponseCode.UNAUTHORIZED_ACCESS_EXPIRED.code -> {
+                        emit(Resource.Success(
+                            code = ResponseCode.UNAUTHORIZED_ACCESS_EXPIRED.code,
+                            message = ResponseCode.UNAUTHORIZED_ACCESS_EXPIRED.message,
+                            data = AutoLoginDto(
+                                code = ResponseCode.UNAUTHORIZED_ACCESS_EXPIRED.code,
+                                isSuccess = false,
+                                message = ResponseCode.UNAUTHORIZED_ACCESS_EXPIRED.message,
+                                result = null
+                            )
+                        ))
+                    }
+                    else -> {
+                        emit(Resource.Error(message = ResponseCode.getMessageByCode(errorCode)))
+                    }
+                }
+                return@flow
+            }
             Log.d(TAG, e.message ?: "unexpected http error")
             emit(Resource.Error(message = e.message ?: "unexpected http exception"))
         } catch (e: IOException) {

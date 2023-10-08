@@ -9,6 +9,7 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.map
 import androidx.room.withTransaction
+import com.zipdabang.zipdabang_android.common.CommentMgtFailureException
 import com.zipdabang.zipdabang_android.common.Resource
 import com.zipdabang.zipdabang_android.core.Paging3Database
 import com.zipdabang.zipdabang_android.core.storage.recipe.RecipeDatabase
@@ -161,6 +162,7 @@ class RecipeCommentViewModel @Inject constructor(
                         )
                     )
                     Log.d(TAG, "${deleteResult.value}")
+                    throw CommentMgtFailureException
                 }
             }
         }.launchIn(viewModelScope)
@@ -202,6 +204,7 @@ class RecipeCommentViewModel @Inject constructor(
                             isEditSuccessful = false
                         )
                     )
+                    throw CommentMgtFailureException
                 }
             }
         }.launchIn(viewModelScope)

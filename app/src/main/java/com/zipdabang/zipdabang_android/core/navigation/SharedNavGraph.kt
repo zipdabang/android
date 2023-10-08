@@ -74,11 +74,11 @@ fun NavGraphBuilder.SharedNavGraph(
             val toggleLikeState = recipeDetailViewModel.toggleLikeState.collectAsState()
             val toggleScrapState = recipeDetailViewModel.toggleScrapState.collectAsState()
 
-            if (toggleLikeState.value.errorMessage != null
+/*            if (toggleLikeState.value.errorMessage != null
                 || toggleScrapState.value.errorMessage != null
             ) {
                 throw TogglePreferenceException
-            }
+            }*/
 
             val pagerState = rememberPagerState()
 

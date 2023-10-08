@@ -60,10 +60,10 @@ fun CommentSubmit(
     val editState = viewModel.editResult.collectAsState()
     val deleteState = viewModel.deleteResult.collectAsState()
 
-    if (editState.value.errorMessage != null
+/*    if (editState.value.errorMessage != null
         || deleteState.value.errorMessage != null) {
         throw CommentMgtFailureException
-    }
+    }*/
 
     Row(
         modifier = Modifier
@@ -107,7 +107,6 @@ fun CommentSubmit(
                     } catch (e: Exception) {
                         Log.d("comment submit", "unknown failure : ${e.message}")
                     }
-
                 },
                 isFulfilled = isFulfilled,
                 placeHolder = placeHolder,
