@@ -64,6 +64,7 @@ fun UserInfoScreen(
     onClickEditBasic: () -> Unit,
     onClickEditDetail: () -> Unit,
     onClickEditNickname: () -> Unit,
+    onClickEditOneLine : ()->Unit,
     onClickEditPreferences: () -> Unit,
     onClickLogout: () -> Unit,
     onClickWithdraw: () -> Unit,
@@ -606,6 +607,92 @@ fun UserInfoScreen(
                 }
             }
 
+            //한줄 소개
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(128.dp)
+                    .padding(16.dp, 0.dp, 16.dp, 20.dp)
+                    .background(
+                        color = Color.Transparent,
+                        shape = ZipdabangandroidTheme.Shapes.small,
+                    )
+                    .shadow(
+                        elevation = 2.dp,
+                    ),
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(
+                            brush = Brush.horizontalGradient(
+                                colors = listOf(
+                                    ZipdabangandroidTheme.Colors.Strawberry,
+                                    ZipdabangandroidTheme.Colors.Cream
+                                )
+                            ),
+                            shape = ZipdabangandroidTheme.Shapes.smallRoundedTop,
+                        )
+                        .weight(1f)
+                        .wrapContentHeight()
+                        .padding(16.dp, 0.dp, 16.dp, 0.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = stringResource(id = R.string.drawer_oneline),
+                        style = ZipdabangandroidTheme.Typography.sixteen_700,
+                        color = Color.White
+                    )
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_my_edit),
+                        contentDescription = "",
+                        tint = Color.White,
+                        modifier = Modifier
+                            .size(24.dp, 24.dp)
+                            .clickable(onClick = { if(!shimmering) onClickEditOneLine() })
+                    )
+                }
+                //한 줄 소개
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(
+                            color = Color.White,
+                            shape = ZipdabangandroidTheme.Shapes.smallRoundedBottom
+                        )
+                        .weight(1f)
+                        .wrapContentHeight()
+                        .padding(16.dp, 0.dp, 16.dp, 0.dp),
+                    horizontalArrangement = Arrangement.spacedBy(4.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_my_smileface),
+                        contentDescription = "",
+                        tint = ZipdabangandroidTheme.Colors.Typo,
+                        modifier = Modifier
+                            .size(22.dp, 22.dp)
+                            .padding(8.dp, 0.dp, 0.dp, 0.dp)
+                    )
+                    Text(
+                        modifier = Modifier
+                            .padding(8.dp, 0.dp, 0.dp, 0.dp)
+                            .fillMaxWidth()
+                            .then(
+                                if (shimmering) {
+                                    Modifier.shimmeringEffect()
+                                } else {
+                                    Modifier
+                                }
+                            ),
+                        text = stateUserInfo.oneline,
+                        style = ZipdabangandroidTheme.Typography.sixteen_500,
+                        color = ZipdabangandroidTheme.Colors.Typo
+                    )
+                }
+            }
+
             //선호하는 음료
             Column(
                 modifier = Modifier
@@ -802,6 +889,7 @@ fun PreviewUserInfoScrren() {
         onClickEditBasic = {},
         onClickEditDetail = {},
         onClickEditNickname = {},
+        onClickEditOneLine = {},
         onClickEditPreferences = {},
         onClickLogout = {},
         onClickWithdraw = {}

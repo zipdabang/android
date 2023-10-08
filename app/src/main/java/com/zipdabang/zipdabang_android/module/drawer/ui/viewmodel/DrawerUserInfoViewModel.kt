@@ -28,6 +28,8 @@ import com.zipdabang.zipdabang_android.module.drawer.ui.state.userinfo.UserInfoD
 import com.zipdabang.zipdabang_android.module.drawer.ui.state.userinfo.UserInfoDetailState
 import com.zipdabang.zipdabang_android.module.drawer.ui.state.userinfo.UserInfoNicknameEvent
 import com.zipdabang.zipdabang_android.module.drawer.ui.state.userinfo.UserInfoNicknameState
+import com.zipdabang.zipdabang_android.module.drawer.ui.state.userinfo.UserInfoOneLineEvent
+import com.zipdabang.zipdabang_android.module.drawer.ui.state.userinfo.UserInfoOneLineState
 import com.zipdabang.zipdabang_android.module.drawer.ui.state.userinfo.UserInfoPreferencesEvent
 import com.zipdabang.zipdabang_android.module.drawer.ui.state.userinfo.UserInfoPreferencesState
 import com.zipdabang.zipdabang_android.module.drawer.ui.state.userinfo.UserInfoState
@@ -69,6 +71,7 @@ class DrawerUserInfoViewModel @Inject constructor(
     var stateUserInfoBasic by mutableStateOf(UserInfoBasicState())
     var stateUserInfoDetail by mutableStateOf(UserInfoDetailState())
     var stateUserInfoNickname by mutableStateOf(UserInfoNicknameState())
+    var stateUserInfoOneLine by mutableStateOf(UserInfoOneLineState())
     var stateUserInfoPreferences by mutableStateOf(UserInfoPreferencesState())
     var genderList by mutableStateOf(listOf("남", "여"))
     var remainingTime by mutableStateOf(0)
@@ -273,6 +276,22 @@ class DrawerUserInfoViewModel @Inject constructor(
             }
         }
     }
+
+
+    /*UserInfoOneLineScreen*/
+    fun onUserInfoOneLineEvent(event : UserInfoOneLineEvent){
+        when(event){
+            is UserInfoOneLineEvent.OneLineChanged ->{
+                stateUserInfoOneLine = stateUserInfoOneLine.copy(
+                    oneline = event.oneline
+                )
+            }
+            is UserInfoOneLineEvent.BtnEnabled->{
+
+            }
+        }
+    }
+
 
     /*UserInfoPreferencesScreen*/
     fun onUserInfoPreferencesEvent(event : UserInfoPreferencesEvent){

@@ -56,8 +56,12 @@ fun Step(
     stepNum : Int,
     stepImage : Any?,
     value: String,
+    valueLength : String,
     onValueChanged: (String, Int) -> Unit,
     placeholderValue: String,
+    completeBtnEnabled : Boolean,
+    completeBtnVisible : Boolean,
+    textfieldEnabled : Boolean,
     height: Dp,
     maxLines: Int,
     maxLength: Int, //최대 글자수
@@ -65,6 +69,7 @@ fun Step(
     onClickImageAddBtn: () -> Unit,
     onClickDeleteStep: () -> Unit,
     onClickEditStep:()->Unit,
+    onClickComplete : ()->Unit
 ) {
     Column(
         verticalArrangement = Arrangement.spacedBy(4.dp)
@@ -158,6 +163,7 @@ fun Step(
 
         // Step textfield
         OutlinedTextField(
+            enabled = textfieldEnabled,
             value = value,
             onValueChange = {
                 onValueChanged(it, maxLength)
@@ -189,6 +195,7 @@ fun Step(
                 imeAction = imeAction,
             ),
         )
+
         // 수정, 삭제 버튼과 글자수
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -197,52 +204,68 @@ fun Step(
             Row(
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                Box(
-                    modifier = Modifier
-                        .width(48.dp)
-                        .wrapContentHeight()
-                        .padding(0.dp)
-                        .clickable(onClick={
-                            onClickEditStep()
-                        })
-                        .background(
-                            color = ZipdabangandroidTheme.Colors.Strawberry,
-                            shape = ZipdabangandroidTheme.Shapes.large,
-                        ),
-                    contentAlignment = Alignment.Center
-                ){
-                    Text(
-                        text = stringResource(R.string.my_recipewrite_edit),
-                        color = Color.White,
-                        style = ZipdabangandroidTheme.Typography.fourteen_300,
+                if(completeBtnVisible){
+                    Box(
+                        modifier = Modifier.width(96.dp)
                     )
                 }
-                Box(
-                    modifier = Modifier
-                        .width(48.dp)
-                        .wrapContentHeight()
-                        .padding(0.dp)
-                        .clickable(onClick={
-                            onClickDeleteStep()
-                        })
-                        .background(
-                            color = ZipdabangandroidTheme.Colors.Strawberry,
-                            shape = ZipdabangandroidTheme.Shapes.large,
-                        ),
-                    contentAlignment = Alignment.Center
-                ){
-                    Text(
-                        text = stringResource(R.string.my_recipewrite_delete),
-                        color = Color.White,
-                        style = ZipdabangandroidTheme.Typography.fourteen_300,
-                    )
+                else {
+                    Box(
+                        modifier = Modifier
+                            .width(48.dp)
+                            .wrapContentHeight()
+                            .padding(0.dp)
+                            .clickable(onClick={
+                                onClickEditStep()
+                            })
+                            .background(
+                                color = ZipdabangandroidTheme.Colors.Strawberry,
+                                shape = ZipdabangandroidTheme.Shapes.large,
+                            ),
+                        contentAlignment = Alignment.Center
+                    ){
+                        Text(
+                            text = stringResource(R.string.my_recipewrite_edit),
+                            color = Color.White,
+                            style = ZipdabangandroidTheme.Typography.fourteen_300,
+                        )
+                    }
+                    Box(
+                        modifier = Modifier
+                            .width(48.dp)
+                            .wrapContentHeight()
+                            .padding(0.dp)
+                            .clickable(onClick={
+                                onClickDeleteStep()
+                            })
+                            .background(
+                                color = ZipdabangandroidTheme.Colors.Strawberry,
+                                shape = ZipdabangandroidTheme.Shapes.large,
+                            ),
+                        contentAlignment = Alignment.Center
+                    ){
+                        Text(
+                            text = stringResource(R.string.my_recipewrite_delete),
+                            color = Color.White,
+                            style = ZipdabangandroidTheme.Typography.fourteen_300,
+                        )
+                    }
                 }
             }
             Text(
                 modifier = Modifier.padding(0.dp, 0.dp, 4.dp, 0.dp),
-                text = "0/200",
+                text = valueLength + "/200",
                 style = ZipdabangandroidTheme.Typography.fourteen_300,
                 color = ZipdabangandroidTheme.Colors.Typo
+            )
+        }
+        // 작성 완료 버튼
+        if(completeBtnVisible){
+            ButtonForStep(
+                enabled = completeBtnEnabled,
+                onClickBtn = {
+                    onClickComplete()
+                }
             )
         }
     }
@@ -258,19 +281,24 @@ fun PreviewStep() {
             stepNum = 1,
             stepImage = null,
             value = textStateStep,
+            valueLength = "10",
             onValueChanged = { newText, maxLength ->
                 if (newText.length <= maxLength) {
                     textStateStep = newText
                 }
             },
             placeholderValue = stringResource(id = R.string.my_recipewrite_step_hint),
+            completeBtnEnabled = true,
+            textfieldEnabled = true,
+            completeBtnVisible = true,
             height = 100.dp,
             maxLines = 7,
             maxLength = 200,
             imeAction = ImeAction.None,
             onClickImageAddBtn = { },
             onClickDeleteStep = {},
-            onClickEditStep = {}
+            onClickEditStep = {},
+            onClickComplete = {}
         )
     }
 }

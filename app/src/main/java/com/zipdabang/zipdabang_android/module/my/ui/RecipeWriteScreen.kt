@@ -92,6 +92,9 @@ fun RecipeWriteScreen(
     LaunchedEffect(key1 = stateRecipeWriteForm){
         Log.e("recipeWriteForm", "${stateRecipeWriteForm}")
     }
+    LaunchedEffect(key1=stateRecipeWriteForm.steps){
+        recipeWriteViewModel.onRecipeWriteFormEvent(RecipeWriteFormEvent.StepIsValidate(stateRecipeWriteForm.stepsNum))
+    }
 
     // textfield
     var textStateStep by remember { mutableStateOf("") }
@@ -658,13 +661,17 @@ fun RecipeWriteScreen(
                         Step(
                             stepNum = i+1,
                             stepImage = stateRecipeWriteForm.steps[i].stepImage,
-                            value = textStateStep,
+                            value = stateRecipeWriteForm.steps[i].description,
+                            valueLength = stateRecipeWriteForm.steps[i].stepWordCount.toString(),
                             onValueChanged = { newText, maxLength ->
                                 if (newText.length <= maxLength) {
-                                    textStateStep = newText
+                                    recipeWriteViewModel.onRecipeWriteFormEvent(RecipeWriteFormEvent.StepChanged(newText, i+1))
                                 }
                             },
                             placeholderValue = "레시피를 만드는 Step "+(i+1)+"을 설명해 주세요. \n(최대 200자)",
+                            textfieldEnabled = stateRecipeWriteForm.steps[i].textfieldEnabled,
+                            completeBtnVisible = stateRecipeWriteForm.steps[i].completeBtnVisible,
+                            completeBtnEnabled = stateRecipeWriteForm.steps[i].completeBtnEnabled,
                             height = 232.dp,
                             maxLines = 7,
                             maxLength = 200,
@@ -673,27 +680,54 @@ fun RecipeWriteScreen(
                                 recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.StepFileSelectChanged(true, i+1))
                             },
                             onClickDeleteStep = {
-
+                                recipeWriteViewModel.onRecipeWriteFormEvent(RecipeWriteFormEvent.BtnStepDelete(stepNum = i+1 ))
                             },
                             onClickEditStep = {
-
+                                recipeWriteViewModel.onRecipeWriteFormEvent(RecipeWriteFormEvent.BtnStepEdit(stepNum = i+1 ))
+                            },
+                            onClickComplete = {
+                                recipeWriteViewModel.onRecipeWriteFormEvent(RecipeWriteFormEvent.BtnStepAdd(stepNum = i+1 ))
                             }
                         )
                     }
-                    ButtonForStep(
-                        enabled = true,
-                        onClickBtn = {
-                            recipeWriteViewModel.onRecipeWriteFormEvent(RecipeWriteFormEvent.BtnStepAdd(stepNum = stateRecipeWriteForm.stepsNum + 1))
-                        }
-                    )
-                    Text(
+                    Row(
                         modifier = Modifier
-                            .align(Alignment.End)
-                            .padding(0.dp, 0.dp, 4.dp, 0.dp),
-                        text = "Step" + stateRecipeWriteForm.stepsNum + "/Step10",
-                        style = ZipdabangandroidTheme.Typography.fourteen_300,
-                        color = ZipdabangandroidTheme.Colors.Typo
-                    )
+                            .fillMaxWidth()
+                            .padding(0.dp, 0.dp, 0.dp, 4.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        if(stateRecipeWriteForm.stepsNum == 10){
+                            Row(
+                                horizontalArrangement = Arrangement.Center
+                            ) {
+                                Icon(
+                                    painter = painterResource(R.drawable.ic_recipewrite_warning),
+                                    contentDescription = "Icon",
+                                    tint = Color(0xFFB00020),
+                                    modifier = Modifier
+                                        .size(16.dp)
+                                        .padding(4.dp, 0.dp, 0.dp, 0.dp),
+                                )
+                                Text(
+                                    modifier = Modifier.padding(2.dp, 0.dp, 0.dp, 0.dp),
+                                    text = stringResource(id = R.string.my_recipewrite_warning_step),
+                                    style = ZipdabangandroidTheme.Typography.twelve_500,
+                                    color = Color(0xFFB00020)
+                                )
+                            }
+                        } else{
+                            Box(
+                                modifier = Modifier.size(22.dp, 16.dp)
+                            )
+                        }
+                        Text(
+                            modifier = Modifier.padding(0.dp, 0.dp, 4.dp, 0.dp),
+                            text = "Step" + stateRecipeWriteForm.stepsNum + "/Step10",
+                            style = ZipdabangandroidTheme.Typography.fourteen_300,
+                            color = ZipdabangandroidTheme.Colors.Typo
+                        )
+                    }
+
                 }
 
                 // 레시피 Tip
