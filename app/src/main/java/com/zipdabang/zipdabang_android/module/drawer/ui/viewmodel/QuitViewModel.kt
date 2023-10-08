@@ -60,17 +60,14 @@ class QuitViewModel @Inject constructor(
                         }
                     onDialogShow()
 
-                    }else{
-                        result.message?.let { Log.e("quit_error", it) }
-
-
                     }
                 }
                 is Resource.Error ->{
-                    result.message?.let { Log.e("quit_error", it) }
+                    Log.e("Quit Api in Error","code :${result.code} message : ${result.message.toString()}")
                     _quitState.value = QuitState(
                         isLoading = false,
-                        isError = false
+                        isError = false,
+                        error = result.message.toString()
                     )
                 }
 

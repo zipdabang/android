@@ -1,6 +1,7 @@
 package com.zipdabang.zipdabang_android.module.drawer.domain.usecase
 
 import com.zipdabang.zipdabang_android.common.Resource
+import com.zipdabang.zipdabang_android.common.getErrorCode
 import com.zipdabang.zipdabang_android.module.drawer.data.remote.userinfodto.UserInfoResult
 import com.zipdabang.zipdabang_android.module.drawer.domain.repository.DrawerRepository
 import kotlinx.coroutines.flow.Flow
@@ -22,7 +23,18 @@ class GetUserInfoUseCase @Inject constructor(
                 message = userinfo.message
             ))
         } catch(e: HttpException) {
-            emit(Resource.Error(e.localizedMessage ?: "An unexpected error occured"))
+            val errorBody = e.response()?.errorBody()
+            val errorCode = errorBody?.getErrorCode()
+            errorCode?.let {
+                emit(
+                    Resource.Error(
+                        message = e.response()?.errorBody().toString(),
+                        code = errorCode
+                    )
+                )
+                return@flow
+            }
+            emit(Resource.Error(message = e.message ?: "unexpected http error"))
         } catch(e: IOException) {
             emit(Resource.Error("Couldn't reach server. Check your internet connection."))
         }

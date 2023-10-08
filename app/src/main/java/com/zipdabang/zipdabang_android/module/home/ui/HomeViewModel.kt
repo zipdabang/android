@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.zipdabang.zipdabang_android.common.Constants
 import com.zipdabang.zipdabang_android.common.HomeResource
+import com.zipdabang.zipdabang_android.common.Resource
 import com.zipdabang.zipdabang_android.core.data_store.proto.Token
 import com.zipdabang.zipdabang_android.module.home.domain.usecase.GetBestRecipe
 import com.zipdabang.zipdabang_android.module.home.domain.usecase.GetHomeBanner
@@ -37,26 +38,26 @@ class HomeViewModel @Inject constructor(
     fun getBannerList() {
                 getHomeBanner().onEach { result ->
                     when (result) {
-                        is HomeResource.HomeSuccess ->{
+                        is Resource.Success ->{
                             if(result.data?.isSuccess == true){
                                 val bannerlist= result.data.result.bannerList
                                 Log.e("Bannerresult",result.data.result.toString())
                                 _bannerState.value = HomeBannerState(
                                     bannerList = bannerlist,
                                     isLoading = false)
-                            }else{
-                                Log.e("Home Api Error", result.data!!.message)
                             }
                         }
 
-                        is HomeResource.HomeError ->{
+                        is Resource.Error ->{
                             _bannerState.value = HomeBannerState(
                                 isError = true,
                                 error = result.message ?: "An unexpected error occured"
                             )
+                            Log.e("Banner Api in Error","code :${result.code} message : ${result.message.toString()}")
+
                         }
 
-                        is HomeResource.HomeLoading-> {
+                        is Resource.Loading-> {
                             _bannerState.value = HomeBannerState(isLoading = true)
                         }
 
@@ -75,7 +76,7 @@ class HomeViewModel @Inject constructor(
         getBestRecipes().onEach { result ->
                     when (result) {
 
-                        is HomeResource.HomeSuccess ->{
+                        is Resource.Success ->{
                             if(result.data?.isSuccess == true){
                                 Log.e("Bannerresult",result.data.result.toString())
                                 _recipeState.value =
@@ -83,19 +84,19 @@ class HomeViewModel @Inject constructor(
                                     recipeList = result.data.result.recipeList,
                                     isLoading = false
                                     )
-                            }else{
-                                Log.e("Home Api Error", result.data!!.message)
                             }
                         }
 
-                        is HomeResource.HomeError ->{
+                        is Resource.Error ->{
                             _recipeState.value = HomeRecipeState(
                                 isError = true,
-                                error = result.data?.message ?: "An unexpected error occured"
+                                error = result.message.toString()
                             )
+                            Log.e("Home Api in Error","code :${result.code} message : ${result.message.toString()}")
+
                         }
 
-                        is HomeResource.HomeLoading-> {
+                        is Resource.Loading-> {
                             _recipeState.value = HomeRecipeState(isLoading = true)
                         }
 

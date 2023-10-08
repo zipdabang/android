@@ -67,21 +67,16 @@ class FriendsListViewModel @OptIn(ExperimentalPagingApi::class)
 
                         Log.e("followorcancel api", result.data.code.toString())
                     }
-                    else{
-                        _followOrCancelSuccessState.value = FollowOrCancel(
-                            isError = true,
-                            isLoading = false,
-                        )
-                        Log.e("followOrCancel Api", result.data.message)
-                    }
+
                 }
 
                 is Resource.Error -> {
                     _followOrCancelSuccessState.value = FollowOrCancel(
                         isError = true,
                         isLoading = false,
+                        error = result.message.toString()
                     )
-                    Log.e("followOrCancel Api",result.message.toString())
+                    Log.e("followOrcancel Api in Error","code :${result.code} message : ${result.message.toString()}")
 
 
                 }

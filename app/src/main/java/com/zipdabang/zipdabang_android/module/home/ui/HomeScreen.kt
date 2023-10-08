@@ -92,7 +92,8 @@ fun HomeScreen(
                    ) {
 
                             if (bannerState.value.isLoading) {
-                           //Shimmering Effect
+
+                            //Shimmering Effect
                             }
                             else if(bannerState.value.isError){
                                 val imageUrlList = emptyList<String>()

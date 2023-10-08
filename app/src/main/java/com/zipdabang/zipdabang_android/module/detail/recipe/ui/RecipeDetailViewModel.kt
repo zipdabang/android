@@ -92,7 +92,6 @@ class RecipeDetailViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             _currentPlatform.value = getCurrentPlatform()
-            Log.e("viewmodel","refresh")
         }
     }
 
@@ -167,7 +166,6 @@ class RecipeDetailViewModel @Inject constructor(
                         )
 
                         _likes.emit(recipeDetailState.value.recipeDetailData?.recipeInfo?.likes ?: 0)
-                        Log.e("likes_test",_likes.toString())
                         _scraps.emit(recipeDetailState.value.recipeDetailData?.recipeInfo?.scraps ?: 0)
                         _isLikeChecked.emit(recipeDetailState.value.recipeDetailData?.recipeInfo?.isLiked ?: false)
                         _isScrapChecked.emit(recipeDetailState.value.recipeDetailData?.recipeInfo?.isScrapped ?: false)

@@ -1,4 +1,4 @@
-package com.zipdabang.zipdabang_android.module.search.domain
+package com.zipdabang.zipdabang_android.module.search.data
 
 import androidx.paging.PagingSource
 import androidx.room.Dao

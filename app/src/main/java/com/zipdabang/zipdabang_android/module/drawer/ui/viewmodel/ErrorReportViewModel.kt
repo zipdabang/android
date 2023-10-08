@@ -30,7 +30,6 @@ class ErrorReportViewModel @Inject constructor(
 //        val requestEmail : RequestBody= RequestBody.create("text/plain".toMediaTypeOrNull(),email)
 //        val requestTitle = RequestBody.create("text/plain".toMediaTypeOrNull(),title)
 //        val requestBody = RequestBody.create("text/plain".toMediaTypeOrNull(),body)
-        Log.e("report Api",email.toString())
 
         reportUseCase(email, title, body, imageList).onEach {
             result ->
@@ -45,22 +44,14 @@ class ErrorReportViewModel @Inject constructor(
                         isSuccess()
 
                         Log.e("report Api in Success",result.data.code.toString())
-                    }else{
-                        _reportState.value= ReportState(
-                            isSuccess = false,
-                            isError = true,
-                            error = result.data!!.message
-                        )
-                        Log.e("report Api in Success",result.data.code.toString())
-
                     }
                 }
                 is Resource.Error -> {
                     _reportState.value = ReportState(
                         isError = true,
-                        error = result.message ?: "An unexpected error occured"
+                        error = result.message.toString()
                     )
-                    Log.e("report Api in Error", result.message.toString())
+                    Log.e("report Api in Error","code :${result.code} message : ${result.message.toString()}")
 
                 }
 

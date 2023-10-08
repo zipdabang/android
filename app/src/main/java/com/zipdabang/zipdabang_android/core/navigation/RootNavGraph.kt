@@ -22,7 +22,7 @@ fun RootNavGraph(
     fcmData: FCMData? = null
 ) {
 
- //   val innerNavController = rememberNavController()
+   val innerNavController = rememberNavController()
     Log.d("RootNavGraph", fcmData.toString())
 
     NavHost(
@@ -75,7 +75,7 @@ fun RootNavGraph(
 
         composable(route = MAIN_ROUTE) {
            MainScreen(
-               outerNavController = outerNavController
+               outerNavController = outerNavController,
            )
         }
 
