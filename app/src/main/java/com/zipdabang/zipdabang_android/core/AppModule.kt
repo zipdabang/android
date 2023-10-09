@@ -89,7 +89,6 @@ object AppModule {
     fun provideRecipeDatabase(
         @ApplicationContext context: Context
     ): RecipeDatabase {
-
         return Room
             .databaseBuilder(
                 context,

@@ -26,6 +26,7 @@ import com.zipdabang.zipdabang_android.module.recipes.data.hot.HotRecipeDto
 import com.zipdabang.zipdabang_android.module.recipes.data.local.RecipeItemEntity
 import com.zipdabang.zipdabang_android.module.recipes.data.preference.PreferenceResultDto
 import com.zipdabang.zipdabang_android.module.recipes.data.preview.RecipePreviewItemsDto
+import com.zipdabang.zipdabang_android.module.recipes.data.recipe_list.RecipeListDto
 import com.zipdabang.zipdabang_android.module.recipes.domain.RecipeListRepository
 import com.zipdabang.zipdabang_android.module.recipes.domain.mediator.AdeRecipeListMediator
 import com.zipdabang.zipdabang_android.module.recipes.domain.mediator.AllRecipeListMediator
@@ -47,15 +48,22 @@ class RecipeListRepositoryImpl(
     private val dataStore: DataStore<Token>,
     private val isNetworkAvailable: Boolean
 ): RecipeListRepository {
-/*    override suspend fun getRecipePreviewList(
-        accessToken: String,
-        ownerType: String
-    ): RecipePreviewItemsDto {
-        return recipeApi.getRecipePreview(
-            accessToken = accessToken,
-            ownerType = ownerType
-        )
-    }*/
+    override suspend fun getItemCountByCategory(accessToken: String, categoryId: Int, pageIndex: Int): RecipeListDto? {
+        return recipeApi.getRecipeListByCategory(accessToken, categoryId, pageIndex = pageIndex, order = "latest")
+    }
+
+    override suspend fun getItemCountByOwner(accessToken: String, ownerType: String, pageIndex: Int): RecipeListDto? {
+        return recipeApi.getRecipeListByOwnerType(accessToken, ownerType, pageIndex = pageIndex, order = "latest")
+    }
+    /*    override suspend fun getRecipePreviewList(
+            accessToken: String,
+            ownerType: String
+        ): RecipePreviewItemsDto {
+            return recipeApi.getRecipePreview(
+                accessToken = accessToken,
+                ownerType = ownerType
+            )
+        }*/
 
     /*@OptIn(ExperimentalPagingApi::class)
     override fun getRecipeListByOwnerType(

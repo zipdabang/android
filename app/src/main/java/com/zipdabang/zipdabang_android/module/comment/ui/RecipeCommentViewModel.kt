@@ -162,7 +162,6 @@ class RecipeCommentViewModel @Inject constructor(
                         )
                     )
                     Log.d(TAG, "${deleteResult.value}")
-                    throw CommentMgtFailureException
                 }
             }
         }.launchIn(viewModelScope)
@@ -204,7 +203,6 @@ class RecipeCommentViewModel @Inject constructor(
                             isEditSuccessful = false
                         )
                     )
-                    throw CommentMgtFailureException
                 }
             }
         }.launchIn(viewModelScope)
