@@ -1,6 +1,7 @@
 package com.zipdabang.zipdabang_android.module.my.data.repository
 
 import com.zipdabang.zipdabang_android.module.my.data.remote.MyApi
+import com.zipdabang.zipdabang_android.module.my.data.remote.RecipeWriteContent
 import com.zipdabang.zipdabang_android.module.my.data.remote.RecipeWriteRequest
 import com.zipdabang.zipdabang_android.module.my.data.remote.RecipeWriteResponse
 import com.zipdabang.zipdabang_android.module.my.data.remote.SignOutResponseDto
@@ -9,6 +10,8 @@ import com.zipdabang.zipdabang_android.module.my.data.remote.followorcancel.Foll
 import com.zipdabang.zipdabang_android.module.my.data.remote.friendlist.follow.FollowDto
 import com.zipdabang.zipdabang_android.module.my.data.remote.friendlist.following.FollowingDto
 import com.zipdabang.zipdabang_android.module.my.domain.repository.MyRepository
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import javax.inject.Inject
 
 class MyRepositoryImpl @Inject constructor(
@@ -20,10 +23,13 @@ class MyRepositoryImpl @Inject constructor(
 
     override suspend fun postRecipe(
         accessToken: String,
-        recipeWriteForm: RecipeWriteRequest
+        content: RequestBody,
+        thumbnail: MultipartBody.Part,
+        stepImages: List<MultipartBody.Part>
     ): RecipeWriteResponse {
-        return api.postRecipe(accessToken, recipeWriteForm)
+        return api.postRecipe(accessToken, content, stepImages, thumbnail)
     }
+
 
     override suspend fun getFollow(accessToken: String, page: Int): FollowDto {
        return api.getFollowings(accessToken, page)

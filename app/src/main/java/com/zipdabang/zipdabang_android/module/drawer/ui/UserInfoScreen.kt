@@ -582,11 +582,11 @@ fun UserInfoScreen(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Icon(
-                        painter = painterResource(id = R.drawable.ic_my_smileface),
+                        painter = painterResource(id = R.drawable.ic_drawer_nickname),
                         contentDescription = "",
                         tint = ZipdabangandroidTheme.Colors.Typo,
                         modifier = Modifier
-                            .size(22.dp, 22.dp)
+                            .size(32.dp, 32.dp)
                             .padding(8.dp, 0.dp, 0.dp, 0.dp)
                     )
                     Text(
@@ -668,11 +668,11 @@ fun UserInfoScreen(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Icon(
-                        painter = painterResource(id = R.drawable.ic_my_smileface),
+                        painter = painterResource(id = R.drawable.ic_drawer_oneline),
                         contentDescription = "",
                         tint = ZipdabangandroidTheme.Colors.Typo,
                         modifier = Modifier
-                            .size(22.dp, 22.dp)
+                            .size(32.dp, 32.dp)
                             .padding(8.dp, 0.dp, 0.dp, 0.dp)
                     )
                     Text(

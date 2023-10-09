@@ -4,5 +4,5 @@ data class CategoriesResponse(
     val code: Int,
     val isSuccess: Boolean,
     val message: String,
-    val result: CategoriesResult
+    val result: String
 )

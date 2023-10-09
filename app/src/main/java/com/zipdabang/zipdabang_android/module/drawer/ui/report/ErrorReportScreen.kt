@@ -172,6 +172,7 @@ fun ErrorReportScreen(
 
         }
     }
+
     // 권한이 없을 경우 실행할 launcher 정의
     val launcherMultiplePermissions = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()

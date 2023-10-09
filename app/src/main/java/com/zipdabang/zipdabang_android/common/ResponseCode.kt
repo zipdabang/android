@@ -22,6 +22,7 @@ enum class ResponseCode(val responseResult: ResponseResult, val code: Int, val m
     BAD_REQUEST_PHONE_AUTH_TIMEOUT(ResponseResult.ERROR, 4058, "인증시간 5분이 지났습니다."),
     BAD_REQUEST_USER_ALREADY_BLOCKED(ResponseResult.ERROR, 4062, "이미 차단된 사용자입니다."),
     BAD_REQUEST_BLOCKED_ME(ResponseResult.ERROR, 4063, "자신을 차단할 수 없습니다."),
+    BAD_REQUEST_RECIPEWRITE_NOT_FORMED(ResponseResult.ERROR, 4100, "누락된 부분이 있습니다."),
     BAD_REQUEST_RECIPE_NOT_EXISTS(ResponseResult.ERROR, 4101, "존재하지 않는 레시피 아이디입니다."),
     BAD_REQUEST_RECIPE_BANNED(ResponseResult.ERROR, 4102, "차단한 사용자의 레시피입니다."),
     BAD_REQUEST_COMMENT_NOT_EXISTS(ResponseResult.ERROR, 4107, "해당 아이디를 가진 댓글이 존재하지 않습니다."),
