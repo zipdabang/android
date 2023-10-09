@@ -19,6 +19,7 @@ import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
 
 @Composable
 fun FollowScreen(
+    onClickOthers : (Int) -> Unit,
     viewModel : FriendsListViewModel = hiltViewModel()
 ) {
     val followItem = viewModel.getFollowItems.collectAsLazyPagingItems()
@@ -42,8 +43,12 @@ fun FollowScreen(
                    viewModel.refresh()
                },
                userReport = {
-
+                      TODO()
+               },
+               onClickOthers = {
+                   onClickOthers(followItem[it]!!.id)
                }
+
            )
         }
 

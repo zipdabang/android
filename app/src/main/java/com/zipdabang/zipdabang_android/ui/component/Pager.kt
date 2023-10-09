@@ -117,7 +117,29 @@ fun ColumnPagers(
         }
 
 }
+@Composable
+@OptIn(ExperimentalPagerApi::class)
+fun ColumnPagersNoPadding(
+    tabsList: List<TabItem>,
+    pagerState: PagerState,
+    // deviceSize: DeviceScreenSize
+) {
 
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+        ) {
+            Tabs(tabs = tabsList, pagerState = pagerState)
+        }
+
+        TabContent(tabs = tabsList, pagerState = pagerState)
+    }
+
+}
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable

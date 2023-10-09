@@ -3,6 +3,7 @@ package com.zipdabang.zipdabang_android.module.my.ui.component
 import android.util.Log
 import android.widget.Space
 import androidx.compose.foundation.LocalIndication
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.indication
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -48,7 +49,8 @@ fun FollowItem(
     isFollow : Boolean,
     isFollowEach : Boolean = false,
     followOrCancelClick : () -> Unit,
-    userReport : () -> Unit
+    userReport : () -> Unit,
+    onClickOthers : () -> Unit
 ) {
 
     //for DropDown
@@ -77,9 +79,13 @@ fun FollowItem(
             .height(56.dp)
     ) {
         Row(
-            modifier = Modifier.align(Alignment.CenterStart),
+            modifier = Modifier.align(Alignment.CenterStart)
+                .clickable {
+                           onClickOthers()
+                },
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
+            horizontalArrangement = Arrangement.SpaceBetween,
+
         ) {
             Box(modifier = Modifier.size(40.dp)) {
                 CircleImage(
