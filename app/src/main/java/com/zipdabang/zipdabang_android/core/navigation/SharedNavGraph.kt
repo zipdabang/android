@@ -280,7 +280,8 @@ fun NavGraphBuilder.SharedNavGraph(
             arguments = listOf(
                 navArgument("categoryId"){ type = NavType.IntType },
                 navArgument("keyword") { type = NavType.StringType }
-            )){
+            )
+        ){
                val categoryId = it.arguments?.getInt("categoryId")
                val keyword = it.arguments?.getString("keyword")
 

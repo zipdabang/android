@@ -44,6 +44,7 @@ import kotlinx.coroutines.launch
 fun FriendListScreen(
    // viewModel : FriendsListViewModel = hiltViewModel(),
     onClickBack : ()->Unit,
+    onClickOthers : (Int) -> Unit,
     navController: NavController,
 ) {
     val drawerState = rememberDrawerState(DrawerValue.Closed)
@@ -86,7 +87,10 @@ fun FriendListScreen(
 
 
                     ColumnPagers(
-                        tabsList = listOf(TabItem.followList(), TabItem.followingList()),
+                        tabsList = listOf(
+                            TabItem.followList(onClickOthers = onClickOthers),
+                            TabItem.followingList(onClickOthers = onClickOthers)
+                        ),
                         pagerState = pagerState
                     )
                 }
@@ -102,5 +106,5 @@ fun FriendListScreen(
 @Preview
 @Composable
 fun PreviewFriendListScreen() {
-    FriendListScreen(navController = rememberNavController(), onClickBack = {})
+   /// FriendListScreen(navController = rememberNavController(), onClickBack = {})
 }

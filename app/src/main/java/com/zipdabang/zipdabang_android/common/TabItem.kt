@@ -9,6 +9,8 @@ import com.zipdabang.zipdabang_android.module.detail.recipe.domain.RecipeDetailD
 import com.zipdabang.zipdabang_android.module.detail.recipe.ui.RecipeInfoPage
 import com.zipdabang.zipdabang_android.module.my.ui.FollowScreen
 import com.zipdabang.zipdabang_android.module.my.ui.FollowingScreen
+import com.zipdabang.zipdabang_android.module.my.ui.ProfileForOthers
+import com.zipdabang.zipdabang_android.module.my.ui.RecipeForOthers
 import com.zipdabang.zipdabang_android.module.recipes.data.hot.HotRecipeItem
 import com.zipdabang.zipdabang_android.module.recipes.ui.hot.HotRecipeList
 import com.zipdabang.zipdabang_android.module.recipes.ui.state.PreferenceToggleState
@@ -49,17 +51,25 @@ sealed class TabItem(val tabTitle: String, val screen: ComposableFun) {
         }
     )
 
-    class followList : TabItem(
+    class followList(
+        onClickOthers : (Int) -> Unit
+    ) : TabItem(
         tabTitle =  "팔로우",
         screen = {
-            FollowScreen()
+            FollowScreen(
+              onClickOthers= onClickOthers
+            )
         }
     )
 
-    class followingList : TabItem(
+    class followingList(
+        onClickOthers : (Int) -> Unit
+    ) : TabItem(
         tabTitle = "팔로잉",
         screen = {
-            FollowingScreen()
+            FollowingScreen(
+                onClickOthers = onClickOthers
+            )
         }
     )
 
@@ -230,6 +240,30 @@ sealed class TabItem(val tabTitle: String, val screen: ComposableFun) {
             )
         }
     )
+
+
+    //다른 사람 집다방
+
+    class ProfileForOthers() : TabItem(
+        tabTitle =  "프로필",
+        screen = {
+            com.zipdabang.zipdabang_android.module.my.ui.ProfileForOthers()//다른사람 프로필
+        }
+    )
+
+    class RecipesForOthers(
+        nickname : String
+    ) : TabItem(
+        tabTitle =  "레시피",
+        screen = {
+            RecipeForOthers(nickname)
+        }
+    )
+
+
+
+
+
 }
 
 sealed class HotRecipeTabItem(val tabTitle: String, val screen: ComposableFun) {

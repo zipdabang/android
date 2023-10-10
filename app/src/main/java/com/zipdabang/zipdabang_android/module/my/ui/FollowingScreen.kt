@@ -24,7 +24,8 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun FollowingScreen(
-  viewModel: FriendsListViewModel = hiltViewModel()
+    onClickOthers : (Int) -> Unit,
+    viewModel: FriendsListViewModel = hiltViewModel()
 ){
 
     val followingItem= viewModel.getFollowingItems.collectAsLazyPagingItems()
@@ -36,6 +37,7 @@ fun FollowingScreen(
         modifier = Modifier.padding(30.dp)
         ) {
         items(followingItem.itemCount){
+            Log.e("following Test",followingItem[it]?.id.toString())
             FollowItem(
                 imageUrl = followingItem[it]!!.imageUrl,
                 nickName = followingItem[it]!!.nickname,
@@ -59,7 +61,10 @@ fun FollowingScreen(
 
                 },
                 userReport = {
-
+                             TODO()
+                },
+                onClickOthers = {
+                    onClickOthers(followingItem[it]!!.id)
                 }
 
             )

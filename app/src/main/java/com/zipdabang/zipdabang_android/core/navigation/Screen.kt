@@ -55,6 +55,11 @@ sealed class MyScreen(val route : String){
     object Shopping : MyScreen(route = "my/shopping")
     object FriendList : MyScreen(route = "my/friendlist")
     object RecipeWrite : MyScreen(route = "my/recipewrite")
+    object OtherPage : MyScreen(route = "my/other?userId={userId}")  {
+        fun passUserId(userId : Int) : String {
+            return "my/other?userId=$userId"
+        }
+    }
 }
 
 sealed class DrawerScreen(val route : String){

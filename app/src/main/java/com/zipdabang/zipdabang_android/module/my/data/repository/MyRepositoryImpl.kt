@@ -1,5 +1,6 @@
 package com.zipdabang.zipdabang_android.module.my.data.repository
 
+import androidx.compose.runtime.withFrameMillis
 import com.zipdabang.zipdabang_android.module.my.data.remote.MyApi
 import com.zipdabang.zipdabang_android.module.my.data.remote.RecipeWriteRequest
 import com.zipdabang.zipdabang_android.module.my.data.remote.RecipeWriteResponse
@@ -8,6 +9,8 @@ import com.zipdabang.zipdabang_android.module.my.data.remote.SignOutTokens
 import com.zipdabang.zipdabang_android.module.my.data.remote.followorcancel.FollowOrCancelDto
 import com.zipdabang.zipdabang_android.module.my.data.remote.friendlist.follow.FollowDto
 import com.zipdabang.zipdabang_android.module.my.data.remote.friendlist.following.FollowingDto
+import com.zipdabang.zipdabang_android.module.my.data.remote.otherinfo.OtherInfoDto
+import com.zipdabang.zipdabang_android.module.my.data.remote.otherinfo.OtherRecipePreviewDto
 import com.zipdabang.zipdabang_android.module.my.domain.repository.MyRepository
 import javax.inject.Inject
 
@@ -35,5 +38,13 @@ class MyRepositoryImpl @Inject constructor(
 
     override suspend fun postFollowOrCancel(accessToken: String, targetId: Int): FollowOrCancelDto {
        return api.postFollowOrCancel(accessToken,targetId)
+    }
+
+    override suspend fun getOtherInfo(accessToken: String, targetId: Int): OtherInfoDto {
+        return api.getOtherInfo(accessToken,targetId)
+    }
+
+    override suspend fun getOtherRecipePreview(accessToken: String, memberId: Int): OtherRecipePreviewDto {
+        return api.getOtherPreviewRecipe(accessToken,memberId)
     }
 }
