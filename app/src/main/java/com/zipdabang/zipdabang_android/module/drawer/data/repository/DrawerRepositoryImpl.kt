@@ -3,6 +3,7 @@ package com.zipdabang.zipdabang_android.module.drawer.data.repository
 import com.zipdabang.zipdabang_android.module.drawer.data.remote.DrawerApi
 import com.zipdabang.zipdabang_android.module.drawer.data.remote.quitdto.QuitDto
 import com.zipdabang.zipdabang_android.module.drawer.data.remote.quitdto.QuitRequest
+import com.zipdabang.zipdabang_android.module.drawer.data.remote.reporterror.ReportListDto
 import com.zipdabang.zipdabang_android.module.drawer.data.remote.reporterror.reportDto
 import com.zipdabang.zipdabang_android.module.drawer.data.remote.userinfodto.UserInfoBasicRequest
 import com.zipdabang.zipdabang_android.module.drawer.data.remote.userinfodto.UserInfoDetailRequest
@@ -95,6 +96,10 @@ class DrawerRepositoryImpl @Inject constructor(
         userInfoPreferences: UserInfoPreferencesRequest
     ): UserInfoEditResponse {
         return api.patchUserPreferences(accessToken = accessToken, userInfoPreferences = userInfoPreferences)
+    }
+
+    override suspend fun getReportList(accessToken: String, page: Int): ReportListDto {
+        return api.getErrorList(accessToken = accessToken, page = page )
     }
 
 }

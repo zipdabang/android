@@ -2,6 +2,7 @@ package com.zipdabang.zipdabang_android.module.drawer.domain.repository
 
 import com.zipdabang.zipdabang_android.module.drawer.data.remote.quitdto.QuitDto
 import com.zipdabang.zipdabang_android.module.drawer.data.remote.quitdto.QuitRequest
+import com.zipdabang.zipdabang_android.module.drawer.data.remote.reporterror.ReportListDto
 import com.zipdabang.zipdabang_android.module.drawer.data.remote.reporterror.reportDto
 import com.zipdabang.zipdabang_android.module.drawer.data.remote.userinfodto.UserInfoBasicRequest
 import com.zipdabang.zipdabang_android.module.drawer.data.remote.userinfodto.UserInfoDetailRequest
@@ -29,4 +30,6 @@ interface DrawerRepository {
     suspend fun patchQuit(accessToken: String, deregisterTypes: List<String>, feedback : String): QuitDto
     suspend fun postErrorReport(accessToken: String, email: RequestBody, title: RequestBody, body: RequestBody, imageList: List<MultipartBody.Part>) : reportDto
     suspend fun patchUserPreferences(accessToken: String, userInfoPreferences : UserInfoPreferencesRequest ) : UserInfoEditResponse
+    suspend fun getReportList(accessToken: String, page: Int) : ReportListDto
+
 }

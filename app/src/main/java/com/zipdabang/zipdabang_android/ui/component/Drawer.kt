@@ -46,7 +46,7 @@ fun DrawerContent(
     privacyOnClick :  () -> Unit,
     FAGOnClick :  () -> Unit,
     inquiryOnClick :  () -> Unit,
-    loginOnClick :  () -> Unit,
+    inquiryListOnClick :  () -> Unit,
     userOnClick :  () -> Unit,
     alarmOnClick :  () -> Unit,
     etcOnClick :  () -> Unit,
@@ -192,6 +192,22 @@ fun DrawerContent(
                     Text(
                         modifier = Modifier.padding(16.dp,0.dp,16.dp,0.dp),
                         text = stringResource(id = R.string.drawer_inquiry),
+                        style = ZipdabangandroidTheme.Typography.sixteen_500,
+                        color = ZipdabangandroidTheme.Colors.Typo,
+                    )
+                }
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(1f)
+                        .clickable(
+                            onClick = { inquiryListOnClick() }
+                        ),
+                    contentAlignment = Alignment.CenterStart
+                ) {
+                    Text(
+                        modifier = Modifier.padding(16.dp,0.dp,16.dp,0.dp),
+                        text = stringResource(id = R.string.drawer_inquiry_list),
                         style = ZipdabangandroidTheme.Typography.sixteen_500,
                         color = ZipdabangandroidTheme.Colors.Typo,
                     )
@@ -361,7 +377,7 @@ fun PreviewDrawerContent(){
         privacyOnClick = {Log.d("클릭","개인정보 처리방침")},
         FAGOnClick = {Log.d("클릭","FAG")},
         inquiryOnClick = {Log.d("클릭","오류신고 및 문의하기")},
-        loginOnClick = {Log.d("클릭","로그인하기")},
+        inquiryListOnClick =  {Log.d("클릭","로그인하기")},
         userOnClick = {Log.d("클릭","회원 정보")},
         alarmOnClick = {Log.d("클릭","알림 정보")},
         etcOnClick = {Log.d("클릭","기타 정보")},
@@ -400,7 +416,7 @@ fun ModalDrawer(
                         privacyOnClick = { Log.d("drawer","개인정보 처리방침")},
                         FAGOnClick = { Log.d("drawer","FAG")},
                         inquiryOnClick = { navController.navigate(DrawerScreen.Report.route)},
-                        loginOnClick = { Log.d("drawer","로그인하기")},
+                        inquiryListOnClick = { navController.navigate(DrawerScreen.ReportList.route)},
                         userOnClick = { navController.navigate(DrawerScreen.UserInfo.route) },
                         alarmOnClick = { Log.d("drawer","알림 정보")},
                         etcOnClick = { Log.d("drawer","기타 정보")},

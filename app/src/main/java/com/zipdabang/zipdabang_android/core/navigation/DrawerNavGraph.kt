@@ -28,6 +28,7 @@ import com.zipdabang.zipdabang_android.module.drawer.ui.UserInfoProfileScreen
 import com.zipdabang.zipdabang_android.module.drawer.ui.UserInfoScreen
 import com.zipdabang.zipdabang_android.module.drawer.ui.quit.QuitScreen
 import com.zipdabang.zipdabang_android.module.drawer.ui.report.ErrorReportScreen
+import com.zipdabang.zipdabang_android.module.drawer.ui.report.ReportListScreen
 import com.zipdabang.zipdabang_android.module.drawer.ui.report.ReportSuccessScreen
 import com.zipdabang.zipdabang_android.module.drawer.ui.viewmodel.DrawerUserInfoViewModel
 
@@ -42,6 +43,9 @@ fun NavGraphBuilder.DrawerNavGraph(navController: NavHostController,outerNavCont
                 isReportSuccess = {
                 navController.navigate(DrawerScreen.ReportSuccess.route)
             })
+        }
+        composable(DrawerScreen.ReportList.route){
+            ReportListScreen()
         }
         composable(DrawerScreen.ReportSuccess.route){
             ReportSuccessScreen(

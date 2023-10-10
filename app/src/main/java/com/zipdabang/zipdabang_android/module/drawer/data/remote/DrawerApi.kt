@@ -2,6 +2,7 @@ package com.zipdabang.zipdabang_android.module.drawer.data.remote
 
 import com.zipdabang.zipdabang_android.module.drawer.data.remote.quitdto.QuitDto
 import com.zipdabang.zipdabang_android.module.drawer.data.remote.quitdto.QuitRequest
+import com.zipdabang.zipdabang_android.module.drawer.data.remote.reporterror.ReportListDto
 import com.zipdabang.zipdabang_android.module.drawer.data.remote.reporterror.reportDto
 import com.zipdabang.zipdabang_android.module.drawer.data.remote.userinfodto.UserInfoBasicRequest
 import com.zipdabang.zipdabang_android.module.drawer.data.remote.userinfodto.UserInfoDetailRequest
@@ -100,5 +101,12 @@ interface DrawerApi {
         @Part("body") body: RequestBody,
         @Part imageList: List<MultipartBody.Part>
     ) : reportDto
+
+
+    @GET("members/inquiries")
+    suspend fun getErrorList(
+        @Header("Authorization") accessToken: String,
+        @Query("page") page : Int
+    ) : ReportListDto
 
 }
