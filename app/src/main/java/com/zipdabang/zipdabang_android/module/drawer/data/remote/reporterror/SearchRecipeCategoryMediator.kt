@@ -1,40 +1,36 @@
-package com.zipdabang.zipdabang_android.module.search.data.dto.recipecategory
+package com.zipdabang.zipdabang_android.module.drawer.data.remote.reporterror
 
 import android.util.Log
-import androidx.compose.animation.rememberSplineBasedDecay
 import androidx.datastore.core.DataStore
 import androidx.paging.ExperimentalPagingApi
-import androidx.paging.LoadState
 import androidx.paging.LoadType
 import androidx.paging.PagingState
 import androidx.paging.RemoteMediator
 import androidx.room.withTransaction
+import com.zipdabang.zipdabang_android.common.Constants
 import com.zipdabang.zipdabang_android.core.Paging3Database
 import com.zipdabang.zipdabang_android.core.data_store.proto.Token
 import com.zipdabang.zipdabang_android.core.remotekey.RemoteKeys
-import com.zipdabang.zipdabang_android.module.search.data.SearchApi
-import com.zipdabang.zipdabang_android.module.search.data.dto.common.SearchRecipe
+import com.zipdabang.zipdabang_android.module.drawer.data.remote.DrawerApi
 import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 import java.lang.Exception
 import javax.inject.Inject
 
 @OptIn(ExperimentalPagingApi::class)
-class SearchRecipeCategoryMediator @Inject constructor(
-    private val searchApi: SearchApi,
+class ReportListMediator @Inject constructor(
+    private val reportApi : DrawerApi,
     private val paging3Database: Paging3Database,
-    private val categoryId: Int,
-    private val searchText : String,
     private val tokenDataStore: DataStore<Token>
-) : RemoteMediator<Int,SearchRecipe>() {
+) : RemoteMediator<Int,InqueryDB>() {
 
-    private val CategoryDao = paging3Database.SearchRecipeDao()
+    private val ReportDao = paging3Database.reportDao()
     private val RemoteKeyDao = paging3Database.RemoteKeyDao()
+    val responseMapList = mutableListOf<InqueryDB>()
     @OptIn(DelicateCoroutinesApi::class)
     override suspend fun load(
         loadType: LoadType,
-        state: PagingState<Int, SearchRecipe>
+        state: PagingState<Int, InqueryDB>
     ): MediatorResult {
         return try
         {
@@ -65,40 +61,28 @@ class SearchRecipeCategoryMediator @Inject constructor(
 
 
             val accessToken = ("Bearer " + tokenDataStore.data.first().accessToken)
-            val responseMapList = mutableListOf<SearchRecipe>()
 
-                 val response = searchApi.getSearchRecipeCategory(
-                        accessToken = accessToken, pageIndex = currentPage,
-                        keyWord = searchText, categoryId = categoryId
+
+                 val response = reportApi.getErrorList(
+                        accessToken = accessToken, page = currentPage,
                     )
                      if(response.result == null ){
-                         CategoryDao.deleteItems()
+                         ReportDao.deleteItems()
                          RemoteKeyDao.deleteRemoteKeys()
 
                          MediatorResult.Success(endOfPaginationReached = true)
                      }else{
-                         val responseList = response.result.recipeList
-
-                         responseList.forEachIndexed { index, searchRecipes ->
-                             responseMapList.add(SearchRecipe(
-                                 index = index,
-                                 categoryId = searchRecipes.categoryId,
-                                 comments = searchRecipes.comments,
-                                 createdAt = searchRecipes.createdAt,
-                                 isLiked = searchRecipes.isLiked,
-                                 isScrapped = searchRecipes.isScrapped,
-                                 likes = searchRecipes.likes,
-                                 nickname = searchRecipes.nickname,
-                                 recipeId = searchRecipes.recipeId,
-                                 recipeName = searchRecipes.recipeName,
-                                 scraps = searchRecipes.scraps,
-                                 thumbnailUrl = searchRecipes.thumbnailUrl
+                         val responseList = response.result.inqueryList
+                         Log.e("ReportList Api",responseList.size.toString())
+                         responseList.forEachIndexed { index, inqury ->
+                             responseMapList.add(InqueryDB(
+                                 index = index + (currentPage-1)* Constants.ITEMS_PER_PAGE,
+                                 id= inqury.id,
+                                 createdAt =  inqury.createdAt,
+                                 title = inqury.title
                              )
                              )
-
                          }
-
-
                      }
 
 
@@ -114,18 +98,18 @@ class SearchRecipeCategoryMediator @Inject constructor(
 
                 paging3Database.withTransaction {
                     if(loadType == LoadType.REFRESH){
-                        CategoryDao.deleteItems()
+                        ReportDao.deleteItems()
                         RemoteKeyDao.deleteRemoteKeys()
                     }
-                    val keys = response.result.recipeList.map {  items ->
+                    val keys = responseMapList.map {  items ->
                         RemoteKeys(
-                            id = items.recipeId,
+                            id = items.id,
                             prevPage = prevPage,
                             nextPage = nextPage
                         )
                     }
                     RemoteKeyDao.addAllRemoteKeys(remoteKeys = keys)
-                    CategoryDao.addItems(items = responseMapList)
+                    ReportDao.addItems(items = responseMapList)
 
                 }
 
@@ -140,31 +124,31 @@ class SearchRecipeCategoryMediator @Inject constructor(
 
 
     private suspend fun getRemoteKeyClosestToCurrentPosition(
-        state: PagingState<Int, SearchRecipe>
+        state: PagingState<Int, InqueryDB>
     ): RemoteKeys? {
         //state.anchorposition은 현재 화면에 보이는 첫 번째 아이템의 포지션
         return state.anchorPosition?.let { position ->
-            state.closestItemToPosition(position)?.recipeId?.let { id ->
+            state.closestItemToPosition(position)?.index?.let { id ->
                 RemoteKeyDao.getRemoteKeys(id = id)
             }
         }
     }
 
     private suspend fun getRemoteKeyForFirstItem(
-        state: PagingState<Int, SearchRecipe>
+        state: PagingState<Int, InqueryDB>
     ): RemoteKeys? {
         return state.pages.firstOrNull { it.data.isNotEmpty() }?.data?.firstOrNull()
             ?.let { item ->
-                RemoteKeyDao.getRemoteKeys(id = item.recipeId)
+                RemoteKeyDao.getRemoteKeys(id = item.id)
             }
     }
 
     private suspend fun getRemoteKeyForLastItem(
-        state: PagingState<Int,SearchRecipe>
+        state: PagingState<Int, InqueryDB>
     ): RemoteKeys? {
         return state.pages.lastOrNull { it.data.isNotEmpty() }?.data?.lastOrNull()
             ?.let { item ->
-                RemoteKeyDao.getRemoteKeys(id = item.recipeId)
+                RemoteKeyDao.getRemoteKeys(id = item.id)
             }
     }
 
