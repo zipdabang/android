@@ -5,5 +5,6 @@ data class CommonInfoState(
     val followNum : Int = 0,
     val followingNum : Int =0,
     val profileUrl : String = "",
-    val isFollowing : Boolean  = false
+    val isFollowing : Boolean  = false,
+    val isFollower : Boolean = false
 )

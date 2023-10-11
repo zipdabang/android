@@ -47,6 +47,7 @@ import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.rememberPagerState
 import com.zipdabang.zipdabang_android.R
 import com.zipdabang.zipdabang_android.common.TabItem
+import com.zipdabang.zipdabang_android.module.my.ui.component.ButtonForFollow
 import com.zipdabang.zipdabang_android.module.my.ui.viewmodel.MyForOthersViewModel
 import com.zipdabang.zipdabang_android.ui.component.AppBarMy
 import com.zipdabang.zipdabang_android.ui.component.CircleImage
@@ -135,7 +136,7 @@ fun MyScreenForOther(
                                         modifier = Modifier.padding(6.dp, 2.dp, 0.dp, 0.dp)
                                     ) {
                                         Text(
-                                            text = "팔로우 ${commonInfoState.value.followNum} | 팔로잉 ${commonInfoState.value.followingNum}",
+                                            text = "팔로우 ${commonInfoState.value.followingNum} | 팔로잉 ${commonInfoState.value.followNum}",
                                             style = ZipdabangandroidTheme.Typography.fourteen_300,
                                             color = Color.White
                                         )
@@ -146,21 +147,23 @@ fun MyScreenForOther(
                                             .clickable(onClick = { })
                                             .padding(0.dp, 16.dp, 0.dp, 0.dp)
                                             .width(200.dp)
-                                            .height(28.dp)
+                                            .height(35.dp)
                                             .background(
-                                                color = Color.White,
+                                                color = Color.Transparent,
                                                 shape = ZipdabangandroidTheme.Shapes.medium
                                             ),
                                     ) {
                                         var buttonText : String = "팔로우하기"
                                         if(commonInfoState.value.isFollowing)  buttonText  = "언팔로우 하기"
-                                        Text(
+                                        else {
+                                            if(commonInfoState.value.isFollower) buttonText = "맞팔로우 하기"
+                                            else buttonText = "팔로우 하기"
+                                        }
+                                        ButtonForFollow(
                                             text = buttonText,
-                                            textAlign = TextAlign.Center,
-                                            color = ZipdabangandroidTheme.Colors.Typo,
-                                            style = ZipdabangandroidTheme.Typography.fourteen_500,
-                                            maxLines = 1,
-                                            modifier = Modifier,
+                                            onClick = { /*TODO*/ },
+                                            isFollow =commonInfoState.value.isFollowing  ,
+                                            isFollowing = commonInfoState.value.isFollower
                                         )
                                     }
 
@@ -176,7 +179,7 @@ fun MyScreenForOther(
                                     ) {
 
                                         CircleImage(
-                                            imageUrl = R.drawable.img_profile,
+                                            imageUrl = commonInfoState.value.profileUrl,
                                             contentDescription = ""
                                         ) //stateMyUserInfo.profileUrl
                                     }
