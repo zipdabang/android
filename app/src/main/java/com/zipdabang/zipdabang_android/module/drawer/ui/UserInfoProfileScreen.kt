@@ -20,6 +20,7 @@ import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -47,6 +48,7 @@ import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -71,6 +73,18 @@ fun UserInfoProfileScreen(
     var profile by mutableStateOf<MultipartBody.Part?>(null)
     var profileDialog = mutableStateOf(false)
 
+
+    /*LaunchedEffect(key1 = profile){
+        Log.e("drawer-profile","launchedeffect 실행됨")
+        if(profile != null) {
+            drawerUserInfoViewModel.patchUserInfoProfile(profile!!)
+            Log.e("drawer-profile","${profile} api 요청함")
+        } else {
+            Log.e("drawer-profile","${profile} api 요청안함")
+        }
+    }*/
+
+
     // thumbnail
     // 갤러리 -> Uri 형태
     val takeThumbnailFromAlbumLauncher =
@@ -91,6 +105,15 @@ fun UserInfoProfileScreen(
                 val profilePart = MultipartBody.Part.createFormData("thumbnail", "${profilePhotoBitmap}.jpeg", profileRequestBody)
 
                 profile = profilePart
+                Log.e("drawer-profile", "${profile} 들어갔담")
+
+                CoroutineScope(Dispatchers.IO).launch{
+                    drawerUserInfoViewModel.patchUserInfoProfile(profile!!)
+                    withContext(Dispatchers.Main) {
+                        onClickUserInfo()
+                    }
+                }
+
             } else {
                 Log.e("Error in camera", "No image selected")
             }
@@ -174,17 +197,6 @@ fun UserInfoProfileScreen(
                                 },
                                 onFileClick = {
                                     takeThumbnailFromAlbumLauncher.launch("image/*")
-                                    Log.e("drawer-profile","${profile} 없음")
-                                    CoroutineScope(Dispatchers.Main).launch{
-                                        try{
-                                            drawerUserInfoViewModel.patchUserInfoProfile(profile!!)
-                                            Log.e("drawer-profile","${profile} 받아옴")
-                                            onClickUserInfo()
-                                        } catch(e:Exception){
-
-                                        }
-                                    }
-                                    profileDialog.value = false
                                 }
                             )
                         }

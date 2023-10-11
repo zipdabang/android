@@ -354,7 +354,7 @@ class DrawerUserInfoViewModel @Inject constructor(
         }
 
         if(stateUserInfo.oneline != stateUserInfoOneLine.oneline){
-            stateUserInfoOneLine = stateUserInfoOneLine.copy(oneline = stateUserInfo.oneline)
+            stateUserInfoOneLine = stateUserInfoOneLine.copy(oneline = stateUserInfo.oneline!!)
         }
 
         if(stateUserInfo.preferBeverageCheckList != stateUserInfoPreferences.preferBeverageCheckList){

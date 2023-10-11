@@ -400,7 +400,7 @@ class RecipeWriteViewModel @Inject constructor(
 
         // JSON 문자열을 직접 생성
         val content = RecipeWriteContent(
-            categoryId = listOf(1,2),
+            categoryId = listOf(3),
             ingredientCount = stateRecipeWriteForm.ingredientsNum,
             ingredients = ingredients,
             intro = stateRecipeWriteForm.intro,

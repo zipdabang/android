@@ -44,6 +44,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
+import coil.compose.ImagePainter
 import coil.compose.rememberImagePainter
 import coil.transform.CircleCropTransformation
 import com.zipdabang.zipdabang_android.R
@@ -689,8 +690,9 @@ fun UserInfoScreen(
                                     Modifier
                                 }
                             ),
-                        text = if(stateUserInfo.oneline.isEmpty()) stringResource(id = R.string.drawer_oneline_not_exist)
-                                else stateUserInfo.oneline,
+                        text = if(stateUserInfo.oneline == "") stringResource(id = R.string.drawer_oneline_not_exist)
+                        else if(stateUserInfo.oneline == null) ""
+                        else stateUserInfo.oneline,
                         style = ZipdabangandroidTheme.Typography.sixteen_500,
                         color = ZipdabangandroidTheme.Colors.Typo
                     )

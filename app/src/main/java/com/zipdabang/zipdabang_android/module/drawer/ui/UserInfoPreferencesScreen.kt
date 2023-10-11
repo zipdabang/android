@@ -115,7 +115,8 @@ fun UserInfoPreferencesScreen(
                                         RoundedButton(
                                             imageUrl = preference.imageUrl,
                                             buttonText = preference.categoryName,
-                                            shimmering = if(stateUserInfoPreferences.isLoading || stateUserInfoPreferences.error.isNotBlank()){true} else{false},
+                                            shimmering = if(stateUserInfoPreferences.isLoading || stateUserInfoPreferences.error.isNotBlank()) true
+                                                        else false,
                                             isClicked = stateUserInfoPreferences.preferBeverageCheckList[index],
                                             isClickedChange = { selectedClicked ->
                                                 drawerUserInfoViewModel.onUserInfoPreferencesEvent(
