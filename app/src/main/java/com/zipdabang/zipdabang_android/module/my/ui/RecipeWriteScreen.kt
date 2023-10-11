@@ -159,6 +159,7 @@ fun RecipeWriteScreen(
                 // 이미지 데이터를 멀티파트로 변환
                 val stepPart = MultipartBody.Part.createFormData("step", "${stateRecipeWriteDialog.stepNum-1}_${stepPhotoBitmap}.jpeg", stepRequestBody)
                 Log.e("recipewriteform-stepImages","${stateRecipeWriteDialog.stepNum-1}_${stepPhotoBitmap}.jpeg")
+
                 stepImageParts.add(stepPart)
             } else {
                 Log.e("Error in camera", "No image selected")

@@ -152,7 +152,7 @@ fun UserInfoPreferencesScreen(
                 ){
                     PrimaryButtonWithStatus(
                         isFormFilled = stateUserInfoPreferences.btnEnabled,
-                        text= stringResource(id = R.string.drawer_editdone),
+                        text= stringResource(if(stateUserInfoPreferences.preferBeverageCheckList.size == 0) R.string.drawer_choosedone else R.string.drawer_editdone),
                         onClick={
                             if(stateUserInfoPreferences.btnEnabled){
                                 CoroutineScope(Dispatchers.Main).launch{

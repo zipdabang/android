@@ -187,6 +187,9 @@ fun NavGraphBuilder.DrawerNavGraph(navController: NavHostController,outerNavCont
             UserInfoProfileScreen(
                 onClickBack = {
                     navController.popBackStack(DrawerScreen.UserInfo.route, inclusive = false)
+                },
+                onClickDefaultProfile = {
+                    navController.popBackStack(DrawerScreen.UserInfo.route, inclusive = false)
                 }
             )
         }

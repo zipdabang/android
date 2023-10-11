@@ -29,8 +29,8 @@ interface MyApi {
     @POST("members/recipes")
     suspend fun postRecipe(
         @Header("Authorization") accessToken: String,
-        @Part ("content") content: RequestBody, // 다른 멀티파트 파트들을 정의할 수 있음
-        @Part stepImages: List<MultipartBody.Part>, // 이미지를 멀티파트로 보낼 때는 MultipartBody.Part를 사용
+        @Part("content") content: RequestBody,
+        @Part stepImages: List<MultipartBody.Part>,
         @Part thumbnail: MultipartBody.Part
     ): RecipeWriteResponse
 

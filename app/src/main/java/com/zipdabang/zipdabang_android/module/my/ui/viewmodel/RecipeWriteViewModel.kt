@@ -414,8 +414,7 @@ class RecipeWriteViewModel @Inject constructor(
         val json = gson.toJson(content) // yourDataObject는 요청 본문의 데이터 객체입니다.
         val contentRequestBody = json.toRequestBody("application/json".toMediaTypeOrNull())
 
-        Log.e("recipewrite-result 내용", "${ingredients}")
-        Log.e("recipewrite-result 내용", "${steps}")
+        Log.e("recipewrite-result", "${json}")
         Log.e("recipewrite-result 내용", "${stepImageParts}")
         Log.e("recipewrite-result 내용", "${thumbnailPart}")
         Log.e("recipewrite-result 내용", "${"Bearer " + dataStore.data.first().accessToken.toString()}")

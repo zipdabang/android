@@ -4,7 +4,6 @@ import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.datastore.core.DataStore
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -15,11 +14,12 @@ import com.zipdabang.zipdabang_android.module.drawer.data.remote.userinfodto.Use
 import com.zipdabang.zipdabang_android.module.drawer.data.remote.userinfodto.UserInfoDetailRequest
 import com.zipdabang.zipdabang_android.module.drawer.data.remote.userinfodto.UserInfoNicknameRequest
 import com.zipdabang.zipdabang_android.module.drawer.data.remote.userinfodto.UserInfoPreferencesRequest
-import com.zipdabang.zipdabang_android.module.drawer.data.remote.userinfodto.UserInfoProfileRequest
 import com.zipdabang.zipdabang_android.module.drawer.domain.usecase.GetUserInfoUseCase
 import com.zipdabang.zipdabang_android.module.drawer.domain.usecase.PatchUserInfoBasicUseCase
+import com.zipdabang.zipdabang_android.module.drawer.domain.usecase.PatchUserInfoDefaultProfileUseCase
 import com.zipdabang.zipdabang_android.module.drawer.domain.usecase.PatchUserInfoDetailUseCase
 import com.zipdabang.zipdabang_android.module.drawer.domain.usecase.PatchUserInfoNicknameUseCase
+import com.zipdabang.zipdabang_android.module.drawer.domain.usecase.PatchUserInfoOneLineUseCase
 import com.zipdabang.zipdabang_android.module.drawer.domain.usecase.PatchUserInfoPreferencesUseCase
 import com.zipdabang.zipdabang_android.module.drawer.domain.usecase.PatchUserInfoProfileUseCase
 import com.zipdabang.zipdabang_android.module.drawer.ui.state.userinfo.UserInfoBasicEvent
@@ -47,6 +47,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import okhttp3.MultipartBody
 import javax.inject.Inject
 
 @HiltViewModel
@@ -59,8 +60,10 @@ class DrawerUserInfoViewModel @Inject constructor(
     private val patchUserInfoBasicUseCase: PatchUserInfoBasicUseCase,
     private val patchUserInfoDetailUseCase: PatchUserInfoDetailUseCase,
     private val patchUserInfoNicknameUseCase: PatchUserInfoNicknameUseCase,
+    private val patchUserInfoOneLineUseCase: PatchUserInfoOneLineUseCase,
     private val patchUserInfoPreferencesUseCase: PatchUserInfoPreferencesUseCase,
     private val patchUserInfoProfileUseCase: PatchUserInfoProfileUseCase,
+    private val patchUserInfoDefaultProfileUseCase: PatchUserInfoDefaultProfileUseCase,
     private val validateBirthdayUseCase : ValidateBirthdayUseCase = ValidateBirthdayUseCase(),
     private val validatePhoneUseCase: ValidatePhoneUseCase = ValidatePhoneUseCase(),
     private val validateNicknameUseCase: ValidateNicknameUseCase = ValidateNicknameUseCase(),
@@ -75,7 +78,6 @@ class DrawerUserInfoViewModel @Inject constructor(
     var stateUserInfoPreferences by mutableStateOf(UserInfoPreferencesState())
     var genderList by mutableStateOf(listOf("남", "여"))
     var remainingTime by mutableStateOf(0)
-
 
     /*UserInfoBasicScreen*/
     fun onUserInfoBasicEvent(event : UserInfoBasicEvent){
@@ -287,7 +289,13 @@ class DrawerUserInfoViewModel @Inject constructor(
                 )
             }
             is UserInfoOneLineEvent.BtnEnabled->{
+                val isOneLineChanged = if(stateUserInfo.oneline != stateUserInfoOneLine.oneline) true else false
 
+                if(isOneLineChanged){
+                    stateUserInfoOneLine = stateUserInfoOneLine.copy(btnEnabled = true)
+                } else{
+                    stateUserInfoOneLine = stateUserInfoOneLine.copy(btnEnabled = false)
+                }
             }
         }
     }
@@ -343,6 +351,10 @@ class DrawerUserInfoViewModel @Inject constructor(
 
         if(stateUserInfo.nickname != stateUserInfoNickname.nickname){
             stateUserInfoNickname = stateUserInfoNickname.copy(nickname = stateUserInfo.nickname)
+        }
+
+        if(stateUserInfo.oneline != stateUserInfoOneLine.oneline){
+            stateUserInfoOneLine = stateUserInfoOneLine.copy(oneline = stateUserInfo.oneline)
         }
 
         if(stateUserInfo.preferBeverageCheckList != stateUserInfoPreferences.preferBeverageCheckList){
@@ -747,24 +759,77 @@ class DrawerUserInfoViewModel @Inject constructor(
             getUserInfo()
         } catch (e: Exception) {}
     }
-    suspend fun patchUserInfoProfile(){
+    suspend fun patchUserInfoOneline(){
+        try{
+            val result = patchUserInfoOneLineUseCase(
+                accessToken = "Bearer " +dataStore.data.first().accessToken.toString(),
+                oneline = stateUserInfoOneLine.oneline
+            )
+
+            result.collect {result->
+                when(result){
+                    is Resource.Success ->{
+                        stateUserInfoOneLine = stateUserInfoOneLine.copy(
+                            isLoading = false,
+                            isSuccess = true,
+                            btnEnabled = false,
+                        )
+                        Log.e("onelineedit-viewmodel","성공 :  ${result.data?.status}  ${result.data?.memberId}  ${result.data?.calledAt}")
+                    }
+                    is Resource.Error ->{
+                        stateUserInfoOneLine = stateUserInfoOneLine.copy(error = result.message ?: "An unexpeted error occured")
+                        Log.e("onelineedit-viewmodel","에러 :  ${result.code} ${result.message}")
+                    }
+                    is Resource.Loading ->{
+                        stateUserInfoOneLine = stateUserInfoOneLine.copy(isLoading = true)
+                        Log.e("onelineedit-viewmodel","로딩중 :  ${result.code} ${result.message}")
+                    }
+                }
+            }
+            getUserInfo()
+        }  catch (e: Exception) {}
+    }
+    suspend fun patchUserInfoProfile(profilePart : MultipartBody.Part){
         try{
             val result = patchUserInfoProfileUseCase(
                 accessToken = "Bearer " +dataStore.data.first().accessToken.toString(),
-                userInfoProfile = UserInfoProfileRequest(newProfile = stateUserInfo.profileUrl)
+                userInfoProfile = profilePart!!,
             )
             result.collect { result->
                 when(result){
                     is Resource.Success ->{
-                        Log.e("nicknameedit-viewmodel","성공 : ${result.data?.status}  ${result.data?.memberId}  ${result.data?.calledAt}")
+                        Log.e("drawer-profile","성공 : ${result.data?.status}  ${result.data?.memberId}  ${result.data?.calledAt}")
                     }
                     is Resource.Error ->{
                         stateUserInfo = stateUserInfo.copy(error = result.message ?: "An unexpeted error occured")
-                        Log.e("nicknameedit-viewmodel","에러 :  ${result.code} ${result.message}")
+                        Log.e("drawer-profile","에러 :  ${result.code} ${result.message}")
                     }
                     is Resource.Loading ->{
                         stateUserInfo = stateUserInfo.copy(isLoading = true)
-                        Log.e("nicknameedit-viewmodel","로딩중 :  ${result.code} ${result.message}")
+                        Log.e("drawer-profile","로딩중 :  ${result.code} ${result.message}")
+                    }
+                }
+            }
+            getUserInfo()
+        } catch (e: Exception) {}
+    }
+    suspend fun patchUserInfoDefaultProfile(){
+        try{
+            val result = patchUserInfoDefaultProfileUseCase(
+                accessToken = "Bearer " + dataStore.data.first().accessToken.toString()
+            )
+            result.collect { result->
+                when(result){
+                    is Resource.Success ->{
+                        Log.e("drawer-defaultprofile","성공 : ${result.data?.status}  ${result.data?.memberId}  ${result.data?.calledAt}")
+                    }
+                    is Resource.Error ->{
+                        stateUserInfo = stateUserInfo.copy(error = result.message ?: "An unexpeted error occured")
+                        Log.e("drawer-defaultprofile","에러 :  ${result.code} ${result.message}")
+                    }
+                    is Resource.Loading ->{
+                        stateUserInfo = stateUserInfo.copy(isLoading = true)
+                        Log.e("drawer-defaultprofile","로딩중 :  ${result.code} ${result.message}")
                     }
                 }
             }
