@@ -123,7 +123,10 @@ fun UserInfoScreen(
                                 }
                             ),
                     ) {
-                        CircleImage(imageUrl = stateUserInfo.profileUrl, contentDescription = "")
+                        CircleImage(
+                            imageUrl = stateUserInfo.profileUrl,
+                            contentDescription = ""
+                        )
                     }
                     Box(
                         modifier = Modifier
@@ -338,7 +341,7 @@ fun UserInfoScreen(
                     )
                     Text(
                         modifier = Modifier
-                            .padding(8.dp, 0.dp, 0.dp, 0.dp)
+                            .padding(6.dp, 0.dp, 0.dp, 0.dp)
                             .fillMaxWidth()
                             .then(
                                 if (shimmering) {
@@ -587,11 +590,11 @@ fun UserInfoScreen(
                         tint = ZipdabangandroidTheme.Colors.Typo,
                         modifier = Modifier
                             .size(30.dp, 30.dp)
-                            .padding(4.dp, 0.dp, 0.dp, 0.dp)
+                            .padding(2.dp, 0.dp, 0.dp, 0.dp)
                     )
                     Text(
                         modifier = Modifier
-                            .padding(8.dp, 0.dp, 0.dp, 0.dp)
+                            .padding(6.dp, 0.dp, 0.dp, 0.dp)
                             .fillMaxWidth()
                             .then(
                                 if (shimmering) {
@@ -673,11 +676,11 @@ fun UserInfoScreen(
                         tint = ZipdabangandroidTheme.Colors.Typo,
                         modifier = Modifier
                             .size(30.dp, 30.dp)
-                            .padding(4.dp, 0.dp, 0.dp, 0.dp)
+                            .padding(2.dp, 0.dp, 0.dp, 0.dp)
                     )
                     Text(
                         modifier = Modifier
-                            .padding(8.dp, 0.dp, 0.dp, 0.dp)
+                            .padding(6.dp, 0.dp, 0.dp, 0.dp)
                             .fillMaxWidth()
                             .then(
                                 if (shimmering) {
@@ -763,7 +766,7 @@ fun UserInfoScreen(
                             tint = ZipdabangandroidTheme.Colors.Typo,
                             modifier = Modifier
                                 .size(24.dp, 22.dp)
-                                .padding(4.dp, 0.dp, 0.dp, 0.dp)
+                                .padding(4.dp, 0.dp, 0.dp, 4.dp)
                         )
                         if (stateUserInfo.preferBeverageList.size == 0) {
                             Text(

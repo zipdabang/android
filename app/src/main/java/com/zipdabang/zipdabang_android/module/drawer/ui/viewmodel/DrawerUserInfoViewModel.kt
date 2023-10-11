@@ -388,15 +388,15 @@ class DrawerUserInfoViewModel @Inject constructor(
         ).onEach { result->
             when(result){
                 is Resource.Success -> {
-
                     stateUserInfo = stateUserInfo.copy(
                         isLoading = false,
                         email = result.data?.email ?: "",
+                        oneline = result.data?.caption ?: "" ,
                         profileUrl = result.data?.profileUrl ?: "",
                         name = result.data?.memberBasicInfoDto?.name ?: "",
                         birthday = result.data?.memberBasicInfoDto?.birth ?: "",
                         gender =  if(result.data?.memberBasicInfoDto?.genderType == "WOMAN") "여"
-                        else if (result.data?.memberBasicInfoDto?.genderType == "MAN") "남" else "",
+                            else if (result.data?.memberBasicInfoDto?.genderType == "MAN") "남" else "",
                         phoneNumber = result.data?.memberBasicInfoDto?.phoneNum ?: "",
                         preferBeverageList = result.data?.preferCategories?.categories?.map { it.name } ?: emptyList(),
                         preferBeverageCheckList = List(result.data?.preferCategories?.size ?: 0) { true },
@@ -428,6 +428,10 @@ class DrawerUserInfoViewModel @Inject constructor(
                         isLoading = false,
                         size = result.data?.preferCategories?.size ?: 0,
                     )
+                    stateUserInfoOneLine = stateUserInfoOneLine.copy(
+                        isLoading = false,
+                        oneline = result.data?.caption ?: "",
+                    )
                     Log.e("drawer-userinfo-viewmodel", "성공 ${result.data}")
                 }
                 is Resource.Error ->{
@@ -436,6 +440,7 @@ class DrawerUserInfoViewModel @Inject constructor(
                     stateUserInfoDetail = stateUserInfoDetail.copy(error = result.message ?: "An unexpeted error occured")
                     stateUserInfoNickname = stateUserInfoNickname.copy(error = result.message ?: "An unexpeted error occured")
                     stateUserInfoPreferences = stateUserInfoPreferences.copy(error = result.message ?: "An unexpeted error occured")
+                    stateUserInfoOneLine = stateUserInfoOneLine.copy(error = result.message ?: "An unexpeted error occured")
                     Log.e("drawer-userinfo-viewmodel", "에러 ${result.code}")
                 }
                 is Resource.Loading -> {
@@ -444,6 +449,7 @@ class DrawerUserInfoViewModel @Inject constructor(
                     stateUserInfoDetail = stateUserInfoDetail.copy(isLoading = true)
                     stateUserInfoNickname = stateUserInfoNickname.copy(isLoading = true)
                     stateUserInfoPreferences = stateUserInfoPreferences.copy(isLoading = true)
+                    stateUserInfoOneLine = stateUserInfoOneLine.copy(isLoading = true)
                     Log.e("drawer-userinfo-viewmodel", "로딩중 ${accessToken}")
                 }
             }
@@ -792,7 +798,7 @@ class DrawerUserInfoViewModel @Inject constructor(
     suspend fun patchUserInfoProfile(profilePart : MultipartBody.Part){
         try{
             val result = patchUserInfoProfileUseCase(
-                accessToken = "Bearer " +dataStore.data.first().accessToken.toString(),
+                accessToken = "Bearer " + dataStore.data.first().accessToken.toString(),
                 userInfoProfile = profilePart!!,
             )
             result.collect { result->

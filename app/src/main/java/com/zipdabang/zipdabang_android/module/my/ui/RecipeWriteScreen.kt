@@ -130,7 +130,8 @@ fun RecipeWriteScreen(
                 // 압축된 이미지를 바이트 배열로 변환
                 val thumbnailRequestBody: RequestBody = byteOutputStream.toByteArray().toRequestBody("image/jpeg".toMediaTypeOrNull())
                 // 이미지 데이터를 멀티파트로 변환
-                val thumbnailPart = MultipartBody.Part.createFormData("thumbnail", "${thumbnailPhotoBitmap}.jpeg", thumbnailRequestBody)
+                val thumbnailPart = MultipartBody.Part.createFormData("thumbnail", "thumbnail_${thumbnailPhotoBitmap}.jpeg", thumbnailRequestBody)
+                Log.e("recipewriteform-stepImages","${thumbnailRequestBody}.jpeg")
 
                 recipeWriteViewModel.thumbnailPart = thumbnailPart
             } else {

@@ -186,10 +186,19 @@ fun NavGraphBuilder.DrawerNavGraph(navController: NavHostController,outerNavCont
         composable(DrawerScreen.UserInfoProfile.route) { navBackStackEntry ->
             UserInfoProfileScreen(
                 onClickBack = {
-                    navController.popBackStack(DrawerScreen.UserInfo.route, inclusive = false)
+                    navController.navigate(DrawerScreen.UserInfo.route) {
+                        popUpTo(DrawerScreen.UserInfo.route) {
+                            inclusive = true
+                        }
+                    }
                 },
-                onClickDefaultProfile = {
-                    navController.popBackStack(DrawerScreen.UserInfo.route, inclusive = false)
+                onClickUserInfo ={
+                    Log.e("drawer-profile","넘어가기")
+                    navController.navigate(DrawerScreen.UserInfo.route) {
+                        popUpTo(DrawerScreen.UserInfo.route) {
+                            inclusive = true
+                        }
+                    }
                 }
             )
         }

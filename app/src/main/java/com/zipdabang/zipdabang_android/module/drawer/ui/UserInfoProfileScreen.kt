@@ -60,7 +60,7 @@ import java.io.InputStream
 fun UserInfoProfileScreen(
     drawerUserInfoViewModel : DrawerUserInfoViewModel = hiltViewModel(),
     onClickBack : ()->Unit,
-    onClickDefaultProfile : ()->Unit,
+    onClickUserInfo : ()->Unit,
 ) {
     //drawer에 필요한 drawerState랑 scope
     val drawerState = rememberDrawerState(DrawerValue.Closed)
@@ -122,16 +122,7 @@ fun UserInfoProfileScreen(
                         ){
                             Column(
                                 modifier = Modifier.clickable(onClick={
-                                    CoroutineScope(Dispatchers.Main).launch{
-                                        profileDialog.value = true
-                                        if(profile != null){
-                                            profileDialog.value = false
-                                            //drawerUserInfoViewModel.patchUserInfoProfile(profile!!)
-                                            onClickDefaultProfile()
-                                        } else {
-                                            profileDialog.value = false
-                                        }
-                                    }
+                                    profileDialog.value = true
                                 }),
                                 verticalArrangement = Arrangement.Center,
                                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -151,7 +142,7 @@ fun UserInfoProfileScreen(
                                 modifier = Modifier.clickable(onClick={
                                     CoroutineScope(Dispatchers.Main).launch{
                                         drawerUserInfoViewModel.patchUserInfoDefaultProfile()
-                                        onClickDefaultProfile()
+                                        onClickUserInfo()
                                     }
                                 }),
                                 verticalArrangement = Arrangement.Center,
@@ -175,7 +166,7 @@ fun UserInfoProfileScreen(
                             CustomDialogCameraFile(
                                 title = stringResource(id = R.string.my_dialog_fileselect),
                                 setShowDialog = {
-                                    profileDialog.value = true
+                                    profileDialog.value = it
                                 },
                                 onCameraClick = {
                                     //takePhotoFromCameraLauncher.launch()
@@ -183,6 +174,16 @@ fun UserInfoProfileScreen(
                                 },
                                 onFileClick = {
                                     takeThumbnailFromAlbumLauncher.launch("image/*")
+                                    Log.e("drawer-profile","${profile} 없음")
+                                    CoroutineScope(Dispatchers.Main).launch{
+                                        try{
+                                            drawerUserInfoViewModel.patchUserInfoProfile(profile!!)
+                                            Log.e("drawer-profile","${profile} 받아옴")
+                                            onClickUserInfo()
+                                        } catch(e:Exception){
+
+                                        }
+                                    }
                                     profileDialog.value = false
                                 }
                             )
@@ -200,6 +201,6 @@ fun UserInfoProfileScreen(
 fun PreviewUserInfoProfileScreen() {
     UserInfoProfileScreen(
         onClickBack={},
-        onClickDefaultProfile = {}
+        onClickUserInfo = {}
     )
 }
