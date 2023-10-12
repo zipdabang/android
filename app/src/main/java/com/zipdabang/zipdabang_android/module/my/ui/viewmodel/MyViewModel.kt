@@ -8,8 +8,10 @@ import androidx.datastore.core.DataStore
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.zipdabang.zipdabang_android.common.Resource
+import com.zipdabang.zipdabang_android.core.DeviceSize
 import com.zipdabang.zipdabang_android.core.data_store.proto.CurrentPlatform
 import com.zipdabang.zipdabang_android.core.data_store.proto.Token
+import com.zipdabang.zipdabang_android.module.detail.recipe.common.DeviceScreenSize
 import com.zipdabang.zipdabang_android.module.my.ui.state.signout.SignOutState
 import com.zipdabang.zipdabang_android.module.my.ui.state.my.MyUserInfoState
 import com.zipdabang.zipdabang_android.module.my.use_case.SignOutUseCase
@@ -24,7 +26,7 @@ import javax.inject.Inject
 @HiltViewModel
 class MyViewModel @Inject constructor(
     private val dataStore: DataStore<Token>,
-    private val signOutUseCase: SignOutUseCase
+    private val signOutUseCase: SignOutUseCase,
 ) : ViewModel(){
 
     var stateMyUserInfo by mutableStateOf(MyUserInfoState())
