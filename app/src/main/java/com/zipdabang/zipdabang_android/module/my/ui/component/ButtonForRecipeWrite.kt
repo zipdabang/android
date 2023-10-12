@@ -21,7 +21,7 @@ import com.zipdabang.zipdabang_android.R
 import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
 
 @Composable
-fun ButtonForIngredient(
+fun ButtonAddForIngredient(
     enabled : Boolean,
     onClickBtn : ()->Unit,
 ) {
@@ -90,6 +90,44 @@ fun ButtonForStep(
         ) {
             Text(
                 text= stringResource(id = R.string.my_recipewrite_writedone),
+                color = textColor,
+                style= ZipdabangandroidTheme.Typography.sixteen_500
+            )
+        }
+    }
+}
+
+@Composable
+fun ButtonAddForStep(
+    enabled : Boolean,
+    onClickBtn : ()->Unit,
+) {
+    var containerColor = Color.White
+    var borderColor = ZipdabangandroidTheme.Colors.Typo.copy(0.2f)
+    var textColor = ZipdabangandroidTheme.Colors.Typo.copy(0.2f)
+
+    if(enabled){
+        containerColor = ZipdabangandroidTheme.Colors.Strawberry
+        borderColor = ZipdabangandroidTheme.Colors.Strawberry.copy(0.5f)
+        textColor = Color.White
+    }
+
+    Button(
+        onClick = { onClickBtn() },
+        shape = ZipdabangandroidTheme.Shapes.thin,
+        modifier = Modifier.fillMaxWidth(),
+        enabled = enabled,
+        border = BorderStroke(1.dp, borderColor),
+        colors = ButtonDefaults.buttonColors(
+            containerColor = containerColor,
+            disabledContainerColor = containerColor,
+        )
+    ) {
+        Box(
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text= stringResource(id = R.string.my_recipewrite_addstep),
                 color = textColor,
                 style= ZipdabangandroidTheme.Typography.sixteen_500
             )

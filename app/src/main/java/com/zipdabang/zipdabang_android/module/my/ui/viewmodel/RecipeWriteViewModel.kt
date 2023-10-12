@@ -2,15 +2,17 @@ package com.zipdabang.zipdabang_android.module.my.ui.viewmodel
 
 import android.util.Log
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.datastore.core.DataStore
 import androidx.lifecycle.ViewModel
+import com.google.gson.Gson
 import com.zipdabang.zipdabang_android.common.Resource
 import com.zipdabang.zipdabang_android.core.data_store.proto.Token
 import com.zipdabang.zipdabang_android.module.my.data.remote.RecipeWriteContent
 import com.zipdabang.zipdabang_android.module.my.data.remote.RecipeWriteIngredient
-import com.zipdabang.zipdabang_android.module.my.data.remote.RecipeWriteRequest
 import com.zipdabang.zipdabang_android.module.my.data.remote.RecipeWriteStep
 import com.zipdabang.zipdabang_android.module.my.domain.usecase.PostRecipeWriteUseCase
 import com.zipdabang.zipdabang_android.module.my.ui.state.recipewrite.Ingredient
@@ -21,6 +23,11 @@ import com.zipdabang.zipdabang_android.module.my.ui.state.recipewrite.RecipeWrit
 import com.zipdabang.zipdabang_android.module.my.ui.state.recipewrite.Step
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.first
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
+import java.io.File
 import javax.inject.Inject
 
 @HiltViewModel
@@ -42,49 +49,55 @@ class RecipeWriteViewModel @Inject constructor(
                     stepImage = null,
                     description = "",
                     stepWordCount = 0,
-                    textfieldEnabled = true,
                     completeBtnEnabled = false,
-                    completeBtnVisible = true
+                    completeBtnVisible = true,
+                    addBtnVisible = false,
                 )
             ),
         ),
     )
     var stateRecipeWriteDialog by mutableStateOf(RecipeWriteDialogState())
+    var thumbnailPart by mutableStateOf<MultipartBody.Part?>(null)
+
 
 
     fun onRecipeWriteFormEvent(event : RecipeWriteFormEvent){
-        when(event){
-            is RecipeWriteFormEvent.TitleChanged->{
+        when(event) {
+            is RecipeWriteFormEvent.TitleChanged -> {
                 stateRecipeWriteForm = stateRecipeWriteForm.copy(
                     title = event.title,
                     titleWordCount = event.title.length
                 )
             }
-            is RecipeWriteFormEvent.TimeChanged->{
+
+            is RecipeWriteFormEvent.TimeChanged -> {
                 stateRecipeWriteForm = stateRecipeWriteForm.copy(
                     time = event.time,
                     timeWordCount = event.time.length
                 )
             }
-            is RecipeWriteFormEvent.IntroChanged->{
+
+            is RecipeWriteFormEvent.IntroChanged -> {
                 stateRecipeWriteForm = stateRecipeWriteForm.copy(
                     intro = event.intro,
                     introWordCount = event.intro.length
                 )
             }
-            is RecipeWriteFormEvent.RecipeTipChanged->{
+
+            is RecipeWriteFormEvent.RecipeTipChanged -> {
                 stateRecipeWriteForm = stateRecipeWriteForm.copy(
                     recipeTip = event.recipeTip,
                     recipeTipWordCount = event.recipeTip.length
                 )
             }
             // 썸네일
-            is RecipeWriteFormEvent.ThumbnailChanged->{
+            is RecipeWriteFormEvent.ThumbnailChanged -> {
                 stateRecipeWriteForm = stateRecipeWriteForm.copy(
                     thumbnail = event.thumbnail
                 )
             }
-            is RecipeWriteFormEvent.ThumbnailChangedToNull ->{
+
+            is RecipeWriteFormEvent.ThumbnailChangedToNull -> {
                 stateRecipeWriteForm = stateRecipeWriteForm.copy(
                     thumbnail = null
                 )
@@ -92,13 +105,13 @@ class RecipeWriteViewModel @Inject constructor(
 
 
             // 재료
-            is RecipeWriteFormEvent.BtnIngredientAdd->{
+            is RecipeWriteFormEvent.BtnIngredientAdd -> {
                 val currentIngredients = stateRecipeWriteForm.ingredients.toMutableList()
                 val newIngredient = Ingredient(
                     ingredientName = "",
                     quantity = "",
                 )
-                if(currentIngredients.size < 10){
+                if (currentIngredients.size < 10) {
                     currentIngredients.add(newIngredient)
                     stateRecipeWriteForm = stateRecipeWriteForm.copy(
                         ingredients = currentIngredients,
@@ -106,7 +119,8 @@ class RecipeWriteViewModel @Inject constructor(
                     )
                 }
             }
-            is RecipeWriteFormEvent.BtnIngredientDelete ->{
+
+            is RecipeWriteFormEvent.BtnIngredientDelete -> {
                 val currentIngredients = stateRecipeWriteForm.ingredients.toMutableList()
                 currentIngredients.removeAt(event.ingredientNum - 1)
 
@@ -115,35 +129,38 @@ class RecipeWriteViewModel @Inject constructor(
                     ingredientsNum = currentIngredients.size
                 )
             }
-            is RecipeWriteFormEvent.IngredientChanged->{
+
+            is RecipeWriteFormEvent.IngredientChanged -> {
                 val ingredientNumToChange = event.ingredientNum
                 val newIngredientName = event.ingredientName
 
                 val currentIngredients = stateRecipeWriteForm.ingredients.toMutableList()
-                val updatedIngredient = currentIngredients[ingredientNumToChange -1].copy(
+                val updatedIngredient = currentIngredients[ingredientNumToChange - 1].copy(
                     ingredientName = newIngredientName,
                 )
 
-                currentIngredients[ingredientNumToChange -1] = updatedIngredient
+                currentIngredients[ingredientNumToChange - 1] = updatedIngredient
                 stateRecipeWriteForm = stateRecipeWriteForm.copy(
                     ingredients = currentIngredients
                 )
             }
-            is RecipeWriteFormEvent.QuantityChanged->{
+
+            is RecipeWriteFormEvent.QuantityChanged -> {
                 val quantityNumToChange = event.quantityNum
                 val newQuantityName = event.quantityName
 
                 val currentIngredients = stateRecipeWriteForm.ingredients.toMutableList()
-                val updatedIngredient = currentIngredients[quantityNumToChange-1].copy(
+                val updatedIngredient = currentIngredients[quantityNumToChange - 1].copy(
                     quantity = newQuantityName
                 )
 
-                currentIngredients[quantityNumToChange-1] = updatedIngredient
+                currentIngredients[quantityNumToChange - 1] = updatedIngredient
                 stateRecipeWriteForm = stateRecipeWriteForm.copy(
                     ingredients = currentIngredients
                 )
             }
-            is RecipeWriteFormEvent.BtnIngredientAddEnabled->{
+
+            is RecipeWriteFormEvent.BtnIngredientAddEnabled -> {
                 var allIngredientsValid = true // 모든 재료가 유효한지 여부를 저장할 변수
 
                 for (i in 0 until event.ingredientNum) {
@@ -160,23 +177,23 @@ class RecipeWriteViewModel @Inject constructor(
 
 
             // 스텝
-            is RecipeWriteFormEvent.BtnStepAdd->{
+            is RecipeWriteFormEvent.BtnStepAdd -> {
                 val stepNumToChange = event.stepNum
                 val currentSteps = stateRecipeWriteForm.steps.toMutableList()
                 val preStep = currentSteps[stepNumToChange - 1].copy(
-                    textfieldEnabled = false,
-                    completeBtnVisible = false,
+                    addBtnVisible = false,
                 )
                 val newStep = Step(
                     stepImage = null,
                     description = "",
                     stepWordCount = 0,
-                    textfieldEnabled = true,
                     completeBtnEnabled = false,
-                    completeBtnVisible = true
+                    completeBtnVisible = true,
+                    addBtnVisible = false,
                 )
+
                 currentSteps[stepNumToChange - 1] = preStep
-                if(stepNumToChange <= 10){
+                if (stepNumToChange <= 10) {
                     currentSteps.add(newStep)
                 }
 
@@ -185,50 +202,92 @@ class RecipeWriteViewModel @Inject constructor(
                     stepsNum = currentSteps.size
                 )
             }
-            is RecipeWriteFormEvent.BtnStepDelete ->{
+
+            is RecipeWriteFormEvent.BtnStepComplete -> {
+                val stepNumToChange = event.stepNum
+                val currentSteps = stateRecipeWriteForm.steps.toMutableList()
+                val preStep = currentSteps[stepNumToChange - 1].copy(
+                    completeBtnVisible = false,
+                    addBtnVisible = true,
+                )
+
+                currentSteps[stepNumToChange - 1] = preStep
+                stateRecipeWriteForm = stateRecipeWriteForm.copy(
+                    steps = currentSteps,
+                )
+
+                /*if (currentSteps.size == 10) {
+                    val presentStep = currentSteps[stepNumToChange].copy(
+                        addBtnVisible = false,
+                        completeBtnVisible = false,
+                        completeBtnEnabled = false
+                    )
+                    currentSteps[stepNumToChange] = presentStep
+                    stateRecipeWriteForm = stateRecipeWriteForm.copy(
+                        steps = currentSteps,
+                    )
+                } else {*/
+                //}
+            }
+            is RecipeWriteFormEvent.BtnStepDelete -> {
                 val stepNumToDelete = event.stepNum
                 val currentSteps = stateRecipeWriteForm.steps.toMutableList()
+                Log.e("recipewrite","${currentSteps.size}")
 
-                if(currentSteps.size != 1){
-                    currentSteps.removeAt(stepNumToDelete -1 )
+                if (stepNumToDelete > 1) {
+                    val preStep = currentSteps[stepNumToDelete - 2].copy(
+                        addBtnVisible = true,
+                    )
+                    currentSteps[stepNumToDelete - 2] = preStep
+                    currentSteps.removeAt(stepNumToDelete - 1)
                     stateRecipeWriteForm = stateRecipeWriteForm.copy(
                         steps = currentSteps,
                         stepsNum = currentSteps.size
                     )
+                } else if (stepNumToDelete == 1){
+                    currentSteps.removeAt(stepNumToDelete - 1)
+                    stateRecipeWriteForm = stateRecipeWriteForm.copy(
+                        steps = currentSteps,
+                        stepsNum = currentSteps.size
+                    )
+                } else {
+
                 }
             }
-            is RecipeWriteFormEvent.BtnStepEdit ->{
+            is RecipeWriteFormEvent.BtnStepEdit -> {
                 val stepNumToEdit = event.stepNum
                 val currentSteps = stateRecipeWriteForm.steps.toMutableList()
 
                 val editStep = currentSteps[stepNumToEdit - 1].copy(
-                    textfieldEnabled = true,
                     completeBtnVisible = true,
                     completeBtnEnabled = true,
+                    addBtnVisible = false,
                 )
-                currentSteps[stepNumToEdit -1] = editStep
+                currentSteps[stepNumToEdit - 1] = editStep
 
                 stateRecipeWriteForm = stateRecipeWriteForm.copy(
                     steps = currentSteps,
                     stepsNum = currentSteps.size
                 )
             }
-            is RecipeWriteFormEvent.StepChanged->{
+
+            is RecipeWriteFormEvent.StepChanged -> {
                 val stepNumToChange = event.stepNum
                 val newStepDescription = event.stepDescription
 
                 val currentSteps = stateRecipeWriteForm.steps.toMutableList()
-                val updatedStep = currentSteps[stepNumToChange -1].copy(
+                val updatedStep = currentSteps[stepNumToChange - 1].copy(
                     description = newStepDescription,
                     stepWordCount = newStepDescription.length
                 )
-                Log.e("recipewriteform","${updatedStep}")
-                currentSteps[stepNumToChange -1] = updatedStep
+                Log.e("recipewriteform", "${updatedStep}")
+                currentSteps[stepNumToChange - 1] = updatedStep
                 stateRecipeWriteForm = stateRecipeWriteForm.copy(
                     steps = currentSteps
                 )
             }
-            is RecipeWriteFormEvent.StepImageChanged->{
+
+            is RecipeWriteFormEvent.StepImageChanged -> {
                 val stepNumToChange = event.stepNum
                 val newStepImage = event.stepImage
 
@@ -242,7 +301,8 @@ class RecipeWriteViewModel @Inject constructor(
                     steps = currentSteps
                 )
             }
-            is RecipeWriteFormEvent.StepImageChangedToEmpty->{
+
+            is RecipeWriteFormEvent.StepImageChangedToEmpty -> {
                 val stepNumToChange = event.stepNum
                 val newStepImage = event.stepImage
 
@@ -256,14 +316,16 @@ class RecipeWriteViewModel @Inject constructor(
                     steps = currentSteps
                 )
             }
-            is RecipeWriteFormEvent.StepIsValidate->{
+
+            is RecipeWriteFormEvent.StepIsValidate -> {
                 val stepNumToChange = event.stepNum
 
                 val currentSteps = stateRecipeWriteForm.steps.toMutableList()
 
                 // 스텝의 유효성을 개별적으로 확인
-                val stepIsValid = stateRecipeWriteForm.steps[stepNumToChange - 1].description.isNotEmpty()
-                        && stateRecipeWriteForm.steps[stepNumToChange - 1].stepImage != null
+                val stepIsValid =
+                    stateRecipeWriteForm.steps[stepNumToChange - 1].description.isNotEmpty()
+                            && stateRecipeWriteForm.steps[stepNumToChange - 1].stepImage != null
 
                 // 해당 스텝의 completeBtnEnabled 업데이트
                 val updatedStep = currentSteps[stepNumToChange - 1].copy(
@@ -277,8 +339,19 @@ class RecipeWriteViewModel @Inject constructor(
                 )
             }
 
-            is RecipeWriteFormEvent.BtnEnabled->{
+            is RecipeWriteFormEvent.BtnEnabled -> {
+                val isAllFieldsFilled =
+                           stateRecipeWriteForm.title.isNotBlank()
+                        && !(stateRecipeWriteForm.thumbnail == null || stateRecipeWriteForm.thumbnail == "")
+                        && stateRecipeWriteForm.time.isNotBlank()
+                        && stateRecipeWriteForm.intro.isNotBlank()
+                        && stateRecipeWriteForm.recipeTip.isNotBlank()
+                        && stateRecipeWriteForm.ingredients.all { it.ingredientName.isNotBlank() && it.quantity.isNotBlank() }
+                        && stateRecipeWriteForm.steps.all { it.description.isNotBlank() && it.stepImage != null }
 
+                stateRecipeWriteForm = stateRecipeWriteForm.copy(
+                    btnEnabled = isAllFieldsFilled
+                )
             }
         }
     }
@@ -310,7 +383,7 @@ class RecipeWriteViewModel @Inject constructor(
     }
 
 
-    suspend fun postRecipeWrite(){
+    suspend fun postRecipeWrite(stepImageParts : List<MultipartBody.Part>){
         val ingredients = stateRecipeWriteForm.ingredients.map { ingredient ->
             RecipeWriteIngredient(
                 ingredientName = ingredient.ingredientName,
@@ -323,27 +396,34 @@ class RecipeWriteViewModel @Inject constructor(
                 stepNum = index + 1
             )
         }
-        val stepImages = stateRecipeWriteForm.steps.map { step ->
-            step.stepImage as? String ?: ""
-        }
+
+        // JSON 문자열을 직접 생성
+        val content = RecipeWriteContent(
+            categoryId = listOf(3),
+            ingredientCount = stateRecipeWriteForm.ingredientsNum,
+            ingredients = ingredients,
+            intro = stateRecipeWriteForm.intro,
+            name = stateRecipeWriteForm.title,
+            recipeTip = stateRecipeWriteForm.recipeTip,
+            stepCount = stateRecipeWriteForm.stepsNum,
+            steps = steps,
+            time = stateRecipeWriteForm.time
+        )
+        val gson = Gson()
+        val json = gson.toJson(content) // yourDataObject는 요청 본문의 데이터 객체입니다.
+        val contentRequestBody = json.toRequestBody("application/json".toMediaTypeOrNull())
+
+        Log.e("recipewrite-result", "${json}")
+        Log.e("recipewrite-result 내용", "${stepImageParts}")
+        Log.e("recipewrite-result 내용", "${thumbnailPart}")
+        //Log.e("recipewrite-result 내용", "${"Bearer " + dataStore.data.first().accessToken.toString()}")
+
         try{
             val result = postRecipeWriteUseCase(
                 accessToken = "Bearer " + dataStore.data.first().accessToken.toString(),
-                recipeWriteForm = RecipeWriteRequest(
-                    content = RecipeWriteContent(
-                        categoryId = listOf(1,2),
-                        ingredientCount = stateRecipeWriteForm.ingredientsNum,
-                        ingredients = ingredients,
-                        intro = stateRecipeWriteForm.intro,
-                        name = stateRecipeWriteForm.title,
-                        recipeTip = stateRecipeWriteForm.recipeTip,
-                        stepCount = stateRecipeWriteForm.stepsNum,
-                        steps = steps,
-                        time = stateRecipeWriteForm.time
-                    ),
-                    stepImages = stepImages,
-                    thumbnail = stateRecipeWriteForm.thumbnail.toString()
-                )
+                content = contentRequestBody,
+                thumbnail = thumbnailPart!!,
+                stepImages = stepImageParts,
             )
 
             result.collect{result->
@@ -355,10 +435,10 @@ class RecipeWriteViewModel @Inject constructor(
                         }
                     }
                     is Resource.Error ->{
-                        Log.e("recipewrite", "에러 : ${result.message}")
+                        Log.e("recipewrite", "에러 : ${result} ${result.message} ${result.data} ${result.code}")
                     }
                     is Resource.Loading ->{
-                        Log.e("recipewrite", "로딩중 : ${result.data}")
+                        Log.e("recipewrite", "로딩중 : ${result.code}")
                     }
                 }
             }
@@ -369,3 +449,4 @@ class RecipeWriteViewModel @Inject constructor(
 
 
 }
+

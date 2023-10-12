@@ -14,13 +14,13 @@ import java.io.IOException
 import java.util.concurrent.CancellationException
 import javax.inject.Inject
 
-class PatchUserInfoProfileUseCase @Inject constructor(
+class PatchUserInfoDefaultProfileUseCase @Inject constructor(
     private val repository : DrawerRepository
 ) {
-    operator fun invoke(accessToken : String, userInfoProfile : MultipartBody.Part) : Flow<Resource<UserInfoEditResult>> = flow{
+    operator fun invoke(accessToken : String) : Flow<Resource<UserInfoEditResult>> = flow {
         try{
             emit(Resource.Loading())
-            val result = repository.patchUserInfoProfile(accessToken = accessToken, userInfoProfile = userInfoProfile)
+            val result = repository.patchUserInfoDefaultProfile(accessToken=accessToken)
 
             when(result.code){
                 ResponseCode.RESPONSE_DEFAULT.code ->{

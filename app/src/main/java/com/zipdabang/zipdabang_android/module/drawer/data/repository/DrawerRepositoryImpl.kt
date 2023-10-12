@@ -9,9 +9,8 @@ import com.zipdabang.zipdabang_android.module.drawer.data.remote.userinfodto.Use
 import com.zipdabang.zipdabang_android.module.drawer.data.remote.userinfodto.UserInfoDetailRequest
 import com.zipdabang.zipdabang_android.module.drawer.data.remote.userinfodto.UserInfoEditResponse
 import com.zipdabang.zipdabang_android.module.drawer.data.remote.userinfodto.UserInfoNicknameRequest
-import com.zipdabang.zipdabang_android.module.drawer.data.remote.userinfodto.UserInfoProfileRequest
-import com.zipdabang.zipdabang_android.module.drawer.data.remote.userinfodto.UserInfoResponse
 import com.zipdabang.zipdabang_android.module.drawer.data.remote.userinfodto.UserInfoPreferencesRequest
+import com.zipdabang.zipdabang_android.module.drawer.data.remote.userinfodto.UserInfoResponse
 import com.zipdabang.zipdabang_android.module.drawer.domain.repository.DrawerRepository
 import com.zipdabang.zipdabang_android.module.sign_up.data.remote.AuthRequest
 import com.zipdabang.zipdabang_android.module.sign_up.data.remote.AuthResponse
@@ -42,9 +41,13 @@ class DrawerRepositoryImpl @Inject constructor(
 
     override suspend fun patchUserInfoProfile(
         accessToken: String,
-        userInfoProfile: UserInfoProfileRequest
+        userInfoProfile: MultipartBody.Part
     ): UserInfoEditResponse {
         return api.patchUserInfoProfile(accessToken = accessToken, userInfoProfile =userInfoProfile)
+    }
+
+    override suspend fun patchUserInfoDefaultProfile(accessToken: String): UserInfoEditResponse {
+        return api.patchUserInfoDefaultProfile(accessToken=accessToken)
     }
 
     override suspend fun patchUserInfoBasic(
@@ -66,6 +69,13 @@ class DrawerRepositoryImpl @Inject constructor(
         userInfoNickname: UserInfoNicknameRequest
     ): UserInfoEditResponse {
         return api.patchUserInfoNickname(accessToken = accessToken, userInfoNickname = userInfoNickname)
+    }
+
+    override suspend fun patchUserInfoOneLine(
+        accessToken: String,
+        oneline: String
+    ): UserInfoEditResponse {
+        return api.patchUserInfoOneLine(accessToken=accessToken, caption = oneline)
     }
 
     override suspend fun patchQuit(

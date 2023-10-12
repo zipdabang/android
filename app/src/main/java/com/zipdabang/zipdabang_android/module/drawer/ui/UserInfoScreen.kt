@@ -44,6 +44,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
+import coil.compose.ImagePainter
 import coil.compose.rememberImagePainter
 import coil.transform.CircleCropTransformation
 import com.zipdabang.zipdabang_android.R
@@ -123,7 +124,10 @@ fun UserInfoScreen(
                                 }
                             ),
                     ) {
-                        CircleImage(imageUrl = stateUserInfo.profileUrl, contentDescription = "")
+                        CircleImage(
+                            imageUrl = stateUserInfo.profileUrl,
+                            contentDescription = ""
+                        )
                     }
                     Box(
                         modifier = Modifier
@@ -133,7 +137,7 @@ fun UserInfoScreen(
                             .border(1.dp, Color.White, CircleShape)
                             .align(Alignment.BottomEnd)
                             .padding(0.dp)
-                            .clickable(onClick = { if(!shimmering)onClickEdit() })
+                            .clickable(onClick = { if (!shimmering) onClickEdit() })
                             .zIndex(1f),
                         content = {
                             Icon(
@@ -206,7 +210,7 @@ fun UserInfoScreen(
                         tint = Color.White,
                         modifier = Modifier
                             .size(24.dp, 24.dp)
-                            .clickable(onClick = { if(!shimmering) onClickEditBasic() })
+                            .clickable(onClick = { if (!shimmering) onClickEditBasic() })
                     )
                 }
                 //이름
@@ -338,7 +342,7 @@ fun UserInfoScreen(
                     )
                     Text(
                         modifier = Modifier
-                            .padding(8.dp, 0.dp, 0.dp, 0.dp)
+                            .padding(6.dp, 0.dp, 0.dp, 0.dp)
                             .fillMaxWidth()
                             .then(
                                 if (shimmering) {
@@ -563,8 +567,8 @@ fun UserInfoScreen(
                         contentDescription = "",
                         tint = Color.White,
                         modifier = Modifier
-                            .size(24.dp, 24.dp)
-                            .clickable(onClick = { if(!shimmering)onClickEditNickname() })
+                            .size(22.dp, 22.dp)
+                            .clickable(onClick = { if (!shimmering) onClickEditNickname() })
                     )
                 }
                 //닉네임
@@ -582,16 +586,16 @@ fun UserInfoScreen(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Icon(
-                        painter = painterResource(id = R.drawable.ic_my_smileface),
+                        painter = painterResource(id = R.drawable.ic_drawer_nickname),
                         contentDescription = "",
                         tint = ZipdabangandroidTheme.Colors.Typo,
                         modifier = Modifier
-                            .size(22.dp, 22.dp)
-                            .padding(8.dp, 0.dp, 0.dp, 0.dp)
+                            .size(30.dp, 30.dp)
+                            .padding(2.dp, 0.dp, 0.dp, 0.dp)
                     )
                     Text(
                         modifier = Modifier
-                            .padding(8.dp, 0.dp, 0.dp, 0.dp)
+                            .padding(6.dp, 0.dp, 0.dp, 0.dp)
                             .fillMaxWidth()
                             .then(
                                 if (shimmering) {
@@ -650,7 +654,7 @@ fun UserInfoScreen(
                         tint = Color.White,
                         modifier = Modifier
                             .size(24.dp, 24.dp)
-                            .clickable(onClick = { if(!shimmering) onClickEditOneLine() })
+                            .clickable(onClick = { if (!shimmering) onClickEditOneLine() })
                     )
                 }
                 //한 줄 소개
@@ -668,16 +672,16 @@ fun UserInfoScreen(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Icon(
-                        painter = painterResource(id = R.drawable.ic_my_smileface),
+                        painter = painterResource(id = R.drawable.ic_drawer_oneline),
                         contentDescription = "",
                         tint = ZipdabangandroidTheme.Colors.Typo,
                         modifier = Modifier
-                            .size(22.dp, 22.dp)
-                            .padding(8.dp, 0.dp, 0.dp, 0.dp)
+                            .size(30.dp, 30.dp)
+                            .padding(2.dp, 0.dp, 0.dp, 0.dp)
                     )
                     Text(
                         modifier = Modifier
-                            .padding(8.dp, 0.dp, 0.dp, 0.dp)
+                            .padding(6.dp, 0.dp, 0.dp, 0.dp)
                             .fillMaxWidth()
                             .then(
                                 if (shimmering) {
@@ -686,7 +690,9 @@ fun UserInfoScreen(
                                     Modifier
                                 }
                             ),
-                        text = stateUserInfo.oneline,
+                        text = if(stateUserInfo.oneline == "") stringResource(id = R.string.drawer_oneline_not_exist)
+                        else if(stateUserInfo.oneline == null) ""
+                        else stateUserInfo.oneline,
                         style = ZipdabangandroidTheme.Typography.sixteen_500,
                         color = ZipdabangandroidTheme.Colors.Typo
                     )
@@ -710,7 +716,7 @@ fun UserInfoScreen(
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(48.dp)
+                        .height(54.dp)
                         .background(
                             brush = Brush.horizontalGradient(
                                 colors = listOf(
@@ -736,7 +742,7 @@ fun UserInfoScreen(
                         tint = Color.White,
                         modifier = Modifier
                             .size(24.dp, 24.dp)
-                            .clickable(onClick = { if(!shimmering)onClickEditPreferences() })
+                            .clickable(onClick = { if (!shimmering) onClickEditPreferences() })
                     )
                 }
                 //선호하는 음료
@@ -747,7 +753,7 @@ fun UserInfoScreen(
                             color = Color.White,
                             shape = ZipdabangandroidTheme.Shapes.smallRoundedBottom
                         )
-                        .height(if (stateUserInfo.size <= 4) 44.dp else 88.dp)
+                        .height(if (stateUserInfo.size <= 4) 52.dp else 84.dp)
                         .wrapContentHeight()
                         .padding(16.dp, 0.dp, 16.dp, 0.dp),
                     verticalArrangement = Arrangement.spacedBy(8.dp)
@@ -761,13 +767,13 @@ fun UserInfoScreen(
                             contentDescription = "",
                             tint = ZipdabangandroidTheme.Colors.Typo,
                             modifier = Modifier
-                                .size(26.dp, 24.dp)
-                                .padding(8.dp, 0.dp, 0.dp, 0.dp)
+                                .size(24.dp, 22.dp)
+                                .padding(4.dp, 0.dp, 0.dp, 4.dp)
                         )
                         if (stateUserInfo.preferBeverageList.size == 0) {
                             Text(
                                 modifier = Modifier
-                                    .padding(6.dp, 0.dp, 0.dp, 0.dp)
+                                    .padding(8.dp, 0.dp, 0.dp, 0.dp)
                                     .then(
                                         if (shimmering) {
                                             Modifier.shimmeringEffect()
@@ -775,14 +781,14 @@ fun UserInfoScreen(
                                             Modifier
                                         }
                                     ),
-                                text = "선호하는 음료가 아직 없습니다.",
+                                text = stringResource(R.string.drawer_preferbeverages_not_exist),
                                 style = ZipdabangandroidTheme.Typography.sixteen_500,
                                 color = ZipdabangandroidTheme.Colors.Typo,
                             )
                         } else if (shimmering) {
                             Text(
                                 modifier = Modifier
-                                    .padding(6.dp, 0.dp, 0.dp, 0.dp)
+                                    .padding(8.dp, 0.dp, 0.dp, 0.dp)
                                     .shimmeringEffect()
                                     .fillMaxWidth(),
                                 text = "",
@@ -794,7 +800,7 @@ fun UserInfoScreen(
                                 .forEachIndexed { index, beverage ->
                                     Text(
                                         modifier = Modifier
-                                            .padding(6.dp, 0.dp, 0.dp, 0.dp)
+                                            .padding(8.dp, 0.dp, 0.dp, 0.dp)
                                             .then(
                                                 if (shimmering) {
                                                     Modifier.shimmeringEffect()

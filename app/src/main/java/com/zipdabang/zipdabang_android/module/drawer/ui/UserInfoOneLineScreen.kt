@@ -14,6 +14,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -23,11 +24,14 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.zipdabang.zipdabang_android.R
+import com.zipdabang.zipdabang_android.module.drawer.ui.state.userinfo.UserInfoBasicEvent
 import com.zipdabang.zipdabang_android.module.drawer.ui.state.userinfo.UserInfoNicknameEvent
+import com.zipdabang.zipdabang_android.module.drawer.ui.state.userinfo.UserInfoOneLineEvent
 import com.zipdabang.zipdabang_android.module.drawer.ui.viewmodel.DrawerUserInfoViewModel
 import com.zipdabang.zipdabang_android.ui.component.AppBarSignUp
 import com.zipdabang.zipdabang_android.ui.component.PrimaryButtonOutLined
 import com.zipdabang.zipdabang_android.ui.component.PrimaryButtonWithStatus
+import com.zipdabang.zipdabang_android.ui.component.TextFieldError
 import com.zipdabang.zipdabang_android.ui.component.TextFieldErrorAndCorrect
 import com.zipdabang.zipdabang_android.ui.component.TextFieldErrorAndCorrectIcon
 import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
@@ -43,6 +47,10 @@ fun UserInfoOneLineScreen(
     onClickEdit : ()->Unit
 ) {
     val stateUserInfoOneLine = drawerUserInfoViewModel.stateUserInfoOneLine
+
+    LaunchedEffect(stateUserInfoOneLine){
+        drawerUserInfoViewModel.onUserInfoOneLineEvent(UserInfoOneLineEvent.BtnEnabled(true))
+    }
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -67,7 +75,7 @@ fun UserInfoOneLineScreen(
                     .fillMaxSize(),
             ){
                 Text(
-                    text= stringResource(id = R.string.signup_nickname),
+                    text= stringResource(id = R.string.drawer_oneline),
                     style = ZipdabangandroidTheme.Typography.twentytwo_700,
                     color = ZipdabangandroidTheme.Colors.Typo
                 )
@@ -81,22 +89,23 @@ fun UserInfoOneLineScreen(
                     verticalAlignment = Alignment.CenterVertically
                 ){
                     Box(
-                        modifier = Modifier.weight(6.8f),
+                        modifier = Modifier.fillMaxWidth(),
                     ){
-
-                    }
-                    Box(
-                        modifier = Modifier
-                            .weight(3.2f)
-                            .wrapContentSize(),
-                    ){
-                        /*PrimaryButtonOutLined(
-                            borderColor = ZipdabangandroidTheme.Colors.Typo.copy(0.2f),
-                            text= stringResource(id = R.string.signup_nickname_deplicatecheck),
-                            onClick= {
-
-                            }
-                        )*/
+                        TextFieldError(
+                            value = stateUserInfoOneLine.oneline,
+                            maxLength = 20,
+                            onValueChanged = { newText, maxLength ->
+                                if (newText.length <= maxLength) {
+                                    drawerUserInfoViewModel.onUserInfoOneLineEvent(UserInfoOneLineEvent.OneLineChanged(newText))
+                                }
+                            },
+                            labelValue = stringResource(id = R.string.drawer_oneline),
+                            placeHolderValue = stringResource(id = R.string.drawer_oneline_hint),
+                            isError = false,
+                            errorMessage = "",
+                            keyboardType = KeyboardType.Text,
+                            imeAction = ImeAction.Done
+                        )
                     }
                 }
             }
@@ -122,16 +131,13 @@ fun UserInfoOneLineScreen(
                 ){
                     PrimaryButtonWithStatus(
                         isFormFilled = stateUserInfoOneLine.btnEnabled,
-                        text= stringResource(id = R.string.drawer_editdone),
+                        text= stringResource(if(stateUserInfoOneLine.oneline.isEmpty()) R.string.drawer_writedone else R.string.drawer_editdone),
                         onClick={
-                            if(stateUserInfoOneLine.isSuccess){
+                            if(stateUserInfoOneLine.btnEnabled){
                                 CoroutineScope(Dispatchers.Main).launch{
-                                    //drawerUserInfoViewModel.patchUserInfoNickname()
+                                    drawerUserInfoViewModel.patchUserInfoOneline()
                                     onClickEdit()
                                 }
-                            } else {
-                                /*drawerUserInfoViewModel.onUserInfoNicknameEvent(
-                                    UserInfoNicknameEvent.BtnEnabled(true))*/
                             }
                         },
                     )

@@ -172,7 +172,9 @@ fun MyScreen(
                                         color = ZipdabangandroidTheme.Colors.Typo,
                                         style = ZipdabangandroidTheme.Typography.fourteen_500,
                                         maxLines = 1,
-                                        modifier = Modifier,
+                                        modifier = Modifier.clickable(onClick = {
+                                            onClickUserInfo()
+                                        }),
                                     )
                                 }
 
@@ -191,27 +193,6 @@ fun MyScreen(
                                         contentDescription = ""
                                     ) //stateMyUserInfo.profileUrl
                                 }
-                                Box(
-                                    modifier = Modifier
-                                        .size(36.dp)
-                                        .clip(CircleShape)
-                                        .background(Color(0xFFF7F6F6))
-                                        .border(1.dp, Color.White, CircleShape)
-                                        .align(Alignment.BottomEnd)
-                                        .padding(0.dp)
-                                        .clickable(onClick = { onClickEdit() })
-                                        .zIndex(1f),
-                                    content = {
-                                        Icon(
-                                            painter = painterResource(id = R.drawable.ic_my_edit),
-                                            contentDescription = "",
-                                            tint = ZipdabangandroidTheme.Colors.Typo,
-                                            modifier = Modifier
-                                                .size(24.dp, 24.dp)
-                                                .align(Alignment.Center)
-                                        )
-                                    }
-                                )
                             }
                         }
 

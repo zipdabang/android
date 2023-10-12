@@ -24,9 +24,13 @@
     <string name="drawer_appDetail">홈카페를 위한 모든 것이 여기에! 당신을 위한 단 하나의 홈카페 플랫폼입니다 :)</string>
     <string name="drawer_cancel">취소</string>
     <string name="drawer_editdone">수정 완료</string>
+    <string name="drawer_writedone">작성 완료</string>
     <string name="drawer_choosedone">선택 완료</string>
     <string name="drawer_oneline">한 줄 소개</string>
+    <string name="drawer_oneline_hint">한 줄 소개 (20자 이내)</string>
+    <string name="drawer_oneline_not_exist">한 줄 소개가 아직 없습니다.</string>
     <string name="drawer_preferbeverages">선호하는 음료</string>
+    <string name="drawer_preferbeverages_not_exist">선호하는 음료가 아직 없습니다.</string>
     <string name="drawer_edit_userinfobasic">기본 정보 수정</string>
     <string name="drawer_edit_userinfodetail">상세 정보 수정</string>
     <string name="drawer_edit_oneline">한 줄 소개 수정</string>
@@ -127,6 +131,7 @@
     <string name="my_recipewrite_save">임시저장</string>
     <string name="my_recipewrite_writedone">작성 완료</string>
     <string name="my_recipewrite_warning_ingredient">최대 재료 개수는 10개입니다.</string>
+    <string name="my_recipewrite_warning_stepNum">최대 Step 개수는 10개입니다.</string>
     <string name="my_recipewrite_warning_step">한 Step 당 한 장씩 업로드할 수 있습니다.</string>
     <string name="my_recipewrite_edit">수정</string>
     <string name="my_recipewrite_delete">삭제</string>

@@ -115,7 +115,8 @@ fun UserInfoPreferencesScreen(
                                         RoundedButton(
                                             imageUrl = preference.imageUrl,
                                             buttonText = preference.categoryName,
-                                            shimmering = if(stateUserInfoPreferences.isLoading || stateUserInfoPreferences.error.isNotBlank()){true} else{false},
+                                            shimmering = if(stateUserInfoPreferences.isLoading || stateUserInfoPreferences.error.isNotBlank()) true
+                                                        else false,
                                             isClicked = stateUserInfoPreferences.preferBeverageCheckList[index],
                                             isClickedChange = { selectedClicked ->
                                                 drawerUserInfoViewModel.onUserInfoPreferencesEvent(
@@ -152,7 +153,7 @@ fun UserInfoPreferencesScreen(
                 ){
                     PrimaryButtonWithStatus(
                         isFormFilled = stateUserInfoPreferences.btnEnabled,
-                        text= stringResource(id = R.string.drawer_editdone),
+                        text= stringResource(if(stateUserInfoPreferences.preferBeverageCheckList.size == 0) R.string.drawer_choosedone else R.string.drawer_editdone),
                         onClick={
                             if(stateUserInfoPreferences.btnEnabled){
                                 CoroutineScope(Dispatchers.Main).launch{
