@@ -662,7 +662,7 @@ class DrawerUserInfoViewModel @Inject constructor(
             result.collect { result->
                 when(result){
                     is Resource.Success ->{
-                        Log.e("nicknameedit-viewmodel","성공 : ${result.data?.status}  ${result.data?.memberId}  ${result.data?.calledAt}")
+                        Log.e("nicknameedit-viewmodel","성공 : ${result.data}")
                     }
                     is Resource.Error ->{
                         stateUserInfoBasic = stateUserInfoBasic.copy(error = result.message ?: "An unexpeted error occured")
@@ -690,7 +690,7 @@ class DrawerUserInfoViewModel @Inject constructor(
             result.collect { result->
                 when(result){
                     is Resource.Success ->{
-                        Log.e("nicknameedit-viewmodel","성공 : ${result.data?.status}  ${result.data?.memberId}  ${result.data?.calledAt}")
+                        Log.e("nicknameedit-viewmodel","성공 : ${result.data}")
                     }
                     is Resource.Error ->{
                         stateUserInfoDetail = stateUserInfoDetail.copy(error = result.message ?: "An unexpeted error occured")
@@ -722,11 +722,11 @@ class DrawerUserInfoViewModel @Inject constructor(
                             isSuccess = false,
                             btnEnabled = false,
                         )
-                        Log.e("nicknameedit-viewmodel","성공 : ${result.data?.status}  ${result.data?.memberId}  ${result.data?.calledAt}")
+                        Log.e("nicknameedit-viewmodel","성공 : ${result.data}")
                     }
                     is Resource.Error ->{
                         stateUserInfoNickname = stateUserInfoNickname.copy(error = result.message ?: "An unexpeted error occured")
-                        Log.e("nicknameedit-viewmodel","에러 :  ${result.code} ${result.message} ${result.data?.status}  ${result.data?.memberId}  ${result.data?.calledAt}")
+                        Log.e("nicknameedit-viewmodel","에러 :  ${result.code} ${result.message}")
                     }
                     is Resource.Loading ->{
                         stateUserInfoNickname = stateUserInfoNickname.copy(isLoading = true)
@@ -783,7 +783,7 @@ class DrawerUserInfoViewModel @Inject constructor(
                             isSuccess = true,
                             btnEnabled = false,
                         )
-                        Log.e("onelineedit-viewmodel","성공 :  ${result.data?.status}  ${result.data?.memberId}  ${result.data?.calledAt}")
+                        Log.e("onelineedit-viewmodel","성공 :  ${result.data}")
                     }
                     is Resource.Error ->{
                         stateUserInfoOneLine = stateUserInfoOneLine.copy(error = result.message ?: "An unexpeted error occured")
@@ -808,7 +808,7 @@ class DrawerUserInfoViewModel @Inject constructor(
             result.collect { result->
                 when(result){
                     is Resource.Success ->{
-                        Log.e("drawer-profile","성공 : ${result.data?.status}  ${result.data?.memberId}  ${result.data?.calledAt}")
+                        Log.e("drawer-profile","성공 : ${result.data}")
                     }
                     is Resource.Error ->{
                         stateUserInfo = stateUserInfo.copy(error = result.message ?: "An unexpeted error occured")
@@ -831,7 +831,7 @@ class DrawerUserInfoViewModel @Inject constructor(
             result.collect { result->
                 when(result){
                     is Resource.Success ->{
-                        Log.e("drawer-defaultprofile","성공 : ${result.data?.status}  ${result.data?.memberId}  ${result.data?.calledAt}")
+                        Log.e("drawer-defaultprofile","성공 : ${result.data}")
                     }
                     is Resource.Error ->{
                         stateUserInfo = stateUserInfo.copy(error = result.message ?: "An unexpeted error occured")

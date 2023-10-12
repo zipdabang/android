@@ -5,6 +5,7 @@ import com.zipdabang.zipdabang_android.common.Resource
 import com.zipdabang.zipdabang_android.common.ResponseCode
 import com.zipdabang.zipdabang_android.common.getErrorCode
 import com.zipdabang.zipdabang_android.module.drawer.data.remote.userinfodto.UserInfoDetailRequest
+import com.zipdabang.zipdabang_android.module.drawer.data.remote.userinfodto.UserInfoEditResponse
 import com.zipdabang.zipdabang_android.module.drawer.data.remote.userinfodto.UserInfoEditResult
 import com.zipdabang.zipdabang_android.module.drawer.domain.repository.DrawerRepository
 import kotlinx.coroutines.flow.Flow
@@ -17,7 +18,7 @@ import javax.inject.Inject
 class PatchUserInfoDetailUseCase @Inject constructor(
     private val repository: DrawerRepository
 ) {
-    operator fun invoke(accessToken : String, userInfoDetail : UserInfoDetailRequest) : Flow<Resource<UserInfoEditResult>> = flow{
+    operator fun invoke(accessToken : String, userInfoDetail : UserInfoDetailRequest) : Flow<Resource<UserInfoEditResponse>> = flow{
         try{
             emit(Resource.Loading())
             val result = repository.patchUserInfoDetail(accessToken = accessToken, userInfoDetail = userInfoDetail)
@@ -25,7 +26,7 @@ class PatchUserInfoDetailUseCase @Inject constructor(
             when(result.code){
                 ResponseCode.RESPONSE_DEFAULT.code ->{
                     emit(Resource.Success(
-                        data = result.result,
+                        data = result,
                         code = result.code,
                         message = result.message,
                     ))

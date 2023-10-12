@@ -7,6 +7,7 @@ import androidx.compose.runtime.setValue
 import androidx.datastore.core.DataStore
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.gson.Gson
 import com.zipdabang.zipdabang_android.common.Resource
 import com.zipdabang.zipdabang_android.core.data_store.proto.ProtoDataViewModel
 import com.zipdabang.zipdabang_android.core.data_store.proto.Token
@@ -666,6 +667,24 @@ class AuthSharedViewModel @Inject constructor(
                     },
                 )
             )
+            val gson = Gson()
+            val json = gson.toJson(InfoRequest(
+                email = _email.value,
+                agreeTermsIdList = listOf(stateTermsForm.choiceId),
+                name = stateUserInfoForm.name,
+                birth = stateUserInfoForm.birthday,
+                phoneNum = "01012345678", //stateUserInfoForm.phoneNumber,
+                gender = if (stateUserInfoForm.gender == "남") "1" else "2",
+                //zipCode = stateUserAddressForm.zipCode,
+                //address = stateUserAddressForm.address,
+                //detailAddress = stateUserAddressForm.detailAddress,
+                nickname = stateNicknameForm.nickname,
+                preferBeverages = stateBeverageForm.beverageCheckList.mapIndexedNotNull { index, isSelected ->
+                    if (isSelected) index+1 else null
+                },
+            ))
+            Log.e("signup-tokens", "${json}")
+            Log.e("signup-tokens", "${dataStore.data.first().platformStatus.toString()}")
 
             result.collect{ result ->
                 when(result){
@@ -687,7 +706,7 @@ class AuthSharedViewModel @Inject constructor(
                         }
                     }
                     is Resource.Error ->{
-                        Log.e("signup-tokens", "에러 : ${result.message}")
+                        Log.e("signup-tokens", "에러 : ${result.message} ${result.code} ${result.data}")
                     }
                     is Resource.Loading ->{
                         Log.e("signup-tokens", "로딩중 : ${result.data?.result}")

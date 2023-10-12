@@ -19,7 +19,7 @@ import javax.inject.Inject
 class PatchUserInfoNicknameUseCase @Inject constructor(
     private val repository: DrawerRepository
 ) {
-    operator fun invoke(accessToken : String, userInfoNickname : UserInfoNicknameRequest) : Flow<Resource<UserInfoEditResult>> = flow {
+    operator fun invoke(accessToken : String, userInfoNickname : UserInfoNicknameRequest) : Flow<Resource<UserInfoEditResponse>> = flow {
         try {
             emit(Resource.Loading())
             val result = repository.patchUserInfoNickname(accessToken = accessToken, userInfoNickname = userInfoNickname)
@@ -27,7 +27,7 @@ class PatchUserInfoNicknameUseCase @Inject constructor(
             when(result.code){
                 ResponseCode.RESPONSE_DEFAULT.code ->{
                     emit(Resource.Success(
-                        data = result.result,
+                        data = result,
                         code = result.code,
                         message = result.message
                     ))

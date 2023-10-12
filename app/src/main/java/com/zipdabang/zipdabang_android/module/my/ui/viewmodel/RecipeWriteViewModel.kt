@@ -399,7 +399,7 @@ class RecipeWriteViewModel @Inject constructor(
 
         // JSON 문자열을 직접 생성
         val content = RecipeWriteContent(
-            categoryId = listOf(3),
+            categoryId = listOf(0, 3, 5),
             ingredientCount = stateRecipeWriteForm.ingredientsNum,
             ingredients = ingredients,
             intro = stateRecipeWriteForm.intro,
@@ -416,7 +416,7 @@ class RecipeWriteViewModel @Inject constructor(
         Log.e("recipewrite-result", "${json}")
         Log.e("recipewrite-result 내용", "${stepImageParts}")
         Log.e("recipewrite-result 내용", "${thumbnailPart}")
-        //Log.e("recipewrite-result 내용", "${"Bearer " + dataStore.data.first().accessToken.toString()}")
+        Log.e("recipewrite-result 내용", "${"Bearer " + dataStore.data.first().accessToken.toString()}")
 
         try{
             val result = postRecipeWriteUseCase(
