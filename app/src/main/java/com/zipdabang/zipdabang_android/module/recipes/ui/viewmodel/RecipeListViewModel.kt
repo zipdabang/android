@@ -1,6 +1,7 @@
 package com.zipdabang.zipdabang_android.module.recipes.ui.viewmodel
 
 import android.util.Log
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
@@ -21,15 +22,21 @@ import com.zipdabang.zipdabang_android.module.recipes.domain.PreferenceToggle
 import com.zipdabang.zipdabang_android.module.recipes.domain.RecipeListRepository
 import com.zipdabang.zipdabang_android.module.recipes.mapper.toRecipeItem
 import com.zipdabang.zipdabang_android.module.recipes.ui.state.PreferenceToggleState
+import com.zipdabang.zipdabang_android.module.recipes.use_case.GetCategoryItemCountUseCase
+import com.zipdabang.zipdabang_android.module.recipes.use_case.GetOwnerItemCountUseCase
 import com.zipdabang.zipdabang_android.module.recipes.use_case.ToggleLikeListUseCase
 import com.zipdabang.zipdabang_android.module.recipes.use_case.ToggleScrapListUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.count
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -38,6 +45,8 @@ class RecipeListViewModel @Inject constructor(
     private val recipeListRepository: RecipeListRepository,
     private val toggleLikeListUseCase: ToggleLikeListUseCase,
     private val toggleScrapListUseCase: ToggleScrapListUseCase,
+    private val getCategoryItemCountUseCase: GetCategoryItemCountUseCase,
+    private val getOwnerItemCountUseCase: GetOwnerItemCountUseCase,
     private val savedState: SavedStateHandle,
     @NetworkConnection
     private val isNetworkAvailable: Boolean
@@ -58,10 +67,38 @@ class RecipeListViewModel @Inject constructor(
     private val _errorMessage = mutableStateOf("")
     val errorMessage: State<String?> = _errorMessage
 
+    private val _sortBy = mutableStateOf("latest")
+    val sortBy: State<String> = _sortBy
+
+    private val _total = MutableStateFlow(0)
+    val total: StateFlow<Int>
+        get() = _total
+
     /* TODO 먼저 데이터를 가져오고(완료)
     그 후 그 데이터들을 State(RecipeItem)의 리스트로 만들어(List<RecipeItem>)
     각 아이템에 대해 데이터 뿌려주기
      */
+
+    fun setSortBy(sortBy: String) {
+        _sortBy.value = sortBy
+    }
+
+    fun getCategoryItemCount(
+        categoryId: Int
+    ) {
+        getCategoryItemCountUseCase(categoryId).onEach { result ->
+            Log.d("total", "$result")
+            _total.value = result
+        }.launchIn(viewModelScope)
+    }
+
+    fun getOwnerItemCount(
+        ownerType: String
+    ) {
+        getOwnerItemCountUseCase(ownerType).onEach { result ->
+            _total.value = result
+        }.launchIn(viewModelScope)
+    }
 
     fun getRecipeListByCategory(
         categoryId: Int,
@@ -75,6 +112,7 @@ class RecipeListViewModel @Inject constructor(
                     it.toRecipeItem()
                 }
             }.cachedIn(viewModelScope)
+
         }
         1 -> {
             val pager = recipeListRepository.getRecipeCoffeeList(orderBy)

@@ -31,6 +31,18 @@ interface RecipeListRepository {
         orderBy: String,
     ): Pager<Int, RecipeItemEntity>*/
 
+    suspend fun getItemCountByCategory(
+        accessToken: String,
+        categoryId: Int,
+        pageIndex: Int = 1
+    ): RecipeListDto?
+
+    suspend fun getItemCountByOwner(
+        accessToken: String,
+        ownerType: String,
+        pageIndex: Int = 1
+    ): RecipeListDto?
+
     fun getZipdabangRecipeList(
         orderBy: String,
     ): Pager<Int, RecipeZipdabangEntity>

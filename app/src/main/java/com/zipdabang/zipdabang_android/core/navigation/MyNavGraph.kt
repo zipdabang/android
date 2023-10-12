@@ -7,7 +7,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import androidx.navigation.navigation
 import com.zipdabang.zipdabang_android.core.data_store.proto.CurrentPlatform
 import com.zipdabang.zipdabang_android.core.data_store.proto.ProtoDataViewModel
@@ -16,6 +18,7 @@ import com.zipdabang.zipdabang_android.module.my.ui.FriendListScreen
 import com.zipdabang.zipdabang_android.module.my.ui.LikeScreen
 import com.zipdabang.zipdabang_android.module.my.ui.MyScreen
 import com.zipdabang.zipdabang_android.module.my.ui.MyScreenForNotUser
+import com.zipdabang.zipdabang_android.module.my.ui.MyScreenForOther
 import com.zipdabang.zipdabang_android.module.my.ui.MyrecipeScreen
 import com.zipdabang.zipdabang_android.module.my.ui.RecipeWriteScreen
 import com.zipdabang.zipdabang_android.module.my.ui.ScrapScreen
@@ -144,6 +147,9 @@ fun NavGraphBuilder.MyNavGraph(
                 navController =navController,
                 onClickBack = {
                     navController.popBackStack(MyScreen.Home.route, inclusive = false)
+                },
+                onClickOthers = {
+                    navController.navigate(MyScreen.OtherPage.passUserId(it))
                 }
             )
         }
@@ -156,6 +162,21 @@ fun NavGraphBuilder.MyNavGraph(
                     navController.popBackStack(MyScreen.Myrecipe.route, inclusive = false)
                 }
             )
+        }
+
+        composable(
+            route = MyScreen.OtherPage.route,
+            arguments = listOf(
+                navArgument("userId"){ type = NavType.IntType },
+            )
+        ){
+            val userId = it.arguments?.getInt("userId")
+            if (userId != null) {
+                MyScreenForOther(
+                    navController = navController,
+                    userId = userId
+                )
+            }
         }
     }
 }

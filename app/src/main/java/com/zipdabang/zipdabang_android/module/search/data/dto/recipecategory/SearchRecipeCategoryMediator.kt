@@ -93,7 +93,8 @@ class SearchRecipeCategoryMediator @Inject constructor(
                                  recipeName = searchRecipes.recipeName,
                                  scraps = searchRecipes.scraps,
                                  thumbnailUrl = searchRecipes.thumbnailUrl
-                             ))
+                             )
+                             )
 
                          }
 

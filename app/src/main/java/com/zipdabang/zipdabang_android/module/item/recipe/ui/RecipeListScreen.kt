@@ -29,6 +29,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.zipdabang.zipdabang_android.R
+import com.zipdabang.zipdabang_android.module.item.recipe.common.RecipeSort
 import com.zipdabang.zipdabang_android.module.item.recipe.common.RecipeSubtitleState
 import com.zipdabang.zipdabang_android.module.recipes.common.OwnerType
 import com.zipdabang.zipdabang_android.module.recipes.ui.viewmodel.RecipeListViewModel
@@ -47,6 +48,8 @@ fun RecipeListScreen(
     onItemClick: (Int) -> Unit
 ) {
 
+    val TAG = "RecipeListScreen"
+
     val scope = rememberCoroutineScope()
     val drawerState = rememberDrawerState(DrawerValue.Closed)
 
@@ -58,19 +61,34 @@ fun RecipeListScreen(
         }
     }
 
-    Log.d("ownerType - on screen", "$type")
+    val sortList = listOf(
+        RecipeSort.LATEST,
+        RecipeSort.FOLLOW,
+        RecipeSort.LIKES
+    )
 
+    val sortBy = viewModel.sortBy.value
+    val total = viewModel.total.value.toString()
+
+
+    Log.i(TAG, "ownerType : $type")
+    Log.i(TAG, "sortBy : $sortBy")
+    Log.i(TAG, "total : $total")
 
 
     val recipeList =
         if (categoryState.categoryId == -1 && categoryState.ownerType != null) {
             Log.d("RecipeList", "ownerType")
+            viewModel.getOwnerItemCount(categoryState.ownerType)
             viewModel.getRecipeListByOwnerType(
-                ownerType = categoryState.ownerType
+                ownerType = categoryState.ownerType,
+                orderBy = sortBy
             ).collectAsLazyPagingItems()
         } else {
+            viewModel.getCategoryItemCount(categoryState.categoryId ?: 0)
             viewModel.getRecipeListByCategory(
-                categoryId = categoryState.categoryId!!
+                categoryId = categoryState.categoryId!!,
+                orderBy = sortBy
             ).collectAsLazyPagingItems()
         }
 
@@ -134,6 +152,22 @@ fun RecipeListScreen(
                     RecipeList(
                         modifier = Modifier,
                         onItemClick = onItemClick,
+                        total = total,
+                        sortList = sortList,
+                        onSortChange = { changedValue ->
+                            when (changedValue) {
+                                RecipeSort.LATEST.text -> {
+                                    viewModel.setSortBy(RecipeSort.LATEST.type)
+                                }
+                                RecipeSort.LIKES.text -> {
+                                    viewModel.setSortBy(RecipeSort.LIKES.type)
+                                }
+                                else -> {
+                                    viewModel.setSortBy(RecipeSort.FOLLOW.type)
+                                }
+                            }
+
+                        },
                         category = categoryState,
                         recipeList = recipeList,
                         likeState = likeState,

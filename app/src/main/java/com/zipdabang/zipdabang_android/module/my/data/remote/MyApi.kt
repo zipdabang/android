@@ -5,6 +5,8 @@ import com.zipdabang.zipdabang_android.module.my.data.remote.friendlist.follow.F
 import com.zipdabang.zipdabang_android.module.my.data.remote.friendlist.following.FollowingDto
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import com.zipdabang.zipdabang_android.module.my.data.remote.otherinfo.OtherInfoDto
+import com.zipdabang.zipdabang_android.module.my.data.remote.otherinfo.OtherRecipePreviewDto
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Header
@@ -51,5 +53,16 @@ interface MyApi {
         @Header("Authorization") accessToken: String,
         @Path(value = "targetId") targetId : Int
     ) : FollowOrCancelDto
+
+    @GET("members/myZipdabang",)
+    suspend fun getOtherInfo(
+        @Header("Authorization") accessToken: String,
+        @Query("targetMemberId") targetId : Int
+    ) : OtherInfoDto
+    @GET("members/recipes/owner/preview/{memberId}")
+    suspend fun getOtherPreviewRecipe(
+        @Header("Authorization") accessToken: String,
+        @Path(value = "memberId") memeberId : Int
+    ) : OtherRecipePreviewDto
 
 }

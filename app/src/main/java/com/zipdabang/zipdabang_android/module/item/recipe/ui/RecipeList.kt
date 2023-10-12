@@ -15,6 +15,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
+import com.zipdabang.zipdabang_android.module.item.recipe.common.RecipeSort
 import com.zipdabang.zipdabang_android.module.item.recipe.common.RecipeSubtitleState
 import com.zipdabang.zipdabang_android.module.recipes.data.common.RecipeItem
 import com.zipdabang.zipdabang_android.module.recipes.ui.state.PreferenceToggleState
@@ -25,6 +26,9 @@ fun RecipeList(
     modifier: Modifier,
     onItemClick: (Int) -> Unit,
     category: RecipeSubtitleState,
+    sortList: List<RecipeSort>,
+    onSortChange: (String) -> Unit,
+    total: String,
     // 매개변수 명을 content로 해야 composable을 넣을 수 있음
     recipeList: LazyPagingItems<RecipeItem>,
     likeState: PreferenceToggleState,
@@ -41,6 +45,9 @@ fun RecipeList(
         RecipeListContent(
             items = recipeList,
             onItemClick = onItemClick,
+            total = total,
+            sortList = sortList,
+            onSortChange = onSortChange,
             category = category,
             likeState = likeState,
             scrapState = scrapState,

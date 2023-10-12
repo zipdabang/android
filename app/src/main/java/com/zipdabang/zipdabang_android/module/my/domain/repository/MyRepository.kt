@@ -10,6 +10,8 @@ import com.zipdabang.zipdabang_android.module.my.data.remote.friendlist.follow.F
 import com.zipdabang.zipdabang_android.module.my.data.remote.friendlist.following.FollowingDto
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import com.zipdabang.zipdabang_android.module.my.data.remote.otherinfo.OtherInfoDto
+import com.zipdabang.zipdabang_android.module.my.data.remote.otherinfo.OtherRecipePreviewDto
 
 interface MyRepository {
     suspend fun signOut(accessToken: String): SignOutResponseDto
@@ -17,4 +19,7 @@ interface MyRepository {
     suspend fun getFollow(accessToken: String, page : Int) : FollowDto
     suspend fun getFollowing(accessToken: String, page : Int) : FollowingDto
     suspend fun postFollowOrCancel(accessToken: String, targetId : Int) : FollowOrCancelDto
+    suspend fun getOtherInfo(accessToken: String, targetId : Int) : OtherInfoDto
+    suspend fun getOtherRecipePreview(accessToken: String, memberId : Int) : OtherRecipePreviewDto
+
 }
