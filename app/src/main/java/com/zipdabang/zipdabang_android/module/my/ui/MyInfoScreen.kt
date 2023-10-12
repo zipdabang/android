@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
+import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -64,7 +65,8 @@ fun MyInfoScreen(
             horizontalArrangement = Arrangement.spacedBy(4.dp)
         ) {
             Box(
-                modifier = Modifier.weight(0.25f)
+                modifier = Modifier
+                    .weight(0.25f)
                     .background(
                         color = ZipdabangandroidTheme.Colors.Strawberry,
                         shape = RoundedCornerShape(4.dp)
@@ -83,7 +85,8 @@ fun MyInfoScreen(
                 )
             }
             Box(
-                modifier = Modifier.weight(0.25f)
+                modifier = Modifier
+                    .weight(0.25f)
                     .background(
                         color = ZipdabangandroidTheme.Colors.Cream,
                         shape = RoundedCornerShape(4.dp)
@@ -102,23 +105,13 @@ fun MyInfoScreen(
                 )
             }
             Box(
-                modifier = Modifier.weight(0.25f)
+                modifier = Modifier
+                    .weight(0.25f)
                     .background(
                         color = ZipdabangandroidTheme.Colors.Choco,
                         shape = RoundedCornerShape(4.dp)
                     )
             ) {
-               /* IconAndText(
-                    iconImageVector = R.drawable.ic_my_zipdabanglogo,
-                    iconColor = Color.Transparent,
-                    iconModifier = Modifier.size(40.dp, 40.dp),
-                    text = stringResource(id = R.string.my_myrecipe),
-                    textColor = Color.White,
-                    textStyle = ZipdabangandroidTheme.Typography.fourteen_700,
-                    onClick = {
-                        //onClickMyrecipe
-                    }
-                )*/
                 ImageIconAndText(
                     iconImageVector = R.drawable.ic_my_zipdabanglogo,
                     iconColor = Color.Transparent,
@@ -132,7 +125,8 @@ fun MyInfoScreen(
                 )
             }
             Box(
-                modifier = Modifier.weight(0.25f)
+                modifier = Modifier
+                    .weight(0.25f)
                     .background(
                         color = ZipdabangandroidTheme.Colors.Latte,
                         shape = RoundedCornerShape(4.dp)
@@ -151,7 +145,6 @@ fun MyInfoScreen(
                 )
             }
         }
-
 
         // 진행중인 주문
         Column(
@@ -202,28 +195,24 @@ fun MyInfoScreen(
         // 공지사항 및 이벤트/ 알림/ 나의 문의내역
         Column(
             modifier = Modifier
-                .height(172.dp)
+                .height(120.dp)
                 .fillMaxWidth()
-                .padding(16.dp, 0.dp, 16.dp, 0.dp),
+                .padding(16.dp, 20.dp, 16.dp, 0.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            Box(
+            Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clickable(onClick = {
-                        //onClickNotice()
-                    })
                     .weight(1f)
                     .background(
                         color = Color.White,
                         shape = ZipdabangandroidTheme.Shapes.small
                     ),
-                contentAlignment = Alignment.Center
-            ) {
+                verticalArrangement = Arrangement.Center
+            ){
                 Row(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp, 0.dp, 16.dp, 0.dp),
+                        .fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween,
                 ) {
@@ -235,11 +224,13 @@ fun MyInfoScreen(
                     Text(
                         text = "0",
                         style = ZipdabangandroidTheme.Typography.fourteen_500,
-                        color = ZipdabangandroidTheme.Colors.Typo
+                        color = ZipdabangandroidTheme.Colors.Typo,
+                        modifier = Modifier.padding(0.dp, 0.dp, 12.dp, 0.dp)
                     )
                 }
             }
-            Box(
+                Divider( modifier = Modifier.fillMaxWidth())
+            Column(
                 modifier = Modifier
                     .fillMaxWidth()
                     .weight(1f)
@@ -247,46 +238,42 @@ fun MyInfoScreen(
                         color = Color.White,
                         shape = ZipdabangandroidTheme.Shapes.small
                     ),
-                contentAlignment = Alignment.Center
+                verticalArrangement = Arrangement.Center
             ) {
                 Row(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp, 0.dp, 16.dp, 0.dp),
+                        .fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween,
                 ) {
                     Text(
                         text = stringResource(id = R.string.my_alarm),
                         style = ZipdabangandroidTheme.Typography.fourteen_500,
-                        color = ZipdabangandroidTheme.Colors.Typo
+                        color = ZipdabangandroidTheme.Colors.Typo,
+                        modifier = Modifier.padding(0.dp, 0.dp, 12.dp, 0.dp)
                     )
                     Text(
                         text = "0",
                         style = ZipdabangandroidTheme.Typography.fourteen_500,
-                        color = ZipdabangandroidTheme.Colors.Typo
+                        color = ZipdabangandroidTheme.Colors.Typo,
+                        modifier = Modifier.padding(0.dp, 0.dp, 12.dp, 0.dp)
                     )
                 }
             }
-            Box(
+                Divider( modifier = Modifier.fillMaxWidth())
+            Column(
                 modifier = Modifier
                     .fillMaxWidth()
                     .weight(1f)
-                    .clickable(
-                        onClick = {
-                            //onClickFriendList()
-                        },
-                    )
                     .background(
                         color = Color.White,
                         shape = ZipdabangandroidTheme.Shapes.small
                     ),
-                contentAlignment = Alignment.Center
+                verticalArrangement = Arrangement.Center
             ) {
                 Row(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp, 0.dp, 16.dp, 0.dp),
+                        .fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween,
                 ) {
@@ -298,10 +285,12 @@ fun MyInfoScreen(
                     Text(
                         text = "0",
                         style = ZipdabangandroidTheme.Typography.fourteen_500,
-                        color = ZipdabangandroidTheme.Colors.Typo
+                        color = ZipdabangandroidTheme.Colors.Typo,
+                        modifier = Modifier.padding(0.dp, 0.dp, 12.dp, 0.dp)
                     )
                 }
             }
+            Divider( modifier = Modifier.fillMaxWidth())
         }
 
 
@@ -309,7 +298,7 @@ fun MyInfoScreen(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp, 72.dp, 16.dp, 32.dp),
+                .padding(16.dp, 4.dp, 16.dp, 0.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Center
         ) {
