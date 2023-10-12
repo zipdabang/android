@@ -182,7 +182,8 @@ fun MyScreen(
                                         style = ZipdabangandroidTheme.Typography.fourteen_500,
                                         maxLines = 1,
                                         modifier = Modifier.clickable(onClick = {
-                                            onClickUserInfo()
+                                            //onClickUserInfo()
+                                            onClickMyrecipe()
                                         }),
                                     )
                                 }
