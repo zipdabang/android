@@ -74,17 +74,6 @@ fun UserInfoProfileScreen(
     var profileDialog = mutableStateOf(false)
 
 
-    /*LaunchedEffect(key1 = profile){
-        Log.e("drawer-profile","launchedeffect 실행됨")
-        if(profile != null) {
-            drawerUserInfoViewModel.patchUserInfoProfile(profile!!)
-            Log.e("drawer-profile","${profile} api 요청함")
-        } else {
-            Log.e("drawer-profile","${profile} api 요청안함")
-        }
-    }*/
-
-
     // thumbnail
     // 갤러리 -> Uri 형태
     val takeThumbnailFromAlbumLauncher =

@@ -130,7 +130,7 @@ fun RecipeWriteScreen(
                 // 압축된 이미지를 바이트 배열로 변환
                 val thumbnailRequestBody: RequestBody = byteOutputStream.toByteArray().toRequestBody("image/jpeg".toMediaTypeOrNull())
                 // 이미지 데이터를 멀티파트로 변환
-                val thumbnailPart = MultipartBody.Part.createFormData("thumbnail", "thumbnail_${thumbnailPhotoBitmap}.jpeg", thumbnailRequestBody)
+                val thumbnailPart = MultipartBody.Part.createFormData("thumbnail", "thumbnail_${System.currentTimeMillis()}.jpeg", thumbnailRequestBody)
                 Log.e("recipewriteform-stepImages","${thumbnailRequestBody}.jpeg")
 
                 recipeWriteViewModel.thumbnailPart = thumbnailPart
@@ -158,8 +158,8 @@ fun RecipeWriteScreen(
                 // 압축된 이미지를 바이트 배열로 변환
                 val stepRequestBody: RequestBody = byteOutputStream.toByteArray().toRequestBody("image/jpeg".toMediaTypeOrNull())
                 // 이미지 데이터를 멀티파트로 변환
-                val stepPart = MultipartBody.Part.createFormData("step", "${stateRecipeWriteDialog.stepNum-1}_${stepPhotoBitmap}.jpeg", stepRequestBody)
-                Log.e("recipewriteform-stepImages","${stateRecipeWriteDialog.stepNum-1}_${stepPhotoBitmap}.jpeg")
+                val stepPart = MultipartBody.Part.createFormData("step", "${stateRecipeWriteDialog.stepNum - 1}_${System.currentTimeMillis()}.jpeg", stepRequestBody)
+                Log.e("recipewriteform-stepImages","${stateRecipeWriteDialog.stepNum - 1}_${System.currentTimeMillis()}.jpeg")
 
                 stepImageParts.add(stepPart)
             } else {
@@ -462,7 +462,7 @@ fun RecipeWriteScreen(
                             },
                             placeholderValueIngredient = stringResource(id = R.string.my_recipewrite_milk),
                             maxLengthIngredient = 16,
-                            imeActionIngredient = ImeAction.Default,
+                            imeActionIngredient = ImeAction.Next,
                             onClickTrailingiconIngredient = {
                                 recipeWriteViewModel.onRecipeWriteFormEvent(RecipeWriteFormEvent.IngredientChanged("",i+1))
                             },

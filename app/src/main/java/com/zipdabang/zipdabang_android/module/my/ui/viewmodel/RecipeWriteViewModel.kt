@@ -36,7 +36,6 @@ class RecipeWriteViewModel @Inject constructor(
     private val postRecipeWriteUseCase: PostRecipeWriteUseCase,
 ) : ViewModel() {
 
-
     var stateRecipeWriteForm by mutableStateOf(
         RecipeWriteFormState(
             ingredients = listOf(
@@ -417,7 +416,7 @@ class RecipeWriteViewModel @Inject constructor(
         Log.e("recipewrite-result", "${json}")
         Log.e("recipewrite-result 내용", "${stepImageParts}")
         Log.e("recipewrite-result 내용", "${thumbnailPart}")
-        Log.e("recipewrite-result 내용", "${"Bearer " + dataStore.data.first().accessToken.toString()}")
+        //Log.e("recipewrite-result 내용", "${"Bearer " + dataStore.data.first().accessToken.toString()}")
 
         try{
             val result = postRecipeWriteUseCase(
@@ -436,7 +435,7 @@ class RecipeWriteViewModel @Inject constructor(
                         }
                     }
                     is Resource.Error ->{
-                        Log.e("recipewrite", "에러 : ${result.message} ${result.data} ${result.code}")
+                        Log.e("recipewrite", "에러 : ${result} ${result.message} ${result.data} ${result.code}")
                     }
                     is Resource.Loading ->{
                         Log.e("recipewrite", "로딩중 : ${result.code}")
