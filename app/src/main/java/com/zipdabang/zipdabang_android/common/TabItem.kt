@@ -9,6 +9,9 @@ import com.zipdabang.zipdabang_android.module.detail.recipe.domain.RecipeDetailD
 import com.zipdabang.zipdabang_android.module.detail.recipe.ui.RecipeInfoPage
 import com.zipdabang.zipdabang_android.module.my.ui.FollowScreen
 import com.zipdabang.zipdabang_android.module.my.ui.FollowingScreen
+import com.zipdabang.zipdabang_android.module.my.ui.MyInfoScreen
+import com.zipdabang.zipdabang_android.module.my.ui.MyProfileScreen
+import com.zipdabang.zipdabang_android.module.my.ui.MyRecipesScreen
 import com.zipdabang.zipdabang_android.module.my.ui.ProfileForOthers
 import com.zipdabang.zipdabang_android.module.my.ui.RecipeForOthers
 import com.zipdabang.zipdabang_android.module.recipes.data.hot.HotRecipeItem
@@ -47,6 +50,45 @@ sealed class TabItem(val tabTitle: String, val screen: ComposableFun) {
                 showCommentBlock = showCommentBlock,
                 postResult = postResult,
                 comments = commentItems
+            )
+        }
+    )
+
+    class MyProfile() : TabItem(
+        tabTitle = "프로필",
+        screen = {
+            MyProfileScreen()
+        }
+    )
+
+    class MyRecipes() : TabItem(
+        tabTitle = "게시글",
+        screen = {
+            MyRecipesScreen()
+        }
+    )
+
+    class MyInfo(
+//        onClickLike: Unit,
+//        onClickScrap: Unit,
+//        onClickMyrecipe: Unit,
+//        onClickShopping: Unit,
+//        onClickNotice: Unit,
+//        onAlarm : Unit,
+//        onInquiry : Unit,
+//        onClickLogout: Unit,
+    ) : TabItem(
+        tabTitle = "개인정보",
+        screen = {
+            MyInfoScreen(
+//                onClickLike = onClickLike,
+//                onClickScrap = onClickScrap,
+//                onClickMyrecipe = onClickMyrecipe,
+//                onClickShopping = onClickShopping,
+//                onClickNotice = onClickNotice,
+//                onAlarm = onAlarm,
+//                onInquiry = onInquiry,
+//                onClickLogout = onClickLogout,
             )
         }
     )
