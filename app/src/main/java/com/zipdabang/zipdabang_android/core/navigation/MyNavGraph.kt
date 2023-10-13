@@ -99,10 +99,10 @@ fun NavGraphBuilder.MyNavGraph(
                     onClickUserInfo = {
                         navController.navigate(DrawerScreen.UserInfo.route)
                     },
-                    onAlarm = {
+                    onClickAlarm = {
 
                     },
-                    onInquiry = {
+                    onClickInquiry = {
 
                     }
                 )

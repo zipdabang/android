@@ -85,8 +85,8 @@ fun MyScreen(
     onClickMyrecipe: () -> Unit,
     onClickShopping: () -> Unit,
     onClickNotice: () -> Unit,
-    onAlarm : ()->Unit,
-    onInquiry : ()->Unit,
+    onClickAlarm : ()->Unit,
+    onClickInquiry : ()->Unit,
     onClickLogout: () -> Unit,
     onClickUserInfo: () -> Unit,
 ) {
@@ -182,8 +182,7 @@ fun MyScreen(
                                         style = ZipdabangandroidTheme.Typography.fourteen_500,
                                         maxLines = 1,
                                         modifier = Modifier.clickable(onClick = {
-                                            //onClickUserInfo()
-                                            onClickMyrecipe()
+                                            onClickUserInfo()
                                         }),
                                     )
                                 }
@@ -216,16 +215,19 @@ fun MyScreen(
                             ColumnPagersNoPadding(
                                 tabsList = listOf(
                                     TabItem.MyProfile(),
-                                    TabItem.MyRecipes(),
+                                    TabItem.MyRecipes(
+                                        onClickMyrecipe = onClickMyrecipe,
+                                    ),
                                     TabItem.MyInfo(
-//                                        onClickLike = onClickLike,
-//                                        onClickScrap = onClickScrap,
-//                                        onClickMyrecipe = onClickMyrecipe,
-//                                        onClickShopping = onClickShopping,
-//                                        onClickNotice = onClickNotice,
-//                                        onAlarm = onAlarm,
-//                                        onInquiry = onInquiry,
-//                                        onClickLogout = onClickLogout,
+                                        onClickLike = onClickLike,
+                                        onClickScrap = onClickScrap,
+                                        onClickMyrecipe = onClickMyrecipe,
+                                        onClickShopping = onClickShopping,
+                                        onClickNotice = onClickNotice,
+                                        onClickAlarm = onClickAlarm,
+                                        onClickInquiry = onClickInquiry,
+                                        onClickLogout = onClickLogout,
+                                        onClickUserInfo = onClickUserInfo
                                     )
                                 ),
                                 pagerState = pagerState
@@ -537,7 +539,7 @@ fun PreviewMyScreen() {
         onClickNotice = {},
         onClickLogout = {},
         onClickUserInfo = {},
-        onAlarm = {},
-        onInquiry = {},
+        onClickAlarm = {},
+        onClickInquiry = {},
     )
 }
