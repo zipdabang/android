@@ -20,17 +20,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.font.Font
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.zipdabang.zipdabang_android.R
 import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
 
 @Composable
-fun MyRecipesScreen() {
+fun MyPagerRecipesScreen(
+    onClickMyrecipe : ()->Unit
+) {
     Column(
         modifier = Modifier
             .background(color = Color.White)
@@ -46,7 +43,7 @@ fun MyRecipesScreen() {
                     },
                     indication = rememberRipple(),
                     onClick = {
-
+                        onClickMyrecipe()
                     }
                 ),
             horizontalArrangement = Arrangement.SpaceBetween,

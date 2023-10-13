@@ -47,9 +47,11 @@ fun NavGraphBuilder.DrawerNavGraph(navController: NavHostController, outerNavCon
                 navController.navigate(DrawerScreen.ReportSuccess.route)
             })
         }
+
         composable(DrawerScreen.ReportList.route){
             ReportListScreen()
         }
+
         composable(DrawerScreen.ReportSuccess.route){
             ReportSuccessScreen(
                 isGotoNewReport = {
@@ -174,7 +176,7 @@ fun NavGraphBuilder.DrawerNavGraph(navController: NavHostController, outerNavCon
             )
         }
 
-        composable(DrawerScreen.UserInfoOneLine.route) {navBackStackEntry ->
+        composable(DrawerScreen.UserInfoOneLine.route) { navBackStackEntry ->
             val drawerUserInfoViewModel = navBackStackEntry
                 .drawerUserInfoViewModel<DrawerUserInfoViewModel>(navController = navController)
 

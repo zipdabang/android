@@ -9,15 +9,13 @@ import com.zipdabang.zipdabang_android.module.detail.recipe.domain.RecipeDetailD
 import com.zipdabang.zipdabang_android.module.detail.recipe.ui.RecipeInfoPage
 import com.zipdabang.zipdabang_android.module.my.ui.FollowScreen
 import com.zipdabang.zipdabang_android.module.my.ui.FollowingScreen
-import com.zipdabang.zipdabang_android.module.my.ui.MyInfoScreen
-import com.zipdabang.zipdabang_android.module.my.ui.MyProfileScreen
-import com.zipdabang.zipdabang_android.module.my.ui.MyRecipesScreen
-import com.zipdabang.zipdabang_android.module.my.ui.ProfileForOthers
+import com.zipdabang.zipdabang_android.module.my.ui.MyPagerInfoScreen
+import com.zipdabang.zipdabang_android.module.my.ui.MyPagerProfileScreen
+import com.zipdabang.zipdabang_android.module.my.ui.MyPagerRecipesScreen
 import com.zipdabang.zipdabang_android.module.my.ui.RecipeForOthers
 import com.zipdabang.zipdabang_android.module.recipes.data.hot.HotRecipeItem
 import com.zipdabang.zipdabang_android.module.recipes.ui.hot.HotRecipeList
 import com.zipdabang.zipdabang_android.module.recipes.ui.state.PreferenceToggleState
-import kotlinx.coroutines.flow.StateFlow
 
 typealias ComposableFun = @Composable () -> Unit
 sealed class TabItem(val tabTitle: String, val screen: ComposableFun) {
@@ -57,38 +55,44 @@ sealed class TabItem(val tabTitle: String, val screen: ComposableFun) {
     class MyProfile() : TabItem(
         tabTitle = "프로필",
         screen = {
-            MyProfileScreen()
+            MyPagerProfileScreen()
         }
     )
 
-    class MyRecipes() : TabItem(
+    class MyRecipes(
+        onClickMyrecipe : ()->Unit,
+    ) : TabItem(
         tabTitle = "게시글",
         screen = {
-            MyRecipesScreen()
+            MyPagerRecipesScreen(
+                onClickMyrecipe=onClickMyrecipe,
+            )
         }
     )
 
     class MyInfo(
-//        onClickLike: (Boolean) -> Unit,
-//        onClickScrap: (Boolean) -> Unit,
-//        onClickMyrecipe: (Boolean) -> Unit,
-//        onClickShopping: (Boolean) -> Unit,
-//        onClickNotice: (Boolean) -> Unit,
-//        onAlarm : (Boolean) -> Unit,
-//        onInquiry : (Boolean) -> Unit,
-//        onClickLogout: (Boolean) -> Unit,
+        onClickLike: ()->Unit,
+        onClickScrap: () -> Unit,
+        onClickMyrecipe: () -> Unit,
+        onClickShopping: () -> Unit,
+        onClickNotice: () -> Unit,
+        onClickAlarm : () -> Unit,
+        onClickInquiry : () -> Unit,
+        onClickLogout: () -> Unit,
+        onClickUserInfo : ()->Unit,
     ) : TabItem(
         tabTitle = "개인정보",
         screen = {
-            MyInfoScreen(
-//                onClickLike = onClickLike,
-//                onClickScrap = onClickScrap,
-//                onClickMyrecipe = onClickMyrecipe,
-//                onClickShopping = onClickShopping,
-//                onClickNotice = onClickNotice,
-//                onAlarm = onAlarm,
-//                onInquiry = onInquiry,
-//                onClickLogout = onClickLogout,
+            MyPagerInfoScreen(
+                onClickLike= onClickLike,
+                onClickScrap= onClickScrap,
+                onClickMyrecipe= onClickMyrecipe,
+                onClickShopping= onClickShopping,
+                onClickNotice= onClickNotice,
+                onClickAlarm = onClickAlarm,
+                onClickInquiry = onClickInquiry,
+                onClickLogout= onClickLogout,
+                onClickUserInfo = onClickUserInfo
             )
         }
     )

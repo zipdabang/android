@@ -17,7 +17,7 @@ import androidx.compose.ui.unit.dp
 import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
 
 @Composable
-fun MyProfileScreen() {
+fun MyPagerProfileScreen() {
     val scrollState = rememberScrollState()
 
     Column(
