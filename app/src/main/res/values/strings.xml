@@ -11,12 +11,12 @@
     <string name="drawer_privacyAgree">개인정보 제 3자 동의</string>
     <string name="drawer_privacy">개인정보 처리방침</string>
     <string name="drawer_FAG">FAQ</string>
-    <string name="drawer_inquiry">오류신고 및 문의하기</string>
+    <string name="drawer_inquiry">오류신고 및 신고</string>
     <string name="drawer_inquiry_list">나의 문의내역</string>
     <string name="drawer_login">로그인하기</string>
     <string name="drawer_user">회원 정보</string>
     <string name="drawer_alarm">알림 정보</string>
-    <string name="drawer_etc">기타 정보</string>
+    <string name="drawer_setting">설정</string>
     <string name="drawer_appName">집다방</string>
     <string name="drawer_appGmail">zipdabang.app@gmail.com</string>
     <string name="drawer_appPhone">010-9855-0007</string>

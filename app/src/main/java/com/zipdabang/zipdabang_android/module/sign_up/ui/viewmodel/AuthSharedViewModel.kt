@@ -7,6 +7,7 @@ import androidx.compose.runtime.setValue
 import androidx.datastore.core.DataStore
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.gson.Gson
 import com.zipdabang.zipdabang_android.common.Resource
 import com.zipdabang.zipdabang_android.core.data_store.proto.ProtoDataViewModel
 import com.zipdabang.zipdabang_android.core.data_store.proto.Token
@@ -687,7 +688,7 @@ class AuthSharedViewModel @Inject constructor(
                         }
                     }
                     is Resource.Error ->{
-                        Log.e("signup-tokens", "에러 : ${result.message}")
+                        Log.e("signup-tokens", "에러 : ${result.message} ${result.code} ${result.data}")
                     }
                     is Resource.Loading ->{
                         Log.e("signup-tokens", "로딩중 : ${result.data?.result}")

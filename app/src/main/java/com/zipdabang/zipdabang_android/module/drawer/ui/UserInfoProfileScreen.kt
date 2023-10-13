@@ -47,6 +47,7 @@ import com.zipdabang.zipdabang_android.ui.component.ModalDrawer
 import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -91,14 +92,14 @@ fun UserInfoProfileScreen(
                 // 압축된 이미지를 바이트 배열로 변환
                 val profileRequestBody: RequestBody = byteOutputStream.toByteArray().toRequestBody("image/jpeg".toMediaTypeOrNull())
                 // 이미지 데이터를 멀티파트로 변환
-                val profilePart = MultipartBody.Part.createFormData("thumbnail", "${profilePhotoBitmap}.jpeg", profileRequestBody)
+                val profilePart = MultipartBody.Part.createFormData("newProfile", "${profilePhotoBitmap}.jpeg", profileRequestBody)
 
                 profile = profilePart
                 Log.e("drawer-profile", "${profile} 들어갔담")
 
-                CoroutineScope(Dispatchers.IO).launch{
+                CoroutineScope(Dispatchers.IO).launch {
                     drawerUserInfoViewModel.patchUserInfoProfile(profile!!)
-                    withContext(Dispatchers.Main) {
+                    withContext(Dispatchers.Main){
                         onClickUserInfo()
                     }
                 }
@@ -152,9 +153,11 @@ fun UserInfoProfileScreen(
                             }
                             Column(
                                 modifier = Modifier.clickable(onClick={
-                                    CoroutineScope(Dispatchers.Main).launch{
+                                    CoroutineScope(Dispatchers.IO).launch {
                                         drawerUserInfoViewModel.patchUserInfoDefaultProfile()
-                                        onClickUserInfo()
+                                        withContext(Dispatchers.Main){
+                                            onClickUserInfo()
+                                        }
                                     }
                                 }),
                                 verticalArrangement = Arrangement.Center,

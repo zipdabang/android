@@ -1,7 +1,7 @@
 package com.zipdabang.zipdabang_android.module.drawer.ui
 
+import android.annotation.SuppressLint
 import android.util.Log
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -16,18 +16,15 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -38,25 +35,21 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
-import coil.compose.ImagePainter
-import coil.compose.rememberImagePainter
-import coil.transform.CircleCropTransformation
 import com.zipdabang.zipdabang_android.R
 import com.zipdabang.zipdabang_android.module.drawer.ui.viewmodel.DrawerUserInfoViewModel
 import com.zipdabang.zipdabang_android.ui.component.AppBarSignUp
-import com.zipdabang.zipdabang_android.ui.component.CircleImage
 import com.zipdabang.zipdabang_android.ui.shimmeringEffect
 import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
+@SuppressLint("CoroutineCreationDuringComposition")
 @Composable
 fun UserInfoScreen(
     drawerUserInfoViewModel: DrawerUserInfoViewModel = hiltViewModel(),
@@ -65,7 +58,7 @@ fun UserInfoScreen(
     onClickEditBasic: () -> Unit,
     onClickEditDetail: () -> Unit,
     onClickEditNickname: () -> Unit,
-    onClickEditOneLine : ()->Unit,
+    onClickEditOneLine: () -> Unit,
     onClickEditPreferences: () -> Unit,
     onClickLogout: () -> Unit,
     onClickWithdraw: () -> Unit,
@@ -124,9 +117,17 @@ fun UserInfoScreen(
                                 }
                             ),
                     ) {
-                        CircleImage(
+                       /* CircleImage(
                             imageUrl = stateUserInfo.profileUrl,
-                            contentDescription = ""
+                            contentDescription =c
+                        )*/
+                        AsyncImage(
+                            model = stateUserInfo.profileUrl,
+                            contentDescription =  "",
+                            modifier = Modifier
+                                .clip(CircleShape)
+                                .fillMaxSize(),
+                            contentScale = ContentScale.Crop,
                         )
                     }
                     Box(
@@ -690,8 +691,8 @@ fun UserInfoScreen(
                                     Modifier
                                 }
                             ),
-                        text = if(stateUserInfo.oneline == "") stringResource(id = R.string.drawer_oneline_not_exist)
-                        else if(stateUserInfo.oneline == null) ""
+                        text = if (stateUserInfo.oneline == "") stringResource(id = R.string.drawer_oneline_not_exist)
+                        else if (stateUserInfo.oneline == null) ""
                         else stateUserInfo.oneline,
                         style = ZipdabangandroidTheme.Typography.sixteen_500,
                         color = ZipdabangandroidTheme.Colors.Typo
@@ -879,7 +880,6 @@ fun UserInfoScreen(
                 )
             }
         }
-
 
 
     }

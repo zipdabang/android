@@ -1,6 +1,8 @@
 package com.zipdabang.zipdabang_android.core.navigation
 
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
@@ -32,7 +34,8 @@ import com.zipdabang.zipdabang_android.module.drawer.ui.report.ReportListScreen
 import com.zipdabang.zipdabang_android.module.drawer.ui.report.ReportSuccessScreen
 import com.zipdabang.zipdabang_android.module.drawer.ui.viewmodel.DrawerUserInfoViewModel
 
-fun NavGraphBuilder.DrawerNavGraph(navController: NavHostController,outerNavController: NavHostController){
+@RequiresApi(Build.VERSION_CODES.TIRAMISU)
+fun NavGraphBuilder.DrawerNavGraph(navController: NavHostController, outerNavController: NavHostController){
 
     navigation(startDestination = DrawerScreen.Notice.route, route = DRAWER_ROUTE){
         composable(DrawerScreen.Notice.route){
@@ -90,7 +93,9 @@ fun NavGraphBuilder.DrawerNavGraph(navController: NavHostController,outerNavCont
                     drawerUserInfoViewModel.onCheckedEvent()
                     navController.navigate(DrawerScreen.UserInfoPreferences.route)
                 },
-                onClickLogout = {},
+                onClickLogout = {
+
+                },
                 onClickWithdraw = {
                     navController.navigate(DrawerScreen.Quit.route)
                 }
@@ -190,19 +195,17 @@ fun NavGraphBuilder.DrawerNavGraph(navController: NavHostController,outerNavCont
         composable(DrawerScreen.UserInfoProfile.route) { navBackStackEntry ->
             UserInfoProfileScreen(
                 onClickBack = {
-                    navController.navigate(DrawerScreen.UserInfo.route) {
-                        popUpTo(DrawerScreen.UserInfo.route) {
-                            inclusive = true
-                        }
-                    }
+                    navController.popBackStack(MyScreen.Home.route, inclusive = false)
                 },
                 onClickUserInfo ={
-                    Log.e("drawer-profile","넘어가기")
-                    navController.navigate(DrawerScreen.UserInfo.route) {
-                        popUpTo(DrawerScreen.UserInfo.route) {
+                    Log.e("drawer-profile", "페이지 이동")
+                    navController.popBackStack(MyScreen.Home.route, inclusive = false)
+
+                    /*navController.navigate(MyScreen.Home.route) {
+                        popUpTo(MyScreen.Home.route) {
                             inclusive = true
                         }
-                    }
+                    }*/
                 }
             )
         }

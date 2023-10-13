@@ -50,7 +50,7 @@ fun MyInfoScreen(
         modifier = Modifier
             .background(color = Color.White)
             .fillMaxSize()
-    ){
+    ) {
         // 좋아요/스크랩/나의레시피/쇼핑
         Row(
             modifier = Modifier
@@ -209,7 +209,7 @@ fun MyInfoScreen(
                         shape = ZipdabangandroidTheme.Shapes.small
                     ),
                 verticalArrangement = Arrangement.Center
-            ){
+            ) {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth(),
@@ -229,7 +229,10 @@ fun MyInfoScreen(
                     )
                 }
             }
-                Divider( modifier = Modifier.fillMaxWidth())
+            Divider(
+                modifier = Modifier.fillMaxWidth(),
+                color = ZipdabangandroidTheme.Colors.Typo.copy(0.2f),
+            )
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -260,7 +263,10 @@ fun MyInfoScreen(
                     )
                 }
             }
-                Divider( modifier = Modifier.fillMaxWidth())
+            Divider(
+                modifier = Modifier.fillMaxWidth(),
+                color = ZipdabangandroidTheme.Colors.Typo.copy(0.2f),
+            )
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -290,7 +296,10 @@ fun MyInfoScreen(
                     )
                 }
             }
-            Divider( modifier = Modifier.fillMaxWidth())
+            Divider(
+                modifier = Modifier.fillMaxWidth(),
+                color = ZipdabangandroidTheme.Colors.Typo.copy(0.2f),
+            )
         }
 
 
@@ -325,7 +334,6 @@ fun MyInfoScreen(
                 }
             )
         }
-
 
 
     }

@@ -42,9 +42,9 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 fun FriendListScreen(
-   // viewModel : FriendsListViewModel = hiltViewModel(),
-    onClickBack : ()->Unit,
-    onClickOthers : (Int) -> Unit,
+    // viewModel : FriendsListViewModel = hiltViewModel(),
+    onClickBack: () -> Unit,
+    onClickOthers: (Int) -> Unit,
     navController: NavController,
 ) {
     val drawerState = rememberDrawerState(DrawerValue.Closed)
@@ -67,22 +67,22 @@ fun FriendListScreen(
                 },
                 containerColor = Color.White,
                 contentColor = Color.White,
-            ){
+            ) {
 
-               Column(
+                Column(
                     modifier = Modifier
                         .padding(top = it.calculateTopPadding())
                         .fillMaxSize()
                         .background(Color.White)
                 ) {
 
-                   Box(
-                            modifier = Modifier.padding(16.dp, 10.dp, 16.dp, 0.dp)
-                        ) {
-                            SearchBar(hintText = stringResource(id = R.string.my_searchbar_person))
-                        }
+                    Box(
+                        modifier = Modifier.padding(16.dp, 10.dp, 16.dp, 0.dp)
+                    ) {
+                        SearchBar(hintText = stringResource(id = R.string.my_searchbar_person))
+                    }
 
-                   Spacer(modifier = Modifier.height(10.dp))
+                    Spacer(modifier = Modifier.height(10.dp))
 
 
 
@@ -95,7 +95,7 @@ fun FriendListScreen(
                     )
                 }
 
-                }
+            }
 
         },
         drawerState = drawerState,
@@ -106,5 +106,5 @@ fun FriendListScreen(
 @Preview
 @Composable
 fun PreviewFriendListScreen() {
-   /// FriendListScreen(navController = rememberNavController(), onClickBack = {})
+    /// FriendListScreen(navController = rememberNavController(), onClickBack = {})
 }
