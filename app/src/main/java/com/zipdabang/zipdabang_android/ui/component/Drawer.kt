@@ -61,7 +61,7 @@ fun DrawerContent(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(16.dp, 0.dp, 16.dp, 0.dp)
+                    .padding(16.dp, 16.dp, 16.dp, 0.dp)
                     .weight(1f),
                 contentAlignment = Alignment.CenterStart,
             ){
@@ -252,29 +252,13 @@ fun DrawerContent(
                         .fillMaxWidth()
                         .weight(1f)
                         .clickable(
-                            onClick = { alarmOnClick() }
-                        ),
-                    contentAlignment = Alignment.CenterStart
-                ) {
-                    Text(
-                        modifier = Modifier.padding(16.dp,0.dp,16.dp,0.dp),
-                        text = stringResource(id = R.string.drawer_alarm),
-                        style = ZipdabangandroidTheme.Typography.sixteen_500,
-                        color = ZipdabangandroidTheme.Colors.Typo,
-                    )
-                }
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .weight(1f)
-                        .clickable(
                             onClick = { etcOnClick() }
                         ),
                     contentAlignment = Alignment.CenterStart
                 ) {
                     Text(
                         modifier = Modifier.padding(16.dp,0.dp,16.dp,0.dp),
-                        text = stringResource(id = R.string.drawer_etc),
+                        text = stringResource(id = R.string.drawer_setting),
                         style = ZipdabangandroidTheme.Typography.sixteen_500,
                         color = ZipdabangandroidTheme.Colors.Typo,
                     )

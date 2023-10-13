@@ -192,9 +192,9 @@ fun RegisterPreferencesScreen(
                         CoroutineScope(Dispatchers.Main).launch {
                             try{
                                 authSharedViewModel.postInfo(tokenStoreViewModel)
-                                Log.e("signup-tokens","넘어가져1")
+                                //Log.e("signup-tokens","넘어가져1")
                                 onClickNext()
-                                Log.e("signup-tokens","넘어가져3")
+                                //Log.e("signup-tokens","넘어가져3")
                             } catch (e:Exception){
 
                             }
