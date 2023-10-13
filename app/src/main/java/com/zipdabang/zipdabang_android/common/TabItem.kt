@@ -69,14 +69,14 @@ sealed class TabItem(val tabTitle: String, val screen: ComposableFun) {
     )
 
     class MyInfo(
-//        onClickLike: Unit,
-//        onClickScrap: Unit,
-//        onClickMyrecipe: Unit,
-//        onClickShopping: Unit,
-//        onClickNotice: Unit,
-//        onAlarm : Unit,
-//        onInquiry : Unit,
-//        onClickLogout: Unit,
+//        onClickLike: (Boolean) -> Unit,
+//        onClickScrap: (Boolean) -> Unit,
+//        onClickMyrecipe: (Boolean) -> Unit,
+//        onClickShopping: (Boolean) -> Unit,
+//        onClickNotice: (Boolean) -> Unit,
+//        onAlarm : (Boolean) -> Unit,
+//        onInquiry : (Boolean) -> Unit,
+//        onClickLogout: (Boolean) -> Unit,
     ) : TabItem(
         tabTitle = "개인정보",
         screen = {

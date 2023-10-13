@@ -665,6 +665,8 @@ class AuthSharedViewModel @Inject constructor(
                     preferBeverages = stateBeverageForm.beverageCheckList.mapIndexedNotNull { index, isSelected ->
                         if (isSelected) index+1 else null
                     },
+                    fcmToken = dataStore.data.first().fcmToken.toString(),
+                    serialNumber = dataStore.data.first().deviceNumber.toString()
                 )
             )
 

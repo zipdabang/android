@@ -199,9 +199,9 @@ fun MyScreen(
                                         .clip(CircleShape),
                                 ) {
                                     CircleImage(
-                                        imageUrl = R.drawable.img_profile,
+                                        imageUrl = stateMyUserInfo.profileUrl,
                                         contentDescription = ""
-                                    ) //stateMyUserInfo.profileUrl
+                                    )
                                 }
                             }
                         }
@@ -218,14 +218,14 @@ fun MyScreen(
                                     TabItem.MyProfile(),
                                     TabItem.MyRecipes(),
                                     TabItem.MyInfo(
-//                                        onClickLike = onClickLike(),
-//                                        onClickScrap = onClickScrap(),
-//                                        onClickMyrecipe = onClickMyrecipe(),
-//                                        onClickShopping = onClickShopping(),
-//                                        onClickNotice = onClickNotice(),
-//                                        onAlarm = onAlarm(),
-//                                        onInquiry = onInquiry(),
-//                                        onClickLogout = onClickLogout(),
+//                                        onClickLike = onClickLike,
+//                                        onClickScrap = onClickScrap,
+//                                        onClickMyrecipe = onClickMyrecipe,
+//                                        onClickShopping = onClickShopping,
+//                                        onClickNotice = onClickNotice,
+//                                        onAlarm = onAlarm,
+//                                        onInquiry = onInquiry,
+//                                        onClickLogout = onClickLogout,
                                     )
                                 ),
                                 pagerState = pagerState

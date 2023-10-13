@@ -4,6 +4,7 @@ import android.util.Log
 import com.zipdabang.zipdabang_android.common.Resource
 import com.zipdabang.zipdabang_android.common.ResponseCode
 import com.zipdabang.zipdabang_android.common.getErrorCode
+import com.zipdabang.zipdabang_android.module.sign_up.data.remote.TermsResponse
 import com.zipdabang.zipdabang_android.module.sign_up.data.remote.TermsResult
 import com.zipdabang.zipdabang_android.module.sign_up.domain.repository.SignUpRepository
 import kotlinx.coroutines.flow.Flow
@@ -16,7 +17,7 @@ import javax.inject.Inject
 class GetTermsUseCase @Inject constructor(
     private val repository : SignUpRepository
 ) {
-    operator fun invoke() : Flow<Resource<TermsResult>> = flow {
+    operator fun invoke() : Flow<Resource<TermsResult?>> = flow {
         try{
             emit(Resource.Loading())
             val result = repository.getTerms()
