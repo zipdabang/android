@@ -37,15 +37,16 @@ import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
 
 @Composable
 fun MyInfoScreen(
-//    onClickLike: Unit,
-//    onClickScrap: Unit,
-//    onClickMyrecipe: Unit,
-//    onClickShopping: Unit,
-//    onClickNotice: Unit,
-//    onAlarm : Unit,
-//    onInquiry : Unit,
-//    onClickLogout: Unit,
+//    onClickLike: (Boolean) -> Unit,
+//    onClickScrap: (Boolean) -> Unit,
+//    onClickMyrecipe: (Boolean) -> Unit,
+//    onClickShopping: (Boolean) -> Unit,
+//    onClickNotice: (Boolean) -> Unit,
+//    onAlarm : (Boolean) -> Unit,
+//    onInquiry : (Boolean) -> Unit,
+//    onClickLogout: (Boolean) -> Unit,
 ) {
+
     Column(
         modifier = Modifier
             .background(color = Color.White)
@@ -80,7 +81,7 @@ fun MyInfoScreen(
                     textColor = Color.White,
                     textStyle = ZipdabangandroidTheme.Typography.fourteen_700,
                     onClick = {
-                        //onClickLike
+                        //onClickLike(true)
                     }
                 )
             }
