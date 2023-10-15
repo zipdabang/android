@@ -524,6 +524,7 @@ fun CustomDialogRecipeDelete(
 fun CustomDialogUploadComplete(
     image: Any,
     setShowDialog: (Boolean) -> Unit,
+    onLater : () -> Unit,
     onAccept: () -> Unit,
 ) {
     Dialog(onDismissRequest = { setShowDialog(false) }) {
@@ -605,7 +606,9 @@ fun CustomDialogUploadComplete(
                     }
                     TextButton(
                         shape = RectangleShape,
-                        onClick = { setShowDialog(false) }) {
+                        onClick = {
+                            onLater()
+                        }) {
                         Text(
                             text = stringResource(id = R.string.dialog_upload_seenexttime),
                             color = ZipdabangandroidTheme.Colors.Typo,
@@ -628,9 +631,10 @@ fun CustomDialogSelectCategory(
     categorySelectedList: List<Boolean>,
     onSelectClick : (Int, Boolean)->Unit,
     onCompleteClick: () -> Unit,
+    isComplete : Boolean,
     setShowDialog: (Boolean) -> Unit,
 ) {
-    Dialog(onDismissRequest = { setShowDialog(false) }) {
+    Dialog( onDismissRequest = { setShowDialog(false) }) {
         Box(
             modifier = Modifier
                 .size(width = 320.dp, height = 388.dp)
@@ -709,6 +713,7 @@ fun CustomDialogSelectCategory(
                     .height(56.dp),
             ) {
                 TextButton(
+                    enabled = isComplete,
                     modifier = Modifier.fillMaxSize(),
                     shape = RectangleShape,
                     onClick = { onCompleteClick() },
@@ -1458,7 +1463,8 @@ fun PreviewCustomDialogUploadComplete() {
         setShowDialog = {
             showDialogSave.value = it
         },
-        onAccept = { }
+        onAccept = { },
+        onLater = { }
     )
 }
 
@@ -1527,6 +1533,7 @@ fun PreviewCustomDialogSelectCategory() {
             onCompleteClick = {
 
             },
+            isComplete = true,
             setShowDialog = {
                 showDialog.value = it
             },

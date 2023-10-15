@@ -10,8 +10,10 @@ import okhttp3.RequestBody
 import com.zipdabang.zipdabang_android.module.my.data.remote.otherinfo.OtherInfoDto
 import com.zipdabang.zipdabang_android.module.my.data.remote.otherinfo.OtherRecipePreviewDto
 import com.zipdabang.zipdabang_android.module.my.data.remote.recipewrite.CategoriesResponse
+import com.zipdabang.zipdabang_android.module.my.data.remote.recipewrite.RecipeWriteBeveragesResponse
 import com.zipdabang.zipdabang_android.module.my.data.remote.recipewrite.RecipeWriteResponse
 import com.zipdabang.zipdabang_android.module.my.data.remote.signout.SignOutResponseDto
+import com.zipdabang.zipdabang_android.module.sign_up.data.remote.BeveragesResponse
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.Multipart
@@ -79,4 +81,9 @@ interface MyApi {
         @Header("Authorization") accessToken: String,
         @Query("pageIndex") pageIndex : Int
     ) : MyInfoRecipesResponse
+
+    @GET("/categories")
+    suspend fun getRecipeWriteBeverages(
+        @Header("Authorization") accessToken: String
+    ) : RecipeWriteBeveragesResponse
 }

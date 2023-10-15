@@ -28,5 +28,6 @@ sealed class RecipeWriteFormEvent{
 
 
     data class BtnEnabled(val enabled: Boolean) : RecipeWriteFormEvent()
+    data class BtnEnabledSave(val enabled: Boolean) : RecipeWriteFormEvent()
 
 }

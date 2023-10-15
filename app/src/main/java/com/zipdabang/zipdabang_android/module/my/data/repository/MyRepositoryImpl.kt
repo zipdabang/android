@@ -10,6 +10,7 @@ import com.zipdabang.zipdabang_android.module.my.data.remote.myinfo.MyInfoRecipe
 import com.zipdabang.zipdabang_android.module.my.data.remote.myinfo.MyInfoResponse
 import com.zipdabang.zipdabang_android.module.my.data.remote.otherinfo.OtherInfoDto
 import com.zipdabang.zipdabang_android.module.my.data.remote.otherinfo.OtherRecipePreviewDto
+import com.zipdabang.zipdabang_android.module.my.data.remote.recipewrite.RecipeWriteBeveragesResponse
 import com.zipdabang.zipdabang_android.module.my.domain.repository.MyRepository
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -61,5 +62,9 @@ class MyRepositoryImpl @Inject constructor(
         pageIndex: Int
     ): MyInfoRecipesResponse {
         return api.getMyInfoRecipes(accessToken, pageIndex)
+    }
+
+    override suspend fun getRecipeWriteBeverages(accessToken: String): RecipeWriteBeveragesResponse {
+        return api.getRecipeWriteBeverages(accessToken)
     }
 }
