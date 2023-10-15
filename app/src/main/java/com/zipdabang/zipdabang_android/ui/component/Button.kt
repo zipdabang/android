@@ -111,6 +111,39 @@ fun PrimaryButtonOutLined(
         }
     }
 }
+@Composable
+fun PrimaryButtonOutLinedStatus(
+    borderColor: Color,
+    text: String,
+    onClick: () -> Unit,
+    enabled : Boolean,
+) {
+    Button(
+        onClick = onClick,
+        shape = ZipdabangandroidTheme.Shapes.thin,
+        modifier = Modifier
+            .fillMaxWidth(),
+        enabled = enabled,
+        border = BorderStroke(1.dp, borderColor),
+        colors = ButtonDefaults.buttonColors(
+            containerColor = ZipdabangandroidTheme.Colors.MainBackground,
+            disabledContainerColor = Color.White
+        )
+    ) {
+        Box(
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = text,
+                textAlign = TextAlign.Center,
+                color = ZipdabangandroidTheme.Colors.Typo,
+                maxLines = 1,
+                modifier = Modifier,
+                fontFamily = FontFamily(Font(R.font.kopubworlddotum_medium))
+            )
+        }
+    }
+}
 
 @Composable
 fun PrimaryButtonStrawberry(

@@ -21,7 +21,8 @@ data class RecipeWriteFormState(
     val steps : List<Step> = emptyList(),
     val stepsNum : Int = 1,
 
-    val btnEnabled : Boolean = true,
+    val btnEnabled : Boolean = false,
+    val btnEnabledSave : Boolean = false,
 
     val error : String = ""
 )
