@@ -3,11 +3,15 @@ package com.zipdabang.zipdabang_android.module.my.data.remote
 import com.zipdabang.zipdabang_android.module.my.data.remote.followorcancel.FollowOrCancelDto
 import com.zipdabang.zipdabang_android.module.my.data.remote.friendlist.follow.FollowDto
 import com.zipdabang.zipdabang_android.module.my.data.remote.friendlist.following.FollowingDto
+import com.zipdabang.zipdabang_android.module.my.data.remote.myinfo.MyInfoRecipesResponse
+import com.zipdabang.zipdabang_android.module.my.data.remote.myinfo.MyInfoResponse
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import com.zipdabang.zipdabang_android.module.my.data.remote.otherinfo.OtherInfoDto
 import com.zipdabang.zipdabang_android.module.my.data.remote.otherinfo.OtherRecipePreviewDto
-import retrofit2.http.Body
+import com.zipdabang.zipdabang_android.module.my.data.remote.recipewrite.CategoriesResponse
+import com.zipdabang.zipdabang_android.module.my.data.remote.recipewrite.RecipeWriteResponse
+import com.zipdabang.zipdabang_android.module.my.data.remote.signout.SignOutResponseDto
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.Multipart
@@ -65,4 +69,14 @@ interface MyApi {
         @Path(value = "memberId") memeberId : Int
     ) : OtherRecipePreviewDto
 
+    @GET("members/selfMyZipdabang")
+    suspend fun getMyInfo(
+        @Header("Authorization") accessToken: String
+    ) : MyInfoResponse
+
+    @GET("members/recipes/owner")
+    suspend fun getMyInfoRecipes(
+        @Header("Authorization") accessToken: String,
+        @Query("pageIndex") pageIndex : Int
+    ) : MyInfoRecipesResponse
 }

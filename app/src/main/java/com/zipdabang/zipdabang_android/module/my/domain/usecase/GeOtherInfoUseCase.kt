@@ -5,9 +5,6 @@ import com.zipdabang.zipdabang_android.common.Resource
 import com.zipdabang.zipdabang_android.common.getErrorCode
 import com.zipdabang.zipdabang_android.core.data_store.proto.Token
 import com.zipdabang.zipdabang_android.module.my.data.remote.MyApi
-import com.zipdabang.zipdabang_android.module.my.data.remote.RecipeWriteRequest
-import com.zipdabang.zipdabang_android.module.my.data.remote.RecipeWriteResult
-import com.zipdabang.zipdabang_android.module.my.data.remote.followorcancel.FollowOrCancelDto
 import com.zipdabang.zipdabang_android.module.my.data.remote.otherinfo.OtherInfoDto
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first

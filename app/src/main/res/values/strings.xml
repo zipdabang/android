@@ -151,6 +151,12 @@
     <string name="my_profileedit">프로필 사진 변경</string>
     <string name="my_profileedit_select">직접 선택</string>
     <string name="my_profileedit_basicprofile">기본 프로필</string>
+    <string name="my_profile_oneline">한 줄 소개</string>
+    <string name="my_profile_prefercategory">선호하는 카페 음료</string>
+    <string name="my_profile_prefercategory_none">선호하는 음료가 아직 없습니다</string>
+    <string name="my_profile_prefercategory_choose"> (선택하기)</string>
+    <string name="my_profile_oneline_none">한 줄 소개가 아직 없습니다</string>
+    <string name="my_profile_oneline_write"> (입력하러 가기)</string>
 
 
     <!-- for dialog -->
