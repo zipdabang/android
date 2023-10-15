@@ -11,5 +11,7 @@ data class InfoRequest(
     val nickname: String,
     val phoneNum: String,
     val preferBeverages: List<Int>,
+    val fcmToken : String,
+    val serialNumber : String,
     //val zipCode: String
 )

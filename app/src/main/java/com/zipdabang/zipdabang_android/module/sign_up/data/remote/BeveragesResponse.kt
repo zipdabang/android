@@ -4,5 +4,5 @@ data class BeveragesResponse(
     val code: Int,
     val isSuccess: Boolean,
     val message: String,
-    val result: BeveragesResult
+    val result: BeveragesResult?
 )

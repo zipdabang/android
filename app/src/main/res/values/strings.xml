@@ -11,12 +11,12 @@
     <string name="drawer_privacyAgree">개인정보 제 3자 동의</string>
     <string name="drawer_privacy">개인정보 처리방침</string>
     <string name="drawer_FAG">FAQ</string>
-    <string name="drawer_inquiry">오류신고 및 문의하기</string>
+    <string name="drawer_inquiry">오류신고 및 신고</string>
     <string name="drawer_inquiry_list">나의 문의내역</string>
     <string name="drawer_login">로그인하기</string>
     <string name="drawer_user">회원 정보</string>
     <string name="drawer_alarm">알림 정보</string>
-    <string name="drawer_etc">기타 정보</string>
+    <string name="drawer_setting">설정</string>
     <string name="drawer_appName">집다방</string>
     <string name="drawer_appGmail">zipdabang.app@gmail.com</string>
     <string name="drawer_appPhone">010-9855-0007</string>
@@ -24,9 +24,13 @@
     <string name="drawer_appDetail">홈카페를 위한 모든 것이 여기에! 당신을 위한 단 하나의 홈카페 플랫폼입니다 :)</string>
     <string name="drawer_cancel">취소</string>
     <string name="drawer_editdone">수정 완료</string>
+    <string name="drawer_writedone">작성 완료</string>
     <string name="drawer_choosedone">선택 완료</string>
     <string name="drawer_oneline">한 줄 소개</string>
+    <string name="drawer_oneline_hint">한 줄 소개 (20자 이내)</string>
+    <string name="drawer_oneline_not_exist">한 줄 소개가 아직 없습니다.</string>
     <string name="drawer_preferbeverages">선호하는 음료</string>
+    <string name="drawer_preferbeverages_not_exist">선호하는 음료가 아직 없습니다.</string>
     <string name="drawer_edit_userinfobasic">기본 정보 수정</string>
     <string name="drawer_edit_userinfodetail">상세 정보 수정</string>
     <string name="drawer_edit_oneline">한 줄 소개 수정</string>
@@ -127,6 +131,7 @@
     <string name="my_recipewrite_save">임시저장</string>
     <string name="my_recipewrite_writedone">작성 완료</string>
     <string name="my_recipewrite_warning_ingredient">최대 재료 개수는 10개입니다.</string>
+    <string name="my_recipewrite_warning_stepNum">최대 Step 개수는 10개입니다.</string>
     <string name="my_recipewrite_warning_step">한 Step 당 한 장씩 업로드할 수 있습니다.</string>
     <string name="my_recipewrite_edit">수정</string>
     <string name="my_recipewrite_delete">삭제</string>

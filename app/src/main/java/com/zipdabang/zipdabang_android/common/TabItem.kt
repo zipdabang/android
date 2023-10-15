@@ -9,12 +9,13 @@ import com.zipdabang.zipdabang_android.module.detail.recipe.domain.RecipeDetailD
 import com.zipdabang.zipdabang_android.module.detail.recipe.ui.RecipeInfoPage
 import com.zipdabang.zipdabang_android.module.my.ui.FollowScreen
 import com.zipdabang.zipdabang_android.module.my.ui.FollowingScreen
-import com.zipdabang.zipdabang_android.module.my.ui.ProfileForOthers
+import com.zipdabang.zipdabang_android.module.my.ui.MyPagerInfoScreen
+import com.zipdabang.zipdabang_android.module.my.ui.MyPagerProfileScreen
+import com.zipdabang.zipdabang_android.module.my.ui.MyPagerRecipesScreen
 import com.zipdabang.zipdabang_android.module.my.ui.RecipeForOthers
 import com.zipdabang.zipdabang_android.module.recipes.data.hot.HotRecipeItem
 import com.zipdabang.zipdabang_android.module.recipes.ui.hot.HotRecipeList
 import com.zipdabang.zipdabang_android.module.recipes.ui.state.PreferenceToggleState
-import kotlinx.coroutines.flow.StateFlow
 
 typealias ComposableFun = @Composable () -> Unit
 sealed class TabItem(val tabTitle: String, val screen: ComposableFun) {
@@ -47,6 +48,51 @@ sealed class TabItem(val tabTitle: String, val screen: ComposableFun) {
                 showCommentBlock = showCommentBlock,
                 postResult = postResult,
                 comments = commentItems
+            )
+        }
+    )
+
+    class MyProfile() : TabItem(
+        tabTitle = "프로필",
+        screen = {
+            MyPagerProfileScreen()
+        }
+    )
+
+    class MyRecipes(
+        onClickMyrecipe : ()->Unit,
+    ) : TabItem(
+        tabTitle = "게시글",
+        screen = {
+            MyPagerRecipesScreen(
+                onClickMyrecipe=onClickMyrecipe,
+            )
+        }
+    )
+
+    class MyInfo(
+        onClickLike: ()->Unit,
+        onClickScrap: () -> Unit,
+        onClickMyrecipe: () -> Unit,
+        onClickShopping: () -> Unit,
+        onClickNotice: () -> Unit,
+        onClickAlarm : () -> Unit,
+        onClickInquiry : () -> Unit,
+        onClickLogout: () -> Unit,
+        onClickUserInfo : ()->Unit,
+    ) : TabItem(
+        tabTitle = "개인정보",
+        screen = {
+            MyPagerInfoScreen(
+                onClickLike= onClickLike,
+                onClickScrap= onClickScrap,
+                onClickMyrecipe= onClickMyrecipe,
+                onClickShopping= onClickShopping,
+                onClickNotice= onClickNotice,
+                onClickAlarm = onClickAlarm,
+                onClickInquiry = onClickInquiry,
+                onClickLogout= onClickLogout,
+                onClickUserInfo = onClickUserInfo
             )
         }
     )

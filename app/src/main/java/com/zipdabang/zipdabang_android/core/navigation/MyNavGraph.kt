@@ -72,9 +72,6 @@ fun NavGraphBuilder.MyNavGraph(
                             launchSingleTop = true
                         }
                     },
-                    onClickEdit = {
-                        navController.navigate(DrawerScreen.UserInfoProfile.route)
-                    },
                     onClickLike = {
                         navController.navigate(MyScreen.Like.route)
                     },
@@ -86,9 +83,6 @@ fun NavGraphBuilder.MyNavGraph(
                     },
                     onClickShopping = {
                         navController.navigate(MyScreen.Shopping.route)
-                    },
-                    onClickFriendList = {
-                        navController.navigate(MyScreen.FriendList.route)
                     },
                     onClickNotice ={
                         navController.navigate(DrawerScreen.Notice.route)
@@ -104,6 +98,12 @@ fun NavGraphBuilder.MyNavGraph(
                     },
                     onClickUserInfo = {
                         navController.navigate(DrawerScreen.UserInfo.route)
+                    },
+                    onClickAlarm = {
+
+                    },
+                    onClickInquiry = {
+
                     }
                 )
             }

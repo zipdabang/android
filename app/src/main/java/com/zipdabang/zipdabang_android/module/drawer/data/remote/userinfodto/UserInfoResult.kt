@@ -5,6 +5,7 @@ data class UserInfoResult(
     val memberBasicInfoDto: MemberBasicInfoDto,
     val memberDetailInfoDto: MemberDetailInfoDto,
     val nickname: String,
+    val caption : String,
     val preferCategories: PreferCategories,
     val profileUrl: String
 )

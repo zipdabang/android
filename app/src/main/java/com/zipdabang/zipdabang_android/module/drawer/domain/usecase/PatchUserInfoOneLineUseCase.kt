@@ -1,28 +1,27 @@
 package com.zipdabang.zipdabang_android.module.drawer.domain.usecase
 
 import android.util.Log
-import com.kakao.sdk.user.model.AccessTokenInfo
 import com.zipdabang.zipdabang_android.common.Resource
 import com.zipdabang.zipdabang_android.common.ResponseCode
 import com.zipdabang.zipdabang_android.common.getErrorCode
 import com.zipdabang.zipdabang_android.module.drawer.data.remote.userinfodto.UserInfoEditResponse
 import com.zipdabang.zipdabang_android.module.drawer.data.remote.userinfodto.UserInfoEditResult
-import com.zipdabang.zipdabang_android.module.drawer.data.remote.userinfodto.UserInfoNicknameRequest
 import com.zipdabang.zipdabang_android.module.drawer.domain.repository.DrawerRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import okhttp3.MultipartBody
 import retrofit2.HttpException
 import java.io.IOException
 import java.util.concurrent.CancellationException
 import javax.inject.Inject
 
-class PatchUserInfoNicknameUseCase @Inject constructor(
-    private val repository: DrawerRepository
+class PatchUserInfoOneLineUseCase @Inject constructor(
+    private val repository : DrawerRepository
 ) {
-    operator fun invoke(accessToken : String, userInfoNickname : UserInfoNicknameRequest) : Flow<Resource<UserInfoEditResponse>> = flow {
-        try {
+    operator fun invoke(accessToken : String, oneline : String) : Flow<Resource<UserInfoEditResponse>> = flow {
+        try{
             emit(Resource.Loading())
-            val result = repository.patchUserInfoNickname(accessToken = accessToken, userInfoNickname = userInfoNickname)
+            val result = repository.patchUserInfoOneLine(accessToken = accessToken,oneline = oneline)
 
             when(result.code){
                 ResponseCode.RESPONSE_DEFAULT.code ->{
@@ -40,7 +39,7 @@ class PatchUserInfoNicknameUseCase @Inject constructor(
             }
         } catch (e: HttpException) {
             val errorBody = e.response()?.errorBody()
-            Log.e("DRAWER_PATCH_USERINFONICKNAME", errorBody?.string() ?: "error body is null")
+            Log.e("DRAWER_PATCH_USERINFOPROFILE", errorBody?.string() ?: "error body is null")
             val errorCode = errorBody?.getErrorCode()
             errorCode?.let {
                 emit(Resource.Error(message = ResponseCode.getMessageByCode(errorCode)))
