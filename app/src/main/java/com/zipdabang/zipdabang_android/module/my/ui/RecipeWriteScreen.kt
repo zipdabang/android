@@ -1,16 +1,11 @@
 package com.zipdabang.zipdabang_android.module.my.ui
 
-import android.app.Activity
-import android.content.Context
-import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
-import android.provider.MediaStore
 import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.activity.result.launch
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -29,11 +24,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -73,14 +65,6 @@ import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.InputStream
 
-
-// Bitmap을 Uri로 변환하는 함수
-fun bitmapToUri(context: Context, bitmap: Bitmap): Uri? {
-    val bytes = ByteArrayOutputStream()
-    bitmap.compress(Bitmap.CompressFormat.JPEG, 0, bytes)
-    val path = MediaStore.Images.Media.insertImage(context.contentResolver, bitmap, "Image", null)
-    return Uri.parse(path)
-}
 
 @Composable
 fun RecipeWriteScreen(

@@ -1,4 +1,4 @@
-package com.zipdabang.zipdabang_android.module.market.ui
+package com.zipdabang.zipdabang_android.module.basket.ui
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
@@ -19,7 +19,7 @@ import com.zipdabang.zipdabang_android.R
 import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
 
 @Composable
-fun MarketReadyPage() {
+fun BasketReadyPage() {
     Box(
         modifier = Modifier.wrapContentHeight()
             .fillMaxWidth()
@@ -48,11 +48,11 @@ fun MarketReadyPage() {
             Spacer(modifier = Modifier.height(30.dp))
 
             Box(
-                modifier = Modifier.size(width = 216.dp, height = 182.dp)
+                modifier = Modifier.size(width = 216.dp, height = 249.dp)
             ) {
                 Image(
-                    painter = painterResource(id = R.drawable.market_ready),
-                    contentDescription = "market_ready",
+                    painter = painterResource(id = R.drawable.basket_ready),
+                    contentDescription = "basket_ready",
                     modifier = Modifier.fillMaxSize()
                 )
             }

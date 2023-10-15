@@ -2,18 +2,16 @@ package com.zipdabang.zipdabang_android.module.my.ui.viewmodel
 
 import android.util.Log
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.datastore.core.DataStore
 import androidx.lifecycle.ViewModel
 import com.google.gson.Gson
 import com.zipdabang.zipdabang_android.common.Resource
 import com.zipdabang.zipdabang_android.core.data_store.proto.Token
-import com.zipdabang.zipdabang_android.module.my.data.remote.RecipeWriteContent
-import com.zipdabang.zipdabang_android.module.my.data.remote.RecipeWriteIngredient
-import com.zipdabang.zipdabang_android.module.my.data.remote.RecipeWriteStep
+import com.zipdabang.zipdabang_android.module.my.data.remote.recipewrite.RecipeWriteContent
+import com.zipdabang.zipdabang_android.module.my.data.remote.recipewrite.RecipeWriteIngredient
+import com.zipdabang.zipdabang_android.module.my.data.remote.recipewrite.RecipeWriteStep
 import com.zipdabang.zipdabang_android.module.my.domain.usecase.PostRecipeWriteUseCase
 import com.zipdabang.zipdabang_android.module.my.ui.state.recipewrite.Ingredient
 import com.zipdabang.zipdabang_android.module.my.ui.state.recipewrite.RecipeWriteDialogEvent
@@ -25,9 +23,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.first
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
-import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
-import java.io.File
 import javax.inject.Inject
 
 @HiltViewModel
@@ -348,6 +344,7 @@ class RecipeWriteViewModel @Inject constructor(
                         && stateRecipeWriteForm.recipeTip.isNotBlank()
                         && stateRecipeWriteForm.ingredients.all { it.ingredientName.isNotBlank() && it.quantity.isNotBlank() }
                         && stateRecipeWriteForm.steps.all { it.description.isNotBlank() && it.stepImage != null }
+                        // && stateRecipeWriteForm.steps.all { it. }
 
                 stateRecipeWriteForm = stateRecipeWriteForm.copy(
                     btnEnabled = isAllFieldsFilled

@@ -42,6 +42,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import coil.compose.AsyncImage
 import com.zipdabang.zipdabang_android.R
+import com.zipdabang.zipdabang_android.module.my.data.remote.recipewrite.BeverageCategory
 import com.zipdabang.zipdabang_android.module.recipes.common.ReportContent
 import com.zipdabang.zipdabang_android.ui.theme.DialogBackground
 import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
@@ -622,7 +623,7 @@ fun CustomDialogUploadComplete(
 // 카테고리 선택
 @Composable
 fun CustomDialogSelectCategory(
-    categoryList: List<com.zipdabang.zipdabang_android.module.my.data.remote.BeverageCategory>,
+    categoryList: List<BeverageCategory>,
     categoryParagraphList: List<Int>,
     categorySelectedList: List<Boolean>,
     onSelectClick : (Int, Boolean)->Unit,
@@ -1467,42 +1468,42 @@ fun PreviewCustomDialogSelectCategory() {
     val showDialog = remember { mutableStateOf(false) }
 
     val categoryList = listOf(
-        com.zipdabang.zipdabang_android.module.my.data.remote.BeverageCategory(
+        BeverageCategory(
             categoryName = "커피",
             id = 1,
             imageUrl = ""
         ),
-        com.zipdabang.zipdabang_android.module.my.data.remote.BeverageCategory(
+        BeverageCategory(
             categoryName = "논카페인",
             id = 2,
             imageUrl = ""
         ),
-        com.zipdabang.zipdabang_android.module.my.data.remote.BeverageCategory(
+        BeverageCategory(
             categoryName = "차",
             id = 3,
             imageUrl = ""
         ),
-        com.zipdabang.zipdabang_android.module.my.data.remote.BeverageCategory(
+        BeverageCategory(
             categoryName = "에이드",
             id = 4,
             imageUrl = ""
         ),
-        com.zipdabang.zipdabang_android.module.my.data.remote.BeverageCategory(
+        BeverageCategory(
             categoryName = "스무디",
             id = 5,
             imageUrl = ""
         ),
-        com.zipdabang.zipdabang_android.module.my.data.remote.BeverageCategory(
+        BeverageCategory(
             categoryName = "과일음료",
             id = 6,
             imageUrl = ""
         ),
-        com.zipdabang.zipdabang_android.module.my.data.remote.BeverageCategory(
+        BeverageCategory(
             categoryName = "건강음료",
             id = 7,
             imageUrl = ""
         ),
-        com.zipdabang.zipdabang_android.module.my.data.remote.BeverageCategory(
+        BeverageCategory(
             categoryName = "기타",
             id = 8,
             imageUrl = ""

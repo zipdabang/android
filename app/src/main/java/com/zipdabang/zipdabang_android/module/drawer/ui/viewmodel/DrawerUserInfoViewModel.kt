@@ -34,6 +34,7 @@ import com.zipdabang.zipdabang_android.module.drawer.ui.state.userinfo.UserInfoO
 import com.zipdabang.zipdabang_android.module.drawer.ui.state.userinfo.UserInfoOneLineState
 import com.zipdabang.zipdabang_android.module.drawer.ui.state.userinfo.UserInfoPreferencesEvent
 import com.zipdabang.zipdabang_android.module.drawer.ui.state.userinfo.UserInfoPreferencesState
+import com.zipdabang.zipdabang_android.module.drawer.ui.state.userinfo.UserInfoProfileState
 import com.zipdabang.zipdabang_android.module.drawer.ui.state.userinfo.UserInfoState
 import com.zipdabang.zipdabang_android.module.sign_up.data.remote.AuthRequest
 import com.zipdabang.zipdabang_android.module.sign_up.data.remote.PhoneRequest
@@ -82,6 +83,7 @@ class DrawerUserInfoViewModel @Inject constructor(
     var stateUserInfoNickname by mutableStateOf(UserInfoNicknameState())
     var stateUserInfoOneLine by mutableStateOf(UserInfoOneLineState())
     var stateUserInfoPreferences by mutableStateOf(UserInfoPreferencesState())
+    var stateUserInfoProfile by mutableStateOf(UserInfoProfileState())
     var genderList by mutableStateOf(listOf("남", "여"))
     var remainingTime by mutableStateOf(0)
 
@@ -415,26 +417,29 @@ class DrawerUserInfoViewModel @Inject constructor(
         }
     }
 
-    suspend fun getUserInfo(){
+    suspend fun getUserInfo() {
         val accessToken = "Bearer " + dataStore.data.first().accessToken ?: Constants.TOKEN_NULL
         //Log.e("drawer-userinfo-viewmodel","${accessToken}")
         getUserInfoUseCase(
             accessToken
-        ).onEach { result->
-            when(result){
+        ).onEach { result ->
+            when (result) {
                 is Resource.Success -> {
                     stateUserInfo = stateUserInfo.copy(
                         isLoading = false,
                         email = result.data?.email ?: "",
-                        oneline = result.data?.caption ?: "" ,
+                        oneline = result.data?.caption ?: "",
                         profileUrl = result.data?.profileUrl ?: "",
                         name = result.data?.memberBasicInfoDto?.name ?: "",
                         birthday = result.data?.memberBasicInfoDto?.birth ?: "",
-                        gender =  if(result.data?.memberBasicInfoDto?.genderType == "WOMAN") "여"
+                        gender = if (result.data?.memberBasicInfoDto?.genderType == "WOMAN") "여"
                         else if (result.data?.memberBasicInfoDto?.genderType == "MAN") "남" else "",
                         phoneNumber = result.data?.memberBasicInfoDto?.phoneNum ?: "",
-                        preferBeverageList = result.data?.preferCategories?.categories?.map { it.name } ?: emptyList(),
-                        preferBeverageCheckList = List(result.data?.preferCategories?.size ?: 0) { true },
+                        preferBeverageList = result.data?.preferCategories?.categories?.map { it.name }
+                            ?: emptyList(),
+                        preferBeverageCheckList = List(
+                            result.data?.preferCategories?.size ?: 0
+                        ) { true },
                         size = result.data?.preferCategories?.size ?: 0,
                         zipcode = result.data?.memberDetailInfoDto?.zipCode ?: "",
                         address = result.data?.memberDetailInfoDto?.address ?: "",
@@ -445,8 +450,8 @@ class DrawerUserInfoViewModel @Inject constructor(
                         isLoading = false,
                         name = result.data?.memberBasicInfoDto?.name ?: "",
                         birthday = result.data?.memberBasicInfoDto?.birth ?: "",
-                        gender =  if(result.data?.memberBasicInfoDto?.genderType == "WOMAN") "여"
-                        else if(result.data?.memberBasicInfoDto?.genderType == "MAN") "남" else "",
+                        gender = if (result.data?.memberBasicInfoDto?.genderType == "WOMAN") "여"
+                        else if (result.data?.memberBasicInfoDto?.genderType == "MAN") "남" else "",
                         phoneNumber = result.data?.memberBasicInfoDto?.phoneNum ?: "",
                     )
                     stateUserInfoDetail = stateUserInfoDetail.copy(
@@ -469,15 +474,28 @@ class DrawerUserInfoViewModel @Inject constructor(
                     )
                     Log.e("drawer-userinfo-viewmodel", "성공 ${result.data}")
                 }
-                is Resource.Error ->{
-                    stateUserInfo = stateUserInfo.copy(error = result.message ?: "An unexpeted error occured")
-                    stateUserInfoBasic = stateUserInfoBasic.copy(error = result.message ?: "An unexpeted error occured")
-                    stateUserInfoDetail = stateUserInfoDetail.copy(error = result.message ?: "An unexpeted error occured")
-                    stateUserInfoNickname = stateUserInfoNickname.copy(error = result.message ?: "An unexpeted error occured")
-                    stateUserInfoPreferences = stateUserInfoPreferences.copy(error = result.message ?: "An unexpeted error occured")
-                    stateUserInfoOneLine = stateUserInfoOneLine.copy(error = result.message ?: "An unexpeted error occured")
+
+                is Resource.Error -> {
+                    stateUserInfo =
+                        stateUserInfo.copy(error = result.message ?: "An unexpeted error occured")
+                    stateUserInfoBasic = stateUserInfoBasic.copy(
+                        error = result.message ?: "An unexpeted error occured"
+                    )
+                    stateUserInfoDetail = stateUserInfoDetail.copy(
+                        error = result.message ?: "An unexpeted error occured"
+                    )
+                    stateUserInfoNickname = stateUserInfoNickname.copy(
+                        error = result.message ?: "An unexpeted error occured"
+                    )
+                    stateUserInfoPreferences = stateUserInfoPreferences.copy(
+                        error = result.message ?: "An unexpeted error occured"
+                    )
+                    stateUserInfoOneLine = stateUserInfoOneLine.copy(
+                        error = result.message ?: "An unexpeted error occured"
+                    )
                     Log.e("drawer-userinfo-viewmodel", "에러 ${result.code}")
                 }
+
                 is Resource.Loading -> {
                     stateUserInfo = stateUserInfo.copy(isLoading = true)
                     stateUserInfoBasic = stateUserInfoBasic.copy(isLoading = true)
@@ -695,7 +713,7 @@ class DrawerUserInfoViewModel @Inject constructor(
         }.launchIn(viewModelScope)
     }
 
-    suspend fun patchUserInfoBasic(){
+    suspend fun patchUserInfoBasic() {
         try {
             val result = patchUserInfoBasicUseCase(
                 accessToken = "Bearer " + dataStore.data.first().accessToken.toString(),
@@ -707,28 +725,29 @@ class DrawerUserInfoViewModel @Inject constructor(
                 ),
             )
 
-            val response = result.single()
+            result.collect { result ->
+                when (result) {
+                    is Resource.Success -> {
+                        stateUserInfoBasic = stateUserInfoBasic.copy(isLoading = false)
+                        Log.e("nicknameedit-viewmodel", "성공 : ${result.data}")
+                    }
 
-            when (response) {
-                is Resource.Success -> {
-                    stateUserInfoBasic = stateUserInfoBasic.copy(isLoading = false)
-                    Log.e("nicknameedit-viewmodel", "성공 : ${response.data}")
-                }
+                    is Resource.Error -> {
+                        stateUserInfoBasic = stateUserInfoBasic.copy(
+                            error = result.message ?: "An unexpeted error occured"
+                        )
+                        Log.e("nicknameedit-viewmodel", "에러 :  ${result.code} ${result.message}")
+                    }
 
-                is Resource.Error -> {
-                    stateUserInfoBasic = stateUserInfoBasic.copy(
-                        error = response.message ?: "An unexpeted error occured"
-                    )
-                    Log.e("nicknameedit-viewmodel", "에러 :  ${response.code} ${response.message}")
-                }
-
-                is Resource.Loading -> {
-                    stateUserInfoBasic = stateUserInfoBasic.copy(isLoading = true)
-                    Log.e("nicknameedit-viewmodel", "로딩중 :  ${response.code} ${response.message}")
+                    is Resource.Loading -> {
+                        stateUserInfoBasic = stateUserInfoBasic.copy(isLoading = true)
+                        Log.e("nicknameedit-viewmodel", "로딩중 :  ${result.code} ${result.message}")
+                    }
                 }
             }
             getUserInfo()
-        } catch (e: Exception) {}
+        } catch (e: Exception) {
+        }
     }
 
     suspend fun patchUserInfoDetail() {
@@ -776,6 +795,7 @@ class DrawerUserInfoViewModel @Inject constructor(
                 accessToken = "Bearer " + dataStore.data.first().accessToken.toString(),
                 userInfoNickname = UserInfoNicknameRequest(stateUserInfoNickname.nickname),
             )
+
             result.collect { result ->
                 when (result) {
                     is Resource.Success -> {
@@ -898,14 +918,19 @@ class DrawerUserInfoViewModel @Inject constructor(
             result.collect { result ->
                 when (result) {
                     is Resource.Success -> {
+                        stateUserInfoProfile = stateUserInfoProfile.copy(
+                            isLoading = false,
+                        )
                         Log.e("drawer-profile", "성공 : ${result.data}")
                     }
-
                     is Resource.Error -> {
+                        stateUserInfoProfile = stateUserInfoProfile.copy(
+                            error = result.message ?: "An unexpeted error occured"
+                        )
                         Log.e("drawer-profile", "에러 :  ${result.code} ${result.message}")
                     }
-
                     is Resource.Loading -> {
+                        stateUserInfoProfile = stateUserInfoProfile.copy(isLoading = true)
                         Log.e("drawer-profile", "로딩중 :  ${result.code} ${result.message}")
                     }
                 }

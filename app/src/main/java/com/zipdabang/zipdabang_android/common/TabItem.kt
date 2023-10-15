@@ -7,6 +7,7 @@ import com.zipdabang.zipdabang_android.module.comment.ui.RecipeCommentPage
 import com.zipdabang.zipdabang_android.module.comment.ui.RecipeCommentState
 import com.zipdabang.zipdabang_android.module.detail.recipe.domain.RecipeDetailDomain
 import com.zipdabang.zipdabang_android.module.detail.recipe.ui.RecipeInfoPage
+import com.zipdabang.zipdabang_android.module.my.data.remote.myinfo.MemberPreferCategoryDto
 import com.zipdabang.zipdabang_android.module.my.ui.FollowScreen
 import com.zipdabang.zipdabang_android.module.my.ui.FollowingScreen
 import com.zipdabang.zipdabang_android.module.my.ui.MyPagerInfoScreen
@@ -52,19 +53,33 @@ sealed class TabItem(val tabTitle: String, val screen: ComposableFun) {
         }
     )
 
-    class MyProfile() : TabItem(
+    class MyProfile(
+        shimmering : Boolean,
+        oneline : String,
+        preferCategoryList : MemberPreferCategoryDto,
+        onClickUserInfo : ()->Unit,
+    ) : TabItem(
         tabTitle = "프로필",
         screen = {
-            MyPagerProfileScreen()
+            MyPagerProfileScreen(
+                shimmering = shimmering,
+                oneline = oneline,
+                preferCategoryList = preferCategoryList,
+                onClickUserInfo = onClickUserInfo,
+            )
         }
     )
 
     class MyRecipes(
+        shimmering : Boolean,
+        nickname : String,
         onClickMyrecipe : ()->Unit,
     ) : TabItem(
         tabTitle = "게시글",
         screen = {
             MyPagerRecipesScreen(
+                shimmering = shimmering,
+                nickname= nickname,
                 onClickMyrecipe=onClickMyrecipe,
             )
         }
