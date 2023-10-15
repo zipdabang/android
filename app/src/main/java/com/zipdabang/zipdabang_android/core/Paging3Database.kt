@@ -14,8 +14,13 @@ import com.zipdabang.zipdabang_android.module.drawer.data.remote.reporterror.Inq
 import com.zipdabang.zipdabang_android.module.market.domain.dao.MarketCategoryDao
 import com.zipdabang.zipdabang_android.module.my.data.remote.friendlist.follow.FollowDao
 import com.zipdabang.zipdabang_android.module.my.data.remote.friendlist.follow.Following
+import com.zipdabang.zipdabang_android.module.my.data.remote.friendlist.follow.search.FollowInfo
+import com.zipdabang.zipdabang_android.module.my.data.remote.friendlist.follow.search.FollowInfoDB
+import com.zipdabang.zipdabang_android.module.my.data.remote.friendlist.follow.search.SearchFollowDao
 import com.zipdabang.zipdabang_android.module.my.data.remote.friendlist.following.Follower
 import com.zipdabang.zipdabang_android.module.my.data.remote.friendlist.following.FollowingDao
+import com.zipdabang.zipdabang_android.module.my.data.remote.friendlist.following.search.FollowerInfoDB
+import com.zipdabang.zipdabang_android.module.my.data.remote.friendlist.following.search.SearchFollowerDao
 import com.zipdabang.zipdabang_android.module.recipes.data.local.RecipeItemEntity
 import com.zipdabang.zipdabang_android.module.recipes.data.local.RecipeListDao
 import com.zipdabang.zipdabang_android.module.search.data.dto.common.SearchRecipe
@@ -26,9 +31,10 @@ import com.zipdabang.zipdabang_android.module.search.data.SearchDao
         Category_Product::class, RemoteKeys::class,
         RecipeItemEntity::class, SearchRecipe::class,
         RecipeCommentEntity::class , Following :: class,
-        Follower :: class, InqueryDB :: class
+        Follower :: class, InqueryDB :: class,
+        FollowerInfoDB :: class, FollowInfoDB::class
     ],
-    version = 13, exportSchema = false)
+    version = 14, exportSchema = false)
 @TypeConverters(ListConverter::class)
 abstract class Paging3Database : RoomDatabase() {
     abstract fun CategoryDao() : MarketCategoryDao
@@ -39,5 +45,8 @@ abstract class Paging3Database : RoomDatabase() {
     abstract fun followDao() : FollowDao
     abstract fun followingDao() : FollowingDao
     abstract fun reportDao() : ReportDao
+    abstract fun searchFollowDao() : SearchFollowDao
+    abstract fun searchFollowerDao() : SearchFollowerDao
+
 
 }

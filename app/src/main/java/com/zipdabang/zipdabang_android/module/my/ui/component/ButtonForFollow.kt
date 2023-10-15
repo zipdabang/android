@@ -33,7 +33,7 @@ fun ButtonForFollow(
 
     var text :String = ""
 
-    if(followState == FollowState.UserOnlyFollow|| followState == FollowState.FollowEach )  text = "팔로우 하기"
+    if(followState == FollowState.NotFriend)  text = "팔로우 하기"
     else if(followState == FollowState.OtherOnlyFollow) text = "맞팔로우 하기"
     else text= "언팔로우 하기"
 
@@ -69,13 +69,14 @@ fun ButtonForFollow(
                         )
                     }
                     Spacer(modifier = Modifier.width(5.dp))
+                Text(
+                            text = text,
+                color = if (followState == FollowState.UserOnlyFollow|| followState == FollowState.FollowEach ) Color.White else ZipdabangandroidTheme.Colors.Typo,
+                style = ZipdabangandroidTheme.Typography.fourteen_500
+                )
                 }
 
-                Text(
-                    text = text,
-                    color = if (followState == FollowState.UserOnlyFollow|| followState == FollowState.FollowEach ) Color.White else ZipdabangandroidTheme.Colors.Typo,
-                    style = ZipdabangandroidTheme.Typography.fourteen_500
-                )
+
             }
         }
     }

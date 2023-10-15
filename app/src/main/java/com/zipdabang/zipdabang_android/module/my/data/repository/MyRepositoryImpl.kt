@@ -9,7 +9,9 @@ import com.zipdabang.zipdabang_android.module.my.data.remote.SignOutResponseDto
 import com.zipdabang.zipdabang_android.module.my.data.remote.SignOutTokens
 import com.zipdabang.zipdabang_android.module.my.data.remote.followorcancel.FollowOrCancelDto
 import com.zipdabang.zipdabang_android.module.my.data.remote.friendlist.follow.FollowDto
+import com.zipdabang.zipdabang_android.module.my.data.remote.friendlist.follow.search.SearchFollowingDto
 import com.zipdabang.zipdabang_android.module.my.data.remote.friendlist.following.FollowingDto
+import com.zipdabang.zipdabang_android.module.my.data.remote.friendlist.following.search.SearchFollowersDto
 import com.zipdabang.zipdabang_android.module.my.data.remote.otherinfo.OtherInfoDto
 import com.zipdabang.zipdabang_android.module.my.data.remote.otherinfo.OtherRecipePreviewDto
 import com.zipdabang.zipdabang_android.module.my.domain.repository.MyRepository
@@ -52,5 +54,21 @@ class MyRepositoryImpl @Inject constructor(
 
     override suspend fun getOtherRecipePreview(accessToken: String, memberId: Int): OtherRecipePreviewDto {
         return api.getOtherPreviewRecipe(accessToken,memberId)
+    }
+
+    override suspend fun getSearchFollowings(
+        accessToken: String,
+        page:Int,
+        nickname : String
+    ): SearchFollowingDto {
+        return api.getSearchFollowings(accessToken,page,nickname)
+    }
+
+    override suspend fun getSearchFollowers(
+        accessToken: String,
+        page:Int,
+        nickname: String
+    ): SearchFollowersDto {
+        return api.getSearchFollowers(accessToken,page, nickname)
     }
 }

@@ -11,7 +11,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
+import com.zipdabang.zipdabang_android.module.my.data.remote.friendlist.follow.search.FollowInfoDB
 import com.zipdabang.zipdabang_android.module.my.ui.component.FollowItem
 import com.zipdabang.zipdabang_android.module.my.ui.viewmodel.FriendsListViewModel
 import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
@@ -20,37 +22,67 @@ import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
 @Composable
 fun FollowScreen(
     onClickOthers : (Int) -> Unit,
+    searchFollowItem : LazyPagingItems<FollowInfoDB>?,
     viewModel : FriendsListViewModel = hiltViewModel()
 ) {
     val followItem = viewModel.getFollowItems.collectAsLazyPagingItems()
 
+    LaunchedEffect(true) {
+        viewModel.refresh()
+    }
+
     val context = LocalContext.current
-    Log.e("followItem",followItem.itemCount.toString())
-    LazyColumn(modifier = Modifier.padding(30.dp)
+    Log.e("followItem", followItem.itemCount.toString())
+    LazyColumn(
+        modifier = Modifier.padding(30.dp)
     ) {
-        items(followItem.itemCount){
-           FollowItem(
-               imageUrl = followItem[it]!!.imageUrl ,
-               nickName = followItem[it]!!.nickname ,
-               isFollow =  true,
-               followOrCancelClick= {
-                   viewModel.followOrCancel(followItem[it]!!.id,
-                       isToast = {
-                           Toast.makeText(context,"팔로우를 취소했습니다.", Toast.LENGTH_SHORT).show()
-                       }
-                   )
-                   followItem.refresh()
-                   viewModel.refresh()
-               },
-               userReport = {
-                      TODO()
-               },
-               onClickOthers = {
-                   onClickOthers(followItem[it]!!.id)
-               }
+        if (searchFollowItem == null) {
+            items(followItem.itemCount) {
+                FollowItem(
+                    imageUrl = followItem[it]!!.imageUrl,
+                    nickName = followItem[it]!!.nickname,
+                    isFollow = true,
+                    followOrCancelClick = {
+                        viewModel.followOrCancel(followItem[it]!!.id,
+                            isToast = {
+                                Toast.makeText(context, "팔로우를 취소했습니다.", Toast.LENGTH_SHORT).show()
+                            }
+                        )
+                        followItem.refresh()
+                        viewModel.refresh()
+                    },
+                    userReport = {
+                        TODO()
+                    },
+                    onClickOthers = {
+                        onClickOthers(followItem[it]!!.id)
+                    }
 
-           )
+                )
+            }
+        } else {
+            items(searchFollowItem.itemCount) {
+                FollowItem(
+                    imageUrl = searchFollowItem[it]!!.profileUrl,
+                    nickName =  searchFollowItem[it]!!.nickname,
+                    isFollow = true,
+                    followOrCancelClick = {
+                        viewModel.followOrCancel(searchFollowItem[it]!!.memberId,
+                            isToast = {
+                                Toast.makeText(context, "팔로우를 취소했습니다.", Toast.LENGTH_SHORT).show()
+                            }
+                        )
+                        followItem.refresh()
+                        viewModel.refresh()
+                    },
+                    userReport = {
+                        TODO()
+                    },
+                    onClickOthers = {
+                        onClickOthers(searchFollowItem[it]!!.memberId)
+                    })
+            }
+
         }
-
     }
 }

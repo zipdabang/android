@@ -2,7 +2,9 @@ package com.zipdabang.zipdabang_android.module.my.data.remote
 
 import com.zipdabang.zipdabang_android.module.my.data.remote.followorcancel.FollowOrCancelDto
 import com.zipdabang.zipdabang_android.module.my.data.remote.friendlist.follow.FollowDto
+import com.zipdabang.zipdabang_android.module.my.data.remote.friendlist.follow.search.SearchFollowingDto
 import com.zipdabang.zipdabang_android.module.my.data.remote.friendlist.following.FollowingDto
+import com.zipdabang.zipdabang_android.module.my.data.remote.friendlist.following.search.SearchFollowersDto
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import com.zipdabang.zipdabang_android.module.my.data.remote.otherinfo.OtherInfoDto
@@ -64,5 +66,19 @@ interface MyApi {
         @Header("Authorization") accessToken: String,
         @Path(value = "memberId") memeberId : Int
     ) : OtherRecipePreviewDto
+
+    @GET("members/followings-nickname")
+    suspend fun getSearchFollowings(
+        @Header("Authorization") accessToken: String,
+        @Query("page") page : Int,
+        @Query("nickname") nickname : String
+        ): SearchFollowingDto
+
+    @GET("members/followers-nickname")
+    suspend fun getSearchFollowers(
+        @Header("Authorization") accessToken: String,
+        @Query("page") page : Int,
+        @Query("nickname") nickname : String
+    ): SearchFollowersDto
 
 }

@@ -5,17 +5,23 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.ExperimentalPagingApi
+import androidx.paging.PagingData
 import androidx.paging.cachedIn
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.zipdabang.zipdabang_android.common.Resource
 import com.zipdabang.zipdabang_android.core.DeviceSize
 import com.zipdabang.zipdabang_android.module.detail.recipe.common.DeviceScreenSize
 import com.zipdabang.zipdabang_android.module.drawer.ui.quit.previewQuitScreen
+import com.zipdabang.zipdabang_android.module.my.data.remote.friendlist.follow.search.FollowInfoDB
 import com.zipdabang.zipdabang_android.module.my.domain.repository.MyRepository
 import com.zipdabang.zipdabang_android.module.my.domain.repository.PagingFollowRepository
 import com.zipdabang.zipdabang_android.module.my.domain.repository.PagingFollowingRepository
+import com.zipdabang.zipdabang_android.module.my.domain.repository.PagingSearchFollowerRepository
+import com.zipdabang.zipdabang_android.module.my.domain.repository.PagingSearchFollowingRepository
 import com.zipdabang.zipdabang_android.module.my.domain.usecase.PostFollowOrCancelUseCase
 import com.zipdabang.zipdabang_android.module.my.ui.state.FollowOrCancel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
@@ -25,7 +31,9 @@ class FriendsListViewModel @OptIn(ExperimentalPagingApi::class)
 @Inject constructor(
     @DeviceSize private val deviceSize: DeviceScreenSize,
     val followRepository: PagingFollowRepository,
+    val searchFollowRepository : PagingSearchFollowingRepository,
     val followingRepository: PagingFollowingRepository,
+    val searchFollowerRepository: PagingSearchFollowerRepository,
     val followOrCancelUseCase: PostFollowOrCancelUseCase
 ) : ViewModel() {
 
@@ -39,11 +47,15 @@ class FriendsListViewModel @OptIn(ExperimentalPagingApi::class)
     @OptIn(ExperimentalPagingApi::class)
     var getFollowItems = followRepository.getFollowItems().cachedIn(viewModelScope)
     var getFollowingItems = followingRepository.getFollowingItems().cachedIn(viewModelScope)
+
+    var getSearchFollowItems : Flow<PagingData<FollowInfoDB>>? = null
+
     @OptIn(ExperimentalPagingApi::class)
     fun refresh(){
         getFollowItems = followRepository.getFollowItems().cachedIn(viewModelScope)
         getFollowingItems = followingRepository.getFollowingItems().cachedIn(viewModelScope)
     }
+
     fun followOrCancel(targetId : Int, isToast : () -> Unit){
         followOrCancelUseCase(targetId).onEach {
             result ->
@@ -97,4 +109,15 @@ class FriendsListViewModel @OptIn(ExperimentalPagingApi::class)
 
         }.launchIn(viewModelScope)
     }
+
+
+    fun searchFollow(searchText: String)  {
+
+
+        getSearchFollowItems=  searchFollowRepository.getFollowingItems(searchText).cachedIn(viewModelScope)
+
+        }
+
+
+
 }

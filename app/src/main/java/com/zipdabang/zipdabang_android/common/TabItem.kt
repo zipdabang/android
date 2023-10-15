@@ -7,6 +7,7 @@ import com.zipdabang.zipdabang_android.module.comment.ui.RecipeCommentPage
 import com.zipdabang.zipdabang_android.module.comment.ui.RecipeCommentState
 import com.zipdabang.zipdabang_android.module.detail.recipe.domain.RecipeDetailDomain
 import com.zipdabang.zipdabang_android.module.detail.recipe.ui.RecipeInfoPage
+import com.zipdabang.zipdabang_android.module.my.data.remote.friendlist.follow.search.FollowInfoDB
 import com.zipdabang.zipdabang_android.module.my.ui.FollowScreen
 import com.zipdabang.zipdabang_android.module.my.ui.FollowingScreen
 import com.zipdabang.zipdabang_android.module.my.ui.MyPagerInfoScreen
@@ -98,12 +99,14 @@ sealed class TabItem(val tabTitle: String, val screen: ComposableFun) {
     )
 
     class followList(
-        onClickOthers : (Int) -> Unit
+        onClickOthers: (Int) -> Unit,
+        searchFollowItem: LazyPagingItems<FollowInfoDB>?
     ) : TabItem(
         tabTitle =  "팔로우",
         screen = {
             FollowScreen(
-              onClickOthers= onClickOthers
+              onClickOthers= onClickOthers,
+                searchFollowItem = searchFollowItem
             )
         }
     )

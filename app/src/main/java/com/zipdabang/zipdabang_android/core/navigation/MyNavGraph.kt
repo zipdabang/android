@@ -82,10 +82,10 @@ fun NavGraphBuilder.MyNavGraph(
                         navController.navigate(MyScreen.Myrecipe.route)
                     },
                     onClickShopping = {
-                        navController.navigate(MyScreen.Shopping.route)
+                        navController.navigate(MyScreen.FriendList.route)
                     },
                     onClickNotice ={
-                        navController.navigate(DrawerScreen.Notice.route)
+                        navController.navigate(DrawerScreen.ReportList.route)
                     },
                     onClickLogout = {
                         outerNavController.navigate(AUTH_ROUTE){

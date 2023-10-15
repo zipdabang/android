@@ -1,4 +1,4 @@
-package com.zipdabang.zipdabang_android.module.my.data.remote.friendlist.follow
+package com.zipdabang.zipdabang_android.module.my.data.remote.friendlist.following.search
 
 import android.util.Log
 import androidx.datastore.core.DataStore
@@ -7,14 +7,12 @@ import androidx.paging.LoadType
 import androidx.paging.PagingState
 import androidx.paging.RemoteMediator
 import androidx.room.withTransaction
-import com.zipdabang.zipdabang_android.common.Resource
-import com.zipdabang.zipdabang_android.common.TabItem
+import com.zipdabang.zipdabang_android.common.Constants
 import com.zipdabang.zipdabang_android.common.getErrorCode
 import com.zipdabang.zipdabang_android.core.Paging3Database
 import com.zipdabang.zipdabang_android.core.data_store.proto.Token
 import com.zipdabang.zipdabang_android.core.remotekey.RemoteKeys
 import com.zipdabang.zipdabang_android.module.my.data.remote.MyApi
-import com.zipdabang.zipdabang_android.module.my.ui.component.FollowItem
 import com.zipdabang.zipdabang_android.module.search.data.dto.common.SearchRecipe
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.flow.first
@@ -23,21 +21,22 @@ import java.lang.Exception
 import javax.inject.Inject
 
 @OptIn(ExperimentalPagingApi::class)
-class FollowMediator @Inject constructor(
+class SearchFollowerMediator @Inject constructor(
     private val myApi: MyApi,
     private val paging3Database: Paging3Database,
+    private val searchText : String,
     private val tokenDataStore: DataStore<Token>
-) : RemoteMediator<Int, Following>() {
+) : RemoteMediator<Int,FollowerInfoDB>() {
 
-    private val followDao = paging3Database.followDao()
+    private val searchFollowerDao= paging3Database.searchFollowerDao()
     private val RemoteKeyDao = paging3Database.RemoteKeyDao()
-
     @OptIn(DelicateCoroutinesApi::class)
     override suspend fun load(
         loadType: LoadType,
-        state: PagingState<Int, Following>
+        state: PagingState<Int, FollowerInfoDB>
     ): MediatorResult {
-        return try {
+        return try
+        {
             val currentPage = when (loadType) {
                 LoadType.REFRESH -> {
                     val remoteKeys = getRemoteKeyClosestToCurrentPosition(state)
@@ -65,104 +64,97 @@ class FollowMediator @Inject constructor(
 
 
             val accessToken = ("Bearer " + tokenDataStore.data.first().accessToken)
-            val responseMapList = mutableListOf<Following>()
+            val responseMapList = mutableListOf<FollowerInfoDB>()
+            var response : SearchFollowersDto? = null
+               try {
+                    response = myApi.getSearchFollowers(
+                       accessToken = accessToken, page = currentPage, nickname = searchText
+                   )
+                       val responseList = response.result.memberSimpleDtoList
 
+                       responseList.forEachIndexed { index, followerInfo ->
+                           responseMapList.add(
+                              FollowerInfoDB(
+                                  index =  (currentPage-1)* Constants.ITEMS_PER_PAGE + index,
+                                  createdAt =  followerInfo.createdAt,
+                                  nickname = followerInfo.nickname,
+                                  profileUrl = followerInfo.profileUrl,
+                                  memberId = followerInfo.memberId
+                              )
+                           )
 
-       //     Log.e("Response in friendlist",response.isSuccess.toString())
-            var response : FollowDto? = null
-            try{
-                response = myApi.getFollowings(
-                accessToken = accessToken,
-                page = currentPage
-            )
-                val data = response.result?.followingList
+                       }
+               }catch (e: HttpException) {
+                   val errorBody = e.response()?.errorBody()
+                   val errorCode = errorBody?.getErrorCode()
 
-                data?.forEachIndexed { index, following ->
-                    responseMapList.add(
-                        Following(
-                            caption = following.caption,
-                            id = following.id,
-                            imageUrl = following.imageUrl,
-                            nickname = following.nickname
-                        )
-                    )
-
-                }
-            }catch (e: HttpException){
-                val errorBody = e.response()?.errorBody()
-                val errorCode = errorBody?.getErrorCode()
-
-                errorCode?.let {
-                    Log.e("errorcode in friendlist",errorCode.toString())
-                    if(errorCode == 4055) {
-                        followDao.deleteItems()
-                        RemoteKeyDao.deleteRemoteKeys()
-                        MediatorResult.Success(endOfPaginationReached = true)
-
-                    }
-                }
-            }
-
+                   errorCode?.let {
+                       Log.e("errorcode in friendlist", errorCode.toString())
+                   }
+               }
 
 
             val endOfPaginationReached = response?.result!!.isLast
 
-            val prevPage = if (currentPage == 1) null else currentPage - 1
-            val nextPage = if (endOfPaginationReached == true) null else currentPage + 1
+            val prevPage = if(currentPage == 1) null else currentPage -1
+            val nextPage = if(endOfPaginationReached) null else currentPage + 1
 
-            paging3Database.withTransaction {
-                if (loadType == LoadType.REFRESH) {
-                    followDao.deleteItems()
-                    RemoteKeyDao.deleteRemoteKeys()
+                paging3Database.withTransaction {
+                    if(loadType == LoadType.REFRESH){
+                        searchFollowerDao.deleteItems()
+                        RemoteKeyDao.deleteRemoteKeys()
+                    }
+                    val keys = response.result.memberSimpleDtoList.map {  items ->
+                        RemoteKeys(
+                            id = items.memberId,
+                            prevPage = prevPage,
+                            nextPage = nextPage
+                        )
+                    }
+                    RemoteKeyDao.addAllRemoteKeys(remoteKeys = keys)
+                    searchFollowerDao.addItems(items = responseMapList)
+
                 }
-                val keys = response.result!!.followingList.map { items ->
-                    RemoteKeys(
-                        id = items.id,
-                        prevPage = prevPage,
-                        nextPage = nextPage
-                    )
-                }
 
+                MediatorResult.Success(endOfPaginationReached = endOfPaginationReached)
 
-                RemoteKeyDao.addAllRemoteKeys(remoteKeys = keys)
-                followDao.addItems(items = responseMapList)
-
-            }
-
-            MediatorResult.Success(endOfPaginationReached = endOfPaginationReached!!)
-
-        } catch (e: Exception) {
+        }catch (e: Exception) {
             return MediatorResult.Error(e)
         }
     }
 
 
+
+
     private suspend fun getRemoteKeyClosestToCurrentPosition(
-        state: PagingState<Int, Following>
+        state: PagingState<Int, FollowerInfoDB>
     ): RemoteKeys? {
         //state.anchorposition은 현재 화면에 보이는 첫 번째 아이템의 포지션
         return state.anchorPosition?.let { position ->
-            state.closestItemToPosition(position)?.id?.let { id ->
+            state.closestItemToPosition(position)?.memberId?.let { id ->
                 RemoteKeyDao.getRemoteKeys(id = id)
             }
         }
     }
 
     private suspend fun getRemoteKeyForFirstItem(
-        state: PagingState<Int, Following>
+        state: PagingState<Int, FollowerInfoDB>
     ): RemoteKeys? {
         return state.pages.firstOrNull { it.data.isNotEmpty() }?.data?.firstOrNull()
             ?.let { item ->
-                RemoteKeyDao.getRemoteKeys(id = item.id)
+                RemoteKeyDao.getRemoteKeys(id = item.memberId)
             }
     }
 
     private suspend fun getRemoteKeyForLastItem(
-        state: PagingState<Int, Following>
+        state: PagingState<Int, FollowerInfoDB>
     ): RemoteKeys? {
         return state.pages.lastOrNull { it.data.isNotEmpty() }?.data?.lastOrNull()
             ?.let { item ->
-                RemoteKeyDao.getRemoteKeys(id = item.id)
+                RemoteKeyDao.getRemoteKeys(id = item.memberId)
             }
     }
+
+
+
 }

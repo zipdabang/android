@@ -28,6 +28,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -77,7 +78,9 @@ fun MyScreenForOther(
 
     val infoState = viewModel.otherInfoState
     val commonInfoState = viewModel.commonInfoState
-    val userId = viewModel.userId
+    val userId = remember{
+        mutableStateOf(userId)
+    }
 
     val followingNum = remember{
         mutableStateOf(0)
@@ -85,7 +88,23 @@ fun MyScreenForOther(
     val followerNum = remember{
         mutableStateOf(0)
     }
+    var buttonState = remember{
+        mutableStateOf(FollowState.NotFriend)
+    }
+    if(infoState.value.isSuccess) {
+        followerNum.value = commonInfoState.value.followNum
+        followingNum.value = commonInfoState.value.followingNum
+        Log.e("friendlist test", "recompose")
+        buttonState.value =
+            if (commonInfoState.value.isFollower && commonInfoState.value.isFollowing)
+                FollowState.FollowEach
+            else if (!commonInfoState.value.isFollower && commonInfoState.value.isFollowing)
+                FollowState.UserOnlyFollow
+            else if (commonInfoState.value.isFollower && !commonInfoState.value.isFollowing)
+                FollowState.OtherOnlyFollow
+            else FollowState.NotFriend
 
+    }
     ModalDrawer(
         scaffold = {
             Scaffold(
@@ -126,6 +145,7 @@ fun MyScreenForOther(
                     ) {
                         if (infoState.value.isSuccess) {
                             // 프로필 부분
+
                             Row(
                                 modifier = Modifier
                                     .weight(1.4f)
@@ -134,8 +154,7 @@ fun MyScreenForOther(
                                 horizontalArrangement = Arrangement.SpaceBetween
                             ) {
                                 //닉네임 & 선호음료 & 팔로우팔로잉
-                                followerNum.value = commonInfoState.value.followNum
-                                followingNum.value = commonInfoState.value.followingNum
+
                                 Column {
                                     Row(
                                         horizontalArrangement = Arrangement.spacedBy(4.dp),
@@ -151,7 +170,7 @@ fun MyScreenForOther(
                                         modifier = Modifier.padding(6.dp, 2.dp, 0.dp, 0.dp)
                                     ) {
                                         Text(
-                                            text = "팔로우 ${followingNum.value} | 팔로잉 ${followerNum.value}}",
+                                            text = "팔로우 ${followingNum.value} | 팔로잉 ${followerNum.value}",
                                             style = ZipdabangandroidTheme.Typography.fourteen_300,
                                             color = Color.White
                                         )
@@ -168,60 +187,53 @@ fun MyScreenForOther(
                                                 shape = ZipdabangandroidTheme.Shapes.medium
                                             ),
                                     ) {
-                                        var buttonState : FollowState
-                                        buttonState = if(commonInfoState.value.isFollower && commonInfoState.value.isFollowing)
-                                            FollowState.FollowEach
-                                        else if(!commonInfoState.value.isFollower && commonInfoState.value.isFollowing)
-                                            FollowState.OtherOnlyFollow
-                                        else if(commonInfoState.value.isFollower && !commonInfoState.value.isFollowing)
-                                            FollowState.UserOnlyFollow
-                                        else FollowState.NotFriend
 
+                                        Log.e("friendlist test",buttonState.toString())
                                         ButtonForFollow(
                                             onClick = {
                                                 //내가 상대방 팔로우
-                                                if (commonInfoState.value.isFollowing) {
 
-                                                    if(commonInfoState.value.isFollower) {
+                                              if(buttonState.value==FollowState.FollowEach) {
 
-                                                        viewModel.followOrCancel(
-                                                            userId.value
-                                                        )
-                                                        buttonState = FollowState.OtherOnlyFollow
+                                                  viewModel.followOrCancel(
+                                                      userId.value
+                                                  )
+                                                  buttonState.value = FollowState.OtherOnlyFollow
+                                                  followerNum.value -= 1
+                                              }
+                                              else if(buttonState.value==FollowState.UserOnlyFollow) {
 
-                                                    }else{
-                                                        viewModel.followOrCancel(
-                                                            userId.value
-                                                        )
-                                                        buttonState = FollowState.NotFriend
-                                                    }
-
-                                                    followerNum.value -= 1
-
-                                                }
-
-                                                else {
-                                                //상대방이 나를 팔로우, 나는 상대 팔로우 x
-                                                if (commonInfoState.value.isFollower) {
                                                     viewModel.followOrCancel(
                                                         userId.value
                                                     )
-                                                    //맞팔 취소하면 ->
-                                                    buttonState = FollowState.FollowEach
+                                                    buttonState.value = FollowState.NotFriend
+                                                    followerNum.value -= 1
+                                                }
 
-                                                } else {
+
+                                                //상대방이 나를 팔로우, 나는 상대 팔로우 x
+                                             else  if (buttonState.value == FollowState.OtherOnlyFollow) {
+                                                    viewModel.followOrCancel(
+                                                        userId.value
+                                                    )
+                                                    Log.e("userid",userId.value.toString())
+                                                    //맞팔 취소하면 ->
+                                                  buttonState.value = FollowState.FollowEach
+                                                  followerNum.value += 1
+
+
+                                              } else {
                                                     //친구 아님
                                                     viewModel.followOrCancel(
                                                         userId.value
                                                     )
-                                                    buttonState = FollowState.UserOnlyFollow
-                                                }
-                                            }
+                                                    buttonState.value = FollowState.UserOnlyFollow
+                                                  followerNum.value += 1
 
-                                                followerNum.value += 1
+                                              }
 
                                             },
-                                            followState = buttonState
+                                            followState = buttonState.value
                                         )
                                     }
 
