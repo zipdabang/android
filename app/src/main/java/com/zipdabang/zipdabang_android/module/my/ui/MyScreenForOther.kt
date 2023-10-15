@@ -1,6 +1,7 @@
 package com.zipdabang.zipdabang_android.module.my.ui
 
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -34,6 +35,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -47,6 +49,7 @@ import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.rememberPagerState
 import com.zipdabang.zipdabang_android.R
 import com.zipdabang.zipdabang_android.common.TabItem
+import com.zipdabang.zipdabang_android.module.my.data.remote.followorcancel.FollowState
 import com.zipdabang.zipdabang_android.module.my.ui.component.ButtonForFollow
 import com.zipdabang.zipdabang_android.module.my.ui.viewmodel.MyForOthersViewModel
 import com.zipdabang.zipdabang_android.ui.component.AppBarMy
@@ -70,8 +73,18 @@ fun MyScreenForOther(
     val scope = rememberCoroutineScope()
     val pagerState = rememberPagerState()
 
+    val context = LocalContext.current
+
     val infoState = viewModel.otherInfoState
     val commonInfoState = viewModel.commonInfoState
+    val userId = viewModel.userId
+
+    val followingNum = remember{
+        mutableStateOf(0)
+    }
+    val followerNum = remember{
+        mutableStateOf(0)
+    }
 
     ModalDrawer(
         scaffold = {
@@ -121,6 +134,8 @@ fun MyScreenForOther(
                                 horizontalArrangement = Arrangement.SpaceBetween
                             ) {
                                 //닉네임 & 선호음료 & 팔로우팔로잉
+                                followerNum.value = commonInfoState.value.followNum
+                                followingNum.value = commonInfoState.value.followingNum
                                 Column {
                                     Row(
                                         horizontalArrangement = Arrangement.spacedBy(4.dp),
@@ -136,7 +151,7 @@ fun MyScreenForOther(
                                         modifier = Modifier.padding(6.dp, 2.dp, 0.dp, 0.dp)
                                     ) {
                                         Text(
-                                            text = "팔로우 ${commonInfoState.value.followingNum} | 팔로잉 ${commonInfoState.value.followNum}",
+                                            text = "팔로우 ${followingNum.value} | 팔로잉 ${followerNum.value}}",
                                             style = ZipdabangandroidTheme.Typography.fourteen_300,
                                             color = Color.White
                                         )
@@ -153,17 +168,60 @@ fun MyScreenForOther(
                                                 shape = ZipdabangandroidTheme.Shapes.medium
                                             ),
                                     ) {
-                                        var buttonText : String = "팔로우하기"
-                                        if(commonInfoState.value.isFollowing)  buttonText  = "언팔로우 하기"
-                                        else {
-                                            if(commonInfoState.value.isFollower) buttonText = "맞팔로우 하기"
-                                            else buttonText = "팔로우 하기"
-                                        }
+                                        var buttonState : FollowState
+                                        buttonState = if(commonInfoState.value.isFollower && commonInfoState.value.isFollowing)
+                                            FollowState.FollowEach
+                                        else if(!commonInfoState.value.isFollower && commonInfoState.value.isFollowing)
+                                            FollowState.OtherOnlyFollow
+                                        else if(commonInfoState.value.isFollower && !commonInfoState.value.isFollowing)
+                                            FollowState.UserOnlyFollow
+                                        else FollowState.NotFriend
+
                                         ButtonForFollow(
-                                            text = buttonText,
-                                            onClick = { /*TODO*/ },
-                                            isFollow =commonInfoState.value.isFollowing  ,
-                                            isFollowing = commonInfoState.value.isFollower
+                                            onClick = {
+                                                //내가 상대방 팔로우
+                                                if (commonInfoState.value.isFollowing) {
+
+                                                    if(commonInfoState.value.isFollower) {
+
+                                                        viewModel.followOrCancel(
+                                                            userId.value
+                                                        )
+                                                        buttonState = FollowState.OtherOnlyFollow
+
+                                                    }else{
+                                                        viewModel.followOrCancel(
+                                                            userId.value
+                                                        )
+                                                        buttonState = FollowState.NotFriend
+                                                    }
+
+                                                    followerNum.value -= 1
+
+                                                }
+
+                                                else {
+                                                //상대방이 나를 팔로우, 나는 상대 팔로우 x
+                                                if (commonInfoState.value.isFollower) {
+                                                    viewModel.followOrCancel(
+                                                        userId.value
+                                                    )
+                                                    //맞팔 취소하면 ->
+                                                    buttonState = FollowState.FollowEach
+
+                                                } else {
+                                                    //친구 아님
+                                                    viewModel.followOrCancel(
+                                                        userId.value
+                                                    )
+                                                    buttonState = FollowState.UserOnlyFollow
+                                                }
+                                            }
+
+                                                followerNum.value += 1
+
+                                            },
+                                            followState = buttonState
                                         )
                                     }
 
