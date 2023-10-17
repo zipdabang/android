@@ -10,6 +10,8 @@ import com.zipdabang.zipdabang_android.common.Resource
 import com.zipdabang.zipdabang_android.common.ResponseCode
 import com.zipdabang.zipdabang_android.common.UiState
 import com.zipdabang.zipdabang_android.core.DeviceSize
+import com.zipdabang.zipdabang_android.core.data_store.proto.CurrentPlatform
+import com.zipdabang.zipdabang_android.core.data_store.proto.ProtoRepository
 import com.zipdabang.zipdabang_android.module.detail.recipe.common.DeviceScreenSize
 import com.zipdabang.zipdabang_android.module.recipes.common.OwnerType
 import com.zipdabang.zipdabang_android.module.recipes.data.hot.HotRecipeItem
@@ -26,13 +28,16 @@ import com.zipdabang.zipdabang_android.module.recipes.use_case.ToggleScrapUseCas
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 import java.io.Serializable
 import javax.inject.Inject
 
 @HiltViewModel
 class RecipeMainViewModel @Inject constructor(
+    private val protoRepository: ProtoRepository,
     private val getRecipeBannerUseCase: GetRecipeBannerUseCase,
     private val getRecipeCategoryUseCase: GetRecipeCategoryUseCase,
     private val toggleLikeUseCase: ToggleLikeUseCase,
@@ -44,6 +49,12 @@ class RecipeMainViewModel @Inject constructor(
     companion object {
         const val TAG = "RecipeMainViewModel"
     }
+
+    val tokens = protoRepository.tokens
+
+    private val _currentPlatform = mutableStateOf(CurrentPlatform.TEMP)
+    val currentPlatform: State<CurrentPlatform>
+        get() = _currentPlatform
 
     // mutableStateOf<List<RecipeResult>>(mutableListOf())
     private val _banners = mutableStateOf(
@@ -70,6 +81,7 @@ class RecipeMainViewModel @Inject constructor(
     init {
         getRecipeBanners()
         getRecipeCategoryList()
+        getStatus()
     }
 
     fun getRecipeBanners() {
@@ -362,5 +374,11 @@ class RecipeMainViewModel @Inject constructor(
 
     fun getDeviceSize(): DeviceScreenSize {
         return deviceSize
+    }
+
+    private fun getStatus() {
+        viewModelScope.launch {
+            _currentPlatform.value = tokens.first().platformStatus
+        }
     }
 }

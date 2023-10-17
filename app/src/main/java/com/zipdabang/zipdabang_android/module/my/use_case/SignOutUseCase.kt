@@ -2,13 +2,10 @@ package com.zipdabang.zipdabang_android.module.my.use_case
 
 import android.util.Log
 import androidx.datastore.core.DataStore
-import com.zipdabang.zipdabang_android.common.Constants.TOKEN_NULL
 import com.zipdabang.zipdabang_android.common.Resource
 import com.zipdabang.zipdabang_android.common.ResponseCode
 import com.zipdabang.zipdabang_android.common.getErrorCode
 import com.zipdabang.zipdabang_android.core.data_store.proto.Token
-import com.zipdabang.zipdabang_android.module.comment.use_case.BlockUserUseCase
-import com.zipdabang.zipdabang_android.module.my.data.remote.SignOutTokens
 import com.zipdabang.zipdabang_android.module.my.domain.SignOutResponse
 import com.zipdabang.zipdabang_android.module.my.domain.repository.MyRepository
 import com.zipdabang.zipdabang_android.module.my.util.toSignOutResponse

@@ -96,7 +96,14 @@ fun NavGraphBuilder.DrawerNavGraph(navController: NavHostController, outerNavCon
                     navController.navigate(DrawerScreen.UserInfoPreferences.route)
                 },
                 onClickLogout = {
-
+                    drawerUserInfoViewModel.signOut {
+                        outerNavController.navigate(AUTH_ROUTE){
+                            popUpTo(MAIN_ROUTE) {
+                                inclusive = true
+                            }
+                            launchSingleTop = true
+                        }
+                    }
                 },
                 onClickWithdraw = {
                     navController.navigate(DrawerScreen.Quit.route)
@@ -201,13 +208,11 @@ fun NavGraphBuilder.DrawerNavGraph(navController: NavHostController, outerNavCon
                 },
                 onClickUserInfo ={
                     Log.e("drawer-profile", "페이지 이동")
-                    navController.popBackStack(MyScreen.Home.route, inclusive = false)
-
-                    /*navController.navigate(MyScreen.Home.route) {
+                    navController.navigate(MyScreen.Home.route) {
                         popUpTo(MyScreen.Home.route) {
                             inclusive = true
                         }
-                    }*/
+                    }
                 }
             )
         }

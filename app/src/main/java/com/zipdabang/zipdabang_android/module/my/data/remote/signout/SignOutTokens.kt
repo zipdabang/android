@@ -1,4 +1,4 @@
-package com.zipdabang.zipdabang_android.module.my.data.remote
+package com.zipdabang.zipdabang_android.module.my.data.remote.signout
 
 import com.google.gson.annotations.SerializedName
 import kotlinx.serialization.Serializable

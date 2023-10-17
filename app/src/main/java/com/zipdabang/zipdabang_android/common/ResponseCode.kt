@@ -17,19 +17,23 @@ enum class ResponseCode(val responseResult: ResponseResult, val code: Int, val m
     BAD_REQUEST_REFRESH_NOT_EXISTS(ResponseResult.ERROR, 4050, "리프레시 토큰이 서버로 넘어오지 않았습니다."),
     BAD_REQUEST_USER_NOT_EXISTS(ResponseResult.ERROR, 4052, "사용자가 없습니다. 서버 개발자에게 문의하세요."),
     BAD_REQUEST_CATEGORY_ID_NOT_EXISTS(ResponseResult.ERROR, 4053, "선호하는 음료 카테고리 id가 이상합니다."),
+    BAD_REQUEST_INDEX_MINUS(ResponseResult.ERROR, 4054, "인덱스는 1 이상이어야 합니다."),
+    BAD_REQUEST_INDEX_EXCEEDED(ResponseResult.ERROR, 4055, "페이지 인덱스 범위를 초과했습니다."),
+    BAD_REQUEST_PAGE_INDEX_ERROR(ResponseResult.ERROR, 4055, "페이지 인덱스 범위 초과했습니다."),
     BAD_REQUEST_PHONE_AUTH_NOT_REQUEST(ResponseResult.ERROR, 4056, "전화번호 인증요청을 하지 않았습니다. 인증요청을 해주세요."),
     BAD_REQUEST_PHONE_AUTH_NOT_CORRECT(ResponseResult.ERROR, 4057, "인증번호가 옳지 않습니다."),
     BAD_REQUEST_PHONE_AUTH_TIMEOUT(ResponseResult.ERROR, 4058, "인증시간 5분이 지났습니다."),
+    BAD_REQUEST_MY_HAVE_TO_LOGIN(ResponseResult.ERROR, 4059, "로그인 후 조회 가능합니다."),
     BAD_REQUEST_USER_ALREADY_BLOCKED(ResponseResult.ERROR, 4062, "이미 차단된 사용자입니다."),
     BAD_REQUEST_BLOCKED_ME(ResponseResult.ERROR, 4063, "자신을 차단할 수 없습니다."),
     BAD_REQUEST_RECIPEWRITE_NOT_FORMED(ResponseResult.ERROR, 4100, "누락된 부분이 있습니다."),
     BAD_REQUEST_RECIPE_NOT_EXISTS(ResponseResult.ERROR, 4101, "존재하지 않는 레시피 아이디입니다."),
     BAD_REQUEST_RECIPE_BANNED(ResponseResult.ERROR, 4102, "차단한 사용자의 레시피입니다."),
+    BAD_REQUEST_OWNER_TYPE(ResponseResult.ERROR, 4103, "레시피 작성자 타입이 잘못되었습니다."),
     BAD_REQUEST_COMMENT_NOT_EXISTS(ResponseResult.ERROR, 4107, "해당 아이디를 가진 댓글이 존재하지 않습니다."),
     BAD_REQUEST_COMMENT_NOT_OWNER(ResponseResult.ERROR, 4108, "해당 댓글을 작성한 사용자가 아닙니다."),
-    BAD_REQUEST_OWNER_TYPE(ResponseResult.ERROR, 4103, "레시피 작성자 타입이 잘못되었습니다."),
-    BAD_REQUEST_INDEX_EXCEEDED(ResponseResult.ERROR, 4055, "페이지 인덱스 범위를 초과했습니다."),
-    BAD_REQUEST_INDEX_MINUS(ResponseResult.ERROR, 4054, "인덱스는 1 이상이어야 합니다."),
+    BAD_REQUEST_COMMENT_SELF_PREFERENCE(ResponseResult.ERROR, 4109, "본인의 레시피를 좋아요 혹은 스크랩할 수 없습니다."),
+    BAD_REQUEST_RECIPEWRITE_TEMPID_NOT_EXISTS(ResponseResult.ERROR, 4111, "해당 임시저장 아이디가 존재하지 않습니다."),
     SERVER_ERROR(ResponseResult.ERROR, 5000, "서버에러가 발생하였습니다. 서버 개발자에게 문의하세요.");
 
 
@@ -37,7 +41,7 @@ enum class ResponseCode(val responseResult: ResponseResult, val code: Int, val m
 
     companion object {
         fun getMessageByCode(code: Int): String {
-            return values().find { it.code == code }?.message ?: "code not exists. unexpected error"
+            return values().find { it.code == code }?.message ?: "예상치 못한 오류가 발생하였습니다."
         }
     }
 }

@@ -4,10 +4,7 @@ import android.util.Log
 import com.zipdabang.zipdabang_android.common.Resource
 import com.zipdabang.zipdabang_android.common.ResponseCode
 import com.zipdabang.zipdabang_android.common.getErrorCode
-import com.zipdabang.zipdabang_android.module.my.data.remote.RecipeWriteContent
-import com.zipdabang.zipdabang_android.module.my.data.remote.RecipeWriteRequest
-import com.zipdabang.zipdabang_android.module.my.data.remote.RecipeWriteResponse
-import com.zipdabang.zipdabang_android.module.my.data.remote.RecipeWriteResult
+import com.zipdabang.zipdabang_android.module.my.data.remote.recipewrite.RecipeWriteResponse
 import com.zipdabang.zipdabang_android.module.my.domain.repository.MyRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow

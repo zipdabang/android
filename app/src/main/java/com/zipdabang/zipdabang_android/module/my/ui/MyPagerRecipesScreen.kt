@@ -26,8 +26,11 @@ import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
 
 @Composable
 fun MyPagerRecipesScreen(
+    shimmering : Boolean,
+    nickname : String,
     onClickMyrecipe : ()->Unit
 ) {
+    // 레시피
     Column(
         modifier = Modifier
             .background(color = Color.White)
@@ -54,7 +57,7 @@ fun MyPagerRecipesScreen(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "ㅇㅇ님의 레시피",
+                    text = "${nickname}님의 레시피",
                     style = ZipdabangandroidTheme.Typography.sixteen_700,
                     color = ZipdabangandroidTheme.Colors.Typo,
                 )

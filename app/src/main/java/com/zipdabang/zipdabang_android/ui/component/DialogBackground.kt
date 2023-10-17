@@ -42,6 +42,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import coil.compose.AsyncImage
 import com.zipdabang.zipdabang_android.R
+import com.zipdabang.zipdabang_android.module.my.data.remote.recipewrite.BeverageCategory
 import com.zipdabang.zipdabang_android.module.recipes.common.ReportContent
 import com.zipdabang.zipdabang_android.ui.theme.DialogBackground
 import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
@@ -523,9 +524,10 @@ fun CustomDialogRecipeDelete(
 fun CustomDialogUploadComplete(
     image: Any,
     setShowDialog: (Boolean) -> Unit,
+    onLater : () -> Unit,
     onAccept: () -> Unit,
 ) {
-    Dialog(onDismissRequest = { setShowDialog(false) }) {
+    Dialog(onDismissRequest = {}){
         Surface(
             shape = ZipdabangandroidTheme.Shapes.small,
             color = DialogBackground,
@@ -552,7 +554,7 @@ fun CustomDialogUploadComplete(
                         modifier = Modifier
                             .fillMaxSize()
                             .padding(0.dp),
-                        contentScale = ContentScale.FillBounds
+                        contentScale = ContentScale.Crop
                     )
                 }
                 Spacer(modifier = Modifier.height(20.dp))
@@ -604,7 +606,9 @@ fun CustomDialogUploadComplete(
                     }
                     TextButton(
                         shape = RectangleShape,
-                        onClick = { setShowDialog(false) }) {
+                        onClick = {
+                            onLater()
+                        }) {
                         Text(
                             text = stringResource(id = R.string.dialog_upload_seenexttime),
                             color = ZipdabangandroidTheme.Colors.Typo,
@@ -622,17 +626,18 @@ fun CustomDialogUploadComplete(
 // 카테고리 선택
 @Composable
 fun CustomDialogSelectCategory(
-    categoryList: List<com.zipdabang.zipdabang_android.module.my.data.remote.BeverageCategory>,
+    categoryList: List<BeverageCategory>,
     categoryParagraphList: List<Int>,
     categorySelectedList: List<Boolean>,
     onSelectClick : (Int, Boolean)->Unit,
     onCompleteClick: () -> Unit,
+    isComplete : Boolean,
     setShowDialog: (Boolean) -> Unit,
 ) {
-    Dialog(onDismissRequest = { setShowDialog(false) }) {
+    Dialog(onDismissRequest = {setShowDialog(false)}) {
         Box(
             modifier = Modifier
-                .size(width = 320.dp, height = 388.dp)
+                .size(width = 320.dp, height = 340.dp)
                 .fillMaxSize()
                 .background(color = DialogBackground, shape = ZipdabangandroidTheme.Shapes.small),
         ) {
@@ -708,6 +713,7 @@ fun CustomDialogSelectCategory(
                     .height(56.dp),
             ) {
                 TextButton(
+                    enabled = isComplete,
                     modifier = Modifier.fillMaxSize(),
                     shape = RectangleShape,
                     onClick = { onCompleteClick() },
@@ -1311,6 +1317,48 @@ fun UserBlockDialog(
     }
 }
 
+@Composable
+fun LoginRequestDialog(
+    showDialog: Boolean,
+    setShowDialog: (Boolean) -> Unit,
+    onLoginRequest: () -> Unit
+) {
+    if (showDialog) {
+        CustomDialogType2(
+            title = "로그인 필요",
+            text = "로그인 후 이용하실 수 있는 서비스입니다.\n" +
+                    "로그인 하시겠습니까?",
+            declineText = "취소",
+            acceptText = "로그인",
+            setShowDialog = { changedState ->
+                setShowDialog(changedState)
+            },
+            onAcceptClick = onLoginRequest
+        )
+    }
+}
+
+@Composable
+fun RecipeDeleteDialog(
+    showDialog: Boolean,
+    setShowDialog: (Boolean) -> Unit,
+    onDeleteClick: () -> Unit
+) {
+    if (showDialog) {
+        CustomDialogType1(
+            title = "나의 레시피 삭제",
+            text = "나의 레시피를 삭제하시겠습니까?\n" +
+                    "삭제된 레시피는 복구가 불가능합니다.",
+            declineText = "취소",
+            acceptText = "삭제",
+            setShowDialog = { changedState ->
+                setShowDialog(changedState)
+            },
+            onAcceptClick = onDeleteClick
+        )
+    }
+}
+
 
 @Preview
 @Composable
@@ -1457,7 +1505,8 @@ fun PreviewCustomDialogUploadComplete() {
         setShowDialog = {
             showDialogSave.value = it
         },
-        onAccept = { }
+        onAccept = { },
+        onLater = { }
     )
 }
 
@@ -1467,42 +1516,42 @@ fun PreviewCustomDialogSelectCategory() {
     val showDialog = remember { mutableStateOf(false) }
 
     val categoryList = listOf(
-        com.zipdabang.zipdabang_android.module.my.data.remote.BeverageCategory(
+        BeverageCategory(
             categoryName = "커피",
             id = 1,
             imageUrl = ""
         ),
-        com.zipdabang.zipdabang_android.module.my.data.remote.BeverageCategory(
+        BeverageCategory(
             categoryName = "논카페인",
             id = 2,
             imageUrl = ""
         ),
-        com.zipdabang.zipdabang_android.module.my.data.remote.BeverageCategory(
+        BeverageCategory(
             categoryName = "차",
             id = 3,
             imageUrl = ""
         ),
-        com.zipdabang.zipdabang_android.module.my.data.remote.BeverageCategory(
+        BeverageCategory(
             categoryName = "에이드",
             id = 4,
             imageUrl = ""
         ),
-        com.zipdabang.zipdabang_android.module.my.data.remote.BeverageCategory(
+        BeverageCategory(
             categoryName = "스무디",
             id = 5,
             imageUrl = ""
         ),
-        com.zipdabang.zipdabang_android.module.my.data.remote.BeverageCategory(
+        BeverageCategory(
             categoryName = "과일음료",
             id = 6,
             imageUrl = ""
         ),
-        com.zipdabang.zipdabang_android.module.my.data.remote.BeverageCategory(
+        BeverageCategory(
             categoryName = "건강음료",
             id = 7,
             imageUrl = ""
         ),
-        com.zipdabang.zipdabang_android.module.my.data.remote.BeverageCategory(
+        BeverageCategory(
             categoryName = "기타",
             id = 8,
             imageUrl = ""
@@ -1526,6 +1575,7 @@ fun PreviewCustomDialogSelectCategory() {
             onCompleteClick = {
 
             },
+            isComplete = true,
             setShowDialog = {
                 showDialog.value = it
             },

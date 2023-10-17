@@ -159,7 +159,6 @@ class FriendsListViewModel @OptIn(ExperimentalPagingApi::class)
                 _searchFollowings.value = it
             }
 
-
         }
 
         }

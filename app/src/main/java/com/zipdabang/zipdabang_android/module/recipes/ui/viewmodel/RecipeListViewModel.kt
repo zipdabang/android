@@ -16,6 +16,8 @@ import com.zipdabang.zipdabang_android.common.Resource
 import com.zipdabang.zipdabang_android.common.ResponseCode
 import com.zipdabang.zipdabang_android.core.NetworkConnection
 import com.zipdabang.zipdabang_android.core.Paging3Database
+import com.zipdabang.zipdabang_android.core.data_store.proto.CurrentPlatform
+import com.zipdabang.zipdabang_android.core.data_store.proto.ProtoRepository
 import com.zipdabang.zipdabang_android.module.recipes.common.OwnerType
 import com.zipdabang.zipdabang_android.module.recipes.data.common.RecipeItem
 import com.zipdabang.zipdabang_android.module.recipes.domain.PreferenceToggle
@@ -43,6 +45,7 @@ import javax.inject.Inject
 @HiltViewModel
 class RecipeListViewModel @Inject constructor(
     private val recipeListRepository: RecipeListRepository,
+    private val protoRepository: ProtoRepository,
     private val toggleLikeListUseCase: ToggleLikeListUseCase,
     private val toggleScrapListUseCase: ToggleScrapListUseCase,
     private val getCategoryItemCountUseCase: GetCategoryItemCountUseCase,
@@ -55,6 +58,13 @@ class RecipeListViewModel @Inject constructor(
     companion object {
         const val TAG = "RecipeListViewModel"
     }
+
+    // 사용할 곳(UI)에서 collectAsState 적용
+    val tokens = protoRepository.tokens
+
+    private val _currentPlatform = mutableStateOf(CurrentPlatform.TEMP)
+    val currentPlatform: State<CurrentPlatform>
+        get() = _currentPlatform
 
     private val _toggleLikeResult = MutableStateFlow(PreferenceToggleState())
     val toggleLikeResult: StateFlow<PreferenceToggleState>
@@ -78,6 +88,10 @@ class RecipeListViewModel @Inject constructor(
     그 후 그 데이터들을 State(RecipeItem)의 리스트로 만들어(List<RecipeItem>)
     각 아이템에 대해 데이터 뿌려주기
      */
+
+    init {
+        getStatus()
+    }
 
     fun setSortBy(sortBy: String) {
         _sortBy.value = sortBy
@@ -321,6 +335,12 @@ class RecipeListViewModel @Inject constructor(
             }
         }
     }
-    
+
     fun isNetworkAvailable() = isNetworkAvailable
+
+    private fun getStatus() {
+        viewModelScope.launch {
+            _currentPlatform.value = tokens.first().platformStatus
+        }
+    }
 }

@@ -1,16 +1,12 @@
 package com.zipdabang.zipdabang_android.module.my.ui
 
-import android.app.Activity
-import android.content.Context
-import android.content.Intent
+import android.annotation.SuppressLint
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
-import android.provider.MediaStore
 import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.activity.result.launch
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -29,11 +25,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -48,16 +41,20 @@ import com.zipdabang.zipdabang_android.R
 import com.zipdabang.zipdabang_android.module.my.ui.component.ButtonAddForIngredient
 import com.zipdabang.zipdabang_android.module.my.ui.component.IngredientAndUnit
 import com.zipdabang.zipdabang_android.module.my.ui.component.Step
+import com.zipdabang.zipdabang_android.module.my.ui.state.recipewrite.RecipeWriteBeveragesEvent
 import com.zipdabang.zipdabang_android.module.my.ui.state.recipewrite.RecipeWriteDialogEvent
 import com.zipdabang.zipdabang_android.module.my.ui.state.recipewrite.RecipeWriteFormEvent
 import com.zipdabang.zipdabang_android.module.my.ui.viewmodel.RecipeWriteViewModel
 import com.zipdabang.zipdabang_android.ui.component.AppBarSignUp
 import com.zipdabang.zipdabang_android.ui.component.CustomDialogCameraFile
 import com.zipdabang.zipdabang_android.ui.component.CustomDialogRecipeDelete
+import com.zipdabang.zipdabang_android.ui.component.CustomDialogSelectCategory
 import com.zipdabang.zipdabang_android.ui.component.CustomDialogType1
 import com.zipdabang.zipdabang_android.ui.component.CustomDialogType2
+import com.zipdabang.zipdabang_android.ui.component.CustomDialogUploadComplete
 import com.zipdabang.zipdabang_android.ui.component.ImageWithIconAndText
-import com.zipdabang.zipdabang_android.ui.component.PrimaryButton
+import com.zipdabang.zipdabang_android.ui.component.PrimaryButtonOutLined
+import com.zipdabang.zipdabang_android.ui.component.PrimaryButtonOutLinedStatus
 import com.zipdabang.zipdabang_android.ui.component.PrimaryButtonWithStatus
 import com.zipdabang.zipdabang_android.ui.component.TextFieldForRecipeWriteMultiline
 import com.zipdabang.zipdabang_android.ui.component.TextFieldForRecipeWriteSingleline
@@ -74,35 +71,35 @@ import java.io.File
 import java.io.InputStream
 
 
-// Bitmap을 Uri로 변환하는 함수
-fun bitmapToUri(context: Context, bitmap: Bitmap): Uri? {
-    val bytes = ByteArrayOutputStream()
-    bitmap.compress(Bitmap.CompressFormat.JPEG, 0, bytes)
-    val path = MediaStore.Images.Media.insertImage(context.contentResolver, bitmap, "Image", null)
-    return Uri.parse(path)
-}
-
+@SuppressLint("CoroutineCreationDuringComposition")
 @Composable
 fun RecipeWriteScreen(
+    recipeId : Int?,
     onClickBack: () -> Unit,
-    onClickWrite: () -> Unit,
-    recipeWriteViewModel: RecipeWriteViewModel = hiltViewModel()
+    recipeWriteViewModel: RecipeWriteViewModel = hiltViewModel(),
+    onClickViewRecipe: (Int) -> Unit
 ) {
     val stateRecipeWriteForm = recipeWriteViewModel.stateRecipeWriteForm
     val stateRecipeWriteDialog = recipeWriteViewModel.stateRecipeWriteDialog
+    val stateRecipeWriteBeverages = recipeWriteViewModel.stateRecipeWriteBeverages
     val context = LocalContext.current
     val stateThumbnail = recipeWriteViewModel.stateRecipeWriteForm.thumbnail
+    val stateUploadRecipeId = recipeWriteViewModel.uploadRecipeId // 기문이형 도와줘 ㅠㅠ
+    Log.e("state-uploadrecipeid","${stateUploadRecipeId}")
 
 
     LaunchedEffect(key1 = stateRecipeWriteForm){
-        Log.e("recipeWriteForm", "${stateRecipeWriteForm}")
         recipeWriteViewModel.onRecipeWriteFormEvent(RecipeWriteFormEvent.BtnEnabled(true))
+        recipeWriteViewModel.onRecipeWriteFormEvent(RecipeWriteFormEvent.BtnEnabledSave(true))
     }
     LaunchedEffect(key1 = stateRecipeWriteForm.ingredients) {
         recipeWriteViewModel.onRecipeWriteFormEvent(RecipeWriteFormEvent.BtnIngredientAddEnabled(stateRecipeWriteForm.ingredientsNum))
     }
     LaunchedEffect(key1= stateRecipeWriteForm.steps){
         recipeWriteViewModel.onRecipeWriteFormEvent(RecipeWriteFormEvent.StepIsValidate(stateRecipeWriteForm.stepsNum))
+    }
+    LaunchedEffect(key1 = stateRecipeWriteBeverages){
+        recipeWriteViewModel.onRecipeWriteBeveragesEvent(RecipeWriteBeveragesEvent.BtnEnabled(true))
     }
 
     var thumbnailPhotoBitmap : Bitmap?
@@ -247,16 +244,54 @@ fun RecipeWriteScreen(
     Scaffold(
         modifier = Modifier
             .fillMaxSize(),
+        bottomBar = {
+            // 하단 버튼
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp, 12.dp, 16.dp, 12.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalAlignment = Alignment.Bottom
+            ) {
+                Box(
+                    modifier = Modifier.weight(1f)
+                ) {
+                    PrimaryButtonOutLinedStatus(
+                        borderColor = ZipdabangandroidTheme.Colors.MainBackground,
+                        text = stringResource(id = R.string.my_recipewrite_save),
+                        onClick = {
+                            recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.SaveChanged(true))
+                        },
+                        enabled = stateRecipeWriteForm.btnEnabledSave
+                    )
+                }
+                Box(
+                    modifier = Modifier.weight(1f)
+                ) {
+                    PrimaryButtonWithStatus(
+                        isFormFilled = stateRecipeWriteForm.btnEnabled,
+                        text = stringResource(id = R.string.my_recipewrite_writedone),
+                        onClick = {
+                            CoroutineScope(Dispatchers.Main).launch{
+                                try{
+                                    recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.UploadCategoryChanged(true))
+                                } catch (e:Exception){}
+                            }
+                        },
+                    )
+                }
+
+            }
+        },
         topBar = {
             AppBarSignUp(
                 navigationIcon = R.drawable.ic_topbar_backbtn,
                 onClickNavIcon = {
-                    // 만약 하나라도 차있으면, dialog 띄운 후에 onClickBack()
-                    // if(){
-                    recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.RecipeDeleteChanged(true))
-                    // } else{
-                    //      onClickBack()
-                    // }
+                    if(!recipeWriteViewModel.isEmpty()){
+                        recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.RecipeDeleteChanged(true))
+                     } else{
+                          onClickBack()
+                     }
                 },
                 centerText = stringResource(id = R.string.my_recipewrite)
             )
@@ -662,46 +697,7 @@ fun RecipeWriteScreen(
             }
 
 
-            // 하단 버튼
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp, 12.dp, 16.dp, 12.dp),
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                verticalAlignment = Alignment.Bottom
-            ) {
-                Box(
-                    modifier = Modifier.weight(1f)
-                ) {
-                    PrimaryButton(
-                        backgroundColor = ZipdabangandroidTheme.Colors.MainBackground,
-                        text = stringResource(id = R.string.my_recipewrite_save),
-                        onClick = {
-                            recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.SaveChanged(true))
-                        },
-                    )
-                }
-                Box(
-                    modifier = Modifier.weight(1f)
-                ) {
-                    PrimaryButtonWithStatus(
-                        isFormFilled = stateRecipeWriteForm.btnEnabled,
-                        text = stringResource(id = R.string.my_recipewrite_writedone),
-                        onClick = {
-                             CoroutineScope(Dispatchers.Main).launch{
-                                 try{
-                                     //recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.UploadCategoryChanged(true))
-                                     recipeWriteViewModel.postRecipeWrite(stepImageParts = stepImageParts.toList())
-                                     //recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.UploadCompleteChanged(true))
-                                 } catch (e:Exception){
 
-                                 }
-                             }
-                        },
-                    )
-                }
-
-            }
 
 
             // 알럿
@@ -766,21 +762,55 @@ fun RecipeWriteScreen(
                         recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.SaveChanged(it))
                     },
                     onAcceptClick = {
-                        // 임시저장 api & navGraph 이동
+                        CoroutineScope(Dispatchers.IO).launch {
+                            recipeWriteViewModel.postRecipeWriteTemp(stepImageParts = stepImageParts.toList())
+                        }
+                        onClickBack()
                         recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.SaveChanged(false))
                     }
                 )
             }
-            // 업로드 알럿
+            // 카테고리 선택 알럿
             if (stateRecipeWriteDialog.isOpenUploadCategory) {
-                /*CustomDialogSelectCategory(
-                    categoryList = ,
-                    categoryParagraphList = ,
-                    categorySelectedList = ,
-                    onSelectClick = {},
-                    onCompleteClick = { *//*TODO*//* },
-                    setShowDialog = {}
-                )*/
+                CustomDialogSelectCategory(
+                    categoryList = stateRecipeWriteBeverages.beverageList,
+                    categoryParagraphList = listOf(3, 2, 2, 1),
+                    categorySelectedList = stateRecipeWriteBeverages.beverageCheckList,
+                    onSelectClick = { index, clicked ->
+                        recipeWriteViewModel.onRecipeWriteBeveragesEvent(RecipeWriteBeveragesEvent.StepFileSelectChanged(index, clicked))
+                    },
+                    isComplete = stateRecipeWriteBeverages.btnEnabled,
+                    onCompleteClick = {
+                        CoroutineScope(Dispatchers.Main).launch {
+                            // post api success됐는지 확인하는 변수
+                            val isSuccess = recipeWriteViewModel.postRecipeWrite(stepImageParts = stepImageParts.toList())
+                            // post api 성공하면 업로드 완료 알럿을 띄운다
+                            if (isSuccess){
+                                recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.UploadCompleteChanged(true))
+                            }
+                            recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.UploadCategoryChanged(false))
+                        }
+                    },
+                    setShowDialog = {
+                        recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.UploadCategoryChanged(it))
+                    }
+                )
+            }
+            // 업로드 알럿
+            if (stateRecipeWriteDialog.isOpenUploadComplete){
+                CustomDialogUploadComplete(
+                    image = stateThumbnail !!,
+                    setShowDialog = {
+                        recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.UploadCompleteChanged(it))
+                    },
+                    onAccept = {
+                        onClickViewRecipe(stateUploadRecipeId)
+                    },
+                    onLater = {
+                        recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.UploadCompleteChanged(false))
+                        onClickBack()
+                    }
+                )
             }
             // 작성 중 취소 알럿
             if (stateRecipeWriteDialog.isOpenRecipeDelete) {
@@ -793,7 +823,10 @@ fun RecipeWriteScreen(
                         onClickBack()
                     },
                     onTemporalSave = {
-                        // 임시저장 api & navGraph 이동
+                        CoroutineScope(Dispatchers.IO).launch {
+                            recipeWriteViewModel.postRecipeWriteTemp(stepImageParts = stepImageParts.toList())
+                        }
+                        onClickBack()
                         recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.RecipeDeleteChanged(false))
                     }
                 )
@@ -807,7 +840,8 @@ fun RecipeWriteScreen(
 @Composable
 fun PreviewRecipeWriteScreen() {
     RecipeWriteScreen(
+        recipeId = null,
         onClickBack = {},
-        onClickWrite = {}
+        onClickViewRecipe = { recipeId -> }
     )
 }
