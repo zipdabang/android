@@ -39,7 +39,7 @@ fun NavGraphBuilder.DrawerNavGraph(navController: NavHostController, outerNavCon
 
     navigation(startDestination = DrawerScreen.Notice.route, route = DRAWER_ROUTE){
         composable(DrawerScreen.Notice.route){
-           NoticeScreen(navController)
+           NoticeScreen(navController, onClickBack = {})
         }
         composable(DrawerScreen.Report.route){
             ErrorReportScreen(

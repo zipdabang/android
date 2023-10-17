@@ -1,5 +1,6 @@
 package com.zipdabang.zipdabang_android.module.drawer.data.remote
 
+import com.zipdabang.zipdabang_android.module.drawer.data.remote.noticedto.NoticeListDto
 import com.zipdabang.zipdabang_android.module.drawer.data.remote.quitdto.QuitDto
 import com.zipdabang.zipdabang_android.module.drawer.data.remote.quitdto.QuitRequest
 import com.zipdabang.zipdabang_android.module.drawer.data.remote.reporterror.ReportListDto
@@ -120,5 +121,9 @@ interface DrawerApi {
         @Header("Authorization") accessToken: String,
         @Query("page") page : Int
     ) : ReportListDto
+    @GET("notices")
+    suspend fun getNoticeList(
+        @Header("Authorization") accessToken: String
+    ) : NoticeListDto
 
 }

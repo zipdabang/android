@@ -64,6 +64,8 @@ sealed class MyScreen(val route : String){
             return "my/other?userId=$userId"
         }
     }
+    object NoticeList : MyScreen(route = "my/notice/list")
+
 }
 
 sealed class DrawerScreen(val route : String){
@@ -76,7 +78,6 @@ sealed class DrawerScreen(val route : String){
 
     object ReportSuccess : DrawerScreen(route = "drawer/report/success")
     object ReportList : DrawerScreen(route = "drawer/report/list")
-
     //회원 정보
     object UserInfo : DrawerScreen(route = "drawer/userinfo")
     object UserInfoBasic : DrawerScreen(route="drawer/userinfo/basic")

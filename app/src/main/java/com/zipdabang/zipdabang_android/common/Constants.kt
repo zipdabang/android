@@ -39,7 +39,6 @@ object Constants {
     const val FOLLOW_TABLE = "follow_table"
     const val FOLLOWING_TABLE = "following_table"
     const val REPORT_TABLE = "report_table"
-    const val NOTICE_TABLE = "notice_table"
     const val SEARCH_FOLLOW_TABLE = "search_follow_table"
     const val SEARCH_FOLLOWING_TABLE = "search_following_table"
     //----------------------------------------------------------------------------------------------

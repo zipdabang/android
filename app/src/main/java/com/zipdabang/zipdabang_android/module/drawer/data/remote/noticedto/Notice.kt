@@ -10,12 +10,3 @@ data class Notice(
     val title: String
 )
 
-
-@Entity(tableName = Constants.NOTICE_TABLE)
-data class NoticeDB(
-    val index : Int,
-    @PrimaryKey(autoGenerate = false)
-    val noticeId : Int,
-    val title : String,
-    val createdAt: String
-)
