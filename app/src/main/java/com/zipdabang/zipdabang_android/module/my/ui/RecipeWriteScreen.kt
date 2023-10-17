@@ -74,6 +74,7 @@ import java.io.InputStream
 @SuppressLint("CoroutineCreationDuringComposition")
 @Composable
 fun RecipeWriteScreen(
+    recipeId : Int?,
     onClickBack: () -> Unit,
     recipeWriteViewModel: RecipeWriteViewModel = hiltViewModel()
 ) {
@@ -838,6 +839,7 @@ fun RecipeWriteScreen(
 @Composable
 fun PreviewRecipeWriteScreen() {
     RecipeWriteScreen(
+        recipeId = null,
         onClickBack = {},
     )
 }
