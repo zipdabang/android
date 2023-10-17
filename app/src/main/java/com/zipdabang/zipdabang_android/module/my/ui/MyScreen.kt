@@ -163,7 +163,7 @@ fun MyScreen(
                                         style = ZipdabangandroidTheme.Typography.thirtytwo_700,
                                         color = Color.White,
                                         modifier = Modifier
-                                            .width(80.dp)
+                                            .width(160.dp)
                                             .then(
                                             if (shimmering) {
                                                 Modifier.shimmeringEffect()

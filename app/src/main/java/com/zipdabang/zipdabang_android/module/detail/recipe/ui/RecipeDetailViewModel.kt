@@ -14,6 +14,7 @@ import com.zipdabang.zipdabang_android.core.data_store.proto.Token
 import com.zipdabang.zipdabang_android.module.comment.ui.BlockUserState
 import com.zipdabang.zipdabang_android.module.comment.use_case.BlockUserUseCase
 import com.zipdabang.zipdabang_android.module.detail.recipe.common.DeviceScreenSize
+import com.zipdabang.zipdabang_android.module.detail.recipe.use_case.DeleteRecipeUseCase
 import com.zipdabang.zipdabang_android.module.detail.recipe.use_case.GetRecipeDetailUseCase
 import com.zipdabang.zipdabang_android.module.detail.recipe.use_case.ReportRecipeUseCase
 import com.zipdabang.zipdabang_android.module.recipes.ui.state.PreferenceToggleState
@@ -38,6 +39,7 @@ class RecipeDetailViewModel @Inject constructor(
     private val toggleScrapUseCase: ToggleScrapUseCase,
     private val reportRecipeUseCase: ReportRecipeUseCase,
     private val blockUserUseCase: BlockUserUseCase,
+    private val deleteRecipeUseCase: DeleteRecipeUseCase,
     private val tokens: DataStore<Token>,
     @DeviceSize private val deviceSize: DeviceScreenSize
 ) : ViewModel() {
@@ -72,6 +74,10 @@ class RecipeDetailViewModel @Inject constructor(
 
     private val _recipeReportState = mutableStateOf(RecipeReportState())
     val recipeReportState: State<RecipeReportState> = _recipeReportState
+
+    private val _recipeDeleteState = mutableStateOf(UiState<Boolean>())
+    val recipeDeleteState: State<UiState<Boolean>>
+        get() = _recipeDeleteState
 
     private val _blockOwnerId = mutableStateOf(0)
     val blockOwnerId: State<Int> = _blockOwnerId
@@ -309,6 +315,32 @@ class RecipeDetailViewModel @Inject constructor(
                         BlockUserState(
                             isLoading = true
                         )
+                    )
+                }
+            }
+        }.launchIn(viewModelScope)
+    }
+
+    fun deleteRecipe(recipeId: Int) {
+        deleteRecipeUseCase(recipeId).onEach { result ->
+            when (result) {
+                is Resource.Loading -> {
+                    _recipeDeleteState.value = UiState(
+                        isLoading = true
+                    )
+                }
+                is Resource.Success -> {
+                    _recipeDeleteState.value = UiState(
+                        isLoading = false,
+                        isSuccessful = true,
+                        data = true
+                    )
+                }
+                is Resource.Error -> {
+                    _recipeDeleteState.value = UiState(
+                        isLoading = false,
+                        isSuccessful = false,
+                        data = false
                     )
                 }
             }

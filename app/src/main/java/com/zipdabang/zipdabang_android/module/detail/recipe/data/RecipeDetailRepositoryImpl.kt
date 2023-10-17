@@ -23,4 +23,10 @@ class RecipeDetailRepositoryImpl @Inject constructor(
             reportId = reportId
         )
     }
+
+    override suspend fun deleteRecipe(
+        accessToken: String, recipeId: Int
+    ): ResponseBody<String?> {
+        return recipeApi.deleteRecipe(accessToken, recipeId)
+    }
 }

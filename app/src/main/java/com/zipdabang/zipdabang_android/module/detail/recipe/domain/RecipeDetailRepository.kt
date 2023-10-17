@@ -11,4 +11,8 @@ interface RecipeDetailRepository {
     suspend fun reportRecipe(
         accessToken: String, recipeId: Int, reportId: Int
     ): ResponseBody<String?>
+
+    suspend fun deleteRecipe(
+        accessToken: String, recipeId: Int
+    ): ResponseBody<String?>
 }

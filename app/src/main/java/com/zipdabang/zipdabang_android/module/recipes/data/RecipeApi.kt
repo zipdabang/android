@@ -95,6 +95,12 @@ interface RecipeApi {
         @Path("reportId") reportId: Int
     ): ResponseBody<String?>
 
+
+    @DELETE("members/recipes/{recipeId}")
+    suspend fun deleteRecipe(
+        @Header("Authorization") accessToken: String,
+        @Path("recipeId") recipeId: Int
+    ): ResponseBody<String?>
     // ---------------------------------------------------------------------------------------------
     @GET("members/recipes/{recipeId}/comments")
     suspend fun getRecipeComments(

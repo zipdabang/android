@@ -1,9 +1,13 @@
 package com.zipdabang.zipdabang_android.core.navigation
 
 import android.util.Log
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.remember
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.ViewModel
+import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
@@ -23,6 +27,7 @@ import com.zipdabang.zipdabang_android.module.my.ui.MyrecipeScreen
 import com.zipdabang.zipdabang_android.module.my.ui.RecipeWriteScreen
 import com.zipdabang.zipdabang_android.module.my.ui.ScrapScreen
 import com.zipdabang.zipdabang_android.module.my.ui.ShoppingScreen
+import com.zipdabang.zipdabang_android.module.my.ui.viewmodel.RecipeWriteViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -153,22 +158,54 @@ fun NavGraphBuilder.MyNavGraph(
                 }
             )
         }
-        composable(MyScreen.RecipeWrite.route){
-            RecipeWriteScreen(
-                onClickBack = {
-                    navController.popBackStack(MyScreen.Myrecipe.route, inclusive = false)
-                },
-                onClickViewRecipe = { recipeId ->
-                    navController.navigate(
-                        route = SharedScreen.DetailRecipe.passRecipeId(recipeId)
-                    ) {
-                        popUpTo(route = MyScreen.RecipeWrite.route) {
-                            inclusive = true
-                        }
-                        launchSingleTop = true
-                    }
-                }
+
+        composable(
+            route = MyScreen.RecipeWrite.route,
+            arguments = listOf(
+                navArgument(name = "recipeId") { type = NavType.IntType }
             )
+        ) { navBackStackEntry->
+            val recipeWriteViewModel = navBackStackEntry
+                .recipeWriteViewModel<RecipeWriteViewModel>(navController = navController)
+            val recipeId = navBackStackEntry.arguments?.getString("recipeId")?.toInt()
+
+            if(recipeId == null){
+                RecipeWriteScreen(
+                    recipeId = null,
+                    onClickBack = {
+                        navController.popBackStack(MyScreen.Myrecipe.route, inclusive = false)
+                    },
+                    onClickViewRecipe = { recipeId ->
+                        navController.navigate(
+                            route = SharedScreen.DetailRecipe.passRecipeId(recipeId)
+                        ) {
+                            popUpTo(route = MyScreen.RecipeWrite.route) {
+                                inclusive = true
+                            }
+                            launchSingleTop = true
+                        }
+                    }
+                )
+            } else {
+                Log.e("recipeId 전달","recipeId : ${recipeId}")
+                // 레시피 상세 정보 api 호출하기
+                RecipeWriteScreen(
+                    recipeId = recipeId,
+                    onClickBack = {
+                        navController.popBackStack(MyScreen.Myrecipe.route, inclusive = false)
+                    },
+                    onClickViewRecipe = { recipeId ->
+                        navController.navigate(
+                            route = SharedScreen.DetailRecipe.passRecipeId(recipeId)
+                        ) {
+                            popUpTo(route = MyScreen.RecipeWrite.route) {
+                                inclusive = true
+                            }
+                            launchSingleTop = true
+                        }
+                    }
+                )
+            }
         }
 
         composable(
@@ -188,6 +225,15 @@ fun NavGraphBuilder.MyNavGraph(
     }
 }
 
+
+@Composable
+inline fun <reified T : ViewModel> NavBackStackEntry.recipeWriteViewModel(navController: NavHostController): T {
+    val navGraphRoute = destination.parent?.route ?: return hiltViewModel()
+    val parentEntry = remember(this) {
+        navController.getBackStackEntry(navGraphRoute)
+    }
+    return hiltViewModel(parentEntry)
+}
 
 
 

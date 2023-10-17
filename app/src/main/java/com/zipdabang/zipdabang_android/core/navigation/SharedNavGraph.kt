@@ -108,6 +108,12 @@ fun NavGraphBuilder.SharedNavGraph(
                 mutableStateOf(false)
             }
 
+            val recipeDeleteState = recipeDetailViewModel.recipeDeleteState.value
+
+            if (recipeDeleteState.isLoading == false && recipeDeleteState.data == true) {
+                navController.popBackStack()
+            }
+
             LoginRequestDialog(
                 showDialog = showLoginRequestDialog,
                 setShowDialog = { changedValue ->
@@ -128,7 +134,7 @@ fun NavGraphBuilder.SharedNavGraph(
                     showDeleteDialog = changedValue
                 }
             ) {
-
+                recipeDetailViewModel.deleteRecipe(recipeId = recipeId)
             }
 
             RecipeDetailScreen(
@@ -152,10 +158,12 @@ fun NavGraphBuilder.SharedNavGraph(
                 onClickProfile = { ownerId -> },
                 // onClickCart = { keyword -> },
                 onClickRecipeDelete = {
-
+                    showDeleteDialog = true
                 },
                 onClickRecipeEdit = {
-
+                    navController.navigate(route = MyScreen.RecipeWrite.passRecipeId(recipeId)) {
+                        launchSingleTop = true
+                    }
                 },
                 onClickRecipeReport = { reportId ->
                     Log.i(
