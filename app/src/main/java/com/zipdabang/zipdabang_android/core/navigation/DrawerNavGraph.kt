@@ -96,7 +96,14 @@ fun NavGraphBuilder.DrawerNavGraph(navController: NavHostController, outerNavCon
                     navController.navigate(DrawerScreen.UserInfoPreferences.route)
                 },
                 onClickLogout = {
-
+                    drawerUserInfoViewModel.signOut {
+                        outerNavController.navigate(AUTH_ROUTE){
+                            popUpTo(MAIN_ROUTE) {
+                                inclusive = true
+                            }
+                            launchSingleTop = true
+                        }
+                    }
                 },
                 onClickWithdraw = {
                     navController.navigate(DrawerScreen.Quit.route)

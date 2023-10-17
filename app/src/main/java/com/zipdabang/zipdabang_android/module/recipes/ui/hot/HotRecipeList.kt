@@ -10,7 +10,6 @@ import com.zipdabang.zipdabang_android.common.UiState
 import com.zipdabang.zipdabang_android.core.data_store.proto.CurrentPlatform
 import com.zipdabang.zipdabang_android.module.recipes.data.hot.HotRecipeItem
 import com.zipdabang.zipdabang_android.module.recipes.ui.state.PreferenceToggleState
-import kotlinx.coroutines.flow.StateFlow
 
 @Composable
 fun HotRecipeList(
@@ -31,19 +30,25 @@ fun HotRecipeList(
             .fillMaxWidth()
             .height(400.dp)
     ) {
-        hotItems.data?.forEachIndexed { index, recipesByOwnerType ->
-            HotRecipeItem(
-                index = index + 1,
-                item = recipesByOwnerType,
-                onRecipeClick = onRecipeClick,
-                onLikeClick = onLikeClick,
-                onScrapClick = onScrapClick,
-                likeState = likeState,
-                scrapState = scrapState,
-                setShowLoginRequestDialog = setShowLoginRequestDialog,
-                currentPlatform = currentPlatform,
-                showSnackbar = showSnackbar
-            )
+        if (hotItems.isLoading == true) {
+            repeat(5) {
+                HotRecipeItemLoading()
+            }
+        } else {
+            hotItems.data?.forEachIndexed { index, recipesByOwnerType ->
+                HotRecipeItem(
+                    index = index + 1,
+                    item = recipesByOwnerType,
+                    onRecipeClick = onRecipeClick,
+                    onLikeClick = onLikeClick,
+                    onScrapClick = onScrapClick,
+                    likeState = likeState,
+                    scrapState = scrapState,
+                    setShowLoginRequestDialog = setShowLoginRequestDialog,
+                    currentPlatform = currentPlatform,
+                    showSnackbar = showSnackbar
+                )
+            }
         }
     }
 }
