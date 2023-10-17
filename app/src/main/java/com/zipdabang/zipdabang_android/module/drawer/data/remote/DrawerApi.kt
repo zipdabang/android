@@ -8,9 +8,8 @@ import com.zipdabang.zipdabang_android.module.drawer.data.remote.userinfodto.Use
 import com.zipdabang.zipdabang_android.module.drawer.data.remote.userinfodto.UserInfoDetailRequest
 import com.zipdabang.zipdabang_android.module.drawer.data.remote.userinfodto.UserInfoEditResponse
 import com.zipdabang.zipdabang_android.module.drawer.data.remote.userinfodto.UserInfoNicknameRequest
-import com.zipdabang.zipdabang_android.module.drawer.data.remote.userinfodto.UserInfoProfileRequest
-import com.zipdabang.zipdabang_android.module.drawer.data.remote.userinfodto.UserInfoResponse
 import com.zipdabang.zipdabang_android.module.drawer.data.remote.userinfodto.UserInfoPreferencesRequest
+import com.zipdabang.zipdabang_android.module.drawer.data.remote.userinfodto.UserInfoResponse
 import com.zipdabang.zipdabang_android.module.sign_up.data.remote.AuthRequest
 import com.zipdabang.zipdabang_android.module.sign_up.data.remote.AuthResponse
 import com.zipdabang.zipdabang_android.module.sign_up.data.remote.NicknameResponse
@@ -33,11 +32,18 @@ interface DrawerApi {
         @Header("Authorization") accessToken: String,
     ) : UserInfoResponse
 
-    // 회원정보 수정하기
+    // 프로필 수정하기
+    @Multipart
     @PATCH("myInfo/profileImage")
     suspend fun patchUserInfoProfile(
         @Header("Authorization") accessToken: String,
-        @Body userInfoProfile : UserInfoProfileRequest
+        @Part userInfoProfile : MultipartBody.Part
+    ) : UserInfoEditResponse
+
+    // 기본프로필로 수정하기
+    @PATCH("members/defaultProfile")
+    suspend fun patchUserInfoDefaultProfile(
+        @Header("Authorization") accessToken: String,
     ) : UserInfoEditResponse
 
     // 기본 정보 수정
@@ -65,6 +71,12 @@ interface DrawerApi {
         @Body userInfoDetail : UserInfoDetailRequest
     ) : UserInfoEditResponse
 
+    // 한줄 소개 수정
+    @PATCH("members/caption")
+    suspend fun patchUserInfoOneLine(
+        @Header("Authorization") accessToken: String,
+        @Query("caption") caption : String
+    ): UserInfoEditResponse
 
     // 닉네임 수정
     @PATCH("myInfo/nickname")

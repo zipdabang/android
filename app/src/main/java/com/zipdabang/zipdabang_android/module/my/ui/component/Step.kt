@@ -61,7 +61,7 @@ fun Step(
     placeholderValue: String,
     completeBtnEnabled : Boolean,
     completeBtnVisible : Boolean,
-    textfieldEnabled : Boolean,
+    addBtnVisible : Boolean,
     height: Dp,
     maxLines: Int,
     maxLength: Int, //최대 글자수
@@ -69,7 +69,8 @@ fun Step(
     onClickImageAddBtn: () -> Unit,
     onClickDeleteStep: () -> Unit,
     onClickEditStep:()->Unit,
-    onClickComplete : ()->Unit
+    onClickComplete : ()->Unit,
+    onClickAdd : ()->Unit,
 ) {
     Column(
         verticalArrangement = Arrangement.spacedBy(4.dp)
@@ -163,7 +164,7 @@ fun Step(
 
         // Step textfield
         OutlinedTextField(
-            enabled = textfieldEnabled,
+            enabled = completeBtnVisible,
             value = value,
             onValueChange = {
                 onValueChanged(it, maxLength)
@@ -268,6 +269,15 @@ fun Step(
                 }
             )
         }
+        // 재료 추가 버튼
+        if(addBtnVisible){
+            ButtonAddForStep(
+                enabled = addBtnVisible,
+                onClickBtn = {
+                    onClickAdd()
+                }
+            )
+        }
     }
 }
 
@@ -289,8 +299,8 @@ fun PreviewStep() {
             },
             placeholderValue = stringResource(id = R.string.my_recipewrite_step_hint),
             completeBtnEnabled = true,
-            textfieldEnabled = true,
             completeBtnVisible = true,
+            addBtnVisible = true,
             height = 100.dp,
             maxLines = 7,
             maxLength = 200,
@@ -298,7 +308,8 @@ fun PreviewStep() {
             onClickImageAddBtn = { },
             onClickDeleteStep = {},
             onClickEditStep = {},
-            onClickComplete = {}
+            onClickComplete = {},
+            onClickAdd = {}
         )
     }
 }

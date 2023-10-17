@@ -2,13 +2,24 @@ package com.zipdabang.zipdabang_android.module.my.data.remote
 
 import com.zipdabang.zipdabang_android.module.my.data.remote.followorcancel.FollowOrCancelDto
 import com.zipdabang.zipdabang_android.module.my.data.remote.friendlist.follow.FollowDto
+import com.zipdabang.zipdabang_android.module.my.data.remote.friendlist.follow.search.SearchFollowingDto
 import com.zipdabang.zipdabang_android.module.my.data.remote.friendlist.following.FollowingDto
+import com.zipdabang.zipdabang_android.module.my.data.remote.friendlist.following.search.SearchFollowersDto
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import com.zipdabang.zipdabang_android.module.my.data.remote.myinfo.MyInfoRecipesResponse
+import com.zipdabang.zipdabang_android.module.my.data.remote.myinfo.MyInfoResponse
 import com.zipdabang.zipdabang_android.module.my.data.remote.otherinfo.OtherInfoDto
 import com.zipdabang.zipdabang_android.module.my.data.remote.otherinfo.OtherRecipePreviewDto
-import retrofit2.http.Body
+import com.zipdabang.zipdabang_android.module.my.data.remote.recipewrite.RecipeWriteBeveragesResponse
+import com.zipdabang.zipdabang_android.module.my.data.remote.recipewrite.RecipeWriteResponse
+import com.zipdabang.zipdabang_android.module.my.data.remote.recipewrite.RecipeWriteTempResponse
+import com.zipdabang.zipdabang_android.module.my.data.remote.signout.SignOutResponseDto
 import retrofit2.http.GET
 import retrofit2.http.Header
+import retrofit2.http.Multipart
 import retrofit2.http.POST
+import retrofit2.http.Part
 import retrofit2.http.Path
 import retrofit2.http.Query
 
@@ -18,16 +29,23 @@ interface MyApi {
         @Header("Authorization") accessToken: String
     ): SignOutResponseDto
 
-    @GET("categories")
-    suspend fun getCategories(
-        @Header("Authorization") accessToken: String
-    ): CategoriesResponse
-
+    @Multipart
     @POST("members/recipes")
     suspend fun postRecipe(
         @Header("Authorization") accessToken: String,
-        @Body recipeWriteForm : RecipeWriteRequest
+        @Part("content") content: RequestBody,
+        @Part stepImages: List<MultipartBody.Part>,
+        @Part thumbnail: MultipartBody.Part
     ): RecipeWriteResponse
+
+    @Multipart
+    @POST("members/recipes/temp")
+    suspend fun postRecipeTemp(
+        @Header("Authorization") accessToken: String,
+        @Part("content") content: RequestBody,
+        @Part stepImages: List<MultipartBody.Part>?,
+        @Part thumbnail: MultipartBody.Part?
+    ) : RecipeWriteTempResponse
 
     @GET("members/followings")
     suspend fun getFollowings(
@@ -58,4 +76,33 @@ interface MyApi {
         @Path(value = "memberId") memeberId : Int
     ) : OtherRecipePreviewDto
 
+    @GET("members/followings-nickname")
+    suspend fun getSearchFollowings(
+        @Header("Authorization") accessToken: String,
+        @Query("page") page : Int,
+        @Query("nickname") nickname : String
+        ): SearchFollowingDto
+
+    @GET("members/followers-nickname")
+    suspend fun getSearchFollowers(
+        @Header("Authorization") accessToken: String,
+        @Query("page") page : Int,
+        @Query("nickname") nickname : String
+    ): SearchFollowersDto
+
+    @GET("members/selfMyZipdabang")
+    suspend fun getMyInfo(
+        @Header("Authorization") accessToken: String
+    ) : MyInfoResponse
+
+    @GET("members/recipes/owner")
+    suspend fun getMyInfoRecipes(
+        @Header("Authorization") accessToken: String,
+        @Query("pageIndex") pageIndex : Int
+    ) : MyInfoRecipesResponse
+
+    @GET("/categories")
+    suspend fun getRecipeWriteBeverages(
+        @Header("Authorization") accessToken: String
+    ) : RecipeWriteBeveragesResponse
 }

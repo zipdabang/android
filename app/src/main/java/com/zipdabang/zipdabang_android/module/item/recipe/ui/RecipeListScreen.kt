@@ -1,40 +1,37 @@
 package com.zipdabang.zipdabang_android.module.item.recipe.ui
 
 import android.util.Log
-import androidx.activity.OnBackPressedCallback
-import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.zipdabang.zipdabang_android.R
+import com.zipdabang.zipdabang_android.core.data_store.proto.CurrentPlatform
 import com.zipdabang.zipdabang_android.module.item.recipe.common.RecipeSort
 import com.zipdabang.zipdabang_android.module.item.recipe.common.RecipeSubtitleState
 import com.zipdabang.zipdabang_android.module.recipes.common.OwnerType
 import com.zipdabang.zipdabang_android.module.recipes.ui.viewmodel.RecipeListViewModel
 import com.zipdabang.zipdabang_android.ui.component.AppBarWithFullFunction
 import com.zipdabang.zipdabang_android.ui.component.FloatingActionButton
+import com.zipdabang.zipdabang_android.ui.component.LoginRequestDialog
 import com.zipdabang.zipdabang_android.ui.component.ModalDrawer
 import kotlinx.coroutines.launch
 
@@ -45,7 +42,9 @@ fun RecipeListScreen(
     categoryState: RecipeSubtitleState,
     onBackClick: () -> Unit,
     onShareClick: () -> Unit,
-    onItemClick: (Int) -> Unit
+    onItemClick: (Int) -> Unit,
+    onLoginRequest: () -> Unit,
+    showSnackbar: (String) -> Unit
 ) {
 
     val TAG = "RecipeListScreen"
@@ -54,6 +53,8 @@ fun RecipeListScreen(
     val drawerState = rememberDrawerState(DrawerValue.Closed)
 
     val viewModel = hiltViewModel<RecipeListViewModel>()
+
+    val currentPlatformState = viewModel.currentPlatform.value
 
     val type: RecipeSubtitleState by remember {
         derivedStateOf {
@@ -68,12 +69,11 @@ fun RecipeListScreen(
     )
 
     val sortBy = viewModel.sortBy.value
-    val total = viewModel.total.value.toString()
-
+    // val total = viewModel.total.value.toString()
 
     Log.i(TAG, "ownerType : $type")
     Log.i(TAG, "sortBy : $sortBy")
-    Log.i(TAG, "total : $total")
+    // Log.i(TAG, "total : $total")
 
 
     val recipeList =
@@ -103,6 +103,19 @@ fun RecipeListScreen(
 
     val likeState = viewModel.toggleLikeResult.collectAsState().value
     val scrapState = viewModel.toggleScrapResult.collectAsState().value
+
+    if (likeState.errorMessage != null) {
+        showSnackbar(likeState.errorMessage)
+    }
+
+    if (scrapState.errorMessage != null) {
+        showSnackbar(scrapState.errorMessage)
+    }
+
+    var showLoginRequestDialog by remember {
+        mutableStateOf(false)
+    }
+
 
     ModalDrawer(
         scaffold = {
@@ -149,10 +162,20 @@ fun RecipeListScreen(
                     .fillMaxSize()
                     .padding(padding)
                 ) {
+
+                    LoginRequestDialog(
+                        showDialog = showLoginRequestDialog,
+                        setShowDialog = { changedState ->
+                            showLoginRequestDialog = changedState
+                        }
+                    ) {
+                        onLoginRequest()
+                    }
+
                     RecipeList(
                         modifier = Modifier,
                         onItemClick = onItemClick,
-                        total = total,
+                        // total = total,
                         sortList = sortList,
                         onSortChange = { changedValue ->
                             when (changedValue) {
@@ -173,10 +196,20 @@ fun RecipeListScreen(
                         likeState = likeState,
                         scrapState = scrapState,
                         onToggleLike = { recipeId, categoryId, ownerType ->
-                            viewModel.toggleLike(recipeId, categoryId, ownerType)
+                            if (currentPlatformState == CurrentPlatform.TEMP
+                                || currentPlatformState == CurrentPlatform.NONE) {
+                                showLoginRequestDialog = true
+                            } else {
+                                viewModel.toggleLike(recipeId, categoryId, ownerType)
+                            }
                         },
                         onToggleScrap = { recipeId, categoryId, ownerType ->
-                            viewModel.toggleScrap(recipeId, categoryId, ownerType)
+                            if (currentPlatformState == CurrentPlatform.TEMP
+                                || currentPlatformState == CurrentPlatform.NONE) {
+                                showLoginRequestDialog = true
+                            } else {
+                                viewModel.toggleScrap(recipeId, categoryId, ownerType)
+                            }
                         },
                         lazyGridState = lazyGridState
                     ) {
@@ -213,7 +246,12 @@ fun RecipeListScreen(
                         icon = R.drawable.zipdabanglogo_white,
                         title = "나의 레시피 공유하기"
                     ) {
-                        onShareClick()
+                        if (currentPlatformState == CurrentPlatform.TEMP
+                            || currentPlatformState == CurrentPlatform.NONE) {
+                            showSnackbar("레시피를 작성하려면 로그인이 필요합니다.")
+                        } else {
+                            onShareClick()
+                        }
                     }
                 }
             }

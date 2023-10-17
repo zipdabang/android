@@ -5,6 +5,7 @@ import com.zipdabang.zipdabang_android.module.my.data.remote.otherinfo.MemberPre
 data class OtherInfoResult(
     val caption: String,
     val checkFollowing: Boolean,
+    val checkFollower : Boolean,
     val checkSelf: Boolean,
     val followerCount: Int,
     val followingCount: Int,

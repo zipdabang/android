@@ -4,5 +4,5 @@ data class UserInfoEditResponse(
     val code: Int,
     val isSuccess: Boolean,
     val message: String,
-    val result: UserInfoEditResult
+    val result: UserInfoEditResult?
 )

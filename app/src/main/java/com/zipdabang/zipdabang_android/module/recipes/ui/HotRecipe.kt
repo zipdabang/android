@@ -20,6 +20,8 @@ fun HotRecipe(
     tabsList: List<TabItem>,
     pagerState: PagerState,
     deviceSize: DeviceScreenSize,
+    onLoginRequest: () -> Unit,
+    showSnackbar: (String) -> Unit
 ) {
     Column(
         modifier = modifier
@@ -30,7 +32,9 @@ fun HotRecipe(
         CategoryPager(
             tabsList = tabsList,
             pagerState = pagerState,
-            deviceSize = deviceSize
+            deviceSize = deviceSize,
+            onLoginRequest = onLoginRequest,
+            showSnackbar = showSnackbar
         )
     }
 }

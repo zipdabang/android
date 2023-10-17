@@ -4,7 +4,7 @@ data class TermsResponse(
     val code: Int,
     val isSuccess: Boolean,
     val message: String,
-    val result: TermsResult
+    val result: TermsResult?
 )
 
 

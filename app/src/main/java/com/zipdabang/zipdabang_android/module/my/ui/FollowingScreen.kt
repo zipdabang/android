@@ -14,7 +14,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
+import com.zipdabang.zipdabang_android.module.my.data.remote.friendlist.follow.search.FollowInfoDB
+import com.zipdabang.zipdabang_android.module.my.data.remote.friendlist.following.search.FollowerInfoDB
 import com.zipdabang.zipdabang_android.module.my.ui.component.FollowItem
 import com.zipdabang.zipdabang_android.module.my.ui.viewmodel.FriendsListViewModel
 import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
@@ -25,49 +28,99 @@ import kotlinx.coroutines.launch
 @Composable
 fun FollowingScreen(
     onClickOthers : (Int) -> Unit,
+    searchFollowerItem : LazyPagingItems<FollowerInfoDB>?,
+    isSearch : Boolean,
     viewModel: FriendsListViewModel = hiltViewModel()
-){
+) {
 
-    val followingItem= viewModel.getFollowingItems.collectAsLazyPagingItems()
+    val followerItem = viewModel.followerItems.collectAsLazyPagingItems()
+
+    LaunchedEffect(true) {
+        viewModel.getFollowerItems()
+    }
+
 
     val followOrCancelState = viewModel.followOrCancelSuccessState
     val context = LocalContext.current
 
     LazyColumn(
         modifier = Modifier.padding(30.dp)
-        ) {
-        items(followingItem.itemCount){
-            Log.e("following Test",followingItem[it]?.id.toString())
-            FollowItem(
-                imageUrl = followingItem[it]!!.imageUrl,
-                nickName = followingItem[it]!!.nickname,
-                isFollow = false,
-                isFollowEach = followingItem[it]!!.isFollowing,
-                followOrCancelClick= {
+    ) {
+        if (!isSearch) {
+            items(followerItem.itemCount) {
+                Log.e("following Test", followerItem[it]?.id.toString())
+                FollowItem(
+                    imageUrl = followerItem[it]!!.imageUrl,
+                    nickName = followerItem[it]!!.nickname,
+                    isFollow = false,
+                    isFollowEach = followerItem[it]!!.isFollowing,
+                    followOrCancelClick = {
 
-                    viewModel.followOrCancel(followingItem[it]!!.id,
-                        isToast = {
-                            Toast.makeText(
-                                context,
-                                "팔로우를 성공했습니다!",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        }
-                    )
-                    followingItem.refresh()
-                    viewModel.refresh()
+                        viewModel.followOrCancel(followerItem[it]!!.id,
+                            isToast = {
+                                Toast.makeText(
+                                    context,
+                                    "팔로우를 성공했습니다!",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            },
+                            isRefresh = {
+                                followerItem.refresh()
+
+                            }
+                        )
+                        //   viewModel.refresh()
 
 
+                    },
+                    userReport = {
+                        TODO()
+                    },
+                    onClickOthers = {
+                        onClickOthers(followerItem[it]!!.id)
+                    }
 
-                },
-                userReport = {
-                             TODO()
-                },
-                onClickOthers = {
-                    onClickOthers(followingItem[it]!!.id)
-                }
+                )
+            }
+        } else {
+            items(searchFollowerItem!!.itemCount)
+            {
+                // Log.e("following Test",followerItem[it]?.id.toString())
+                FollowItem(
+                    imageUrl = searchFollowerItem[it]!!.profileUrl,
+                    nickName = searchFollowerItem[it]!!.nickname,
+                    isFollow = false,
+                    isFollowEach = false,
+                    followOrCancelClick = {
 
-            )
+                        viewModel.followOrCancel(searchFollowerItem[it]!!.memberId,
+                            isToast = {
+                                Toast.makeText(
+                                    context,
+                                    "팔로우를 성공했습니다!",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            },
+                            isRefresh = {
+                                followerItem.refresh()
+
+                            }
+                        )
+                        //   viewModel.refresh()
+
+
+                    },
+                    userReport = {
+                        TODO()
+                    },
+                    onClickOthers = {
+                        onClickOthers(searchFollowerItem[it]!!.memberId)
+                    }
+
+                )
+
+
+            }
         }
     }
 }

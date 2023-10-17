@@ -21,6 +21,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -40,6 +41,7 @@ import com.zipdabang.zipdabang_android.R
 import com.zipdabang.zipdabang_android.common.CommentMgtFailureException
 import com.zipdabang.zipdabang_android.core.data_store.proto.CurrentPlatform
 import com.zipdabang.zipdabang_android.core.data_store.proto.ProtoDataViewModel
+import com.zipdabang.zipdabang_android.core.data_store.proto.Token
 import com.zipdabang.zipdabang_android.module.comment.ui.RecipeCommentState
 import com.zipdabang.zipdabang_android.module.recipes.common.ReportContent
 import com.zipdabang.zipdabang_android.ui.component.CircleImage
@@ -60,13 +62,23 @@ fun CommentItem(
     onClickEdit: (Int, String) -> Unit,
     onClickDelete: (Int) -> Unit,
     showCommentReport: (Int, Int, Int) -> Unit,
-    showCommentBlock: (Int) -> Unit
+    showCommentBlock: (Int) -> Unit,
 ) {
     val tokenViewModel = hiltViewModel<ProtoDataViewModel>()
 
     suspend fun currentPlatform() = withContext(Dispatchers.IO) {
         tokenViewModel.tokens.first().platformStatus
     }
+
+    val status = tokenViewModel.tokens
+        .collectAsState(
+            initial = Token(
+                null,
+                null,
+                null,
+                CurrentPlatform.TEMP,
+                null)
+        ).value.platformStatus
 
     var isExpandedForOwner by remember { mutableStateOf(false) }
     var isExpandedForNotOwner by remember { mutableStateOf(false) }
@@ -120,81 +132,84 @@ fun CommentItem(
                     )
                 }
 
-                Box(modifier = Modifier
-                    .size(18.dp)
-                    .wrapContentSize(Alignment.TopEnd)) {
-                    IconButton(
-                        modifier = Modifier.fillMaxSize(),
-                        onClick = {
-                            CoroutineScope(Dispatchers.Main).launch {
-                                val currentPlatform = currentPlatform()
-                                if (currentPlatform == CurrentPlatform.NONE
-                                    || currentPlatform == CurrentPlatform.TEMP) {
-                                    // 온보딩으로 이동
-                                } else {
-                                    if (commentItem.isOwner) {
-                                        isExpandedForOwner = !isExpandedForOwner
+                if (status != CurrentPlatform.TEMP && status != CurrentPlatform.NONE) {
+                    Box(modifier = Modifier
+                        .size(18.dp)
+                        .wrapContentSize(Alignment.TopEnd)
+                    ) {
+                        IconButton(
+                            modifier = Modifier.fillMaxSize(),
+                            onClick = {
+                                CoroutineScope(Dispatchers.Main).launch {
+                                    val currentPlatform = currentPlatform()
+                                    if (currentPlatform == CurrentPlatform.NONE
+                                        || currentPlatform == CurrentPlatform.TEMP) {
+                                        
                                     } else {
-                                        isExpandedForNotOwner = !isExpandedForNotOwner
+                                        if (commentItem.isOwner) {
+                                            isExpandedForOwner = !isExpandedForOwner
+                                        } else {
+                                            isExpandedForNotOwner = !isExpandedForNotOwner
+                                        }
                                     }
                                 }
                             }
+                        ) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.all_more_white),
+                                contentDescription = "comment menu",
+                                tint = ZipdabangandroidTheme.Colors.Typo
+                            )
                         }
-                    ) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.all_more_white),
-                            contentDescription = "comment menu",
-                            tint = ZipdabangandroidTheme.Colors.Typo
-                        )
-                    }
 
-                    DropdownMenu(
-                        modifier = Modifier.background(Color.White),
-                        expanded = isExpandedForOwner,
-                        onDismissRequest = { isExpandedForOwner = false },
-                    ) {
-                        DropdownMenuItem(
-                            text = { Text("댓글 삭제하기") },
-                            onClick = {
-                                try {
-                                    onClickDelete(commentItem.commentId)
-                                    isExpandedForOwner = !isExpandedForOwner
-                                } catch (e: CommentMgtFailureException) {
-                                    Log.d("comment submit", "delete failure")
-                                } catch (e: Exception) {
-                                    Log.d("comment submit", "delete failure")
+                        DropdownMenu(
+                            modifier = Modifier.background(Color.White),
+                            expanded = isExpandedForOwner,
+                            onDismissRequest = { isExpandedForOwner = false },
+                        ) {
+                            DropdownMenuItem(
+                                text = { Text("댓글 삭제하기") },
+                                onClick = {
+                                    try {
+                                        onClickDelete(commentItem.commentId)
+                                        isExpandedForOwner = !isExpandedForOwner
+                                    } catch (e: CommentMgtFailureException) {
+                                        Log.d("comment submit", "delete failure")
+                                    } catch (e: Exception) {
+                                        Log.d("comment submit", "delete failure")
 
+                                    }
                                 }
-                            }
-                        )
-                        DropdownMenuItem(
-                            text = { Text("댓글 수정하기") },
-                            onClick = {
-                                onClickEdit(commentItem.commentId, commentItem.content)
-                                isExpandedForOwner = !isExpandedForOwner
-                            }
-                        )
-                    }
+                            )
+                            DropdownMenuItem(
+                                text = { Text("댓글 수정하기") },
+                                onClick = {
+                                    onClickEdit(commentItem.commentId, commentItem.content)
+                                    isExpandedForOwner = !isExpandedForOwner
+                                }
+                            )
+                        }
 
-                    DropdownMenu(
-                        modifier = Modifier.background(Color.White),
-                        expanded = isExpandedForNotOwner,
-                        onDismissRequest = { isExpandedForNotOwner = false },
-                    ) {
-                        DropdownMenuItem(
-                            text = { Text("댓글 신고하기") },
-                            onClick = {
-                                showCommentReport(commentItem.commentId, 1, commentItem.ownerId)
-                                isExpandedForNotOwner = !isExpandedForNotOwner
-                            }
-                        )
-                        DropdownMenuItem(
-                            text = { Text("이용자 차단하기") },
-                            onClick = {
-                                showCommentBlock(commentItem.ownerId)
-                                isExpandedForNotOwner = !isExpandedForNotOwner
-                            }
-                        )
+                        DropdownMenu(
+                            modifier = Modifier.background(Color.White),
+                            expanded = isExpandedForNotOwner,
+                            onDismissRequest = { isExpandedForNotOwner = false },
+                        ) {
+                            DropdownMenuItem(
+                                text = { Text("댓글 신고하기") },
+                                onClick = {
+                                    showCommentReport(commentItem.commentId, 1, commentItem.ownerId)
+                                    isExpandedForNotOwner = !isExpandedForNotOwner
+                                }
+                            )
+                            DropdownMenuItem(
+                                text = { Text("이용자 차단하기") },
+                                onClick = {
+                                    showCommentBlock(commentItem.ownerId)
+                                    isExpandedForNotOwner = !isExpandedForNotOwner
+                                }
+                            )
+                        }
                     }
                 }
             }

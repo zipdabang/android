@@ -28,6 +28,7 @@ fun MainNavGraph(
 
         RecipeNavGraph(
             navController = innerNavController,
+            outerNavController = outerNavController,
             showSnackBar = showSnackBar
         )
 
@@ -38,6 +39,7 @@ fun MainNavGraph(
 
         SharedNavGraph(
             navController = innerNavController,
+            outerNavController = outerNavController,
             showSnackBar = showSnackBar
         )
 

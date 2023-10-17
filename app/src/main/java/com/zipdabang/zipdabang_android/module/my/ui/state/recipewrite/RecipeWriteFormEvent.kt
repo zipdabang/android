@@ -18,6 +18,7 @@ sealed class RecipeWriteFormEvent{
     data class QuantityChanged(val quantityName : String, val quantityNum: Int) : RecipeWriteFormEvent()
 
     data class BtnStepAdd(val stepNum : Int) : RecipeWriteFormEvent()
+    data class BtnStepComplete(val stepNum : Int) : RecipeWriteFormEvent()
     data class BtnStepDelete(val stepNum: Int) : RecipeWriteFormEvent()
     data class BtnStepEdit(val stepNum : Int) : RecipeWriteFormEvent()
     data class StepChanged(val stepDescription : String, val stepNum: Int) : RecipeWriteFormEvent()
@@ -27,5 +28,6 @@ sealed class RecipeWriteFormEvent{
 
 
     data class BtnEnabled(val enabled: Boolean) : RecipeWriteFormEvent()
+    data class BtnEnabledSave(val enabled: Boolean) : RecipeWriteFormEvent()
 
 }

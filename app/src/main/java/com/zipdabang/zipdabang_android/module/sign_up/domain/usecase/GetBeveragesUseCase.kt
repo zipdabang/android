@@ -4,6 +4,7 @@ import android.util.Log
 import com.zipdabang.zipdabang_android.common.Resource
 import com.zipdabang.zipdabang_android.common.ResponseCode
 import com.zipdabang.zipdabang_android.common.getErrorCode
+import com.zipdabang.zipdabang_android.module.sign_up.data.remote.BeveragesResponse
 import com.zipdabang.zipdabang_android.module.sign_up.data.remote.BeveragesResult
 import com.zipdabang.zipdabang_android.module.sign_up.domain.repository.SignUpRepository
 import kotlinx.coroutines.flow.Flow
@@ -16,7 +17,7 @@ import javax.inject.Inject
 class GetBeveragesUseCase @Inject constructor(
     private val repositoy : SignUpRepository,
 ){
-    operator fun invoke() : Flow<Resource<BeveragesResult>> = flow{
+    operator fun invoke() : Flow<Resource<BeveragesResult?>> = flow{
         try {
             emit(Resource.Loading())
             val result = repositoy.getBeverages()

@@ -28,6 +28,7 @@ fun CommentListContent(
     comments: LazyPagingItems<RecipeCommentState>,
     onClickEdit: (Int, String) -> Unit,
     onClickDelete: (Int) -> Unit,
+    onClickSubmit: (Int, String) -> Unit,
     postResult: PostCommentState,
     recipeId: Int,
     showCommentReport: (Int, Int, Int) -> Unit,
@@ -75,6 +76,7 @@ fun CommentListContent(
                     text = ""
                     textMode = TextMode.POST
                 },
+                onSubmit = onClickSubmit,
                 commentId = currentCommentId
             )
         }

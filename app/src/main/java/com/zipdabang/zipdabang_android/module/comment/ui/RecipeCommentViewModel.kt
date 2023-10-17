@@ -12,6 +12,8 @@ import androidx.room.withTransaction
 import com.zipdabang.zipdabang_android.common.CommentMgtFailureException
 import com.zipdabang.zipdabang_android.common.Resource
 import com.zipdabang.zipdabang_android.core.Paging3Database
+import com.zipdabang.zipdabang_android.core.data_store.proto.CurrentPlatform
+import com.zipdabang.zipdabang_android.core.data_store.proto.ProtoRepository
 import com.zipdabang.zipdabang_android.core.storage.recipe.RecipeDatabase
 import com.zipdabang.zipdabang_android.module.comment.domain.RecipeCommentRepository
 import com.zipdabang.zipdabang_android.module.comment.use_case.BlockUserUseCase
@@ -24,9 +26,11 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 import java.lang.NullPointerException
 import javax.inject.Inject
 
@@ -38,12 +42,19 @@ class RecipeCommentViewModel @Inject constructor(
     private val blockUserUseCase: BlockUserUseCase,
     private val reportCommentUseCase: ReportCommentUseCase,
     private val database: RecipeDatabase,
-    private val repository: RecipeCommentRepository
+    private val repository: RecipeCommentRepository,
+    private val protoRepository: ProtoRepository,
 ): ViewModel() {
 
     companion object {
         const val TAG = "RecipeCommentViewModel"
     }
+
+    val tokens = protoRepository.tokens
+
+    private val _currentPlatform = mutableStateOf(CurrentPlatform.TEMP)
+    val currentPlatform: State<CurrentPlatform>
+        get() = _currentPlatform
 
     private val _postResult = MutableStateFlow(PostCommentState())
     val postResult = _postResult.asStateFlow()
@@ -72,6 +83,10 @@ class RecipeCommentViewModel @Inject constructor(
 
     private val _blockOwnerId = mutableStateOf(0)
     val blockOwnerId: State<Int> = _blockOwnerId
+
+    init {
+        getStatus()
+    }
 
 
     fun getComments(
@@ -335,5 +350,11 @@ class RecipeCommentViewModel @Inject constructor(
 
     fun setBlockOwnerId(ownerId: Int) {
         _blockOwnerId.value = ownerId
+    }
+
+    private fun getStatus() {
+        viewModelScope.launch {
+            _currentPlatform.value = tokens.first().platformStatus
+        }
     }
 }

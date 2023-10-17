@@ -21,6 +21,7 @@ import com.zipdabang.zipdabang_android.module.detail.recipe.common.DeviceScreenS
 import com.zipdabang.zipdabang_android.module.recipes.ui.state.PreferenceToggleState
 import com.zipdabang.zipdabang_android.ui.component.AppBarCollapsing
 import com.zipdabang.zipdabang_android.ui.component.Pager
+import com.zipdabang.zipdabang_android.ui.component.RecipeDeleteDialog
 import com.zipdabang.zipdabang_android.ui.component.Separator
 import com.zipdabang.zipdabang_android.ui.component.loadXmlDrawable
 
@@ -40,6 +41,7 @@ fun RecipeDetailScreen(
     onClickCommentBlock: () -> Unit,
     onClickCommentEdit: (Int, String) -> Unit,
     onClickCommentDelete: (Int) -> Unit,
+    onClickCommentSubmit: (Int, String) -> Unit,
     onClickRecipeLike: (Boolean) -> Unit,
     onClickRecipeScrap: (Boolean) -> Unit,
     showSnackBar: (String) -> Unit,
@@ -93,6 +95,7 @@ fun RecipeDetailScreen(
             recipeId = recipeId,
             onClickDelete = onClickCommentDelete,
             onClickEdit = onClickCommentEdit, // 수정한 댓글 제출
+            onClickSubmit = onClickCommentSubmit,
             showCommentReport = showCommentReport,
             showCommentBlock = showCommentBlock,
             commentItems = commentItems,
