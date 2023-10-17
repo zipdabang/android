@@ -2,7 +2,11 @@ package com.zipdabang.zipdabang_android.module.my.data.remote
 
 import com.zipdabang.zipdabang_android.module.my.data.remote.followorcancel.FollowOrCancelDto
 import com.zipdabang.zipdabang_android.module.my.data.remote.friendlist.follow.FollowDto
+import com.zipdabang.zipdabang_android.module.my.data.remote.friendlist.follow.search.SearchFollowingDto
 import com.zipdabang.zipdabang_android.module.my.data.remote.friendlist.following.FollowingDto
+import com.zipdabang.zipdabang_android.module.my.data.remote.friendlist.following.search.SearchFollowersDto
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import com.zipdabang.zipdabang_android.module.my.data.remote.myinfo.MyInfoRecipesResponse
 import com.zipdabang.zipdabang_android.module.my.data.remote.myinfo.MyInfoResponse
 import com.zipdabang.zipdabang_android.module.my.data.remote.otherinfo.OtherInfoDto
@@ -11,8 +15,6 @@ import com.zipdabang.zipdabang_android.module.my.data.remote.recipewrite.RecipeW
 import com.zipdabang.zipdabang_android.module.my.data.remote.recipewrite.RecipeWriteResponse
 import com.zipdabang.zipdabang_android.module.my.data.remote.recipewrite.RecipeWriteTempResponse
 import com.zipdabang.zipdabang_android.module.my.data.remote.signout.SignOutResponseDto
-import okhttp3.MultipartBody
-import okhttp3.RequestBody
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.Multipart
@@ -73,6 +75,20 @@ interface MyApi {
         @Header("Authorization") accessToken: String,
         @Path(value = "memberId") memeberId : Int
     ) : OtherRecipePreviewDto
+
+    @GET("members/followings-nickname")
+    suspend fun getSearchFollowings(
+        @Header("Authorization") accessToken: String,
+        @Query("page") page : Int,
+        @Query("nickname") nickname : String
+        ): SearchFollowingDto
+
+    @GET("members/followers-nickname")
+    suspend fun getSearchFollowers(
+        @Header("Authorization") accessToken: String,
+        @Query("page") page : Int,
+        @Query("nickname") nickname : String
+    ): SearchFollowersDto
 
     @GET("members/selfMyZipdabang")
     suspend fun getMyInfo(
