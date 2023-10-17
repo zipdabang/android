@@ -8,6 +8,7 @@ import com.zipdabang.zipdabang_android.module.comment.ui.RecipeCommentState
 import com.zipdabang.zipdabang_android.module.detail.recipe.domain.RecipeDetailDomain
 import com.zipdabang.zipdabang_android.module.detail.recipe.ui.RecipeInfoPage
 import com.zipdabang.zipdabang_android.module.my.data.remote.friendlist.follow.search.FollowInfoDB
+import com.zipdabang.zipdabang_android.module.my.data.remote.friendlist.following.search.FollowerInfoDB
 import com.zipdabang.zipdabang_android.module.my.ui.FollowScreen
 import com.zipdabang.zipdabang_android.module.my.ui.FollowingScreen
 import com.zipdabang.zipdabang_android.module.my.ui.MyPagerInfoScreen
@@ -100,24 +101,30 @@ sealed class TabItem(val tabTitle: String, val screen: ComposableFun) {
 
     class followList(
         onClickOthers: (Int) -> Unit,
-        searchFollowItem: LazyPagingItems<FollowInfoDB>?
+        searchFollowItem: LazyPagingItems<FollowInfoDB>?,
+        isSearch : Boolean
     ) : TabItem(
         tabTitle =  "팔로우",
         screen = {
             FollowScreen(
               onClickOthers= onClickOthers,
-                searchFollowItem = searchFollowItem
+                searchFollowItem = searchFollowItem,
+                isSearch = isSearch
             )
         }
     )
 
     class followingList(
-        onClickOthers : (Int) -> Unit
+        onClickOthers : (Int) -> Unit,
+        searchFollowerItem: LazyPagingItems<FollowerInfoDB>?,
+        isSearch : Boolean
     ) : TabItem(
         tabTitle = "팔로잉",
         screen = {
             FollowingScreen(
-                onClickOthers = onClickOthers
+                onClickOthers = onClickOthers,
+                searchFollowerItem = searchFollowerItem,
+                isSearch = isSearch
             )
         }
     )

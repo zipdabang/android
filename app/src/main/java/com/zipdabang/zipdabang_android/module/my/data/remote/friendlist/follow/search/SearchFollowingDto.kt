@@ -4,5 +4,5 @@ data class SearchFollowingDto(
     val code: Int,
     val isSuccess: Boolean,
     val message: String,
-    val result: SearchFollowingResult
+    val result: SearchFollowingResult?
 )

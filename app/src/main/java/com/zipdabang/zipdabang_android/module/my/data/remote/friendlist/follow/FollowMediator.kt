@@ -68,16 +68,15 @@ class FollowMediator @Inject constructor(
             val responseMapList = mutableListOf<Following>()
 
 
-       //     Log.e("Response in friendlist",response.isSuccess.toString())
             var response : FollowDto? = null
             try{
                 response = myApi.getFollowings(
                 accessToken = accessToken,
                 page = currentPage
             )
-                val data = response.result?.followingList
-
-                data?.forEachIndexed { index, following ->
+                val data = response.result!!.followingList
+                Log.e("followItem first",data.size.toString())
+                data.forEach{ following ->
                     responseMapList.add(
                         Following(
                             caption = following.caption,
@@ -88,6 +87,8 @@ class FollowMediator @Inject constructor(
                     )
 
                 }
+                Log.e("followItem second",responseMapList.size.toString())
+
             }catch (e: HttpException){
                 val errorBody = e.response()?.errorBody()
                 val errorCode = errorBody?.getErrorCode()
@@ -108,20 +109,23 @@ class FollowMediator @Inject constructor(
             val endOfPaginationReached = response?.result!!.isLast
 
             val prevPage = if (currentPage == 1) null else currentPage - 1
-            val nextPage = if (endOfPaginationReached == true) null else currentPage + 1
+            val nextPage = if (endOfPaginationReached) null else currentPage + 1
 
             paging3Database.withTransaction {
                 if (loadType == LoadType.REFRESH) {
                     followDao.deleteItems()
                     RemoteKeyDao.deleteRemoteKeys()
                 }
-                val keys = response.result!!.followingList.map { items ->
+                Log.e("responesMapList",responseMapList.size.toString())
+
+                val keys = responseMapList.map { items ->
                     RemoteKeys(
                         id = items.id,
                         prevPage = prevPage,
                         nextPage = nextPage
                     )
                 }
+                Log.e("responesMapList",keys.size.toString())
 
 
                 RemoteKeyDao.addAllRemoteKeys(remoteKeys = keys)
@@ -129,7 +133,7 @@ class FollowMediator @Inject constructor(
 
             }
 
-            MediatorResult.Success(endOfPaginationReached = endOfPaginationReached!!)
+            MediatorResult.Success(endOfPaginationReached = endOfPaginationReached)
 
         } catch (e: Exception) {
             return MediatorResult.Error(e)

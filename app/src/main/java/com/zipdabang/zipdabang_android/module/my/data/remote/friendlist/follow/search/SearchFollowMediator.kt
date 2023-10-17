@@ -3,6 +3,7 @@ package com.zipdabang.zipdabang_android.module.my.data.remote.friendlist.follow.
 import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.paging.ExperimentalPagingApi
+import androidx.paging.LoadState.Loading.endOfPaginationReached
 import androidx.paging.LoadType
 import androidx.paging.PagingState
 import androidx.paging.RemoteMediator
@@ -38,6 +39,7 @@ class SearchFollowMediator @Inject constructor(
         {
             val currentPage = when (loadType) {
                 LoadType.REFRESH -> {
+                    Log.e("refresh in search","refresh")
                     val remoteKeys = getRemoteKeyClosestToCurrentPosition(state)
                     remoteKeys?.nextPage?.minus(1) ?: 1
                 }
@@ -69,8 +71,9 @@ class SearchFollowMediator @Inject constructor(
                     response = myApi.getSearchFollowings(
                        accessToken = accessToken, page = currentPage, nickname = searchText
                    )
+                   if(response.result!=null){
 
-                       val responseList = response.result.memberSimpleDtoList
+                       val responseList = response.result!!.memberSimpleDtoList
 
                       Log.e("responseList in search",responseList.size.toString())
                        responseList.forEachIndexed { index, followInfo ->
@@ -85,6 +88,14 @@ class SearchFollowMediator @Inject constructor(
                            )
 
                        }
+                   }else{
+                       Log.e("responseList in search","delete")
+
+                       searchFollowDao.deleteItems()
+                       RemoteKeyDao.deleteRemoteKeys()
+
+
+                   }
                }catch (e: HttpException) {
                    val errorBody = e.response()?.errorBody()
                    val errorCode = errorBody?.getErrorCode()

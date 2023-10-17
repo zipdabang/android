@@ -23,21 +23,23 @@ import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
 fun FollowScreen(
     onClickOthers : (Int) -> Unit,
     searchFollowItem : LazyPagingItems<FollowInfoDB>?,
+    isSearch : Boolean,
     viewModel : FriendsListViewModel = hiltViewModel()
 ) {
-    val followItem = viewModel.getFollowItems.collectAsLazyPagingItems()
+    val followItem = viewModel.followItems.collectAsLazyPagingItems()
 
     LaunchedEffect(true) {
-        viewModel.refresh()
+        viewModel.getFollowItems()
     }
 
     val context = LocalContext.current
-    Log.e("followItem", followItem.itemCount.toString())
+    Log.e("followItem in Screen", followItem.itemCount.toString())
     LazyColumn(
         modifier = Modifier.padding(30.dp)
     ) {
-        if (searchFollowItem == null) {
+        if (!isSearch) {
             items(followItem.itemCount) {
+             //   Log.e("followItem",followItem.itemCount.toString())
                 FollowItem(
                     imageUrl = followItem[it]!!.imageUrl,
                     nickName = followItem[it]!!.nickname,
@@ -46,10 +48,13 @@ fun FollowScreen(
                         viewModel.followOrCancel(followItem[it]!!.id,
                             isToast = {
                                 Toast.makeText(context, "팔로우를 취소했습니다.", Toast.LENGTH_SHORT).show()
+                            },
+                            isRefresh ={
+                                followItem.refresh()
                             }
                         )
-                        followItem.refresh()
-                        viewModel.refresh()
+
+                    //    viewModel.refresh()
                     },
                     userReport = {
                         TODO()
@@ -61,7 +66,7 @@ fun FollowScreen(
                 )
             }
         } else {
-            items(searchFollowItem.itemCount) {
+            items(searchFollowItem!!.itemCount) {
                 FollowItem(
                     imageUrl = searchFollowItem[it]!!.profileUrl,
                     nickName =  searchFollowItem[it]!!.nickname,
@@ -70,10 +75,13 @@ fun FollowScreen(
                         viewModel.followOrCancel(searchFollowItem[it]!!.memberId,
                             isToast = {
                                 Toast.makeText(context, "팔로우를 취소했습니다.", Toast.LENGTH_SHORT).show()
+                            },
+                            isRefresh = {
+                                followItem.refresh()
                             }
                         )
-                        followItem.refresh()
-                        viewModel.refresh()
+
+                    //    viewModel.refresh()
                     },
                     userReport = {
                         TODO()

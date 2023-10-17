@@ -30,11 +30,13 @@ import com.google.accompanist.pager.rememberPagerState
 import com.zipdabang.zipdabang_android.R
 import com.zipdabang.zipdabang_android.common.TabItem
 import com.zipdabang.zipdabang_android.module.my.data.remote.friendlist.follow.search.FollowInfoDB
+import com.zipdabang.zipdabang_android.module.my.data.remote.friendlist.following.search.FollowerInfoDB
 import com.zipdabang.zipdabang_android.module.my.ui.viewmodel.FriendsListViewModel
 import com.zipdabang.zipdabang_android.ui.component.AppBarDefault
 import com.zipdabang.zipdabang_android.ui.component.ColumnPagers
 import com.zipdabang.zipdabang_android.ui.component.FriendListSearchBar
 import com.zipdabang.zipdabang_android.ui.component.ModalDrawer
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalPagerApi::class)
@@ -52,9 +54,15 @@ fun FriendListScreen(
     val searchText = remember{
         mutableStateOf("")
     }
-    var followSearchItem : MutableState<LazyPagingItems<FollowInfoDB>?> = remember {
-        mutableStateOf(null)
+//    val followSearchItem : MutableState<LazyPagingItems<FollowInfoDB>?> = remember {
+//        mutableStateOf(null)
+//    }
+    val followSearchItem : LazyPagingItems<FollowInfoDB> = viewModel.searchFollowings.collectAsLazyPagingItems()
+    val followerSearchItem : LazyPagingItems<FollowerInfoDB> = viewModel.searchFollowers.collectAsLazyPagingItems()
+    val isSearch = remember{
+        mutableStateOf(false)
     }
+
     ModalDrawer(
         scaffold = {
             Scaffold(
@@ -87,17 +95,15 @@ fun FriendListScreen(
                             iskeyWordEmpty={
                                     it, text ->
                                  if(!it && text != searchText.value){
-                                     Log.e("searchText in search",text)
 
-                                    viewModel.searchFollow(text)
-                                     followSearchItem.value = viewModel.getSearchFollowItems?.collectAsLazyPagingItems()
-
-                                     Log.e("searchItem in search", followSearchItem.value?.itemCount.toString())
+                                     viewModel.searchFollow(text)
+                                     viewModel.searchFollower(text)
                                      searchText.value = text
-                                 }else if(it){
-                                     Log.e("searchItem in NULL", "null")
-
-                                     followSearchItem.value = null
+                                     isSearch.value = true
+                                 }
+                                 else if(it){
+                                     searchText.value = text
+                                     isSearch.value = false
                                  }
                             },
                             hintText = stringResource(id = R.string.my_searchbar_person)
@@ -112,9 +118,15 @@ fun FriendListScreen(
                         tabsList = listOf(
                             TabItem.followList(
                                 onClickOthers = onClickOthers,
-                                searchFollowItem =  followSearchItem.value
+                                searchFollowItem =  followSearchItem,
+                                isSearch = isSearch.value
                             ),
-                            TabItem.followingList(onClickOthers = onClickOthers)
+                            TabItem.followingList(
+                                onClickOthers = onClickOthers,
+                                searchFollowerItem =  followerSearchItem,
+                                isSearch = isSearch.value
+                            ),
+
                         ),
                         pagerState = pagerState
                     )

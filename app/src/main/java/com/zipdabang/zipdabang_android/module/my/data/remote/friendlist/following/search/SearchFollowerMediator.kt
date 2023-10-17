@@ -70,20 +70,24 @@ class SearchFollowerMediator @Inject constructor(
                     response = myApi.getSearchFollowers(
                        accessToken = accessToken, page = currentPage, nickname = searchText
                    )
-                       val responseList = response.result.memberSimpleDtoList
-
-                       responseList.forEachIndexed { index, followerInfo ->
-                           responseMapList.add(
-                              FollowerInfoDB(
-                                  index =  (currentPage-1)* Constants.ITEMS_PER_PAGE + index,
-                                  createdAt =  followerInfo.createdAt,
-                                  nickname = followerInfo.nickname,
-                                  profileUrl = followerInfo.profileUrl,
-                                  memberId = followerInfo.memberId
+                       val responseList = response.result?.memberSimpleDtoList
+                      if(responseList!=null) {
+                          responseList.forEachIndexed { index, followerInfo ->
+                              responseMapList.add(
+                                  FollowerInfoDB(
+                                      index = (currentPage - 1) * Constants.ITEMS_PER_PAGE + index,
+                                      createdAt = followerInfo.createdAt,
+                                      nickname = followerInfo.nickname,
+                                      profileUrl = followerInfo.profileUrl,
+                                      memberId = followerInfo.memberId,
+                                  )
                               )
-                           )
 
-                       }
+                          }
+                      }else{
+                          searchFollowerDao.deleteItems()
+                          RemoteKeyDao.deleteRemoteKeys()
+                      }
                }catch (e: HttpException) {
                    val errorBody = e.response()?.errorBody()
                    val errorCode = errorBody?.getErrorCode()
@@ -104,7 +108,7 @@ class SearchFollowerMediator @Inject constructor(
                         searchFollowerDao.deleteItems()
                         RemoteKeyDao.deleteRemoteKeys()
                     }
-                    val keys = response.result.memberSimpleDtoList.map {  items ->
+                    val keys = response.result!!.memberSimpleDtoList.map { items ->
                         RemoteKeys(
                             id = items.memberId,
                             prevPage = prevPage,
