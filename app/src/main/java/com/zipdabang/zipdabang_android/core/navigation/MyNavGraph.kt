@@ -172,6 +172,7 @@ fun NavGraphBuilder.MyNavGraph(
                     },
                 )
             } else {
+                Log.e("recipeId 전달","recipeId : ${recipeId}")
                 // 레시피 상세 정보 api 호출하기
                 RecipeWriteScreen(
                     recipeId = recipeId,
