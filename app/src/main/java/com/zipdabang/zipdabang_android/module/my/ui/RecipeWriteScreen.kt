@@ -778,13 +778,17 @@ fun RecipeWriteScreen(
                     isComplete = stateRecipeWriteBeverages.btnEnabled,
                     onCompleteClick = {
                         CoroutineScope(Dispatchers.Main).launch {
-                            recipeWriteViewModel.postRecipeWrite(stepImageParts = stepImageParts.toList())
-                            recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.UploadCompleteChanged(true))
+                            // post api success됐는지 확인하는 변수
+                            val isSuccess = recipeWriteViewModel.postRecipeWrite(stepImageParts = stepImageParts.toList())
+                            // post api 성공하면 업로드 완료 알럿을 띄운다
+                            if (isSuccess){
+                                recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.UploadCompleteChanged(true))
+                            }
                             recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.UploadCategoryChanged(false))
                         }
                     },
                     setShowDialog = {
-                        recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.RecipeDeleteChanged(it))
+                        recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.UploadCategoryChanged(it))
                     }
                 )
             }
@@ -799,6 +803,7 @@ fun RecipeWriteScreen(
                         // 업로드한 레시피 보러가기 - 기문이형 도와줘 ㅠㅠ
                     },
                     onLater = {
+                        recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.UploadCompleteChanged(false))
                         onClickBack()
                     }
                 )
