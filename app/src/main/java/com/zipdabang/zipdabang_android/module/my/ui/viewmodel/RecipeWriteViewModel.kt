@@ -549,21 +549,41 @@ class RecipeWriteViewModel @Inject constructor(
         val json = gson.toJson(content) // yourDataObject는 요청 본문의 데이터 객체입니다.
         val contentRequestBody = json.toRequestBody("application/json".toMediaTypeOrNull())
 
-        var thumbnail : MultipartBody.Part? = null
+        var thumbnail : MultipartBody.Part? = thumbnailPart
         if(thumbnailPart == null || thumbnailPart.toString() == ""){
             thumbnail = null
-        } else {
-            thumbnail = thumbnailPart
         }
 
-       /* try{
+        var stepImages : List<MultipartBody.Part>? = stepImageParts
+        if (stepImages?.all { it == null || it.toString().isEmpty() } == true) {
+            stepImages = null
+        }
+
+        try{
             val result = postRecipeWriteTempUseCase(
                 accessToken = "Bearer " + dataStore.data.first().accessToken.toString(),
                 content = contentRequestBody,
                 thumbnail = thumbnail,
-                stepImages = ,
+                stepImages = stepImages,
             )
-        } catch (e: Exception) {}*/
+
+            result.collect{result->
+                when(result){
+                    is Resource.Success ->{
+                        Log.e("recipewritetemp", "api는 성공 : ${result.message} ${result.code}")
+                        if(result.code == 2000){
+                            Log.e("recipewritetemp", "성공 : ${result.message}")
+                        }
+                    }
+                    is Resource.Error ->{
+                        Log.e("recipewritetemp", "에러 : ${result} ${result.message} ${result.data} ${result.code}")
+                    }
+                    is Resource.Loading ->{
+                        Log.e("recipewritetemp", "로딩중 : ${result.code}")
+                    }
+                }
+            }
+        } catch (e: Exception) {}
 
     }
     private fun getRecipeWriteBeverages() {

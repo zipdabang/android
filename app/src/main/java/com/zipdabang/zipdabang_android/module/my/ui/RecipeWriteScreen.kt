@@ -760,7 +760,9 @@ fun RecipeWriteScreen(
                         recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.SaveChanged(it))
                     },
                     onAcceptClick = {
-                        // 임시저장 api
+                        CoroutineScope(Dispatchers.IO).launch {
+                            recipeWriteViewModel.postRecipeWriteTemp(stepImageParts = stepImageParts.toList())
+                        }
                         onClickBack()
                         recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.SaveChanged(false))
                     }
@@ -770,7 +772,7 @@ fun RecipeWriteScreen(
             if (stateRecipeWriteDialog.isOpenUploadCategory) {
                 CustomDialogSelectCategory(
                     categoryList = stateRecipeWriteBeverages.beverageList,
-                    categoryParagraphList = listOf(3, 2, 2, 1),
+                    categoryParagraphList = listOf(3, 2, 2),
                     categorySelectedList = stateRecipeWriteBeverages.beverageCheckList,
                     onSelectClick = { index, clicked ->
                         recipeWriteViewModel.onRecipeWriteBeveragesEvent(RecipeWriteBeveragesEvent.StepFileSelectChanged(index, clicked))
@@ -819,7 +821,10 @@ fun RecipeWriteScreen(
                         onClickBack()
                     },
                     onTemporalSave = {
-                        // 임시저장 api & navGraph 이동
+                        CoroutineScope(Dispatchers.IO).launch {
+                            recipeWriteViewModel.postRecipeWriteTemp(stepImageParts = stepImageParts.toList())
+                        }
+                        onClickBack()
                         recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.RecipeDeleteChanged(false))
                     }
                 )
