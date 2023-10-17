@@ -75,7 +75,9 @@ fun LazyListScope.Pager(
 fun CategoryPager(
     tabsList: List<TabItem>,
     pagerState: PagerState,
-    deviceSize: DeviceScreenSize
+    deviceSize: DeviceScreenSize,
+    onLoginRequest: () -> Unit,
+    showSnackbar: (String) -> Unit
 ) {
     Column(
         modifier = Modifier

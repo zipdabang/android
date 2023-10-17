@@ -41,7 +41,7 @@ import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
 fun RecipeListContent(
     items: LazyPagingItems<RecipeItem>,
     onItemClick: (Int) -> Unit,
-    total: String,
+    // total: String,
     sortList: List<RecipeSort>,
     onSortChange: (String) -> Unit,
     category: RecipeSubtitleState,
@@ -83,7 +83,7 @@ fun RecipeListContent(
             ) {
                 Text(
                     modifier = Modifier.weight(6f),
-                    text = "${total}개의 레시피",
+                    text = "개의 레시피",
                     style = ZipdabangandroidTheme.Typography.fourteen_300
                         .copy(
                             color = Color(0x88262D31)

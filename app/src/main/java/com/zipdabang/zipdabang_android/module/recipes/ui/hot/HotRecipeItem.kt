@@ -44,6 +44,7 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.zipdabang.zipdabang_android.R
 import com.zipdabang.zipdabang_android.common.TogglePreferenceException
+import com.zipdabang.zipdabang_android.core.data_store.proto.CurrentPlatform
 import com.zipdabang.zipdabang_android.module.item.recipe.ui.IconToggle
 import com.zipdabang.zipdabang_android.module.recipes.data.hot.HotRecipeItem
 import com.zipdabang.zipdabang_android.module.recipes.ui.state.PreferenceToggleState
@@ -60,7 +61,10 @@ fun HotRecipeItem(
     onScrapClick: (Int) -> Unit,
     onLikeClick: (Int) -> Unit,
     likeState: PreferenceToggleState,
-    scrapState: PreferenceToggleState
+    scrapState: PreferenceToggleState,
+    setShowLoginRequestDialog: () -> Unit,
+    currentPlatform: CurrentPlatform,
+    showSnackbar: (String) -> Unit
 ) {
 
     var isLiked by remember { mutableStateOf(item.isLiked) }
@@ -96,7 +100,9 @@ fun HotRecipeItem(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Spacer(modifier = Modifier.width(8.dp).height(72.dp))
+        Spacer(modifier = Modifier
+            .width(8.dp)
+            .height(72.dp))
 
         Text(
             modifier = Modifier.weight(1f),
@@ -195,9 +201,14 @@ fun HotRecipeItem(
                     checked = isScraped,
                     onClick = {
                         try {
-                            onScrapClick(item.recipeId)
-                            item.isScrapped = !item.isScrapped
-                            isScraped = item.isScrapped
+                            if (currentPlatform != CurrentPlatform.NONE
+                                && currentPlatform != CurrentPlatform.TEMP) {
+                                onScrapClick(item.recipeId)
+                                item.isScrapped = !item.isScrapped
+                                isScraped = item.isScrapped
+                            } else {
+                                onScrapClick(item.recipeId)
+                            }
                         } catch (e: TogglePreferenceException) {
                             Log.e("HotRecipeItem", "like toggle failure ${e.message}")
                         } catch (e: Exception) {
@@ -217,15 +228,20 @@ fun HotRecipeItem(
                     checked = isLiked,
                     onClick = {
                         try {
-                            onLikeClick(item.recipeId)
-                            item.isLiked = !item.isLiked
-                            isLiked = item.isLiked
-                            if (isLiked) {
-                                item.likes += 1
+                            if (currentPlatform != CurrentPlatform.NONE
+                                && currentPlatform != CurrentPlatform.TEMP) {
+                                onLikeClick(item.recipeId)
+                                item.isLiked = !item.isLiked
+                                isLiked = item.isLiked
+                                if (isLiked) {
+                                    item.likes += 1
+                                } else {
+                                    item.likes -= 1
+                                }
+                                likes = item.likes
                             } else {
-                                item.likes -= 1
+                                onLikeClick(item.recipeId)
                             }
-                            likes = item.likes
                         } catch (e: TogglePreferenceException) {
                             Log.e("HotRecipeItem", "like toggle failure ${e.message}")
                         } catch (e: Exception) {
@@ -252,6 +268,9 @@ fun HotRecipeItemPreview() {
         onScrapClick = { int -> },
         onLikeClick = { int -> },
         likeState = PreferenceToggleState(),
-        scrapState = PreferenceToggleState()
+        scrapState = PreferenceToggleState(),
+        setShowLoginRequestDialog = {  },
+        showSnackbar = { k -> },
+        currentPlatform = CurrentPlatform.NONE
     )
 }

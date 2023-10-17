@@ -32,6 +32,7 @@ enum class ResponseCode(val responseResult: ResponseResult, val code: Int, val m
     BAD_REQUEST_OWNER_TYPE(ResponseResult.ERROR, 4103, "레시피 작성자 타입이 잘못되었습니다."),
     BAD_REQUEST_COMMENT_NOT_EXISTS(ResponseResult.ERROR, 4107, "해당 아이디를 가진 댓글이 존재하지 않습니다."),
     BAD_REQUEST_COMMENT_NOT_OWNER(ResponseResult.ERROR, 4108, "해당 댓글을 작성한 사용자가 아닙니다."),
+    BAD_REQUEST_COMMENT_SELF_PREFERENCE(ResponseResult.ERROR, 4109, "본인의 레시피를 좋아요 혹은 스크랩할 수 없습니다."),
     BAD_REQUEST_RECIPEWRITE_TEMPID_NOT_EXISTS(ResponseResult.ERROR, 4111, "해당 임시저장 아이디가 존재하지 않습니다."),
     SERVER_ERROR(ResponseResult.ERROR, 5000, "서버에러가 발생하였습니다. 서버 개발자에게 문의하세요.");
 
@@ -40,7 +41,7 @@ enum class ResponseCode(val responseResult: ResponseResult, val code: Int, val m
 
     companion object {
         fun getMessageByCode(code: Int): String {
-            return values().find { it.code == code }?.message ?: "code not exists. unexpected error"
+            return values().find { it.code == code }?.message ?: "예상치 못한 오류가 발생하였습니다."
         }
     }
 }

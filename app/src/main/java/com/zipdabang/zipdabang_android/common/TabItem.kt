@@ -2,6 +2,7 @@ package com.zipdabang.zipdabang_android.common
 
 import androidx.compose.runtime.Composable
 import androidx.paging.compose.LazyPagingItems
+import com.zipdabang.zipdabang_android.core.data_store.proto.CurrentPlatform
 import com.zipdabang.zipdabang_android.module.comment.ui.PostCommentState
 import com.zipdabang.zipdabang_android.module.comment.ui.RecipeCommentPage
 import com.zipdabang.zipdabang_android.module.comment.ui.RecipeCommentState
@@ -35,6 +36,7 @@ sealed class TabItem(val tabTitle: String, val screen: ComposableFun) {
         private val commentItems: LazyPagingItems<RecipeCommentState>,
         private val onClickEdit: (Int, String) -> Unit,
         private val onClickDelete: (Int) -> Unit,
+        private val onClickSubmit: (Int, String) -> Unit,
         private val showCommentReport: (Int, Int, Int) -> Unit,
         private val showCommentBlock: (Int) -> Unit
     ) : TabItem(
@@ -45,6 +47,7 @@ sealed class TabItem(val tabTitle: String, val screen: ComposableFun) {
                 recipeId = recipeId,
                 onClickDelete = onClickDelete,
                 onClickEdit = onClickEdit,
+                onClickSubmit = onClickSubmit,
                 showCommentReport = showCommentReport,
                 showCommentBlock = showCommentBlock,
                 postResult = postResult,
@@ -140,7 +143,10 @@ sealed class TabItem(val tabTitle: String, val screen: ComposableFun) {
         onScrapClick: (Int) -> Unit,
         onLikeClick: (Int) -> Unit,
         likeState: PreferenceToggleState,
-        scrapState: PreferenceToggleState
+        scrapState: PreferenceToggleState,
+        setShowLoginRequestDialog: () -> Unit,
+        currentPlatform: CurrentPlatform,
+        showSnackbar: (String) -> Unit
     ): TabItem(
         tabTitle = "커피",
         screen = {
@@ -150,7 +156,10 @@ sealed class TabItem(val tabTitle: String, val screen: ComposableFun) {
                 onScrapClick = onScrapClick,
                 onLikeClick = onLikeClick,
                 likeState = likeState,
-                scrapState = scrapState
+                scrapState = scrapState,
+                setShowLoginRequestDialog = setShowLoginRequestDialog,
+                currentPlatform = currentPlatform,
+                showSnackbar = showSnackbar
             )
         }
     )
@@ -161,7 +170,10 @@ sealed class TabItem(val tabTitle: String, val screen: ComposableFun) {
         onScrapClick: (Int) -> Unit,
         onLikeClick: (Int) -> Unit,
         likeState: PreferenceToggleState,
-        scrapState: PreferenceToggleState
+        scrapState: PreferenceToggleState,
+        onLoginRequest: () -> Unit,
+        currentPlatform: CurrentPlatform,
+        showSnackbar: (String) -> Unit
     ): TabItem(
         tabTitle = "논카페인",
         screen = {
@@ -171,7 +183,10 @@ sealed class TabItem(val tabTitle: String, val screen: ComposableFun) {
                 onScrapClick = onScrapClick,
                 onLikeClick = onLikeClick,
                 likeState = likeState,
-                scrapState = scrapState
+                scrapState = scrapState,
+                setShowLoginRequestDialog = onLoginRequest,
+                currentPlatform = currentPlatform,
+                showSnackbar = showSnackbar
             )
         }
     )
@@ -182,7 +197,10 @@ sealed class TabItem(val tabTitle: String, val screen: ComposableFun) {
         onScrapClick: (Int) -> Unit,
         onLikeClick: (Int) -> Unit,
         likeState: PreferenceToggleState,
-        scrapState: PreferenceToggleState
+        scrapState: PreferenceToggleState,
+        onLoginRequest: () -> Unit,
+        currentPlatform: CurrentPlatform,
+        showSnackbar: (String) -> Unit
     ): TabItem(
         tabTitle = "차",
         screen = {
@@ -192,7 +210,10 @@ sealed class TabItem(val tabTitle: String, val screen: ComposableFun) {
                 onScrapClick = onScrapClick,
                 onLikeClick = onLikeClick,
                 likeState = likeState,
-                scrapState = scrapState
+                scrapState = scrapState,
+                setShowLoginRequestDialog = onLoginRequest,
+                currentPlatform = currentPlatform,
+                showSnackbar = showSnackbar
             )
         }
     )
@@ -203,7 +224,10 @@ sealed class TabItem(val tabTitle: String, val screen: ComposableFun) {
         onScrapClick: (Int) -> Unit,
         onLikeClick: (Int) -> Unit,
         likeState: PreferenceToggleState,
-        scrapState: PreferenceToggleState
+        scrapState: PreferenceToggleState,
+        onLoginRequest: () -> Unit,
+        currentPlatform: CurrentPlatform,
+        showSnackbar: (String) -> Unit
     ): TabItem(
         tabTitle = "에이드",
         screen = {
@@ -213,7 +237,10 @@ sealed class TabItem(val tabTitle: String, val screen: ComposableFun) {
                 onScrapClick = onScrapClick,
                 onLikeClick = onLikeClick,
                 likeState = likeState,
-                scrapState = scrapState
+                scrapState = scrapState,
+                setShowLoginRequestDialog = onLoginRequest,
+                currentPlatform = currentPlatform,
+                showSnackbar = showSnackbar
             )
         }
     )
@@ -224,7 +251,10 @@ sealed class TabItem(val tabTitle: String, val screen: ComposableFun) {
         onScrapClick: (Int) -> Unit,
         onLikeClick: (Int) -> Unit,
         likeState: PreferenceToggleState,
-        scrapState: PreferenceToggleState
+        scrapState: PreferenceToggleState,
+        onLoginRequest: () -> Unit,
+        currentPlatform: CurrentPlatform,
+        showSnackbar: (String) -> Unit
     ): TabItem(
         tabTitle = "스무디",
         screen = {
@@ -234,7 +264,10 @@ sealed class TabItem(val tabTitle: String, val screen: ComposableFun) {
                 onScrapClick = onScrapClick,
                 onLikeClick = onLikeClick,
                 likeState = likeState,
-                scrapState = scrapState
+                scrapState = scrapState,
+                setShowLoginRequestDialog = onLoginRequest,
+                currentPlatform = currentPlatform,
+                showSnackbar = showSnackbar
             )
         }
     )
@@ -245,7 +278,10 @@ sealed class TabItem(val tabTitle: String, val screen: ComposableFun) {
         onScrapClick: (Int) -> Unit,
         onLikeClick: (Int) -> Unit,
         likeState: PreferenceToggleState,
-        scrapState: PreferenceToggleState
+        scrapState: PreferenceToggleState,
+        onLoginRequest: () -> Unit,
+        currentPlatform: CurrentPlatform,
+        showSnackbar: (String) -> Unit
     ): TabItem(
         tabTitle = "과일음료",
         screen = {
@@ -255,7 +291,10 @@ sealed class TabItem(val tabTitle: String, val screen: ComposableFun) {
                 onScrapClick = onScrapClick,
                 onLikeClick = onLikeClick,
                 likeState = likeState,
-                scrapState = scrapState
+                scrapState = scrapState,
+                setShowLoginRequestDialog = onLoginRequest,
+                currentPlatform = currentPlatform,
+                showSnackbar = showSnackbar
             )
         }
     )
@@ -266,7 +305,10 @@ sealed class TabItem(val tabTitle: String, val screen: ComposableFun) {
         onScrapClick: (Int) -> Unit,
         onLikeClick: (Int) -> Unit,
         likeState: PreferenceToggleState,
-        scrapState: PreferenceToggleState
+        scrapState: PreferenceToggleState,
+        onLoginRequest: () -> Unit,
+        currentPlatform: CurrentPlatform,
+        showSnackbar: (String) -> Unit
     ): TabItem(
         tabTitle = "건강음료",
         screen = {
@@ -276,7 +318,10 @@ sealed class TabItem(val tabTitle: String, val screen: ComposableFun) {
                 onScrapClick = onScrapClick,
                 onLikeClick = onLikeClick,
                 likeState = likeState,
-                scrapState = scrapState
+                scrapState = scrapState,
+                setShowLoginRequestDialog = onLoginRequest,
+                currentPlatform = currentPlatform,
+                showSnackbar = showSnackbar
             )
         }
     )
@@ -287,7 +332,10 @@ sealed class TabItem(val tabTitle: String, val screen: ComposableFun) {
         onScrapClick: (Int) -> Unit,
         onLikeClick: (Int) -> Unit,
         likeState: PreferenceToggleState,
-        scrapState: PreferenceToggleState
+        scrapState: PreferenceToggleState,
+        onLoginRequest: () -> Unit,
+        currentPlatform: CurrentPlatform,
+        showSnackbar: (String) -> Unit
     ): TabItem(
         tabTitle = "전체",
         screen = {
@@ -297,7 +345,10 @@ sealed class TabItem(val tabTitle: String, val screen: ComposableFun) {
                 onScrapClick = onScrapClick,
                 onLikeClick = onLikeClick,
                 likeState = likeState,
-                scrapState = scrapState
+                scrapState = scrapState,
+                setShowLoginRequestDialog = onLoginRequest,
+                currentPlatform = currentPlatform,
+                showSnackbar = showSnackbar
             )
         }
     )

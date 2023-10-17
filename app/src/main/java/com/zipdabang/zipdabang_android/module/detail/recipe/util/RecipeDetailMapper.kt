@@ -2,6 +2,7 @@ package com.zipdabang.zipdabang_android.module.detail.recipe.util
 
 import com.zipdabang.zipdabang_android.common.ResponseBody
 import com.zipdabang.zipdabang_android.module.detail.recipe.data.RecipeDetailDto
+import com.zipdabang.zipdabang_android.module.detail.recipe.domain.RecipeDeleteResult
 import com.zipdabang.zipdabang_android.module.detail.recipe.domain.RecipeDetailDomain
 import com.zipdabang.zipdabang_android.module.detail.recipe.domain.RecipeReportResult
 
@@ -26,5 +27,14 @@ fun ResponseBody<String?>.toRecipeReportResult(): RecipeReportResult {
         message = message,
         isConnectionSuccessful = isSuccess,
         isReportSuccessful = result != null
+    )
+}
+
+fun ResponseBody<String?>.toRecipeDeleteResult(): RecipeDeleteResult {
+    return RecipeDeleteResult(
+        code = code,
+        message = message,
+        isConnectionSuccessful = isSuccess,
+        isDeleteSuccessful = result != null
     )
 }

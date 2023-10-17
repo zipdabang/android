@@ -7,6 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.zipdabang.zipdabang_android.common.UiState
+import com.zipdabang.zipdabang_android.core.data_store.proto.CurrentPlatform
 import com.zipdabang.zipdabang_android.module.recipes.data.hot.HotRecipeItem
 import com.zipdabang.zipdabang_android.module.recipes.ui.state.PreferenceToggleState
 import kotlinx.coroutines.flow.StateFlow
@@ -18,7 +19,11 @@ fun HotRecipeList(
     onScrapClick: (Int) -> Unit,
     onLikeClick: (Int) -> Unit,
     likeState: PreferenceToggleState,
-    scrapState: PreferenceToggleState
+    scrapState: PreferenceToggleState,
+    setShowLoginRequestDialog: () -> Unit,
+    currentPlatform: CurrentPlatform,
+    showSnackbar: (String) -> Unit
+
 ) {
 
     Column(
@@ -34,7 +39,10 @@ fun HotRecipeList(
                 onLikeClick = onLikeClick,
                 onScrapClick = onScrapClick,
                 likeState = likeState,
-                scrapState = scrapState
+                scrapState = scrapState,
+                setShowLoginRequestDialog = setShowLoginRequestDialog,
+                currentPlatform = currentPlatform,
+                showSnackbar = showSnackbar
             )
         }
     }

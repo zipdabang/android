@@ -10,6 +10,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
@@ -20,6 +21,8 @@ import androidx.navigation.navigation
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.rememberPagerState
+import com.zipdabang.zipdabang_android.R
+import com.zipdabang.zipdabang_android.common.CommentMgtFailureException
 import com.zipdabang.zipdabang_android.common.TogglePreferenceException
 import com.zipdabang.zipdabang_android.core.data_store.proto.CurrentPlatform
 import com.zipdabang.zipdabang_android.module.comment.ui.RecipeCommentViewModel
@@ -28,6 +31,8 @@ import com.zipdabang.zipdabang_android.module.detail.recipe.ui.RecipeDetailScree
 import com.zipdabang.zipdabang_android.module.detail.recipe.ui.RecipeDetailViewModel
 import com.zipdabang.zipdabang_android.module.search.ui.SearchCategoryScreen
 import com.zipdabang.zipdabang_android.module.search.ui.SearchScreen
+import com.zipdabang.zipdabang_android.ui.component.LoginRequestDialog
+import com.zipdabang.zipdabang_android.ui.component.RecipeDeleteDialog
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -35,6 +40,7 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalPagerApi::class)
 fun NavGraphBuilder.SharedNavGraph(
     navController: NavController,
+    outerNavController: NavController,
     showSnackBar: (String) -> Unit
 ){
 
@@ -94,6 +100,43 @@ fun NavGraphBuilder.SharedNavGraph(
             val commentReportId = recipeCommentViewModel.commentReportState.value.reportId
             val commentIdForReport = recipeCommentViewModel.commentReportState.value.commentId ?: 0
 
+            var showDeleteDialog by remember {
+                mutableStateOf(false)
+            }
+
+            var showLoginRequestDialog by remember {
+                mutableStateOf(false)
+            }
+
+            val recipeDeleteState = recipeDetailViewModel.recipeDeleteState.value
+
+            if (recipeDeleteState.isLoading == false && recipeDeleteState.data == true) {
+                navController.popBackStack()
+            }
+
+            LoginRequestDialog(
+                showDialog = showLoginRequestDialog,
+                setShowDialog = { changedValue ->
+                    showLoginRequestDialog = changedValue
+                }
+            ) {
+                outerNavController.navigate(AUTH_ROUTE){
+                    popUpTo(SharedScreen.DetailRecipe.route) {
+                        inclusive = false
+                    }
+                    launchSingleTop = true
+                }
+            }
+
+            RecipeDeleteDialog(
+                showDialog = showDeleteDialog,
+                setShowDialog = { changedValue ->
+                    showDeleteDialog = changedValue
+                }
+            ) {
+                recipeDetailViewModel.deleteRecipe(recipeId = recipeId)
+            }
+
             RecipeDetailScreen(
                 recipeId = recipeId,
                 onClickBackIcon = {
@@ -103,8 +146,7 @@ fun NavGraphBuilder.SharedNavGraph(
                     if (currentPlatform == CurrentPlatform.NONE
                         || currentPlatform == CurrentPlatform.TEMP
                     ) {
-                        // 온보딩으로 이동 필요함
-
+                        showLoginRequestDialog = true
                     } else {
                         if (isOwner == true) {
                             isExpandedForOwner = !isExpandedForOwner
@@ -116,10 +158,12 @@ fun NavGraphBuilder.SharedNavGraph(
                 onClickProfile = { ownerId -> },
                 // onClickCart = { keyword -> },
                 onClickRecipeDelete = {
-
+                    showDeleteDialog = true
                 },
                 onClickRecipeEdit = {
-
+                    navController.navigate(route = MyScreen.RecipeWrite.passRecipeId(recipeId)) {
+                        launchSingleTop = true
+                    }
                 },
                 onClickRecipeReport = { reportId ->
                     Log.i(
@@ -177,9 +221,8 @@ fun NavGraphBuilder.SharedNavGraph(
                 },
                 onClickCommentBlock = {
                     recipeCommentViewModel.blockUser(commentBlockOwnerId)
-                    scope.launch {
-                        showSnackBar("해당 이용자를 차단했어요")
-                    }
+                    showSnackBar("해당 이용자를 차단했어요")
+
                 },
                 onClickCommentDelete = { commentId ->
                     recipeCommentViewModel.deleteComment(recipeId, commentId)
@@ -187,9 +230,33 @@ fun NavGraphBuilder.SharedNavGraph(
                 onClickCommentEdit = { commentId, newContent ->
                     recipeCommentViewModel.editComment(recipeId, commentId, newContent)
                 },
+                onClickCommentSubmit = { recipeId, content ->
+                    try {
+                        if (currentPlatform == CurrentPlatform.TEMP
+                            || currentPlatform == CurrentPlatform.NONE) {
+                            showLoginRequestDialog = true
+
+                        } else {
+                            recipeCommentViewModel.postComment(recipeId, content)
+                        }
+                    } catch (e: CommentMgtFailureException) {
+                        Log.d("comment submit", "edit failure")
+                    } catch (e: Exception) {
+                        Log.d("comment submit", "unknown failure : ${e.message}")
+                    }
+                },
                 onClickRecipeLike = { changedState ->
                     try {
-                        recipeDetailViewModel.toggleLike(recipeId)
+                        if (currentPlatform == CurrentPlatform.NONE
+                            || currentPlatform == CurrentPlatform.TEMP) {
+                            showLoginRequestDialog = true
+                        } else {
+                            if (isOwner == true) {
+                                showSnackBar("본인 레시피에 좋아요를 누를 수 없습니다.")
+                            } else {
+                                recipeDetailViewModel.toggleLike(recipeId)
+                            }
+                        }
                     } catch (e: Exception) {
                         Log.d("RecipeDetail", "${e.message}")
                     } catch (e: java.lang.Exception) {
@@ -198,7 +265,16 @@ fun NavGraphBuilder.SharedNavGraph(
                 },
                 onClickRecipeScrap = { changedState ->
                     try {
-                        recipeDetailViewModel.toggleScrap(recipeId)
+                        if (currentPlatform == CurrentPlatform.NONE
+                            || currentPlatform == CurrentPlatform.TEMP) {
+                            showLoginRequestDialog = true
+                        } else {
+                            if (isOwner == true) {
+                                showSnackBar("본인 레시피를 스크랩 할 수 없습니다.")
+                            } else {
+                                recipeDetailViewModel.toggleScrap(recipeId)
+                            }
+                        }
                     } catch (e: Exception) {
                         Log.d("RecipeDetail", "${e.message}")
                     } catch (e: java.lang.Exception) {

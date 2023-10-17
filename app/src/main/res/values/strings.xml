@@ -219,6 +219,7 @@
     <string name="dropdown_report_recipe">게시글 신고하기</string>
     <string name="dropdown_edit_recipe">게시글 수정하기</string>
     <string name="dropdown_block_user">이용자 차단하기</string>
+    <string name="recipe_owner_like_warning">본인 레시피에 좋아요를 누를 수 없습니다.</string>
 
 
 </resources>

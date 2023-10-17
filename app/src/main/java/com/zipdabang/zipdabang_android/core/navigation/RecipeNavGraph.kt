@@ -1,6 +1,10 @@
 package com.zipdabang.zipdabang_android.core.navigation
 
 import android.util.Log
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
@@ -14,12 +18,16 @@ import com.zipdabang.zipdabang_android.module.recipes.ui.RecipeScreen
 
 fun NavGraphBuilder.RecipeNavGraph(
     navController: NavController,
+    outerNavController: NavController,
     showSnackBar: (String) -> Unit
 ) {
-
-
     navigation(startDestination = RecipeScreen.Home.route, route = RECIPES_ROUTE) {
         composable(RecipeScreen.Home.route) {
+
+            var showLoginRequestDialog by remember {
+                mutableStateOf(false)
+            }
+
             RecipeScreen(
                 onCategoryClick = { categoryId ->
                     Log.d("type - category", "$categoryId")
@@ -43,7 +51,20 @@ fun NavGraphBuilder.RecipeNavGraph(
                 onBannerClick = { keyword ->
 
                 },
-                navController = navController
+                onLoginRequest = {
+                    outerNavController.navigate(AUTH_ROUTE){
+                        popUpTo(MAIN_ROUTE) {
+                            inclusive = false
+                        }
+                        launchSingleTop = true
+                    }
+                },
+                showSnackbar = showSnackBar,
+                navController = navController,
+                showLoginRequestDialog = showLoginRequestDialog,
+                setShowLoginRequestDialog = { changedValue ->
+                    showLoginRequestDialog = changedValue
+                }
             )
         }
 
@@ -69,7 +90,11 @@ fun NavGraphBuilder.RecipeNavGraph(
                 navController = navController,
                 categoryState = categoryState,
                 onShareClick = {
-
+                    navController.navigate(
+                        route = MyScreen.RecipeWrite.route
+                    ) {
+                        launchSingleTop = true
+                    }
                 },
                 onItemClick = { recipeId ->
                     navController.navigate(
@@ -80,7 +105,16 @@ fun NavGraphBuilder.RecipeNavGraph(
                 },
                 onBackClick = {
                     navController.popBackStack()
-                }
+                },
+                onLoginRequest = {
+                    outerNavController.navigate(AUTH_ROUTE){
+                        popUpTo(RecipeScreen.RecipeList.route) {
+                            inclusive = false
+                        }
+                        launchSingleTop = true
+                    }
+                },
+                showSnackbar = showSnackBar
             )
         }
     }

@@ -159,7 +159,12 @@ fun NavGraphBuilder.MyNavGraph(
             )
         }
 
-        composable(MyScreen.RecipeWrite.route){ navBackStackEntry->
+        composable(
+            route = MyScreen.RecipeWrite.route,
+            arguments = listOf(
+                navArgument(name = "recipeId") { type = NavType.IntType }
+            )
+        ) { navBackStackEntry->
             val recipeWriteViewModel = navBackStackEntry
                 .recipeWriteViewModel<RecipeWriteViewModel>(navController = navController)
             val recipeId = navBackStackEntry.arguments?.getString("recipeId")?.toInt()
@@ -170,6 +175,16 @@ fun NavGraphBuilder.MyNavGraph(
                     onClickBack = {
                         navController.popBackStack(MyScreen.Myrecipe.route, inclusive = false)
                     },
+                    onClickViewRecipe = { recipeId ->
+                        navController.navigate(
+                            route = SharedScreen.DetailRecipe.passRecipeId(recipeId)
+                        ) {
+                            popUpTo(route = MyScreen.RecipeWrite.route) {
+                                inclusive = true
+                            }
+                            launchSingleTop = true
+                        }
+                    }
                 )
             } else {
                 Log.e("recipeId 전달","recipeId : ${recipeId}")
@@ -179,6 +194,16 @@ fun NavGraphBuilder.MyNavGraph(
                     onClickBack = {
                         navController.popBackStack(MyScreen.Myrecipe.route, inclusive = false)
                     },
+                    onClickViewRecipe = { recipeId ->
+                        navController.navigate(
+                            route = SharedScreen.DetailRecipe.passRecipeId(recipeId)
+                        ) {
+                            popUpTo(route = MyScreen.RecipeWrite.route) {
+                                inclusive = true
+                            }
+                            launchSingleTop = true
+                        }
+                    }
                 )
             }
         }
