@@ -19,8 +19,7 @@ import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
 @Composable
 fun ReportItem(
     title : String,
-    createdAt : String,
-    status : String = "답변 중"
+    createdAt : String
 ) {
 
     Row(modifier = Modifier
@@ -41,12 +40,12 @@ fun ReportItem(
             )
         }
 
-        Text(text= status,
-            style = ZipdabangandroidTheme.Typography.eighteen_500,
-            color = ZipdabangandroidTheme.Colors.Typo,
-            modifier = Modifier.border(1.dp,Color.Black,ZipdabangandroidTheme.Shapes.large)
-                .padding(horizontal = 12.dp, vertical = 5.dp)
-        )
+//        Text(text= status,
+//            style = ZipdabangandroidTheme.Typography.eighteen_500,
+//            color = ZipdabangandroidTheme.Colors.Typo,
+//            modifier = Modifier.border(1.dp,Color.Black,ZipdabangandroidTheme.Shapes.large)
+//                .padding(horizontal = 12.dp, vertical = 5.dp)
+//        )
 
 
 

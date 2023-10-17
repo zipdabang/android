@@ -18,6 +18,7 @@ import androidx.navigation.navigation
 import com.zipdabang.zipdabang_android.core.data_store.proto.CurrentPlatform
 import com.zipdabang.zipdabang_android.core.data_store.proto.ProtoDataViewModel
 import com.zipdabang.zipdabang_android.core.data_store.proto.Token
+import com.zipdabang.zipdabang_android.module.drawer.ui.NoticeScreen
 import com.zipdabang.zipdabang_android.module.my.ui.FriendListScreen
 import com.zipdabang.zipdabang_android.module.my.ui.LikeScreen
 import com.zipdabang.zipdabang_android.module.my.ui.MyScreen
@@ -90,7 +91,7 @@ fun NavGraphBuilder.MyNavGraph(
                         navController.navigate(MyScreen.FriendList.route)
                     },
                     onClickNotice ={
-                        navController.navigate(DrawerScreen.ReportList.route)
+                        navController.navigate(MyScreen.NoticeList.route)
                     },
                     onClickLogout = {
                         outerNavController.navigate(AUTH_ROUTE){
@@ -206,6 +207,14 @@ fun NavGraphBuilder.MyNavGraph(
                     }
                 )
             }
+        }
+        composable(MyScreen.NoticeList.route) {
+            NoticeScreen(
+                navController = navController,
+                onClickBack = {
+                    navController.popBackStack(MyScreen.Home.route, inclusive = false)
+                }
+            )
         }
 
         composable(

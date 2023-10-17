@@ -9,12 +9,10 @@ import com.zipdabang.zipdabang_android.core.remotekey.RemoteKeys
 import com.zipdabang.zipdabang_android.module.comment.data.local.RecipeCommentDao
 import com.zipdabang.zipdabang_android.module.comment.data.local.RecipeCommentEntity
 import com.zipdabang.zipdabang_android.module.drawer.data.ReportDao
-import com.zipdabang.zipdabang_android.module.drawer.data.remote.reporterror.Inquery
 import com.zipdabang.zipdabang_android.module.drawer.data.remote.reporterror.InqueryDB
 import com.zipdabang.zipdabang_android.module.market.domain.dao.MarketCategoryDao
 import com.zipdabang.zipdabang_android.module.my.data.remote.friendlist.follow.FollowDao
 import com.zipdabang.zipdabang_android.module.my.data.remote.friendlist.follow.Following
-import com.zipdabang.zipdabang_android.module.my.data.remote.friendlist.follow.search.FollowInfo
 import com.zipdabang.zipdabang_android.module.my.data.remote.friendlist.follow.search.FollowInfoDB
 import com.zipdabang.zipdabang_android.module.my.data.remote.friendlist.follow.search.SearchFollowDao
 import com.zipdabang.zipdabang_android.module.my.data.remote.friendlist.following.Follower

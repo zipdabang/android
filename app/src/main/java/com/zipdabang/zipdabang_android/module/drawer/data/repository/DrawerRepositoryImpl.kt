@@ -1,6 +1,7 @@
 package com.zipdabang.zipdabang_android.module.drawer.data.repository
 
 import com.zipdabang.zipdabang_android.module.drawer.data.remote.DrawerApi
+import com.zipdabang.zipdabang_android.module.drawer.data.remote.noticedto.NoticeListDto
 import com.zipdabang.zipdabang_android.module.drawer.data.remote.quitdto.QuitDto
 import com.zipdabang.zipdabang_android.module.drawer.data.remote.quitdto.QuitRequest
 import com.zipdabang.zipdabang_android.module.drawer.data.remote.reporterror.ReportListDto
@@ -110,6 +111,9 @@ class DrawerRepositoryImpl @Inject constructor(
 
     override suspend fun getReportList(accessToken: String, page: Int): ReportListDto {
         return api.getErrorList(accessToken = accessToken, page = page )
+    }
+    override suspend fun getNoticeList(accessToken: String,): NoticeListDto {
+        return api.getNoticeList(accessToken = accessToken)
     }
 
 }
