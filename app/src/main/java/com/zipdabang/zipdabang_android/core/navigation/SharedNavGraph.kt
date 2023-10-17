@@ -27,6 +27,7 @@ import com.zipdabang.zipdabang_android.common.TogglePreferenceException
 import com.zipdabang.zipdabang_android.core.data_store.proto.CurrentPlatform
 import com.zipdabang.zipdabang_android.module.comment.ui.RecipeCommentViewModel
 import com.zipdabang.zipdabang_android.module.comment.ui.ReportCommentInfoState
+import com.zipdabang.zipdabang_android.module.detail.recipe.ui.RecipeDetailLoading
 import com.zipdabang.zipdabang_android.module.detail.recipe.ui.RecipeDetailScreen
 import com.zipdabang.zipdabang_android.module.detail.recipe.ui.RecipeDetailViewModel
 import com.zipdabang.zipdabang_android.module.search.ui.SearchCategoryScreen
@@ -137,209 +138,215 @@ fun NavGraphBuilder.SharedNavGraph(
                 recipeDetailViewModel.deleteRecipe(recipeId = recipeId)
             }
 
-            RecipeDetailScreen(
-                recipeId = recipeId,
-                onClickBackIcon = {
-                    navController.popBackStack()
-                },
-                onClickMenuIcon = {
-                    if (currentPlatform == CurrentPlatform.NONE
-                        || currentPlatform == CurrentPlatform.TEMP
-                    ) {
-                        showLoginRequestDialog = true
-                    } else {
-                        if (isOwner == true) {
-                            isExpandedForOwner = !isExpandedForOwner
-                        } else {
-                            isExpandedForNotOwner = !isExpandedForNotOwner
-                        }
-                    }
-                },
-                onClickProfile = { ownerId -> },
-                // onClickCart = { keyword -> },
-                onClickRecipeDelete = {
-                    showDeleteDialog = true
-                },
-                onClickRecipeEdit = {
-                    navController.navigate(route = MyScreen.RecipeWrite.passRecipeId(recipeId)) {
-                        launchSingleTop = true
-                    }
-                },
-                onClickRecipeReport = { reportId ->
-                    Log.i(
-                        "reportrecipeusecase",
-                        "report clicked, recipeId : $recipeId, reportId: $reportId"
-                    )
-                    recipeDetailViewModel.reportRecipe(
-                        recipeId = recipeId,
-                        reportId = reportId
-                    )
-
-                    scope.launch {
-                        recipeDetailViewModel.recipeReportResult.collectLatest { result ->
-                            Log.i("reportrecipeusecase", "$result")
-                            if (result.isLoading == false && result.data == true) {
-                                showSnackBar("해당 게시글을 신고했어요")
-                                recipeDetailViewModel.setRecipeBlockDialogStatus(true)
-                            } else if (result.isLoading == false && result.data == false) {
-                                showSnackBar("게시글 신고 중 오류가 발생했어요.")
-                            }
-                        }
-                    }
-                },
-                onClickRecipeBlock = {
-                    recipeDetailViewModel.blockUser(ownerId)
-                    scope.launch {
-                        showSnackBar("해당 이용자를 차단했어요")
-                    }
-                    navController.popBackStack()
-                },
-                onClickCommentReport = { commentId, reportId ->
-
-                    recipeCommentViewModel.reportComment(
-                        recipeId = recipeId,
-                        commentId = commentId,
-                        reportId = reportId
-                    )
-
-                    Log.i(
-                        "RecipeDetailScreen > Report Comment",
-                        "report clicked, recipeId : $recipeId, reportId: $reportId, commentId: $commentId"
-                    )
-
-                    scope.launch {
-                        recipeCommentViewModel.reportResult.collectLatest { result ->
-                            Log.i("reportcommentusecase", "$result")
-                            if (!result.isLoading && result.isReportSuccessful == true) {
-                                showSnackBar("해당 댓글을 신고했어요")
-                                recipeCommentViewModel.setCommentBlockDialogStatus(true)
-                            } else if (!result.isLoading && result.isReportSuccessful == false) {
-                                showSnackBar("댓글 신고 중 오류가 발생했어요.")
-                            }
-                        }
-                    }
-                },
-                onClickCommentBlock = {
-                    recipeCommentViewModel.blockUser(commentBlockOwnerId)
-                    showSnackBar("해당 이용자를 차단했어요")
-
-                },
-                onClickCommentDelete = { commentId ->
-                    recipeCommentViewModel.deleteComment(recipeId, commentId)
-                },
-                onClickCommentEdit = { commentId, newContent ->
-                    recipeCommentViewModel.editComment(recipeId, commentId, newContent)
-                },
-                onClickCommentSubmit = { recipeId, content ->
-                    try {
-                        if (currentPlatform == CurrentPlatform.TEMP
-                            || currentPlatform == CurrentPlatform.NONE) {
-                            showLoginRequestDialog = true
-
-                        } else {
-                            recipeCommentViewModel.postComment(recipeId, content)
-                        }
-                    } catch (e: CommentMgtFailureException) {
-                        Log.d("comment submit", "edit failure")
-                    } catch (e: Exception) {
-                        Log.d("comment submit", "unknown failure : ${e.message}")
-                    }
-                },
-                onClickRecipeLike = { changedState ->
-                    try {
+            if (recipeDetailState.isLoading) {
+                Log.d("SharedNavGraph", "recipe loading")
+                RecipeDetailLoading()
+            } else {
+                Log.d("SharedNavGraph", "recipe loading ended")
+                RecipeDetailScreen(
+                    recipeId = recipeId,
+                    onClickBackIcon = {
+                        navController.popBackStack()
+                    },
+                    onClickMenuIcon = {
                         if (currentPlatform == CurrentPlatform.NONE
-                            || currentPlatform == CurrentPlatform.TEMP) {
+                            || currentPlatform == CurrentPlatform.TEMP
+                        ) {
                             showLoginRequestDialog = true
                         } else {
                             if (isOwner == true) {
-                                showSnackBar("본인 레시피에 좋아요를 누를 수 없습니다.")
+                                isExpandedForOwner = !isExpandedForOwner
                             } else {
-                                recipeDetailViewModel.toggleLike(recipeId)
+                                isExpandedForNotOwner = !isExpandedForNotOwner
                             }
                         }
-                    } catch (e: Exception) {
-                        Log.d("RecipeDetail", "${e.message}")
-                    } catch (e: java.lang.Exception) {
-                        Log.d("RecipeDetail", "${e.message}")
-                    }
-                },
-                onClickRecipeScrap = { changedState ->
-                    try {
-                        if (currentPlatform == CurrentPlatform.NONE
-                            || currentPlatform == CurrentPlatform.TEMP) {
-                            showLoginRequestDialog = true
-                        } else {
-                            if (isOwner == true) {
-                                showSnackBar("본인 레시피를 스크랩 할 수 없습니다.")
-                            } else {
-                                recipeDetailViewModel.toggleScrap(recipeId)
+                    },
+                    onClickProfile = { ownerId -> },
+                    // onClickCart = { keyword -> },
+                    onClickRecipeDelete = {
+                        showDeleteDialog = true
+                    },
+                    onClickRecipeEdit = {
+                        navController.navigate(route = MyScreen.RecipeWrite.passRecipeId(recipeId)) {
+                            launchSingleTop = true
+                        }
+                    },
+                    onClickRecipeReport = { reportId ->
+                        Log.i(
+                            "reportrecipeusecase",
+                            "report clicked, recipeId : $recipeId, reportId: $reportId"
+                        )
+                        recipeDetailViewModel.reportRecipe(
+                            recipeId = recipeId,
+                            reportId = reportId
+                        )
+
+                        scope.launch {
+                            recipeDetailViewModel.recipeReportResult.collectLatest { result ->
+                                Log.i("reportrecipeusecase", "$result")
+                                if (result.isLoading == false && result.data == true) {
+                                    showSnackBar("해당 게시글을 신고했어요")
+                                    recipeDetailViewModel.setRecipeBlockDialogStatus(true)
+                                } else if (result.isLoading == false && result.data == false) {
+                                    showSnackBar("게시글 신고 중 오류가 발생했어요.")
+                                }
                             }
                         }
-                    } catch (e: Exception) {
-                        Log.d("RecipeDetail", "${e.message}")
-                    } catch (e: java.lang.Exception) {
-                        Log.d("RecipeDetail", "${e.message}")
-                    }
-                },
-                showSnackBar = showSnackBar,
-                recipeDetailState = recipeDetailState,
-                likes = likes.value,
-                scraps = scraps.value,
-                toggleLikeState = toggleLikeState.value,
-                toggleScrapState = toggleScrapState.value,
-                isLikeChecked = isLikeChecked.value,
-                isScrapChecked = isScrapChecked.value,
-                onDismissDropdown = {
-                    isExpandedForOwner = false
-                    isExpandedForNotOwner = false
-                },
-                isDropdownExpandedForOwner = isExpandedForOwner,
-                isDropdownExpandedForNotOwner = isExpandedForNotOwner,
-                deviceSize = deviceSize,
-                pagerState = pagerState,
-                showCommentReport = { commentId, reportId, ownerId ->
-                    recipeCommentViewModel.setCommentReportDialogStatus(true)
-                    recipeCommentViewModel.setBlockOwnerId(ownerId)
-                    recipeCommentViewModel.setCommentReportState(
-                        ReportCommentInfoState(
+                    },
+                    onClickRecipeBlock = {
+                        recipeDetailViewModel.blockUser(ownerId)
+                        scope.launch {
+                            showSnackBar("해당 이용자를 차단했어요")
+                        }
+                        navController.popBackStack()
+                    },
+                    onClickCommentReport = { commentId, reportId ->
+
+                        recipeCommentViewModel.reportComment(
                             recipeId = recipeId,
                             commentId = commentId,
                             reportId = reportId
                         )
-                    )
-                },
-                showCommentBlock = { ownerId ->
-                    recipeCommentViewModel.setBlockOwnerId(ownerId)
-                    recipeCommentViewModel.setCommentBlockDialogStatus(true)
-                },
-                setCommentReport = { changedState ->
-                    recipeCommentViewModel.setCommentReportDialogStatus(changedState)
-                },
-                setCommentBlock = { changedState ->
-                    recipeCommentViewModel.setCommentBlockDialogStatus(changedState)
-                },
-                setRecipeReport = {
-                    recipeDetailViewModel.setRecipeReportDialogStatus(it)
-                },
-                setRecipeBlock = {
-                    recipeDetailViewModel.setRecipeBlockDialogStatus(it)
-                },
-                recipeReportActivated = recipeDetailViewModel.isRecipeReportActivated.value,
-                recipeBlockActivated = recipeDetailViewModel.isRecipeBlockActivated.value,
-                commentReportActivated = recipeCommentViewModel.isCommentReportActivated.value,
-                commentBlockActivated = recipeCommentViewModel.isCommentBlockActivated.value,
-                recipeReportId = recipeReportId,
-                commentReportId = commentReportId,
-                commentIdForReport = commentIdForReport,
-                onRecipeReportContentChange = { changedId ->
-                    recipeDetailViewModel.changeReportContent(changedId)
-                },
-                onCommentReportContentChange = { changedId ->
-                    recipeCommentViewModel.changeReportContent(changedId)
-                },
-                commentItems = commentItems,
-                postCommentResult = postCommentResult.value
-            )
+
+                        Log.i(
+                            "RecipeDetailScreen > Report Comment",
+                            "report clicked, recipeId : $recipeId, reportId: $reportId, commentId: $commentId"
+                        )
+
+                        scope.launch {
+                            recipeCommentViewModel.reportResult.collectLatest { result ->
+                                Log.i("reportcommentusecase", "$result")
+                                if (!result.isLoading && result.isReportSuccessful == true) {
+                                    showSnackBar("해당 댓글을 신고했어요")
+                                    recipeCommentViewModel.setCommentBlockDialogStatus(true)
+                                } else if (!result.isLoading && result.isReportSuccessful == false) {
+                                    showSnackBar("댓글 신고 중 오류가 발생했어요.")
+                                }
+                            }
+                        }
+                    },
+                    onClickCommentBlock = {
+                        recipeCommentViewModel.blockUser(commentBlockOwnerId)
+                        showSnackBar("해당 이용자를 차단했어요")
+
+                    },
+                    onClickCommentDelete = { commentId ->
+                        recipeCommentViewModel.deleteComment(recipeId, commentId)
+                    },
+                    onClickCommentEdit = { commentId, newContent ->
+                        recipeCommentViewModel.editComment(recipeId, commentId, newContent)
+                    },
+                    onClickCommentSubmit = { recipeId, content ->
+                        try {
+                            if (currentPlatform == CurrentPlatform.TEMP
+                                || currentPlatform == CurrentPlatform.NONE) {
+                                showLoginRequestDialog = true
+
+                            } else {
+                                recipeCommentViewModel.postComment(recipeId, content)
+                            }
+                        } catch (e: CommentMgtFailureException) {
+                            Log.d("comment submit", "edit failure")
+                        } catch (e: Exception) {
+                            Log.d("comment submit", "unknown failure : ${e.message}")
+                        }
+                    },
+                    onClickRecipeLike = { changedState ->
+                        try {
+                            if (currentPlatform == CurrentPlatform.NONE
+                                || currentPlatform == CurrentPlatform.TEMP) {
+                                showLoginRequestDialog = true
+                            } else {
+                                if (isOwner == true) {
+                                    showSnackBar("본인 레시피에 좋아요를 누를 수 없습니다.")
+                                } else {
+                                    recipeDetailViewModel.toggleLike(recipeId)
+                                }
+                            }
+                        } catch (e: Exception) {
+                            Log.d("RecipeDetail", "${e.message}")
+                        } catch (e: java.lang.Exception) {
+                            Log.d("RecipeDetail", "${e.message}")
+                        }
+                    },
+                    onClickRecipeScrap = { changedState ->
+                        try {
+                            if (currentPlatform == CurrentPlatform.NONE
+                                || currentPlatform == CurrentPlatform.TEMP) {
+                                showLoginRequestDialog = true
+                            } else {
+                                if (isOwner == true) {
+                                    showSnackBar("본인 레시피를 스크랩 할 수 없습니다.")
+                                } else {
+                                    recipeDetailViewModel.toggleScrap(recipeId)
+                                }
+                            }
+                        } catch (e: Exception) {
+                            Log.d("RecipeDetail", "${e.message}")
+                        } catch (e: java.lang.Exception) {
+                            Log.d("RecipeDetail", "${e.message}")
+                        }
+                    },
+                    showSnackBar = showSnackBar,
+                    recipeDetailState = recipeDetailState,
+                    likes = likes.value,
+                    scraps = scraps.value,
+                    toggleLikeState = toggleLikeState.value,
+                    toggleScrapState = toggleScrapState.value,
+                    isLikeChecked = isLikeChecked.value,
+                    isScrapChecked = isScrapChecked.value,
+                    onDismissDropdown = {
+                        isExpandedForOwner = false
+                        isExpandedForNotOwner = false
+                    },
+                    isDropdownExpandedForOwner = isExpandedForOwner,
+                    isDropdownExpandedForNotOwner = isExpandedForNotOwner,
+                    deviceSize = deviceSize,
+                    pagerState = pagerState,
+                    showCommentReport = { commentId, reportId, ownerId ->
+                        recipeCommentViewModel.setCommentReportDialogStatus(true)
+                        recipeCommentViewModel.setBlockOwnerId(ownerId)
+                        recipeCommentViewModel.setCommentReportState(
+                            ReportCommentInfoState(
+                                recipeId = recipeId,
+                                commentId = commentId,
+                                reportId = reportId
+                            )
+                        )
+                    },
+                    showCommentBlock = { ownerId ->
+                        recipeCommentViewModel.setBlockOwnerId(ownerId)
+                        recipeCommentViewModel.setCommentBlockDialogStatus(true)
+                    },
+                    setCommentReport = { changedState ->
+                        recipeCommentViewModel.setCommentReportDialogStatus(changedState)
+                    },
+                    setCommentBlock = { changedState ->
+                        recipeCommentViewModel.setCommentBlockDialogStatus(changedState)
+                    },
+                    setRecipeReport = {
+                        recipeDetailViewModel.setRecipeReportDialogStatus(it)
+                    },
+                    setRecipeBlock = {
+                        recipeDetailViewModel.setRecipeBlockDialogStatus(it)
+                    },
+                    recipeReportActivated = recipeDetailViewModel.isRecipeReportActivated.value,
+                    recipeBlockActivated = recipeDetailViewModel.isRecipeBlockActivated.value,
+                    commentReportActivated = recipeCommentViewModel.isCommentReportActivated.value,
+                    commentBlockActivated = recipeCommentViewModel.isCommentBlockActivated.value,
+                    recipeReportId = recipeReportId,
+                    commentReportId = commentReportId,
+                    commentIdForReport = commentIdForReport,
+                    onRecipeReportContentChange = { changedId ->
+                        recipeDetailViewModel.changeReportContent(changedId)
+                    },
+                    onCommentReportContentChange = { changedId ->
+                        recipeCommentViewModel.changeReportContent(changedId)
+                    },
+                    commentItems = commentItems,
+                    postCommentResult = postCommentResult.value
+                )
+            }
         }
 
         composable(SharedScreen.Search.route){

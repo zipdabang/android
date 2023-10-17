@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.zipdabang.zipdabang_android.common.Constants
 import com.zipdabang.zipdabang_android.common.Resource
+import com.zipdabang.zipdabang_android.core.data_store.proto.CurrentPlatform
 import com.zipdabang.zipdabang_android.core.data_store.proto.Token
 import com.zipdabang.zipdabang_android.module.drawer.data.remote.userinfodto.UserInfoBasicRequest
 import com.zipdabang.zipdabang_android.module.drawer.data.remote.userinfodto.UserInfoDetailRequest
@@ -36,6 +37,8 @@ import com.zipdabang.zipdabang_android.module.drawer.ui.state.userinfo.UserInfoP
 import com.zipdabang.zipdabang_android.module.drawer.ui.state.userinfo.UserInfoPreferencesState
 import com.zipdabang.zipdabang_android.module.drawer.ui.state.userinfo.UserInfoProfileState
 import com.zipdabang.zipdabang_android.module.drawer.ui.state.userinfo.UserInfoState
+import com.zipdabang.zipdabang_android.module.my.ui.state.signout.SignOutState
+import com.zipdabang.zipdabang_android.module.my.use_case.SignOutUseCase
 import com.zipdabang.zipdabang_android.module.sign_up.data.remote.AuthRequest
 import com.zipdabang.zipdabang_android.module.sign_up.data.remote.PhoneRequest
 import com.zipdabang.zipdabang_android.module.sign_up.domain.usecase.GetBeveragesUseCase
@@ -48,6 +51,8 @@ import com.zipdabang.zipdabang_android.module.sign_up.domain.usecase.ValidatePho
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -74,6 +79,7 @@ class DrawerUserInfoViewModel @Inject constructor(
     private val validateBirthdayUseCase: ValidateBirthdayUseCase = ValidateBirthdayUseCase(),
     private val validatePhoneUseCase: ValidatePhoneUseCase = ValidatePhoneUseCase(),
     private val validateNicknameUseCase: ValidateNicknameUseCase = ValidateNicknameUseCase(),
+    private val signOutUseCase: SignOutUseCase,
     private val dataStore: DataStore<Token>
 ) : ViewModel() {
 
@@ -86,6 +92,9 @@ class DrawerUserInfoViewModel @Inject constructor(
     var stateUserInfoProfile by mutableStateOf(UserInfoProfileState())
     var genderList by mutableStateOf(listOf("남", "여"))
     var remainingTime by mutableStateOf(0)
+
+    private val _signOutState = MutableStateFlow(SignOutState())
+    val signOutState: StateFlow<SignOutState> = _signOutState
 
 
     /*UserInfoBasicScreen*/
@@ -963,6 +972,50 @@ class DrawerUserInfoViewModel @Inject constructor(
             getUserInfo()
         } catch (e: Exception) {
         }
+    }
+
+    fun signOut(
+        onSignOutSuccessful: () -> Unit
+    ) {
+        signOutUseCase().onEach { resource ->
+            Log.d("logout viewmodel", "usecase called")
+            when (resource) {
+                is Resource.Loading -> {
+                    _signOutState.value = SignOutState(
+                        isLoading = true
+                    )
+                }
+
+                is Resource.Success -> {
+                    Log.d("Logout", resource.data.toString())
+                    _signOutState.value = SignOutState(
+                        isLoading = false,
+                        isSuccessful = true
+                    )
+
+                    dataStore.updateData {
+                        it.copy(
+                            accessToken = null,
+                            refreshToken = null,
+                            platformToken = null,
+                            platformStatus = CurrentPlatform.NONE
+                        )
+                    }
+
+                    onSignOutSuccessful()
+                }
+
+
+                is Resource.Error -> {
+                    Log.d("Logout", "error ${resource.code} : ${resource.message}")
+                    _signOutState.value = SignOutState(
+                        isLoading = false,
+                        errorMessage = resource.message,
+                        isSuccessful = false
+                    )
+                }
+            }
+        }.launchIn(viewModelScope)
     }
 
 }

@@ -774,7 +774,7 @@ fun RecipeWriteScreen(
             if (stateRecipeWriteDialog.isOpenUploadCategory) {
                 CustomDialogSelectCategory(
                     categoryList = stateRecipeWriteBeverages.beverageList,
-                    categoryParagraphList = listOf(3, 2, 2),
+                    categoryParagraphList = listOf(3, 2, 2, 1),
                     categorySelectedList = stateRecipeWriteBeverages.beverageCheckList,
                     onSelectClick = { index, clicked ->
                         recipeWriteViewModel.onRecipeWriteBeveragesEvent(RecipeWriteBeveragesEvent.StepFileSelectChanged(index, clicked))
