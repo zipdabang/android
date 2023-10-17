@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
@@ -98,6 +99,9 @@ fun RecipeStepItem(
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
+
+            Spacer(modifier = Modifier.weight(0.1f))
+
             Text(
                 modifier = Modifier.weight(5f),
                 text = step.description,
@@ -106,7 +110,6 @@ fun RecipeStepItem(
                     fontFamily = FontFamily(Font(R.font.kopubworlddotum_medium)),
                     color = ZipdabangandroidTheme.Colors.Typo,
                 ),
-                maxLines = 3,
                 overflow = TextOverflow.Ellipsis
             )
         }
