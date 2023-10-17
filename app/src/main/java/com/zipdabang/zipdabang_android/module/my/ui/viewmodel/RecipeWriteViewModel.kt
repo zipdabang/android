@@ -13,7 +13,11 @@ import com.zipdabang.zipdabang_android.core.data_store.proto.Token
 import com.zipdabang.zipdabang_android.module.my.data.remote.recipewrite.RecipeWriteContent
 import com.zipdabang.zipdabang_android.module.my.data.remote.recipewrite.RecipeWriteIngredient
 import com.zipdabang.zipdabang_android.module.my.data.remote.recipewrite.RecipeWriteStep
+import com.zipdabang.zipdabang_android.module.my.data.remote.recipewrite.RecipeWriteTempContent
+import com.zipdabang.zipdabang_android.module.my.data.remote.recipewrite.RecipeWriteTempIngredient
+import com.zipdabang.zipdabang_android.module.my.data.remote.recipewrite.RecipeWriteTempStep
 import com.zipdabang.zipdabang_android.module.my.domain.usecase.GetRecipeWriteBeveragesUseCase
+import com.zipdabang.zipdabang_android.module.my.domain.usecase.PostRecipeWriteTempUseCase
 import com.zipdabang.zipdabang_android.module.my.domain.usecase.PostRecipeWriteUseCase
 import com.zipdabang.zipdabang_android.module.my.ui.state.recipewrite.Ingredient
 import com.zipdabang.zipdabang_android.module.my.ui.state.recipewrite.RecipeWriteBeveragesEvent
@@ -40,6 +44,7 @@ class RecipeWriteViewModel @Inject constructor(
     private val dataStore: DataStore<Token>,
     private val postRecipeWriteUseCase: PostRecipeWriteUseCase,
     private val getRecipeWriteBeveragesUseCase: GetRecipeWriteBeveragesUseCase,
+    private val postRecipeWriteTempUseCase: PostRecipeWriteTempUseCase
 ) : ViewModel() {
 
     var stateRecipeWriteForm by mutableStateOf(
@@ -444,7 +449,7 @@ class RecipeWriteViewModel @Inject constructor(
     init{
         getRecipeWriteBeverages()
     }
-    suspend fun postRecipeWrite(stepImageParts : List<MultipartBody.Part>){
+    suspend fun postRecipeWrite(stepImageParts : List<MultipartBody.Part>) : Boolean{
         val ingredients = stateRecipeWriteForm.ingredients.map { ingredient ->
             RecipeWriteIngredient(
                 ingredientName = ingredient.ingredientName,
@@ -481,6 +486,7 @@ class RecipeWriteViewModel @Inject constructor(
         Log.e("recipewrite-result 내용", "${stepImageParts}")
         Log.e("recipewrite-result 내용", "${thumbnailPart}")
         Log.e("recipewrite-result 내용", "${"Bearer " + dataStore.data.first().accessToken.toString()}")
+        var isSuccess = false
 
         try{
             val result = postRecipeWriteUseCase(
@@ -498,9 +504,11 @@ class RecipeWriteViewModel @Inject constructor(
                             Log.e("recipewrite", "성공 : ${result.message}")
                             uploadRecipeId = result.data?.result?.recipeId ?: 0
                         }
+                        isSuccess = true
                     }
                     is Resource.Error ->{
                         Log.e("recipewrite", "에러 : ${result} ${result.message} ${result.data} ${result.code}")
+                        isSuccess = false
                     }
                     is Resource.Loading ->{
                         Log.e("recipewrite", "로딩중 : ${result.code}")
@@ -509,6 +517,54 @@ class RecipeWriteViewModel @Inject constructor(
             }
         }
         catch (e: Exception) {}
+        return isSuccess
+    }
+    suspend fun postRecipeWriteTemp(stepImageParts : List<MultipartBody.Part>) {
+        val ingredients = stateRecipeWriteForm.ingredients.map { ingredient ->
+            RecipeWriteTempIngredient(
+                ingredientName = ingredient.ingredientName,
+                quantity = ingredient.quantity
+            )
+        }
+        val steps = stateRecipeWriteForm.steps.mapIndexed { index, step ->
+            RecipeWriteTempStep(
+                description = step.description,
+                stepNum = index + 1,
+                stepUrl = null,
+            )
+        }
+        // JSON 문자열을 직접 생성
+        val content = RecipeWriteTempContent(
+            ingredientCount = stateRecipeWriteForm.ingredientsNum,
+            ingredients = ingredients,
+            intro = stateRecipeWriteForm.intro,
+            name = stateRecipeWriteForm.title,
+            recipeTip = stateRecipeWriteForm.recipeTip,
+            stepCount = stateRecipeWriteForm.stepsNum,
+            steps = steps,
+            time = stateRecipeWriteForm.time,
+            thumbnailUrl = null,
+        )
+        val gson = Gson()
+        val json = gson.toJson(content) // yourDataObject는 요청 본문의 데이터 객체입니다.
+        val contentRequestBody = json.toRequestBody("application/json".toMediaTypeOrNull())
+
+        var thumbnail : MultipartBody.Part? = null
+        if(thumbnailPart == null || thumbnailPart.toString() == ""){
+            thumbnail = null
+        } else {
+            thumbnail = thumbnailPart
+        }
+
+       /* try{
+            val result = postRecipeWriteTempUseCase(
+                accessToken = "Bearer " + dataStore.data.first().accessToken.toString(),
+                content = contentRequestBody,
+                thumbnail = thumbnail,
+                stepImages = ,
+            )
+        } catch (e: Exception) {}*/
+
     }
     private fun getRecipeWriteBeverages() {
         var accessToken : String = ""
@@ -522,12 +578,17 @@ class RecipeWriteViewModel @Inject constructor(
             when (result) {
                 is Resource.Success -> {
                     Log.e("recipewrite-getbeverage", "성공 : ${result.message} ${result.data} ${result.code}")
+                    val beverageList = result.data?.beverageCategoryList ?: emptyList()
+                    val filteredBeverageList = beverageList.filter { it.categoryName != "기타" }
+                    val beverageCheckList = List(filteredBeverageList.size) { false }
+
                     stateRecipeWriteBeverages = stateRecipeWriteBeverages.copy(
                         isLoading = false,
-                        beverageList = result.data?.beverageCategoryList ?: emptyList(),
-                        size = result.data?.size ?: 0,
-                        beverageCheckList = List(result.data?.size ?: 0) { false },
+                        beverageList = filteredBeverageList,
+                        size = filteredBeverageList.size,
+                        beverageCheckList = beverageCheckList
                     )
+                    Log.e("recipewrite-getbeverage", "${stateRecipeWriteBeverages}")
                 }
                 is Resource.Error -> {
                     Log.e("recipewrite-getbeverage", "에러 : ${result} ${result.message} ${result.data} ${result.code}")

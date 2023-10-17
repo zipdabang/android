@@ -527,7 +527,7 @@ fun CustomDialogUploadComplete(
     onLater : () -> Unit,
     onAccept: () -> Unit,
 ) {
-    Dialog(onDismissRequest = { setShowDialog(false) }) {
+    Dialog(onDismissRequest = {}){
         Surface(
             shape = ZipdabangandroidTheme.Shapes.small,
             color = DialogBackground,
@@ -554,7 +554,7 @@ fun CustomDialogUploadComplete(
                         modifier = Modifier
                             .fillMaxSize()
                             .padding(0.dp),
-                        contentScale = ContentScale.FillBounds
+                        contentScale = ContentScale.Crop
                     )
                 }
                 Spacer(modifier = Modifier.height(20.dp))
@@ -634,10 +634,10 @@ fun CustomDialogSelectCategory(
     isComplete : Boolean,
     setShowDialog: (Boolean) -> Unit,
 ) {
-    Dialog( onDismissRequest = { setShowDialog(false) }) {
+    Dialog(onDismissRequest = {setShowDialog(false)}) {
         Box(
             modifier = Modifier
-                .size(width = 320.dp, height = 388.dp)
+                .size(width = 320.dp, height = 340.dp)
                 .fillMaxSize()
                 .background(color = DialogBackground, shape = ZipdabangandroidTheme.Shapes.small),
         ) {

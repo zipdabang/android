@@ -12,6 +12,7 @@ import okhttp3.RequestBody
 import com.zipdabang.zipdabang_android.module.my.data.remote.otherinfo.OtherInfoDto
 import com.zipdabang.zipdabang_android.module.my.data.remote.otherinfo.OtherRecipePreviewDto
 import com.zipdabang.zipdabang_android.module.my.data.remote.recipewrite.RecipeWriteBeveragesResponse
+import com.zipdabang.zipdabang_android.module.my.data.remote.recipewrite.RecipeWriteTempResponse
 
 interface MyRepository {
     suspend fun signOut(accessToken: String): SignOutResponseDto
@@ -24,4 +25,5 @@ interface MyRepository {
     suspend fun getMyInfo(accessToken: String) : MyInfoResponse
     suspend fun getMyInfoRecipes(accessToken: String, pageIndex : Int) : MyInfoRecipesResponse
     suspend fun getRecipeWriteBeverages(accessToken: String) : RecipeWriteBeveragesResponse
+    suspend fun postRecipeTemp(accessToken: String, content: RequestBody, thumbnail : MultipartBody.Part?, stepImages: List<MultipartBody.Part>? ) : RecipeWriteTempResponse
 }

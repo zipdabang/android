@@ -5,15 +5,14 @@ import com.zipdabang.zipdabang_android.module.my.data.remote.friendlist.follow.F
 import com.zipdabang.zipdabang_android.module.my.data.remote.friendlist.following.FollowingDto
 import com.zipdabang.zipdabang_android.module.my.data.remote.myinfo.MyInfoRecipesResponse
 import com.zipdabang.zipdabang_android.module.my.data.remote.myinfo.MyInfoResponse
-import okhttp3.MultipartBody
-import okhttp3.RequestBody
 import com.zipdabang.zipdabang_android.module.my.data.remote.otherinfo.OtherInfoDto
 import com.zipdabang.zipdabang_android.module.my.data.remote.otherinfo.OtherRecipePreviewDto
-import com.zipdabang.zipdabang_android.module.my.data.remote.recipewrite.CategoriesResponse
 import com.zipdabang.zipdabang_android.module.my.data.remote.recipewrite.RecipeWriteBeveragesResponse
 import com.zipdabang.zipdabang_android.module.my.data.remote.recipewrite.RecipeWriteResponse
+import com.zipdabang.zipdabang_android.module.my.data.remote.recipewrite.RecipeWriteTempResponse
 import com.zipdabang.zipdabang_android.module.my.data.remote.signout.SignOutResponseDto
-import com.zipdabang.zipdabang_android.module.sign_up.data.remote.BeveragesResponse
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.Multipart
@@ -28,11 +27,6 @@ interface MyApi {
         @Header("Authorization") accessToken: String
     ): SignOutResponseDto
 
-    @GET("categories")
-    suspend fun getCategories(
-        @Header("Authorization") accessToken: String
-    ): CategoriesResponse
-
     @Multipart
     @POST("members/recipes")
     suspend fun postRecipe(
@@ -41,6 +35,15 @@ interface MyApi {
         @Part stepImages: List<MultipartBody.Part>,
         @Part thumbnail: MultipartBody.Part
     ): RecipeWriteResponse
+
+    @Multipart
+    @POST("members/recipes/temp")
+    suspend fun postRecipeTemp(
+        @Header("Authorization") accessToken: String,
+        @Part("content") content: RequestBody,
+        @Part stepImages: List<MultipartBody.Part>?,
+        @Part thumbnail: MultipartBody.Part?
+    ) : RecipeWriteTempResponse
 
     @GET("members/followings")
     suspend fun getFollowings(
