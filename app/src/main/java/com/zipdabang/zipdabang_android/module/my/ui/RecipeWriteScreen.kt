@@ -75,7 +75,8 @@ import java.io.InputStream
 @Composable
 fun RecipeWriteScreen(
     onClickBack: () -> Unit,
-    recipeWriteViewModel: RecipeWriteViewModel = hiltViewModel()
+    recipeWriteViewModel: RecipeWriteViewModel = hiltViewModel(),
+    onClickViewRecipe: (Int) -> Unit
 ) {
     val stateRecipeWriteForm = recipeWriteViewModel.stateRecipeWriteForm
     val stateRecipeWriteDialog = recipeWriteViewModel.stateRecipeWriteDialog
@@ -800,7 +801,7 @@ fun RecipeWriteScreen(
                         recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.UploadCompleteChanged(it))
                     },
                     onAccept = {
-                        // 업로드한 레시피 보러가기 - 기문이형 도와줘 ㅠㅠ
+                        onClickViewRecipe(stateUploadRecipeId)
                     },
                     onLater = {
                         recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.UploadCompleteChanged(false))
@@ -834,5 +835,6 @@ fun RecipeWriteScreen(
 fun PreviewRecipeWriteScreen() {
     RecipeWriteScreen(
         onClickBack = {},
+        onClickViewRecipe = { recipeId -> }
     )
 }

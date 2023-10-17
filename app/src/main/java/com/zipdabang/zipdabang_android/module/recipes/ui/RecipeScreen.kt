@@ -8,7 +8,11 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -17,11 +21,15 @@ import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.rememberPagerState
 import com.zipdabang.zipdabang_android.R
 import com.zipdabang.zipdabang_android.common.TabItem
+import com.zipdabang.zipdabang_android.core.data_store.proto.CurrentPlatform
+import com.zipdabang.zipdabang_android.core.navigation.AUTH_ROUTE
+import com.zipdabang.zipdabang_android.core.navigation.SharedScreen
 import com.zipdabang.zipdabang_android.module.recipes.common.OwnerCategory
 import com.zipdabang.zipdabang_android.module.recipes.common.OwnerType
 import com.zipdabang.zipdabang_android.module.recipes.ui.viewmodel.HotRecipeViewModel
 import com.zipdabang.zipdabang_android.module.recipes.ui.viewmodel.RecipeMainViewModel
 import com.zipdabang.zipdabang_android.ui.component.AppBarHome
+import com.zipdabang.zipdabang_android.ui.component.LoginRequestDialog
 import com.zipdabang.zipdabang_android.ui.component.ModalDrawer
 import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
 import kotlinx.coroutines.launch
@@ -33,7 +41,11 @@ fun RecipeScreen(
     onCategoryClick: (Int) -> Unit,
     onOwnerTypeClick: (String) -> Unit,
     onRecipeClick: (Int) -> Unit,
-    onBannerClick: (String) -> Unit
+    onBannerClick: (String) -> Unit,
+    onLoginRequest: () -> Unit,
+    showSnackbar: (String) -> Unit,
+    showLoginRequestDialog: Boolean,
+    setShowLoginRequestDialog: (Boolean) -> Unit
 ) {
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
@@ -50,6 +62,8 @@ fun RecipeScreen(
     val hotFruitRecipes = hotRecipeViewModel.hotFruitRecipeState.value
     val hotWellBeingRecipes = hotRecipeViewModel.hotWellBeingRecipeState.value
 
+    val currentPlatform = viewModel.currentPlatform.value
+
     Log.i("recipescreen", "$hotAllRecipes")
 
     val banners = viewModel.banners.value
@@ -62,11 +76,28 @@ fun RecipeScreen(
     val pagerState =  rememberPagerState()
 
     val onLikeClick = { recipeId: Int ->
-        viewModel.toggleLike(recipeId = recipeId)
+        if (currentPlatform == CurrentPlatform.TEMP
+            || currentPlatform == CurrentPlatform.NONE) {
+            setShowLoginRequestDialog(true)
+        } else {
+            viewModel.toggleLike(recipeId = recipeId)
+        }
     }
 
     val onScrapClick = { recipeId: Int ->
-        viewModel.toggleScrap(recipeId = recipeId)
+        if (currentPlatform == CurrentPlatform.TEMP
+            || currentPlatform == CurrentPlatform.NONE) {
+            setShowLoginRequestDialog(true)
+        } else {
+            viewModel.toggleScrap(recipeId = recipeId)
+        }
+    }
+
+    LoginRequestDialog(
+        showDialog = showLoginRequestDialog,
+        setShowDialog = setShowLoginRequestDialog
+    ) {
+        onLoginRequest()
     }
 
     val ownerTypeList = listOf(
@@ -106,7 +137,10 @@ fun RecipeScreen(
             onScrapClick = onScrapClick,
             onLikeClick = onLikeClick,
             likeState = likeState,
-            scrapState = scrapState
+            scrapState = scrapState,
+            setShowLoginRequestDialog = onLoginRequest,
+            currentPlatform = currentPlatform,
+            showSnackbar = showSnackbar
         ),
         TabItem.CaffeineFree(
             hotItems = hotCaffeineFreeRecipes,
@@ -114,7 +148,10 @@ fun RecipeScreen(
             onScrapClick = onScrapClick,
             onLikeClick = onLikeClick,
             likeState = likeState,
-            scrapState = scrapState
+            scrapState = scrapState,
+            currentPlatform = currentPlatform,
+            onLoginRequest = onLoginRequest,
+            showSnackbar = showSnackbar
         ),
         TabItem.Tea(
             hotItems = hotTeaRecipes,
@@ -122,7 +159,10 @@ fun RecipeScreen(
             onScrapClick = onScrapClick,
             onLikeClick = onLikeClick,
             likeState = likeState,
-            scrapState = scrapState
+            scrapState = scrapState,
+            currentPlatform = currentPlatform,
+            onLoginRequest = onLoginRequest,
+            showSnackbar = showSnackbar
         ),
         TabItem.Ade(
             hotItems = hotAdeRecipes,
@@ -130,7 +170,10 @@ fun RecipeScreen(
             onScrapClick = onScrapClick,
             onLikeClick = onLikeClick,
             likeState = likeState,
-            scrapState = scrapState
+            scrapState = scrapState,
+            currentPlatform = currentPlatform,
+            onLoginRequest = onLoginRequest,
+            showSnackbar = showSnackbar
         ),
         TabItem.Smoothie(
             hotItems = hotSmoothieRecipes,
@@ -138,7 +181,10 @@ fun RecipeScreen(
             onScrapClick = onScrapClick,
             onLikeClick = onLikeClick,
             likeState = likeState,
-            scrapState = scrapState
+            scrapState = scrapState,
+            currentPlatform = currentPlatform,
+            onLoginRequest = onLoginRequest,
+            showSnackbar = showSnackbar
         ),
         TabItem.Fruit(
             hotItems = hotFruitRecipes,
@@ -146,7 +192,10 @@ fun RecipeScreen(
             onScrapClick = onScrapClick,
             onLikeClick = onLikeClick,
             likeState = likeState,
-            scrapState = scrapState
+            scrapState = scrapState,
+            currentPlatform = currentPlatform,
+            onLoginRequest = onLoginRequest,
+            showSnackbar = showSnackbar
         ),
         TabItem.WellBeing(
             hotItems = hotWellBeingRecipes,
@@ -154,7 +203,10 @@ fun RecipeScreen(
             onScrapClick = onScrapClick,
             onLikeClick = onLikeClick,
             likeState = likeState,
-            scrapState = scrapState
+            scrapState = scrapState,
+            currentPlatform = currentPlatform,
+            onLoginRequest = onLoginRequest,
+            showSnackbar = showSnackbar
         ),
         TabItem.All(
             hotItems = hotAllRecipes,
@@ -162,9 +214,20 @@ fun RecipeScreen(
             onScrapClick = onScrapClick,
             onLikeClick = onLikeClick,
             likeState = likeState,
-            scrapState = scrapState
+            scrapState = scrapState,
+            currentPlatform = currentPlatform,
+            onLoginRequest = onLoginRequest,
+            showSnackbar = showSnackbar
         )
     )
+
+    if (likeState.errorMessage != null) {
+        showSnackbar(likeState.errorMessage)
+    }
+
+    if (scrapState.errorMessage != null) {
+        showSnackbar(scrapState.errorMessage)
+    }
 
     ModalDrawer(
         scaffold = {
@@ -192,8 +255,12 @@ fun RecipeScreen(
                     ownerTypeList = ownerTypeList,
                     hotRecipes = tabs,
                     deviceSize = deviceSize,
-                    pagerState = pagerState
+                    pagerState = pagerState,
+                    onLoginRequest = onLoginRequest,
+                    showSnackbar = showSnackbar
                 )
+
+
             }
         },
         drawerState = drawerState,

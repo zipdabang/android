@@ -4,6 +4,10 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.PagerState
@@ -12,6 +16,7 @@ import com.zipdabang.zipdabang_android.module.detail.recipe.common.DeviceScreenS
 import com.zipdabang.zipdabang_android.module.recipes.common.OwnerCategory
 import com.zipdabang.zipdabang_android.module.recipes.ui.state.RecipeBannerState
 import com.zipdabang.zipdabang_android.module.recipes.ui.state.RecipeCategoryState
+import com.zipdabang.zipdabang_android.ui.component.LoginRequestDialog
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
@@ -25,10 +30,15 @@ fun RecipeMenuScreen(
     categories: RecipeCategoryState,
     ownerTypeList: List<OwnerCategory>,
     deviceSize: DeviceScreenSize,
-    pagerState: PagerState
+    pagerState: PagerState,
+    onLoginRequest: () -> Unit,
+    showSnackbar: (String) -> Unit
 ) {
 
     Box(modifier = Modifier.fillMaxSize()) {
+
+
+
         LazyColumn(
             modifier = modifier
                 .fillMaxSize()
@@ -52,7 +62,9 @@ fun RecipeMenuScreen(
                 HotRecipe(
                     tabsList = hotRecipes,
                     pagerState = pagerState,
-                    deviceSize = deviceSize
+                    deviceSize = deviceSize,
+                    onLoginRequest = onLoginRequest,
+                    showSnackbar = showSnackbar
                 )
             }
         }

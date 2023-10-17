@@ -158,6 +158,16 @@ fun NavGraphBuilder.MyNavGraph(
                 onClickBack = {
                     navController.popBackStack(MyScreen.Myrecipe.route, inclusive = false)
                 },
+                onClickViewRecipe = { recipeId ->
+                    navController.navigate(
+                        route = SharedScreen.DetailRecipe.passRecipeId(recipeId)
+                    ) {
+                        popUpTo(route = MyScreen.RecipeWrite.route) {
+                            inclusive = true
+                        }
+                        launchSingleTop = true
+                    }
+                }
             )
         }
 

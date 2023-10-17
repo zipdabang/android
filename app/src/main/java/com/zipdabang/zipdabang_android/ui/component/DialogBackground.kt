@@ -1317,6 +1317,48 @@ fun UserBlockDialog(
     }
 }
 
+@Composable
+fun LoginRequestDialog(
+    showDialog: Boolean,
+    setShowDialog: (Boolean) -> Unit,
+    onLoginRequest: () -> Unit
+) {
+    if (showDialog) {
+        CustomDialogType2(
+            title = "로그인 필요",
+            text = "로그인 후 이용하실 수 있는 서비스입니다.\n" +
+                    "로그인 하시겠습니까?",
+            declineText = "취소",
+            acceptText = "로그인",
+            setShowDialog = { changedState ->
+                setShowDialog(changedState)
+            },
+            onAcceptClick = onLoginRequest
+        )
+    }
+}
+
+@Composable
+fun RecipeDeleteDialog(
+    showDialog: Boolean,
+    setShowDialog: (Boolean) -> Unit,
+    onDeleteClick: () -> Unit
+) {
+    if (showDialog) {
+        CustomDialogType1(
+            title = "나의 레시피 삭제",
+            text = "나의 레시피를 삭제하시겠습니까?\n" +
+                    "삭제된 레시피는 복구가 불가능합니다.",
+            declineText = "취소",
+            acceptText = "삭제",
+            setShowDialog = { changedState ->
+                setShowDialog(changedState)
+            },
+            onAcceptClick = onDeleteClick
+        )
+    }
+}
+
 
 @Preview
 @Composable
