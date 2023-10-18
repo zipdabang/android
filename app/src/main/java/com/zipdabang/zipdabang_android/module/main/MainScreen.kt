@@ -13,6 +13,7 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
@@ -20,6 +21,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.zipdabang.zipdabang_android.core.navigation.DrawerScreen
 import com.zipdabang.zipdabang_android.core.navigation.MainNavGraph
 import com.zipdabang.zipdabang_android.core.navigation.MyScreen
 import com.zipdabang.zipdabang_android.core.navigation.SPLASH_ROUTE
@@ -40,7 +42,7 @@ fun MainScreen(
   //  val drawerState = rememberDrawerState(DrawerValue.Closed)
   //  val scope = rememberCoroutineScope()
 
-    val viewModel = hiltViewModel<NotificationViewModel>()
+
 
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
@@ -59,40 +61,45 @@ fun MainScreen(
         Box(
             modifier = Modifier.padding(it)
         ) {
+
+            val notificationViewModel = hiltViewModel<NotificationViewModel>()
+
+
+            // navigate가 호출되는 위치는 NavGraph가 위치한 곳이어야 뒤로가기가 제대로 동작
+            LaunchedEffect(key1 = true) {
+                Log.d("HomeScreen", "$fcmData")
+                fcmData?.let {
+                    notificationViewModel.getDeleteNotificationResult(alarmId = it.targetNotificationPK)
+                    when (it.targetView) {
+                        NotificationTarget.Recipe.target -> {
+                            Log.d("HomeScreen", "move to recipe")
+                            innerNavController.navigate(
+                                route = SharedScreen.DetailRecipe.passRecipeId(it.targetPK)
+                            )
+                        }
+                        NotificationTarget.User.target -> {
+                            innerNavController.navigate(
+                                route = MyScreen.OtherPage.passUserId(it.targetPK)
+                            )
+                        }
+                        NotificationTarget.MyPage.target -> {
+                            innerNavController.navigate(
+                                route = DrawerScreen.UserInfo.route
+                            )
+                        }
+                        NotificationTarget.Notification.target -> {
+
+                        }
+                    }
+                }
+            }
+
             MainNavGraph(
                 innerNavController = innerNavController,
                 outerNavController = outerNavController,
                 showSnackBar = { text ->
                     scope.launch {
                         snackbarHostState.showSnackbar(text)
-                    }
-                },
-                fcmData = fcmData,
-                onFcmDataExist = {
-                    fcmData?.let { data ->
-                        viewModel.getDeleteNotificationResult(alarmId = data.targetNotificationPK)
-                        when (data.targetView) {
-                            NotificationTarget.Recipe.target -> {
-                                innerNavController.navigate(
-                                    route = SharedScreen.DetailRecipe.passRecipeId(data.targetPK)
-                                ) {
-                                    launchSingleTop = true
-                                }
-                            }
-                            NotificationTarget.User.target -> {
-                                innerNavController.navigate(
-                                    route = MyScreen.OtherPage.passUserId(data.targetPK)
-                                ) {
-                                    launchSingleTop = true
-                                }
-                            }
-                            NotificationTarget.MyPage.target -> {
-
-                            }
-                            NotificationTarget.Notification.target -> {
-
-                            }
-                        }
                     }
                 }
             )

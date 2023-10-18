@@ -12,6 +12,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
@@ -35,6 +36,7 @@ import com.zipdabang.zipdabang_android.module.search.ui.SearchScreen
 import com.zipdabang.zipdabang_android.ui.component.LoginRequestDialog
 import com.zipdabang.zipdabang_android.ui.component.RecipeDeleteDialog
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 
@@ -56,6 +58,16 @@ fun NavGraphBuilder.SharedNavGraph(
             )
         ) { backStackEntry ->
 
+            val currentBackStackEntry = backStackEntry?.destination?.route
+            LaunchedEffect(key1 = true) {
+                val backStackEntries: List<NavBackStackEntry> = navController.currentBackStack.first()
+                for (entry in backStackEntries) {
+                    val route = entry.destination.route
+                    // route를 사용하여 각 화면의 라우팅 정보 확인
+                    Log.d("SharedNavGraph", "route : ${route}")
+                }
+            }
+            
             val recipeId = backStackEntry.arguments?.getInt("recipeId") ?: -1
 
             val scope = rememberCoroutineScope()

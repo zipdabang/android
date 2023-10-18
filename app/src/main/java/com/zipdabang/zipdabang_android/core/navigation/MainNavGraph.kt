@@ -13,16 +13,14 @@ import com.zipdabang.zipdabang_android.module.main.common.FCMData
 fun MainNavGraph(
     innerNavController: NavHostController,
     outerNavController: NavHostController,
-    showSnackBar: (String) -> Unit,
-    fcmData: FCMData?,
-    onFcmDataExist: () -> Unit
+    showSnackBar: (String) -> Unit
 ){
     NavHost(navController = innerNavController, startDestination = HOME_ROUTE , route = MAIN_ROUTE)
     {
 
 
         Log.d("auth graph", "home")
-        HomeNavGraph(navController = innerNavController, fcmData = fcmData, onFcmDataExist = onFcmDataExist)
+        HomeNavGraph(navController = innerNavController)
 
         MarketNavGraph(navController = innerNavController)
 

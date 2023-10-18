@@ -32,6 +32,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
+import kotlin.reflect.typeOf
 
 @AndroidEntryPoint
 class FirebaseCloudMessagingService: FirebaseMessagingService() {
@@ -124,15 +125,17 @@ class FirebaseCloudMessagingService: FirebaseMessagingService() {
     }
 
     private fun sendNotification(remoteMessage: RemoteMessage) {
-        val requestCode = 0
+        val requestCode = (System.currentTimeMillis() / 7).toInt()
         val notificationId: Int = (System.currentTimeMillis() / 7).toInt()
         val intent = Intent(this, MainActivity::class.java)
 
         for (key in remoteMessage.data.keys) {
-            intent.putExtra(key, remoteMessage.data.getValue(key))
+            val data = remoteMessage.data.getValue(key)
+            Log.i(TAG, "$key : $data")
+            intent.putExtra(key, data)
         }
 
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         val pendingIntent = PendingIntent.getActivity(
             this,
             requestCode,

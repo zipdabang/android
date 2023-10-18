@@ -29,11 +29,14 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.zipdabang.zipdabang_android.R
+import com.zipdabang.zipdabang_android.core.navigation.MyScreen
 import com.zipdabang.zipdabang_android.core.navigation.SharedScreen
 import com.zipdabang.zipdabang_android.module.guide.ui.HomeBanner.GuideBannerSlider
 import com.zipdabang.zipdabang_android.module.home.data.bestrecipe.BestRecipe
 import com.zipdabang.zipdabang_android.module.item.recipe.ui.RecipeCard
+import com.zipdabang.zipdabang_android.module.main.NotificationViewModel
 import com.zipdabang.zipdabang_android.module.main.common.FCMData
+import com.zipdabang.zipdabang_android.module.main.common.NotificationTarget
 import com.zipdabang.zipdabang_android.module.recipes.ui.viewmodel.RecipeMainViewModel
 import com.zipdabang.zipdabang_android.ui.component.AppBarHome
 import com.zipdabang.zipdabang_android.ui.component.Banner
@@ -47,23 +50,18 @@ fun HomeScreen(
     onGuide1Click : ()-> Unit,
     onRecipeItemClick : (Int) -> Unit,
     viewModel: HomeViewModel = hiltViewModel(),
-    recipeMainViewModel : RecipeMainViewModel = hiltViewModel(),
-    fcmData: FCMData?,
-    onFcmDataExist: () -> Unit
+    recipeMainViewModel : RecipeMainViewModel = hiltViewModel()
 ){
     //drawer에 필요한 drawerState랑 scope
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
 
+
+
     val bannerState = viewModel.bannerState
     val recipeState = viewModel.recipeState
 
-    LaunchedEffect(key1 = true) {
-        Log.d("HomeScreen", "$fcmData")
-        fcmData?.let {
-            onFcmDataExist()
-        }
-    }
+
 
     ModalDrawer(
         scaffold = {
@@ -88,6 +86,8 @@ fun HomeScreen(
                            .padding(top = it.calculateTopPadding())
                            .verticalScroll(scrollState)
                    ) {
+
+
 
                             if (bannerState.value.isLoading) {
 
