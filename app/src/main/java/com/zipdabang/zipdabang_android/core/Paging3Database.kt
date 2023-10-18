@@ -17,6 +17,8 @@ import com.zipdabang.zipdabang_android.module.my.data.remote.friendlist.follow.s
 import com.zipdabang.zipdabang_android.module.my.data.remote.friendlist.follow.search.SearchFollowDao
 import com.zipdabang.zipdabang_android.module.my.data.remote.friendlist.following.Follower
 import com.zipdabang.zipdabang_android.module.my.data.remote.friendlist.following.FollowingDao
+import com.zipdabang.zipdabang_android.module.my.data.remote.myrecipes.complete.CompleteRecipe
+import com.zipdabang.zipdabang_android.module.my.data.remote.myrecipes.complete.CompleteRecipesDao
 import com.zipdabang.zipdabang_android.module.my.data.remote.friendlist.following.search.FollowerInfoDB
 import com.zipdabang.zipdabang_android.module.my.data.remote.friendlist.following.search.SearchFollowerDao
 import com.zipdabang.zipdabang_android.module.recipes.data.local.RecipeItemEntity
@@ -30,6 +32,7 @@ import com.zipdabang.zipdabang_android.module.search.data.SearchDao
         RecipeItemEntity::class, SearchRecipe::class,
         RecipeCommentEntity::class , Following :: class,
         Follower :: class, InqueryDB :: class,
+        CompleteRecipe :: class,
         FollowerInfoDB :: class, FollowInfoDB::class
     ],
     version = 16, exportSchema = false)
@@ -43,8 +46,8 @@ abstract class Paging3Database : RoomDatabase() {
     abstract fun followDao() : FollowDao
     abstract fun followingDao() : FollowingDao
     abstract fun reportDao() : ReportDao
+    abstract fun completeRecipesDao() : CompleteRecipesDao
     abstract fun searchFollowDao() : SearchFollowDao
     abstract fun searchFollowerDao() : SearchFollowerDao
-
 
 }
