@@ -8,6 +8,7 @@ import com.zipdabang.zipdabang_android.module.my.data.remote.friendlist.follow.F
 import com.zipdabang.zipdabang_android.module.my.data.remote.friendlist.following.FollowingDto
 import com.zipdabang.zipdabang_android.module.my.data.remote.myinfo.MyInfoRecipesResponse
 import com.zipdabang.zipdabang_android.module.my.data.remote.myinfo.MyInfoResponse
+import com.zipdabang.zipdabang_android.module.my.data.remote.myrecipes.complete.CompleteRecipesResponse
 import com.zipdabang.zipdabang_android.module.my.data.remote.otherinfo.OtherInfoDto
 import com.zipdabang.zipdabang_android.module.my.data.remote.otherinfo.OtherRecipePreviewDto
 import com.zipdabang.zipdabang_android.module.my.data.remote.recipewrite.RecipeWriteBeveragesResponse
@@ -76,5 +77,12 @@ class MyRepositoryImpl @Inject constructor(
         stepImages: List<MultipartBody.Part>?
     ): RecipeWriteTempResponse {
         return api.postRecipeTemp(accessToken, content, stepImages, thumbnail)
+    }
+
+    override suspend fun getMyCompleteRecipes(
+        accessToken: String,
+        pageIndex: Int
+    ): CompleteRecipesResponse {
+        return api.getMyCompleteRecipes(accessToken, pageIndex)
     }
 }

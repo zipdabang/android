@@ -135,7 +135,7 @@ fun NavGraphBuilder.MyNavGraph(
                     navController.popBackStack(MyScreen.Home.route, inclusive = false)
                 },
                 onClickWrite = {
-                    navController.navigate(MyScreen.RecipeWrite.route)
+                    navController.navigate(MyScreen.RecipeWrite.passRecipeId(0))
                 }
             )
         }
@@ -154,7 +154,7 @@ fun NavGraphBuilder.MyNavGraph(
                     navController.popBackStack(MyScreen.Home.route, inclusive = false)
                 },
                 onClickOthers = {
-                    navController.navigate(MyScreen.OtherPage.passUserId(it))
+                    navController.navigate(MyScreen.OtherPage.passUserId(0))
                 }
             )
         }
@@ -169,7 +169,7 @@ fun NavGraphBuilder.MyNavGraph(
                 .recipeWriteViewModel<RecipeWriteViewModel>(navController = navController)
             val recipeId = navBackStackEntry.arguments?.getString("recipeId")?.toInt()
 
-            if(recipeId == null){
+            if(recipeId == 0){
                 RecipeWriteScreen(
                     recipeId = null,
                     onClickBack = {

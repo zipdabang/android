@@ -680,7 +680,7 @@ fun CustomDialogSelectCategory(
                     var categoryIndex = 0
                     var categoryParagraph = 0
 
-                    for(i in 0.. categoryList.size / categoryParagraphList.size + 1) {
+                    for(i in 0.. (categoryList.size / categoryParagraphList.size) + 1) {
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()

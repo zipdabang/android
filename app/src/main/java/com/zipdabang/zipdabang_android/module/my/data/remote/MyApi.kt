@@ -5,6 +5,7 @@ import com.zipdabang.zipdabang_android.module.my.data.remote.friendlist.follow.F
 import com.zipdabang.zipdabang_android.module.my.data.remote.friendlist.following.FollowingDto
 import com.zipdabang.zipdabang_android.module.my.data.remote.myinfo.MyInfoRecipesResponse
 import com.zipdabang.zipdabang_android.module.my.data.remote.myinfo.MyInfoResponse
+import com.zipdabang.zipdabang_android.module.my.data.remote.myrecipes.complete.CompleteRecipesResponse
 import com.zipdabang.zipdabang_android.module.my.data.remote.otherinfo.OtherInfoDto
 import com.zipdabang.zipdabang_android.module.my.data.remote.otherinfo.OtherRecipePreviewDto
 import com.zipdabang.zipdabang_android.module.my.data.remote.recipewrite.RecipeWriteBeveragesResponse
@@ -44,6 +45,12 @@ interface MyApi {
         @Part stepImages: List<MultipartBody.Part>?,
         @Part thumbnail: MultipartBody.Part?
     ) : RecipeWriteTempResponse
+
+    @GET("members/recipes/owner")
+    suspend fun getMyCompleteRecipes(
+        @Header("Authorization") accessToken: String,
+        @Query("pageIndex") pageIndex : Int
+    ) : CompleteRecipesResponse
 
     @GET("members/followings")
     suspend fun getFollowings(
