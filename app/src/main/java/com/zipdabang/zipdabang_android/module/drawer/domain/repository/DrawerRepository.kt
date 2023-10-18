@@ -4,6 +4,7 @@ import com.zipdabang.zipdabang_android.module.drawer.data.remote.noticedto.Notic
 import com.zipdabang.zipdabang_android.module.drawer.data.remote.quitdto.QuitDto
 import com.zipdabang.zipdabang_android.module.drawer.data.remote.quitdto.QuitRequest
 import com.zipdabang.zipdabang_android.module.drawer.data.remote.reporterror.ReportListDto
+import com.zipdabang.zipdabang_android.module.drawer.data.remote.reporterror.detail.ReportDetailDto
 import com.zipdabang.zipdabang_android.module.drawer.data.remote.reporterror.reportDto
 import com.zipdabang.zipdabang_android.module.drawer.data.remote.userinfodto.UserInfoBasicRequest
 import com.zipdabang.zipdabang_android.module.drawer.data.remote.userinfodto.UserInfoDetailRequest
@@ -34,4 +35,6 @@ interface DrawerRepository {
     suspend fun patchUserPreferences(accessToken: String, userInfoPreferences : UserInfoPreferencesRequest ) : UserInfoEditResponse
     suspend fun getReportList(accessToken: String, page: Int) : ReportListDto
     suspend fun getNoticeList(accessToken: String) : NoticeListDto
+    suspend fun getReportDetail(accessToken: String, inqueryId : Int) : ReportDetailDto
+
 }

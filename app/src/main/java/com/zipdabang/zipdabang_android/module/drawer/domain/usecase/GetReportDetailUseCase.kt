@@ -8,6 +8,7 @@ import com.zipdabang.zipdabang_android.common.getErrorCode
 import com.zipdabang.zipdabang_android.core.data_store.proto.Token
 import com.zipdabang.zipdabang_android.module.drawer.data.remote.noticedto.NoticeListDto
 import com.zipdabang.zipdabang_android.module.drawer.data.remote.quitdto.QuitDto
+import com.zipdabang.zipdabang_android.module.drawer.data.remote.reporterror.detail.ReportDetailDto
 import com.zipdabang.zipdabang_android.module.drawer.domain.repository.DrawerRepository
 import com.zipdabang.zipdabang_android.module.my.domain.repository.MyRepository
 import kotlinx.coroutines.flow.Flow
@@ -17,17 +18,17 @@ import retrofit2.HttpException
 import java.io.IOException
 import javax.inject.Inject
 
-class GetNoticeUseCase @Inject constructor(
+class GetReportDetailUseCase @Inject constructor(
     private val repository: DrawerRepository,
     private val dataStore: DataStore<Token>
 ){
 
-    operator fun invoke() : Flow<Resource<NoticeListDto>> = flow{
+    operator fun invoke(reportId : Int) : Flow<Resource<ReportDetailDto>> = flow{
         try {
             emit(Resource.Loading())
             val accessToken = dataStore.data.first().accessToken ?: Constants.TOKEN_NULL
             val token = "Bearer " + accessToken
-            val response = repository.getNoticeList(token)
+            val response = repository.getReportDetail(accessToken =token, inqueryId = reportId)
             emit(
                 Resource.Success(
                     data = response,

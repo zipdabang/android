@@ -12,13 +12,16 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
+import androidx.navigation.NavArgument
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHost
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.navArgument
 import androidx.navigation.navigation
 import com.zipdabang.zipdabang_android.module.drawer.ui.NoticeScreen
 import com.zipdabang.zipdabang_android.module.drawer.ui.UserInfoBasicScreen
@@ -30,6 +33,7 @@ import com.zipdabang.zipdabang_android.module.drawer.ui.UserInfoProfileScreen
 import com.zipdabang.zipdabang_android.module.drawer.ui.UserInfoScreen
 import com.zipdabang.zipdabang_android.module.drawer.ui.quit.QuitScreen
 import com.zipdabang.zipdabang_android.module.drawer.ui.report.ErrorReportScreen
+import com.zipdabang.zipdabang_android.module.drawer.ui.report.ReportDetailScreen
 import com.zipdabang.zipdabang_android.module.drawer.ui.report.ReportListScreen
 import com.zipdabang.zipdabang_android.module.drawer.ui.report.ReportSuccessScreen
 import com.zipdabang.zipdabang_android.module.drawer.ui.viewmodel.DrawerUserInfoViewModel
@@ -42,16 +46,25 @@ fun NavGraphBuilder.DrawerNavGraph(navController: NavHostController, outerNavCon
            NoticeScreen(navController, onClickBack = {})
         }
         composable(DrawerScreen.Report.route){
-            ErrorReportScreen(
-                isReportSuccess = {
-                navController.navigate(DrawerScreen.ReportSuccess.route)
-            })
+          ErrorReportScreen(
+              isReportSuccess = { navController.navigate(DrawerScreen.ReportSuccess.route) })
         }
 
         composable(DrawerScreen.ReportList.route){
-            ReportListScreen()
+            ReportListScreen(
+                onReportClick = {
+                navController.navigate(DrawerScreen.ReportDetail.passReportId(it))
+            }
+            )
         }
-
+        composable(
+            route = DrawerScreen.ReportDetail.route,
+            arguments =  listOf(navArgument(name = "reportId")
+            { type = NavType.IntType }
+        )
+        ){
+            ReportDetailScreen()
+        }
         composable(DrawerScreen.ReportSuccess.route){
             ReportSuccessScreen(
                 isGotoNewReport = {
