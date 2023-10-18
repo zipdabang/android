@@ -86,6 +86,7 @@ fun NavGraphBuilder.RecipeNavGraph(
                 categoryId =  backStackEntry.arguments?.getInt("category"),
                 ownerType =  backStackEntry.arguments?.getString("ownerType")
             )
+
             RecipeListScreen(
                 navController = navController,
                 categoryState = categoryState,

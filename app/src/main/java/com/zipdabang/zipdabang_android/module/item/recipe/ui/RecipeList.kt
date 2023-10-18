@@ -19,7 +19,6 @@ import com.zipdabang.zipdabang_android.module.item.recipe.common.RecipeSort
 import com.zipdabang.zipdabang_android.module.item.recipe.common.RecipeSubtitleState
 import com.zipdabang.zipdabang_android.module.recipes.data.common.RecipeItem
 import com.zipdabang.zipdabang_android.module.recipes.ui.state.PreferenceToggleState
-import com.zipdabang.zipdabang_android.module.recipes.ui.viewmodel.RecipeListViewModel
 
 @Composable
 fun RecipeList(

@@ -37,7 +37,6 @@ class LoginViewModel @Inject constructor (
     val tempLoginState = _tempLoginState
 
     fun getAuthResult(
-        body: AuthBody,
         platform: String,
         email: String,
         profile: String,
@@ -45,7 +44,7 @@ class LoginViewModel @Inject constructor (
         onSuccess: (String, String) -> Unit,
         onRegister: (String, String) -> Unit
     ) {
-        getAuthResultUseCase(body, platform).onEach { result ->
+        getAuthResultUseCase(email, platform).onEach { result ->
             // 별 일이 없으면, 첫 번째로는 Resource.Loading이 발행되고, 두 번째로는 Resource.success가 발행.
             // 발행 중 문제가 생기면 Resource.Error 발행
             when (result) {

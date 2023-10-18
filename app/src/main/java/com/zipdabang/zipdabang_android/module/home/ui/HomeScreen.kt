@@ -9,20 +9,15 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Text
-import androidx.compose.material.TextButton
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
@@ -34,19 +29,17 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.zipdabang.zipdabang_android.R
+import com.zipdabang.zipdabang_android.core.navigation.MyScreen
 import com.zipdabang.zipdabang_android.core.navigation.SharedScreen
-import com.zipdabang.zipdabang_android.module.detail.recipe.ui.RecipeDetailViewModel
 import com.zipdabang.zipdabang_android.module.guide.ui.HomeBanner.GuideBannerSlider
-import com.zipdabang.zipdabang_android.module.guide.ui.HomeBanner.HomeGuideBanner_1
 import com.zipdabang.zipdabang_android.module.home.data.bestrecipe.BestRecipe
-import com.zipdabang.zipdabang_android.module.home.data.bestrecipe.BestRecipeDto
 import com.zipdabang.zipdabang_android.module.item.recipe.ui.RecipeCard
-import com.zipdabang.zipdabang_android.module.main.FCMData
+import com.zipdabang.zipdabang_android.module.main.NotificationViewModel
+import com.zipdabang.zipdabang_android.module.main.common.FCMData
+import com.zipdabang.zipdabang_android.module.main.common.NotificationTarget
 import com.zipdabang.zipdabang_android.module.recipes.ui.viewmodel.RecipeMainViewModel
 import com.zipdabang.zipdabang_android.ui.component.AppBarHome
 import com.zipdabang.zipdabang_android.ui.component.Banner
-import com.zipdabang.zipdabang_android.ui.component.GroupHeader
-import com.zipdabang.zipdabang_android.ui.component.GroupHeaderReversed
 import com.zipdabang.zipdabang_android.ui.component.GroupHeaderReversedNoIcon
 import com.zipdabang.zipdabang_android.ui.component.ModalDrawer
 import kotlinx.coroutines.launch
@@ -57,14 +50,17 @@ fun HomeScreen(
     onGuide1Click : ()-> Unit,
     onRecipeItemClick : (Int) -> Unit,
     viewModel: HomeViewModel = hiltViewModel(),
-    recipeMainViewModel : RecipeMainViewModel = hiltViewModel(),
+    recipeMainViewModel : RecipeMainViewModel = hiltViewModel()
 ){
     //drawer에 필요한 drawerState랑 scope
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
 
+
+
     val bannerState = viewModel.bannerState
     val recipeState = viewModel.recipeState
+
 
 
     ModalDrawer(
@@ -90,6 +86,8 @@ fun HomeScreen(
                            .padding(top = it.calculateTopPadding())
                            .verticalScroll(scrollState)
                    ) {
+
+
 
                             if (bannerState.value.isLoading) {
 

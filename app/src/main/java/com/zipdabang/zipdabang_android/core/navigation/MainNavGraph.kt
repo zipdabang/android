@@ -6,7 +6,7 @@ import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
-import com.zipdabang.zipdabang_android.module.main.FCMData
+import com.zipdabang.zipdabang_android.module.main.common.FCMData
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -20,7 +20,7 @@ fun MainNavGraph(
 
 
         Log.d("auth graph", "home")
-        HomeNavGraph(navController = innerNavController,)
+        HomeNavGraph(navController = innerNavController)
 
         MarketNavGraph(navController = innerNavController)
 
