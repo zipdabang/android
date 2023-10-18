@@ -7,7 +7,9 @@ import androidx.paging.LoadType
 import androidx.paging.PagingState
 import androidx.paging.RemoteMediator
 import androidx.room.withTransaction
+import com.zipdabang.zipdabang_android.common.Resource
 import com.zipdabang.zipdabang_android.common.TabItem
+import com.zipdabang.zipdabang_android.common.getErrorCode
 import com.zipdabang.zipdabang_android.core.Paging3Database
 import com.zipdabang.zipdabang_android.core.data_store.proto.Token
 import com.zipdabang.zipdabang_android.core.remotekey.RemoteKeys
@@ -16,6 +18,7 @@ import com.zipdabang.zipdabang_android.module.my.ui.component.FollowItem
 import com.zipdabang.zipdabang_android.module.search.data.dto.common.SearchRecipe
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.flow.first
+import retrofit2.HttpException
 import java.lang.Exception
 import javax.inject.Inject
 
@@ -64,19 +67,16 @@ class FollowMediator @Inject constructor(
             val accessToken = ("Bearer " + tokenDataStore.data.first().accessToken)
             val responseMapList = mutableListOf<Following>()
 
-            val response = myApi.getFollowings(
+
+            var response : FollowDto? = null
+            try{
+                response = myApi.getFollowings(
                 accessToken = accessToken,
                 page = currentPage
             )
-            if (response.result ==null) {
-                followDao.deleteItems()
-                RemoteKeyDao.deleteRemoteKeys()
-                MediatorResult.Success(endOfPaginationReached = true)
-
-            } else {
-                val responseList = response.result.followingList
-
-                responseList.forEachIndexed { index, following ->
+                val data = response.result!!.followingList
+                Log.e("followItem first",data.size.toString())
+                data.forEach{ following ->
                     responseMapList.add(
                         Following(
                             caption = following.caption,
@@ -87,40 +87,53 @@ class FollowMediator @Inject constructor(
                     )
 
                 }
+                Log.e("followItem second",responseMapList.size.toString())
 
+            }catch (e: HttpException){
+                val errorBody = e.response()?.errorBody()
+                val errorCode = errorBody?.getErrorCode()
 
+                errorCode?.let {
+                    Log.e("errorcode in friendlist",errorCode.toString())
+                    if(errorCode == 4055) {
+                        followDao.deleteItems()
+                        RemoteKeyDao.deleteRemoteKeys()
+                        MediatorResult.Success(endOfPaginationReached = true)
+
+                    }
+                }
             }
 
 
-            if (!response.isSuccess) {
-                Log.e("Error in SearchCategoryMediator", response.message)
-            }
 
-            val endOfPaginationReached = response.result!!.isLast
+            val endOfPaginationReached = response?.result!!.isLast
 
             val prevPage = if (currentPage == 1) null else currentPage - 1
-            val nextPage = if (endOfPaginationReached == true) null else currentPage + 1
+            val nextPage = if (endOfPaginationReached) null else currentPage + 1
 
             paging3Database.withTransaction {
                 if (loadType == LoadType.REFRESH) {
                     followDao.deleteItems()
                     RemoteKeyDao.deleteRemoteKeys()
                 }
-                val keys = response.result.followingList.map { items ->
+                Log.e("responesMapList",responseMapList.size.toString())
+
+                val keys = responseMapList.map { items ->
                     RemoteKeys(
                         id = items.id,
                         prevPage = prevPage,
                         nextPage = nextPage
                     )
                 }
+                Log.e("responesMapList",keys.size.toString())
 
-                    RemoteKeyDao.addAllRemoteKeys(remoteKeys = keys)
 
+                RemoteKeyDao.addAllRemoteKeys(remoteKeys = keys)
                 followDao.addItems(items = responseMapList)
 
             }
 
-            MediatorResult.Success(endOfPaginationReached = endOfPaginationReached!!)
+            MediatorResult.Success(endOfPaginationReached = endOfPaginationReached)
 
         } catch (e: Exception) {
             return MediatorResult.Error(e)

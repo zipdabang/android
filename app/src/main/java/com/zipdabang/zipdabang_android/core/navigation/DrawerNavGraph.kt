@@ -39,7 +39,7 @@ fun NavGraphBuilder.DrawerNavGraph(navController: NavHostController, outerNavCon
 
     navigation(startDestination = DrawerScreen.Notice.route, route = DRAWER_ROUTE){
         composable(DrawerScreen.Notice.route){
-           NoticeScreen(navController)
+           NoticeScreen(navController, onClickBack = {})
         }
         composable(DrawerScreen.Report.route){
             ErrorReportScreen(
@@ -96,7 +96,14 @@ fun NavGraphBuilder.DrawerNavGraph(navController: NavHostController, outerNavCon
                     navController.navigate(DrawerScreen.UserInfoPreferences.route)
                 },
                 onClickLogout = {
-
+                    drawerUserInfoViewModel.signOut {
+                        outerNavController.navigate(AUTH_ROUTE){
+                            popUpTo(MAIN_ROUTE) {
+                                inclusive = true
+                            }
+                            launchSingleTop = true
+                        }
+                    }
                 },
                 onClickWithdraw = {
                     navController.navigate(DrawerScreen.Quit.route)

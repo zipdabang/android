@@ -1,7 +1,6 @@
 package com.zipdabang.zipdabang_android.module.my.ui.viewmodel
 
 import android.util.Log
-import android.view.View
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -9,7 +8,9 @@ import androidx.lifecycle.viewModelScope
 import com.zipdabang.zipdabang_android.common.Resource
 import com.zipdabang.zipdabang_android.module.my.domain.usecase.GeOtherInfoUseCase
 import com.zipdabang.zipdabang_android.module.my.domain.usecase.GeOtherRecipePreviewUseCase
+import com.zipdabang.zipdabang_android.module.my.domain.usecase.PostFollowOrCancelUseCase
 import com.zipdabang.zipdabang_android.module.my.ui.state.CommonInfoState
+import com.zipdabang.zipdabang_android.module.my.ui.state.FollowOrCancel
 import com.zipdabang.zipdabang_android.module.my.ui.state.OtherInfo
 import com.zipdabang.zipdabang_android.module.my.ui.state.OtherRecipePreviewState
 import com.zipdabang.zipdabang_android.module.my.ui.state.ProfileState
@@ -22,8 +23,9 @@ import javax.inject.Inject
 class MyForOthersViewModel @Inject constructor(
     val getOtherInfoUseCase: GeOtherInfoUseCase,
     val getOtherRecipePreviewUseCase: GeOtherRecipePreviewUseCase,
-     savedStateHandle: SavedStateHandle
-) : ViewModel(){
+    val followOrCancelUseCase: PostFollowOrCancelUseCase,
+    savedStateHandle: SavedStateHandle
+) : ViewModel() {
 
     private var _otherInfoState = mutableStateOf(OtherInfo())
     val otherInfoState = _otherInfoState
@@ -31,37 +33,41 @@ class MyForOthersViewModel @Inject constructor(
     private var _commonInfoState = mutableStateOf(CommonInfoState())
     val commonInfoState = _commonInfoState
 
-    private var _profileState= mutableStateOf(ProfileState())
+    private var _profileState = mutableStateOf(ProfileState())
     val profileState = _profileState
 
     private var _otherRecipePreviewState = mutableStateOf(OtherRecipePreviewState())
     val otherRecipePreviewState = _otherRecipePreviewState
 
-     init {
-         val id = savedStateHandle.get<Int>("userId")
+    private var _followOrCancelSuccessState = mutableStateOf(FollowOrCancel())
+    val followOrCancelSuccessState = _followOrCancelSuccessState
 
-         if (id != null) {
-             getOtherInfo(id)
-             getOtherPreviewRecipe(id)
-         }
+    private var _userId = mutableStateOf(0)
+    val userId = _userId
 
-         Log.e("OhterInfoViewModel",id.toString())
-     }
+    init {
+        _userId.value = savedStateHandle.get<Int>("userId")!!
+
+            getOtherInfo(_userId.value)
+            getOtherPreviewRecipe(_userId.value)
+
+        Log.e("OhterInfoViewModel", _userId.value.toString())
+    }
 
 
-    fun getOtherInfo(targetId: Int){
-        getOtherInfoUseCase(targetId).onEach {
-            result ->
-            when(result) {
-                is Resource.Success ->{
-                    _commonInfoState.value =  CommonInfoState(
+    fun getOtherInfo(targetId: Int) {
+        getOtherInfoUseCase(targetId).onEach { result ->
+            when (result) {
+                is Resource.Success -> {
+                    _commonInfoState.value = CommonInfoState(
                         nickName = result.data!!.result.nickname,
                         followingNum = result.data.result.followingCount,
                         followNum = result.data.result.followerCount,
                         profileUrl = result.data.result.imageUrl,
-                        isFollowing = result.data.result.checkFollowing
+                        isFollowing = result.data.result.checkFollowing,
+                        isFollower = result.data.result.checkFollower
                     )
-                    _profileState.value= ProfileState(
+                    _profileState.value = ProfileState(
                         caption = result.data.result.caption,
                         preferCategory = result.data.result.memberPreferCategoryDto.categories
                     )
@@ -72,7 +78,7 @@ class MyForOthersViewModel @Inject constructor(
 
                 }
 
-                is Resource.Loading ->{
+                is Resource.Loading -> {
                     _otherInfoState.value = OtherInfo(
                         isLoading = true
                     )
@@ -92,33 +98,84 @@ class MyForOthersViewModel @Inject constructor(
 
     }
 
-    fun getOtherPreviewRecipe(memberId : Int){
-        getOtherRecipePreviewUseCase(memberId).onEach {
-            result ->
-            when(result) {
-            is Resource.Success ->{
-                _otherRecipePreviewState.value = OtherRecipePreviewState(
-                    recipeList = result.data?.result!!.recipeList
-                )
-                Log.e("otherPreviewList", result.data.result.totalElements.toString())
-        }
+    fun getOtherPreviewRecipe(memberId: Int) {
+        getOtherRecipePreviewUseCase(memberId).onEach { result ->
+            when (result) {
+                is Resource.Success -> {
+                    _otherRecipePreviewState.value = OtherRecipePreviewState(
+                        recipeList = result.data?.result!!.recipeList
+                    )
+                    Log.e("otherPreviewList", result.data.result.totalElements.toString())
+                }
 
-            is Resource.Loading ->{
+                is Resource.Loading -> {
 
-        }
+                }
 
-            is Resource.Error -> {
-            _otherInfoState.value = OtherInfo(
-                isError = true
-            )
-            result.message?.let { Log.e("error in other page Api", it) }
-        }
-        }
-
-
+                is Resource.Error -> {
+                    _otherInfoState.value = OtherInfo(
+                        isError = true
+                    )
+                    result.message?.let { Log.e("error in other page Api", it) }
+                }
+            }
 
 
         }.launchIn(viewModelScope)
     }
 
+
+    fun followOrCancel(targetId: Int, isToast: () -> Unit = {}) {
+        followOrCancelUseCase(targetId).onEach { result ->
+            when (result) {
+                is Resource.Success -> {
+                    if (result.data!!.isSuccess) {
+                        _followOrCancelSuccessState.value = FollowOrCancel(
+                            isSuccess = true,
+                            isLoading = false,
+                        )
+                        if (result.data.result.isFollowing) {
+                            _followOrCancelSuccessState.value = FollowOrCancel(
+                                isFollowing = true
+                            )
+                        } else {
+                            _followOrCancelSuccessState.value = FollowOrCancel(
+                                isFollowing = false
+                            )
+                        }
+                        isToast()
+
+                        Log.e("followorcancel api", result.data.code.toString())
+                    }
+
+                }
+
+                is Resource.Error -> {
+                    _followOrCancelSuccessState.value = FollowOrCancel(
+                        isError = true,
+                        isLoading = false,
+                        error = result.message.toString()
+                    )
+                    Log.e(
+                        "followOrcancel Api in Error",
+                        "code :${result.code} message : ${result.message.toString()}"
+                    )
+
+
+                }
+
+                is Resource.Loading -> {
+
+                    _followOrCancelSuccessState.value = FollowOrCancel(
+                        isError = false,
+                        isLoading = true,
+                    )
+
+                }
+
+            }
+
+        }.launchIn(viewModelScope)
+
+    }
 }

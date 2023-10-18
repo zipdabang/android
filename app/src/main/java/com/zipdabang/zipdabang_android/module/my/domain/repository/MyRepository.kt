@@ -4,7 +4,9 @@ import com.zipdabang.zipdabang_android.module.my.data.remote.recipewrite.RecipeW
 import com.zipdabang.zipdabang_android.module.my.data.remote.signout.SignOutResponseDto
 import com.zipdabang.zipdabang_android.module.my.data.remote.followorcancel.FollowOrCancelDto
 import com.zipdabang.zipdabang_android.module.my.data.remote.friendlist.follow.FollowDto
+import com.zipdabang.zipdabang_android.module.my.data.remote.friendlist.follow.search.SearchFollowingDto
 import com.zipdabang.zipdabang_android.module.my.data.remote.friendlist.following.FollowingDto
+import com.zipdabang.zipdabang_android.module.my.data.remote.friendlist.following.search.SearchFollowersDto
 import com.zipdabang.zipdabang_android.module.my.data.remote.myinfo.MyInfoRecipesResponse
 import com.zipdabang.zipdabang_android.module.my.data.remote.myinfo.MyInfoResponse
 import com.zipdabang.zipdabang_android.module.my.data.remote.myrecipes.complete.CompleteRecipesResponse
@@ -23,6 +25,8 @@ interface MyRepository {
     suspend fun postFollowOrCancel(accessToken: String, targetId : Int) : FollowOrCancelDto
     suspend fun getOtherInfo(accessToken: String, targetId : Int) : OtherInfoDto
     suspend fun getOtherRecipePreview(accessToken: String, memberId : Int) : OtherRecipePreviewDto
+    suspend fun getSearchFollowings(accessToken: String, page : Int, nickname : String) : SearchFollowingDto
+    suspend fun getSearchFollowers(accessToken: String, page : Int,nickname: String) : SearchFollowersDto
     suspend fun getMyInfo(accessToken: String) : MyInfoResponse
     suspend fun getMyInfoRecipes(accessToken: String, pageIndex : Int) : MyInfoRecipesResponse
     suspend fun getRecipeWriteBeverages(accessToken: String) : RecipeWriteBeveragesResponse

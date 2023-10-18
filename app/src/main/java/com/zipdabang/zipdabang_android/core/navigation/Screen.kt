@@ -55,7 +55,7 @@ sealed class MyScreen(val route : String){
     object Shopping : MyScreen(route = "my/shopping")
     object FriendList : MyScreen(route = "my/friendlist")
     object RecipeWrite : MyScreen(route = "my/recipewrite?recipeId={recipeId}") {
-        fun passRecipeId(recipeId: Int): String {
+        fun passRecipeId(recipeId: Int?): String {
             return "my/recipewrite?recipeId=$recipeId"
         }
     }
@@ -64,6 +64,8 @@ sealed class MyScreen(val route : String){
             return "my/other?userId=$userId"
         }
     }
+    object NoticeList : MyScreen(route = "my/notice/list")
+
 }
 
 sealed class DrawerScreen(val route : String){
@@ -76,7 +78,6 @@ sealed class DrawerScreen(val route : String){
 
     object ReportSuccess : DrawerScreen(route = "drawer/report/success")
     object ReportList : DrawerScreen(route = "drawer/report/list")
-
     //회원 정보
     object UserInfo : DrawerScreen(route = "drawer/userinfo")
     object UserInfoBasic : DrawerScreen(route="drawer/userinfo/basic")
