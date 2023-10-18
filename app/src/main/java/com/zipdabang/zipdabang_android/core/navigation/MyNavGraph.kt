@@ -1,7 +1,9 @@
 package com.zipdabang.zipdabang_android.core.navigation
 
+import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -16,6 +18,7 @@ import androidx.navigation.navigation
 import com.zipdabang.zipdabang_android.core.data_store.proto.CurrentPlatform
 import com.zipdabang.zipdabang_android.core.data_store.proto.ProtoDataViewModel
 import com.zipdabang.zipdabang_android.core.data_store.proto.Token
+import com.zipdabang.zipdabang_android.module.bottom.BottomMenuContent
 import com.zipdabang.zipdabang_android.module.drawer.ui.NoticeScreen
 import com.zipdabang.zipdabang_android.module.my.ui.FriendListScreen
 import com.zipdabang.zipdabang_android.module.my.ui.LikeScreen
@@ -27,8 +30,12 @@ import com.zipdabang.zipdabang_android.module.my.ui.RecipeWriteScreen
 import com.zipdabang.zipdabang_android.module.my.ui.ScrapScreen
 import com.zipdabang.zipdabang_android.module.my.ui.ShoppingScreen
 import com.zipdabang.zipdabang_android.module.my.ui.viewmodel.RecipeWriteViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 
+@SuppressLint("CoroutineCreationDuringComposition")
 fun NavGraphBuilder.MyNavGraph(
     navController: NavHostController,
     outerNavController: NavHostController
@@ -127,13 +134,15 @@ fun NavGraphBuilder.MyNavGraph(
                     navController.popBackStack(MyScreen.Home.route, inclusive = false)
                 },
                 onClickWrite = {
-                    navController.navigate(MyScreen.RecipeWrite.passRecipeId(0))
+                    //navController.navigate(MyScreen.RecipeWrite.passRecipeId(0))
+                    navController.navigate(MyScreen.RecipeWrite.passTempId(0))
                 },
                 onClickCompleteRecipes = {
                     navController.navigate(SharedScreen.DetailRecipe.passRecipeId(it))
                 },
                 onClickTempRecipes = {
                     navController.navigate(MyScreen.RecipeWrite.passTempId(it))
+                    Log.e("tempId 전달 3","tempId : ${it}")
                 }
             )
         }
@@ -156,22 +165,42 @@ fun NavGraphBuilder.MyNavGraph(
                 }
             )
         }
-
         composable(
             route = MyScreen.RecipeWrite.route,
             arguments = listOf(
-                navArgument(name = "recipeId") { type = NavType.IntType },
+                //navArgument(name = "recipeId") { type = NavType.IntType },
                 navArgument(name = "tempId") { type = NavType.IntType}
             )
         ) { navBackStackEntry->
             val recipeWriteViewModel = navBackStackEntry
                 .recipeWriteViewModel<RecipeWriteViewModel>(navController = navController)
-            val recipeId = navBackStackEntry.arguments?.getString("recipeId")?.toInt()
-            val tempId = navBackStackEntry.arguments?.getString("tempId")?.toInt()
+            //val recipeId = navBackStackEntry.arguments?.getString("recipeId")?.toInt()
+            val tempId = navBackStackEntry.arguments?.getInt("tempId")
 
-            if(recipeId == 0){
+            Log.e("tempId 전달 4","tempId : ${tempId}")
+            RecipeWriteScreen(
+                tempId = tempId,
+                onClickBack = {
+                    navController.popBackStack(MyScreen.Myrecipe.route, inclusive = false)
+                },
+                onClickViewRecipe = { recipeId ->
+                    navController.navigate(
+                        route = SharedScreen.DetailRecipe.passRecipeId(recipeId)
+                    ) {
+                        popUpTo(route = MyScreen.RecipeWrite.route) {
+                            inclusive = true
+                        }
+                        launchSingleTop = true
+                    }
+                }
+            )
+
+            /*if(tempId != null && tempId != 0){
+                CoroutineScope(Dispatchers.Main).launch {
+                    recipeWriteViewModel.getTempRecipeDetail(tempId)
+                }
                 RecipeWriteScreen(
-                    recipeId = null,
+                    tempId = tempId,
                     onClickBack = {
                         navController.popBackStack(MyScreen.Myrecipe.route, inclusive = false)
                     },
@@ -186,12 +215,9 @@ fun NavGraphBuilder.MyNavGraph(
                         }
                     }
                 )
-            }
-            else {
-                Log.e("recipeId 전달","recipeId : ${recipeId}")
-                // 레시피 상세 정보 api 호출하기
+            } else {
                 RecipeWriteScreen(
-                    recipeId = recipeId,
+                    tempId = tempId,
                     onClickBack = {
                         navController.popBackStack(MyScreen.Myrecipe.route, inclusive = false)
                     },
@@ -206,14 +232,8 @@ fun NavGraphBuilder.MyNavGraph(
                         }
                     }
                 )
-            }
+            }*/
 
-            if(tempId == 0){
-
-            }
-            else{
-
-            }
         }
         composable(MyScreen.NoticeList.route) {
             NoticeScreen(

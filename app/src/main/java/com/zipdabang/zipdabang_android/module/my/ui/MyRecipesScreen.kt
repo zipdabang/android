@@ -1,6 +1,7 @@
 package com.zipdabang.zipdabang_android.module.my.ui
 
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -45,7 +46,7 @@ fun MyRecipesScreen(
     onClickBack : ()->Unit,
     onClickWrite : ()->Unit,
     onClickCompleteRecipes : (Int)->Unit,
-    onClickTempRecipes : (Int) ->Unit,
+    onClickTempRecipes : (Int)->Unit,
 ) {
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
@@ -131,6 +132,7 @@ fun MyRecipesScreen(
                                     shimmering = shimmering,
                                     onClickTempRecipes = {
                                         onClickTempRecipes(it)
+                                        Log.e("tempId 전달 2","tempId : ${it}")
                                     }
                                 )
                             ),

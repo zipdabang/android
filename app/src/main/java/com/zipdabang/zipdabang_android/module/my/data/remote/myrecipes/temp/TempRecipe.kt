@@ -6,9 +6,9 @@ import com.zipdabang.zipdabang_android.common.Constants
 
 @Entity(tableName = Constants.MY_TEMPED_RECIPES_TABLE)
 data class TempRecipe(
-    val recipeName: String,
+    val recipeName: String?,
     @PrimaryKey(autoGenerate = false)
     val tempId: Int,
-    val thumbnailUrl: String,
+    val thumbnailUrl: String?,
     val updatedAt: String
 )

@@ -43,9 +43,9 @@ class CompleteRecipeMediator @Inject constructor(
                 LoadType.PREPEND ->{
                     val remoteKeys = getRemotekeyForFirstItem(state)
                     val prevPage = remoteKeys?.prevPage ?:
-                        return MediatorResult.Success(
-                            endOfPaginationReached = remoteKeys != null
-                        )
+                    return MediatorResult.Success(
+                        endOfPaginationReached = remoteKeys != null
+                    )
                     prevPage
                 }
                 LoadType.APPEND ->{

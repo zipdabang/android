@@ -13,6 +13,8 @@ import com.zipdabang.zipdabang_android.module.my.data.remote.myinfo.MyInfoRespon
 import com.zipdabang.zipdabang_android.module.my.data.remote.myrecipes.complete.CompleteRecipesResponse
 import com.zipdabang.zipdabang_android.module.my.data.remote.otherinfo.OtherInfoDto
 import com.zipdabang.zipdabang_android.module.my.data.remote.otherinfo.OtherRecipePreviewDto
+import com.zipdabang.zipdabang_android.module.my.data.remote.recipeedit.complete.GetCompleteRecipeResponse
+import com.zipdabang.zipdabang_android.module.my.data.remote.recipeedit.temp.GetTempRecipeResponse
 import com.zipdabang.zipdabang_android.module.my.data.remote.recipewrite.RecipeWriteBeveragesResponse
 import com.zipdabang.zipdabang_android.module.my.data.remote.recipewrite.RecipeWriteTempResponse
 import com.zipdabang.zipdabang_android.module.my.domain.repository.MyRepository
@@ -101,5 +103,19 @@ class MyRepositoryImpl @Inject constructor(
         pageIndex: Int
     ): CompleteRecipesResponse {
         return api.getMyCompleteRecipes(accessToken, pageIndex)
+    }
+
+    override suspend fun getMyTempRecipesDetail(
+        accessToken: String,
+        tempId: Int
+    ): GetTempRecipeResponse {
+        return api.getMyTempRecipesDetail(accessToken, tempId)
+    }
+
+    override suspend fun getMyCompleteRecipesDetail(
+        accessToken: String,
+        recipeId: Int
+    ): GetCompleteRecipeResponse {
+        return api.getMyCompleteRecipesDetail(accessToken, recipeId)
     }
 }

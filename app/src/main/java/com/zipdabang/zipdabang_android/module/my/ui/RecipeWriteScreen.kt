@@ -53,10 +53,12 @@ import com.zipdabang.zipdabang_android.ui.component.CustomDialogType1
 import com.zipdabang.zipdabang_android.ui.component.CustomDialogType2
 import com.zipdabang.zipdabang_android.ui.component.CustomDialogUploadComplete
 import com.zipdabang.zipdabang_android.ui.component.ImageWithIconAndText
+import com.zipdabang.zipdabang_android.ui.component.PreviewCustomDialogType1
 import com.zipdabang.zipdabang_android.ui.component.PrimaryButtonOutLinedStatus
 import com.zipdabang.zipdabang_android.ui.component.PrimaryButtonWithStatus
 import com.zipdabang.zipdabang_android.ui.component.TextFieldForRecipeWriteMultiline
 import com.zipdabang.zipdabang_android.ui.component.TextFieldForRecipeWriteSingleline
+import com.zipdabang.zipdabang_android.ui.shimmeringEffect
 import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -73,7 +75,7 @@ import java.io.InputStream
 @SuppressLint("CoroutineCreationDuringComposition")
 @Composable
 fun RecipeWriteScreen(
-    recipeId : Int?,
+    tempId : Int?,
     onClickBack: () -> Unit,
     recipeWriteViewModel: RecipeWriteViewModel = hiltViewModel(),
     onClickViewRecipe: (Int) -> Unit
@@ -84,12 +86,34 @@ fun RecipeWriteScreen(
     val context = LocalContext.current
     val stateThumbnail = recipeWriteViewModel.stateRecipeWriteForm.thumbnail
     val stateUploadRecipeId = recipeWriteViewModel.uploadRecipeId // 기문이형 도와줘 ㅠㅠ
-    Log.e("state-uploadrecipeid","${stateUploadRecipeId}")
+    var shimmering: Boolean = true
+
+    if (stateRecipeWriteForm.isLoading || stateRecipeWriteForm.error.isNotBlank()) {
+        shimmering = true
+    } else {
+        shimmering = false
+    }
+
+
+    if(recipeWriteViewModel.tempRecipeDetailApiCalled == 0){
+        if(tempId == 0 || tempId == null){}
+        else {
+            CoroutineScope(Dispatchers.Main).launch {
+                recipeWriteViewModel.getTempRecipeDetail(tempId)
+            }
+        }
+    }
 
 
     LaunchedEffect(key1 = stateRecipeWriteForm){
         recipeWriteViewModel.onRecipeWriteFormEvent(RecipeWriteFormEvent.BtnEnabled(true))
-        recipeWriteViewModel.onRecipeWriteFormEvent(RecipeWriteFormEvent.BtnEnabledSave(true))
+        if(recipeWriteViewModel.tempRecipeDetailApiCalled > 0){
+            if(recipeWriteViewModel.isTempRecipeEdited()) {
+                recipeWriteViewModel.onRecipeWriteFormEvent(RecipeWriteFormEvent.BtnEnabledSave(true))
+            }
+        } else {
+            recipeWriteViewModel.onRecipeWriteFormEvent(RecipeWriteFormEvent.BtnEnabledSave(true))
+        }
     }
     LaunchedEffect(key1 = stateRecipeWriteForm.ingredients) {
         recipeWriteViewModel.onRecipeWriteFormEvent(RecipeWriteFormEvent.BtnIngredientAddEnabled(stateRecipeWriteForm.ingredientsNum))
@@ -286,11 +310,25 @@ fun RecipeWriteScreen(
             AppBarSignUp(
                 navigationIcon = R.drawable.ic_topbar_backbtn,
                 onClickNavIcon = {
-                    if(!recipeWriteViewModel.isEmpty()){
-                        recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.RecipeDeleteChanged(true))
-                     } else{
-                          onClickBack()
-                     }
+                    Log.e("뭐지", "${recipeWriteViewModel.tempRecipeDetailApiCalled}")
+                    if(recipeWriteViewModel.tempRecipeDetailApiCalled > 0){
+                        Log.e("뭐지 2","")
+                        if(recipeWriteViewModel.isTempRecipeEdited()){
+                            Log.e("뭐지 2-1","")
+                            recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.RecipeDeleteChanged(true))
+                        } else{
+                            Log.e("뭐지 2-2","")
+                            onClickBack()
+                        }
+                    } else {
+                        Log.e("뭐지 3","")
+                        if(!recipeWriteViewModel.isEmpty()){
+                            Log.e("뭐지 3-1","")
+                            recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.RecipeDeleteChanged(true))
+                        } else {
+                            onClickBack()
+                        }
+                    }
                 },
                 centerText = stringResource(id = R.string.my_recipewrite)
             )
@@ -344,7 +382,7 @@ fun RecipeWriteScreen(
                     Text(
                         text = stringResource(id = R.string.my_recipewrite_title),
                         style = ZipdabangandroidTheme.Typography.sixteen_700,
-                        color = ZipdabangandroidTheme.Colors.Choco
+                        color = ZipdabangandroidTheme.Colors.Choco,
                     )
                     TextFieldForRecipeWriteSingleline(
                         value = stateRecipeWriteForm.title,
@@ -385,7 +423,7 @@ fun RecipeWriteScreen(
                     Text(
                         text = stringResource(id = R.string.my_recipewrite_time),
                         style = ZipdabangandroidTheme.Typography.sixteen_700,
-                        color = ZipdabangandroidTheme.Colors.Choco
+                        color = ZipdabangandroidTheme.Colors.Choco,
                     )
                     TextFieldForRecipeWriteSingleline(
                         value = stateRecipeWriteForm.time,
@@ -754,7 +792,8 @@ fun RecipeWriteScreen(
             if (stateRecipeWriteDialog.isOpenSave) {
                 CustomDialogType2(
                     title = stringResource(id = R.string.my_save),
-                    text = stringResource(id = R.string.my_dialog_save_detail),
+                    text = "작성 중인 레시피를 임시저장 하시겠습니까?\n" +
+                            "저장된 레시피는 ‘내집다방 > 나의 레시피 > 임시저장’에서 확인 하실 수 있습니다.",
                     declineText = stringResource(id = R.string.my_dialog_cancel),
                     acceptText = stringResource(id = R.string.my_save),
                     setShowDialog = {
@@ -839,7 +878,7 @@ fun RecipeWriteScreen(
 @Composable
 fun PreviewRecipeWriteScreen() {
     RecipeWriteScreen(
-        recipeId = null,
+        tempId = null,
         onClickBack = {},
         onClickViewRecipe = { recipeId -> }
     )

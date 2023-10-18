@@ -13,6 +13,7 @@ import com.zipdabang.zipdabang_android.module.my.data.remote.myrecipes.complete.
 import com.zipdabang.zipdabang_android.module.my.data.remote.myrecipes.temp.TempRecipesResponse
 import com.zipdabang.zipdabang_android.module.my.data.remote.otherinfo.OtherInfoDto
 import com.zipdabang.zipdabang_android.module.my.data.remote.otherinfo.OtherRecipePreviewDto
+import com.zipdabang.zipdabang_android.module.my.data.remote.recipeedit.complete.GetCompleteRecipeResponse
 import com.zipdabang.zipdabang_android.module.my.data.remote.recipeedit.temp.GetTempRecipeResponse
 import com.zipdabang.zipdabang_android.module.my.data.remote.recipewrite.RecipeWriteBeveragesResponse
 import com.zipdabang.zipdabang_android.module.my.data.remote.recipewrite.RecipeWriteResponse
@@ -62,12 +63,17 @@ interface MyApi {
         @Query("pageIndex") pageIndex : Int
     ) : TempRecipesResponse
 
-    @GET("members/recipes/temp/")
+    @GET("members/recipes/temp/{tempId}/")
     suspend fun getMyTempRecipesDetail(
         @Header("Authorization") accessToken: String,
         @Path("tempId") tempId : Int
     ) : GetTempRecipeResponse
 
+    @GET("members/recipes/")
+    suspend fun getMyCompleteRecipesDetail(
+        @Header("Authorization") accessToken: String,
+        @Path("recipeId") recipeId : Int
+    ) : GetCompleteRecipeResponse
 
 
     @GET("members/followings")

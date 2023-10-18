@@ -17,6 +17,7 @@ import com.zipdabang.zipdabang_android.module.my.data.remote.recipewrite.RecipeW
 import com.zipdabang.zipdabang_android.module.my.data.remote.recipewrite.RecipeWriteTempIngredient
 import com.zipdabang.zipdabang_android.module.my.data.remote.recipewrite.RecipeWriteTempStep
 import com.zipdabang.zipdabang_android.module.my.domain.usecase.GetRecipeWriteBeveragesUseCase
+import com.zipdabang.zipdabang_android.module.my.domain.usecase.GetTempRecipeDetailUseCase
 import com.zipdabang.zipdabang_android.module.my.domain.usecase.PostRecipeWriteTempUseCase
 import com.zipdabang.zipdabang_android.module.my.domain.usecase.PostRecipeWriteUseCase
 import com.zipdabang.zipdabang_android.module.my.ui.state.recipewrite.Ingredient
@@ -44,10 +45,31 @@ class RecipeWriteViewModel @Inject constructor(
     private val dataStore: DataStore<Token>,
     private val postRecipeWriteUseCase: PostRecipeWriteUseCase,
     private val getRecipeWriteBeveragesUseCase: GetRecipeWriteBeveragesUseCase,
-    private val postRecipeWriteTempUseCase: PostRecipeWriteTempUseCase
+    private val postRecipeWriteTempUseCase: PostRecipeWriteTempUseCase,
+    private val getTempRecipeDetailUseCase: GetTempRecipeDetailUseCase
 ) : ViewModel() {
 
     var stateRecipeWriteForm by mutableStateOf(
+        RecipeWriteFormState(
+            ingredients = listOf(
+                Ingredient(
+                    ingredientName = "",
+                    quantity = "",
+                )
+            ),
+            steps = listOf(
+                Step(
+                    stepImage = null,
+                    description = "",
+                    stepWordCount = 0,
+                    completeBtnEnabled = false,
+                    completeBtnVisible = true,
+                    addBtnVisible = false,
+                )
+            ),
+        ),
+    )
+    var stateTempRecipeWriteForm by mutableStateOf(
         RecipeWriteFormState(
             ingredients = listOf(
                 Ingredient(
@@ -71,6 +93,7 @@ class RecipeWriteViewModel @Inject constructor(
     var thumbnailPart by mutableStateOf<MultipartBody.Part?>(null)
     var stateRecipeWriteBeverages by mutableStateOf(RecipeWriteBeveragesState())
     var uploadRecipeId by mutableStateOf(0) //기문이형 도와줘
+    var tempRecipeDetailApiCalled by mutableStateOf(0)
 
 
     // stateRecipeWriteForm 비어있는지 확인하는 함수
@@ -90,6 +113,14 @@ class RecipeWriteViewModel @Inject constructor(
         ).all { it }
 
         return isEmpty
+    }
+
+    // stateRecipeWriteForm과 stateTempRecipeWriteForm의 차이점을 확인하는 함수
+    fun isTempRecipeEdited() : Boolean {
+        Log.e("뭐지 stateRecipeWriteForm","${stateRecipeWriteForm}")
+        Log.e("뭐지 stateTempRecipeWriteForm","${stateTempRecipeWriteForm}")
+        Log.e("뭐지","${ stateRecipeWriteForm != stateTempRecipeWriteForm}")
+        return stateRecipeWriteForm != stateTempRecipeWriteForm
     }
 
     // stateRecipeWriteForm에 대한 event
@@ -620,6 +651,54 @@ class RecipeWriteViewModel @Inject constructor(
                 }
             }
         }.launchIn(viewModelScope)
+    }
+    suspend fun getTempRecipeDetail(tempId : Int){
+        var accessToken = "Bearer " + dataStore.data.first().accessToken.toString()
+        Log.e("tempId 전달 후 api 요청 전", "${tempId} ${accessToken}")
+
+        try{
+            val result = getTempRecipeDetailUseCase(accessToken, tempId)
+
+            result.collect{result->
+                when(result){
+                    is Resource.Success ->{
+                        Log.e("tempId 전달 후 api 요청", "성공 : ${result} ${result.message} ${result.data} ${result.code}")
+                        stateRecipeWriteForm = stateRecipeWriteForm.copy(
+                            isLoading = false,
+                            thumbnail = result.data?.recipeInfo?.thumbnailUrl,
+                            title = result.data?.recipeInfo?.recipeName ?: "",
+                            time = result.data?.recipeInfo?.time ?: "",
+                            intro = result.data?.recipeInfo?.intro ?: "",
+                            recipeTip = result?.data?.recipeInfo?.recipeTip ?: "",
+                            btnEnabledSave = false
+                        )
+                        stateTempRecipeWriteForm = stateTempRecipeWriteForm.copy(
+                            isLoading = false,
+                            thumbnail = result.data?.recipeInfo?.thumbnailUrl,
+                            title = result.data?.recipeInfo?.recipeName ?: "",
+                            time = result.data?.recipeInfo?.time ?: "",
+                            intro = result.data?.recipeInfo?.intro ?: "",
+                            recipeTip = result?.data?.recipeInfo?.recipeTip ?: "",
+                            btnEnabledSave = false
+                        )
+                        Log.e("tempId 전달 후 api 요청", "성공 : ${stateRecipeWriteForm}")
+                        tempRecipeDetailApiCalled ++
+                        //Log.e("뭐지", "${tempRecipeDetailApiCalled}")
+                    }
+                    is Resource.Error ->{
+                        Log.e("tempId 전달 후 api 요청", "에러 : ${result} ${result.message} ${result.data} ${result.code}")
+                        stateRecipeWriteForm = stateRecipeWriteForm.copy(error = result.message ?: "An unexpeted error occured")
+                        stateTempRecipeWriteForm = stateTempRecipeWriteForm.copy(error = result.message ?: "An unexpeted error occured")
+                    }
+                    is Resource.Loading ->{
+                        Log.e("tempId 전달 후 api 요청",  "로딩중 : ${result} ${result.message} ${result.data} ${result.code}")
+                        stateRecipeWriteForm = stateRecipeWriteForm.copy(isLoading = true)
+                        stateTempRecipeWriteForm = stateTempRecipeWriteForm.copy(isLoading = true)
+                    }
+                }
+            }
+        } catch (e: Exception) {}
+
     }
 }
 

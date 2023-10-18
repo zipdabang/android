@@ -29,8 +29,8 @@ import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
 
 @Composable
 fun TempRecipeItem(
-    thumbnail : String,
-    title : String,
+    thumbnail : String?,
+    title : String?,
     createdAt : String,
     onClick : ()->Unit
 ) {
@@ -49,25 +49,34 @@ fun TempRecipeItem(
                 Box(
                     modifier = Modifier.padding(0.dp, 8.dp, 0.dp, 0.dp)
                 ){
-                    AsyncImage(
-                        model = thumbnail,
-                        contentScale = ContentScale.Crop,
-                        contentDescription = "thumbnail",
-                        modifier = Modifier
-                            .size(52.dp)
-                            .clip(RoundedCornerShape(4.dp)),
-                    )
+                    if(thumbnail == null){
+                        Box(
+                            modifier = Modifier
+                                .size(52.dp)
+                                .clip(RoundedCornerShape(4.dp))
+                                .background(ZipdabangandroidTheme.Colors.Typo.copy(0.1f))
+                        )
+                    } else{
+                        AsyncImage(
+                            model = thumbnail,
+                            contentScale = ContentScale.Crop,
+                            contentDescription = "thumbnail",
+                            modifier = Modifier
+                                .size(52.dp)
+                                .clip(RoundedCornerShape(4.dp)),
+                        )
+                    }
                 }
                 Column(
                     modifier = Modifier.padding(12.dp)
                 ){
                     Text(
-                        text=title,
+                        text= if(title==null)"제목이 정해지지 않았습니다." else title,
                         style = ZipdabangandroidTheme.Typography.fourteen_500,
                         color = ZipdabangandroidTheme.Colors.Typo
                     )
                     Text(
-                        text=createdAt,
+                        text= createdAt,
                         style = ZipdabangandroidTheme.Typography.fourteen_300,
                         color = ZipdabangandroidTheme.Colors.Typo
                     )

@@ -1,5 +1,6 @@
 package com.zipdabang.zipdabang_android.module.my.ui
 
+import android.util.Log
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -32,8 +33,8 @@ fun MyTempRecipesScreen(
         items(tempRecipeItems.itemCount){
             TempRecipeItem(
                 thumbnail = tempRecipeItems[it]!!.thumbnailUrl,
-                title =tempRecipeItems[it]!!.recipeName,
-                createdAt =tempRecipeItems[it]!!.updatedAt,
+                title = tempRecipeItems[it]!!.recipeName,
+                createdAt = tempRecipeItems[it]!!.updatedAt,
                 onClick = {
                     onClickTempRecipes(tempRecipeItems[it]!!.tempId)
                 }
