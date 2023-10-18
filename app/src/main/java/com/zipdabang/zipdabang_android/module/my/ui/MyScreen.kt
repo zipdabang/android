@@ -181,7 +181,7 @@ fun MyScreen(
                                         text = if (shimmering) {
                                             ""
                                         } else {
-                                            "팔로우  ${stateMyUserInfo.followerCount}    |    팔로잉 ${stateMyUserInfo.followingCount}"
+                                            "팔로우  ${stateMyUserInfo.followingCount}    |    팔로잉 ${stateMyUserInfo.followerCount}"
                                         },
                                         style = ZipdabangandroidTheme.Typography.fourteen_300,
                                         color = Color.White,

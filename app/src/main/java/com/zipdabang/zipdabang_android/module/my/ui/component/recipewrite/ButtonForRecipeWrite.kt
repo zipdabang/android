@@ -1,4 +1,4 @@
-package com.zipdabang.zipdabang_android.module.my.ui.component
+package com.zipdabang.zipdabang_android.module.my.ui.component.recipewrite
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable

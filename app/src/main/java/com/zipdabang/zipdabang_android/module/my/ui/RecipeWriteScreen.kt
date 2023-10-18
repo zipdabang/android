@@ -38,9 +38,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.zipdabang.zipdabang_android.R
-import com.zipdabang.zipdabang_android.module.my.ui.component.ButtonAddForIngredient
-import com.zipdabang.zipdabang_android.module.my.ui.component.IngredientAndUnit
-import com.zipdabang.zipdabang_android.module.my.ui.component.Step
+import com.zipdabang.zipdabang_android.module.my.ui.component.recipewrite.ButtonAddForIngredient
+import com.zipdabang.zipdabang_android.module.my.ui.component.recipewrite.IngredientAndUnit
+import com.zipdabang.zipdabang_android.module.my.ui.component.recipewrite.Step
 import com.zipdabang.zipdabang_android.module.my.ui.state.recipewrite.RecipeWriteBeveragesEvent
 import com.zipdabang.zipdabang_android.module.my.ui.state.recipewrite.RecipeWriteDialogEvent
 import com.zipdabang.zipdabang_android.module.my.ui.state.recipewrite.RecipeWriteFormEvent
@@ -53,7 +53,6 @@ import com.zipdabang.zipdabang_android.ui.component.CustomDialogType1
 import com.zipdabang.zipdabang_android.ui.component.CustomDialogType2
 import com.zipdabang.zipdabang_android.ui.component.CustomDialogUploadComplete
 import com.zipdabang.zipdabang_android.ui.component.ImageWithIconAndText
-import com.zipdabang.zipdabang_android.ui.component.PrimaryButtonOutLined
 import com.zipdabang.zipdabang_android.ui.component.PrimaryButtonOutLinedStatus
 import com.zipdabang.zipdabang_android.ui.component.PrimaryButtonWithStatus
 import com.zipdabang.zipdabang_android.ui.component.TextFieldForRecipeWriteMultiline

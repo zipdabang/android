@@ -6,16 +6,17 @@ import com.zipdabang.zipdabang_android.common.Constants
 
 @Entity(tableName = Constants.MY_COMPLETE_RECIPES_TABLE)
 data class CompleteRecipe(
+    @PrimaryKey(autoGenerate = false)
+    val recipeId: Int,
     val categoryId: List<Int>,
-    val comments: Int,
-    val createdAt: String,
-    val isLiked: Boolean,
-    val isScrapped: Boolean,
-    val likes: Int,
-    val nickname: String,
-    @PrimaryKey(autoGenerate = false) val recipeId: Int,
     val recipeName: String,
-    val scraps: Int,
+    val nickname: String,
     val thumbnailUrl: String,
-    val updatedAt: String
+    val createdAt: String,
+    val updatedAt: String,
+    val likes: Int,
+    val comments: Int,
+    val scraps: Int,
+    val isLiked: Boolean,
+    val isScrapped: Boolean
 )

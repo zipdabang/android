@@ -10,8 +10,10 @@ import okhttp3.RequestBody
 import com.zipdabang.zipdabang_android.module.my.data.remote.myinfo.MyInfoRecipesResponse
 import com.zipdabang.zipdabang_android.module.my.data.remote.myinfo.MyInfoResponse
 import com.zipdabang.zipdabang_android.module.my.data.remote.myrecipes.complete.CompleteRecipesResponse
+import com.zipdabang.zipdabang_android.module.my.data.remote.myrecipes.temp.TempRecipesResponse
 import com.zipdabang.zipdabang_android.module.my.data.remote.otherinfo.OtherInfoDto
 import com.zipdabang.zipdabang_android.module.my.data.remote.otherinfo.OtherRecipePreviewDto
+import com.zipdabang.zipdabang_android.module.my.data.remote.recipeedit.temp.GetTempRecipeResponse
 import com.zipdabang.zipdabang_android.module.my.data.remote.recipewrite.RecipeWriteBeveragesResponse
 import com.zipdabang.zipdabang_android.module.my.data.remote.recipewrite.RecipeWriteResponse
 import com.zipdabang.zipdabang_android.module.my.data.remote.recipewrite.RecipeWriteTempResponse
@@ -48,11 +50,25 @@ interface MyApi {
         @Part thumbnail: MultipartBody.Part?
     ) : RecipeWriteTempResponse
 
-    @GET("members/recipes/owner")
+    @GET("members/recipes/owner/")
     suspend fun getMyCompleteRecipes(
         @Header("Authorization") accessToken: String,
         @Query("pageIndex") pageIndex : Int
     ) : CompleteRecipesResponse
+
+    @GET("members/recipes/temp/")
+    suspend fun getMyTempRecipes(
+        @Header("Authorization") accessToken: String,
+        @Query("pageIndex") pageIndex : Int
+    ) : TempRecipesResponse
+
+    @GET("members/recipes/temp/")
+    suspend fun getMyTempRecipesDetail(
+        @Header("Authorization") accessToken: String,
+        @Path("tempId") tempId : Int
+    ) : GetTempRecipeResponse
+
+
 
     @GET("members/followings")
     suspend fun getFollowings(
