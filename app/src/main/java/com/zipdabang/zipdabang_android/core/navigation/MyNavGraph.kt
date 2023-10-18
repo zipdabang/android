@@ -155,7 +155,7 @@ fun NavGraphBuilder.MyNavGraph(
                     navController.popBackStack(MyScreen.Home.route, inclusive = false)
                 },
                 onClickOthers = {
-                    navController.navigate(MyScreen.OtherPage.passUserId(0))
+                    navController.navigate(MyScreen.OtherPage.passUserId(it))
                 }
             )
         }

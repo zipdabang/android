@@ -35,7 +35,7 @@ import com.zipdabang.zipdabang_android.module.search.data.SearchDao
         CompleteRecipe :: class,
         FollowerInfoDB :: class, FollowInfoDB::class
     ],
-    version = 16, exportSchema = false)
+    version = 17, exportSchema = false)
 @TypeConverters(ListConverter::class)
 abstract class Paging3Database : RoomDatabase() {
     abstract fun CategoryDao() : MarketCategoryDao

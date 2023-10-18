@@ -42,16 +42,15 @@ class MyForOthersViewModel @Inject constructor(
     private var _followOrCancelSuccessState = mutableStateOf(FollowOrCancel())
     val followOrCancelSuccessState = _followOrCancelSuccessState
 
-    private var _userId = mutableStateOf(0)
-    val userId = _userId
 
     init {
-        _userId.value = savedStateHandle.get<Int>("userId")!!
+        val userId = savedStateHandle.get<Int>("userId")
 
-            getOtherInfo(_userId.value)
-            getOtherPreviewRecipe(_userId.value)
-
-        Log.e("OhterInfoViewModel", _userId.value.toString())
+          userId?.let {
+              getOtherInfo(userId)
+              getOtherPreviewRecipe(userId)
+          }
+        Log.e("OhterInfoViewModel",userId.toString())
     }
 
 
@@ -102,10 +101,12 @@ class MyForOthersViewModel @Inject constructor(
         getOtherRecipePreviewUseCase(memberId).onEach { result ->
             when (result) {
                 is Resource.Success -> {
-                    _otherRecipePreviewState.value = OtherRecipePreviewState(
-                        recipeList = result.data?.result!!.recipeList
-                    )
-                    Log.e("otherPreviewList", result.data.result.totalElements.toString())
+                    if(result.data?.result!=null) {
+                        _otherRecipePreviewState.value = OtherRecipePreviewState(
+                            recipeList = result.data.result.recipeList
+                        )
+                    }
+         //           Log.e("otherPreviewList", result.data.result.totalElements.toString())
                 }
 
                 is Resource.Loading -> {
