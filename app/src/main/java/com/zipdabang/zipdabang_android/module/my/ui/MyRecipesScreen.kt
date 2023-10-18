@@ -52,13 +52,6 @@ fun MyRecipesScreen(
     val scope = rememberCoroutineScope()
     val pagerState = rememberPagerState()
 
-    var shimmering: Boolean = true
-    /*if (stateMyUserInfo.isLoading || stateMyUserInfo.error.isNotBlank()) {
-        shimmering = true
-    } else {
-        shimmering = false
-    }*/
-
     ModalDrawer(
         scaffold = {
             Scaffold(
@@ -123,13 +116,11 @@ fun MyRecipesScreen(
                         ColumnPagers(
                             tabsList = listOf(
                                 TabItem.MyCompleteRecipes(
-                                    shimmering = shimmering,
                                     onClickCompleteRecipes = {
                                         onClickCompleteRecipes(it)
                                     }
                                 ),
                                 TabItem.MyTempRecipes(
-                                    shimmering = shimmering,
                                     onClickTempRecipes = {
                                         onClickTempRecipes(it)
                                         Log.e("tempId 전달 2","tempId : ${it}")

@@ -12,12 +12,14 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
@@ -346,28 +348,40 @@ fun RecipeWriteScreen(
                 .background(Color.White)
         ) {
             //썸네일
-            Box(
-                modifier = Modifier
-                    .height(360.dp)
-                    .fillMaxWidth()
-                    .aspectRatio(1f)
-            ) {
-                ImageWithIconAndText(
-                    addImageClick = {
-                        recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.FileSelectChanged(true))
-                    },
-                    deleteImageClick = {
-                        recipeWriteViewModel.onRecipeWriteFormEvent(RecipeWriteFormEvent.ThumbnailChangedToNull(null))
-                    },
-                    imageUrl = stateThumbnail,
-                    iconImageVector = R.drawable.ic_recipewrite_camera,
-                    iconTint = ZipdabangandroidTheme.Colors.Typo.copy(0.5f),
-                    iconModifier = Modifier.size(27.dp, 24.dp),
-                    text = stringResource(id = R.string.my_recipewrite_thumbnail_upload),
-                    textStyle = ZipdabangandroidTheme.Typography.sixteen_700,
-                    textColor = ZipdabangandroidTheme.Colors.Typo.copy(0.5f)
+            if(shimmering){
+                Box(
+                    modifier = Modifier
+                        .height(360.dp)
+                        .fillMaxWidth()
+                        .aspectRatio(1f)
+                        .shimmeringEffect()
                 )
             }
+            else{
+                Box(
+                    modifier = Modifier
+                        .height(360.dp)
+                        .fillMaxWidth()
+                        .aspectRatio(1f)
+                ) {
+                    ImageWithIconAndText(
+                        addImageClick = {
+                            recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.FileSelectChanged(true))
+                        },
+                        deleteImageClick = {
+                            recipeWriteViewModel.onRecipeWriteFormEvent(RecipeWriteFormEvent.ThumbnailChangedToNull(null))
+                        },
+                        imageUrl = stateThumbnail,
+                        iconImageVector = R.drawable.ic_recipewrite_camera,
+                        iconTint = ZipdabangandroidTheme.Colors.Typo.copy(0.5f),
+                        iconModifier = Modifier.size(27.dp, 24.dp),
+                        text = stringResource(id = R.string.my_recipewrite_thumbnail_upload),
+                        textStyle = ZipdabangandroidTheme.Typography.sixteen_700,
+                        textColor = ZipdabangandroidTheme.Colors.Typo.copy(0.5f)
+                    )
+                }
+            }
+
 
             Column(
                 modifier = Modifier
@@ -384,28 +398,37 @@ fun RecipeWriteScreen(
                         style = ZipdabangandroidTheme.Typography.sixteen_700,
                         color = ZipdabangandroidTheme.Colors.Choco,
                     )
-                    TextFieldForRecipeWriteSingleline(
-                        value = stateRecipeWriteForm.title,
-                        onValueChanged = { newText, maxLength ->
-                            if (newText.length <= maxLength) {
+                    if(shimmering){
+                        Box(
+                            modifier = Modifier.shimmeringEffect()
+                                .height(56.dp)
+                                .fillMaxWidth()
+                        )
+                    }
+                    else{
+                        TextFieldForRecipeWriteSingleline(
+                            value = stateRecipeWriteForm.title,
+                            onValueChanged = { newText, maxLength ->
+                                if (newText.length <= maxLength) {
+                                    recipeWriteViewModel.onRecipeWriteFormEvent(
+                                        RecipeWriteFormEvent.TitleChanged(
+                                            newText
+                                        )
+                                    )
+                                }
+                            },
+                            maxLength = 20,
+                            placeholderValue = stringResource(id = R.string.my_recipewrite_title_hint),
+                            imeAction = ImeAction.Next,
+                            onClickTrailingicon = {
                                 recipeWriteViewModel.onRecipeWriteFormEvent(
                                     RecipeWriteFormEvent.TitleChanged(
-                                        newText
+                                        ""
                                     )
                                 )
                             }
-                        },
-                        maxLength = 20,
-                        placeholderValue = stringResource(id = R.string.my_recipewrite_title_hint),
-                        imeAction = ImeAction.Next,
-                        onClickTrailingicon = {
-                            recipeWriteViewModel.onRecipeWriteFormEvent(
-                                RecipeWriteFormEvent.TitleChanged(
-                                    ""
-                                )
-                            )
-                        }
-                    )
+                        )
+                    }
                     Text(
                         modifier = Modifier
                             .align(Alignment.End)
@@ -425,28 +448,37 @@ fun RecipeWriteScreen(
                         style = ZipdabangandroidTheme.Typography.sixteen_700,
                         color = ZipdabangandroidTheme.Colors.Choco,
                     )
-                    TextFieldForRecipeWriteSingleline(
-                        value = stateRecipeWriteForm.time,
-                        onValueChanged = { newText, maxLength ->
-                            if (newText.length <= maxLength) {
+                    if(shimmering){
+                        Box(
+                            modifier = Modifier.shimmeringEffect()
+                                .height(56.dp)
+                                .fillMaxWidth()
+                        )
+                    }
+                    else{
+                        TextFieldForRecipeWriteSingleline(
+                            value = stateRecipeWriteForm.time,
+                            onValueChanged = { newText, maxLength ->
+                                if (newText.length <= maxLength) {
+                                    recipeWriteViewModel.onRecipeWriteFormEvent(
+                                        RecipeWriteFormEvent.TimeChanged(
+                                            newText
+                                        )
+                                    )
+                                }
+                            },
+                            maxLength = 20,
+                            placeholderValue = stringResource(id = R.string.my_recipewrite_time),
+                            imeAction = ImeAction.Next,
+                            onClickTrailingicon = {
                                 recipeWriteViewModel.onRecipeWriteFormEvent(
                                     RecipeWriteFormEvent.TimeChanged(
-                                        newText
+                                        ""
                                     )
                                 )
                             }
-                        },
-                        maxLength = 20,
-                        placeholderValue = stringResource(id = R.string.my_recipewrite_time),
-                        imeAction = ImeAction.Next,
-                        onClickTrailingicon = {
-                            recipeWriteViewModel.onRecipeWriteFormEvent(
-                                RecipeWriteFormEvent.TimeChanged(
-                                    ""
-                                )
-                            )
-                        }
-                    )
+                        )
+                    }
                     Text(
                         modifier = Modifier
                             .align(Alignment.End)
@@ -466,23 +498,32 @@ fun RecipeWriteScreen(
                         style = ZipdabangandroidTheme.Typography.sixteen_700,
                         color = ZipdabangandroidTheme.Colors.Choco
                     )
-                    TextFieldForRecipeWriteMultiline(
-                        value = stateRecipeWriteForm.intro,
-                        onValueChanged = { newText, maxLength ->
-                            if (newText.length <= maxLength) {
-                                recipeWriteViewModel.onRecipeWriteFormEvent(
-                                    RecipeWriteFormEvent.IntroChanged(
-                                        newText
+                    if(shimmering){
+                        Box(
+                            modifier = Modifier.shimmeringEffect()
+                                .height(168.dp)
+                                .fillMaxWidth()
+                        )
+                    }
+                    else{
+                        TextFieldForRecipeWriteMultiline(
+                            value = stateRecipeWriteForm.intro,
+                            onValueChanged = { newText, maxLength ->
+                                if (newText.length <= maxLength) {
+                                    recipeWriteViewModel.onRecipeWriteFormEvent(
+                                        RecipeWriteFormEvent.IntroChanged(
+                                            newText
+                                        )
                                     )
-                                )
-                            }
-                        },
-                        height = 128.dp,
-                        maxLines = 4,
-                        maxLength = 100,
-                        placeholderValue = stringResource(id = R.string.my_recipewrite_intro_hint),
-                        imeAction = ImeAction.None,
-                    )
+                                }
+                            },
+                            height = 128.dp,
+                            maxLines = 4,
+                            maxLength = 100,
+                            placeholderValue = stringResource(id = R.string.my_recipewrite_intro_hint),
+                            imeAction = ImeAction.None,
+                        )
+                    }
                     Text(
                         modifier = Modifier
                             .align(Alignment.End)
@@ -523,43 +564,62 @@ fun RecipeWriteScreen(
                             color = ZipdabangandroidTheme.Colors.Typo
                         )
                     }
-                    for (i in 0 until stateRecipeWriteForm.ingredientsNum) {
-                        IngredientAndUnit(
-                            ingredientNum = i+1,
-                            valueIngredient = stateRecipeWriteForm.ingredients[i].ingredientName,
-                            onValueChangedIngredient = { newText, maxLength ->
-                                if (newText.length <= maxLength) {
-                                    recipeWriteViewModel.onRecipeWriteFormEvent(RecipeWriteFormEvent.IngredientChanged(newText,i+1))
-                                }
-                            },
-                            placeholderValueIngredient = stringResource(id = R.string.my_recipewrite_milk),
-                            maxLengthIngredient = 16,
-                            imeActionIngredient = ImeAction.Next,
-                            onClickTrailingiconIngredient = {
-                                recipeWriteViewModel.onRecipeWriteFormEvent(RecipeWriteFormEvent.IngredientChanged("",i+1))
-                            },
-
-                            onClickCancelIngredient = {
-                                recipeWriteViewModel.onRecipeWriteFormEvent(RecipeWriteFormEvent.BtnIngredientDelete(i+1))
-                            },
-
-                            valueUnit = stateRecipeWriteForm.ingredients[i].quantity,
-                            onValueChangedUnit = { newText, maxLength ->
-                                if (newText.length <= maxLength) {
-                                    recipeWriteViewModel.onRecipeWriteFormEvent(RecipeWriteFormEvent.QuantityChanged(newText,i+1))
-                                }
-                            },
-                            placeholderValueUnit = stringResource(id = R.string.my_recipewrite_hundredmilli),
-                            maxLengthUnit = 16,
-                            imeActionUnit = ImeAction.Default,
-                            onClickTrailingiconUnit = {
-                                recipeWriteViewModel.onRecipeWriteFormEvent(RecipeWriteFormEvent.QuantityChanged("",i+1))
-                            }
-                        )
+                    if(shimmering){
+                        Row(){
+                            Box(
+                                modifier = Modifier.shimmeringEffect()
+                                    .height(56.dp)
+                                    .weight(3f)
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Box(
+                                modifier = Modifier.shimmeringEffect()
+                                    .height(56.dp)
+                                    .weight(3f)
+                            )
+                            Box(
+                                modifier = Modifier.weight(1f)
+                            )
+                        }
                     }
-                    if(stateRecipeWriteForm.ingredientsNum == 10){
+                    else {
+                        for (i in 0 until stateRecipeWriteForm.ingredientsNum) {
+                            IngredientAndUnit(
+                                ingredientNum = i+1,
+                                valueIngredient = stateRecipeWriteForm.ingredients[i].ingredientName,
+                                onValueChangedIngredient = { newText, maxLength ->
+                                    if (newText.length <= maxLength) {
+                                        recipeWriteViewModel.onRecipeWriteFormEvent(RecipeWriteFormEvent.IngredientChanged(newText,i+1))
+                                    }
+                                },
+                                placeholderValueIngredient = stringResource(id = R.string.my_recipewrite_milk),
+                                maxLengthIngredient = 16,
+                                imeActionIngredient = ImeAction.Next,
+                                onClickTrailingiconIngredient = {
+                                    recipeWriteViewModel.onRecipeWriteFormEvent(RecipeWriteFormEvent.IngredientChanged("",i+1))
+                                },
 
-                    } else {
+                                onClickCancelIngredient = {
+                                    recipeWriteViewModel.onRecipeWriteFormEvent(RecipeWriteFormEvent.BtnIngredientDelete(i+1))
+                                },
+
+                                valueUnit = stateRecipeWriteForm.ingredients[i].quantity,
+                                onValueChangedUnit = { newText, maxLength ->
+                                    if (newText.length <= maxLength) {
+                                        recipeWriteViewModel.onRecipeWriteFormEvent(RecipeWriteFormEvent.QuantityChanged(newText,i+1))
+                                    }
+                                },
+                                placeholderValueUnit = stringResource(id = R.string.my_recipewrite_hundredmilli),
+                                maxLengthUnit = 16,
+                                imeActionUnit = ImeAction.Default,
+                                onClickTrailingiconUnit = {
+                                    recipeWriteViewModel.onRecipeWriteFormEvent(RecipeWriteFormEvent.QuantityChanged("",i+1))
+                                }
+                            )
+                        }
+                    }
+                    if(stateRecipeWriteForm.ingredientsNum == 10){ }
+                    else {
                         ButtonAddForIngredient(
                             enabled = stateRecipeWriteForm.ingredientBtnEnabled,
                             onClickBtn = {
@@ -620,41 +680,58 @@ fun RecipeWriteScreen(
                         style = ZipdabangandroidTheme.Typography.sixteen_700,
                         color = ZipdabangandroidTheme.Colors.Choco
                     )
-                    for (i in 0 until stateRecipeWriteForm.stepsNum) {
-                        Step(
-                            stepNum = i+1,
-                            stepImage = stateRecipeWriteForm.steps[i].stepImage,
-                            value = stateRecipeWriteForm.steps[i].description,
-                            valueLength = stateRecipeWriteForm.steps[i].stepWordCount.toString(),
-                            onValueChanged = { newText, maxLength ->
-                                if (newText.length <= maxLength) {
-                                    recipeWriteViewModel.onRecipeWriteFormEvent(RecipeWriteFormEvent.StepChanged(newText, i+1))
+                    if(shimmering){
+                        Column{
+                            Box(
+                                modifier = Modifier.shimmeringEffect()
+                                    .height(56.dp)
+                                    .fillMaxWidth()
+                            )
+                            Spacer(modifier = Modifier.height(8.dp))
+                            Box(
+                                modifier = Modifier.shimmeringEffect()
+                                    .height(260.dp)
+                                    .fillMaxWidth()
+                            )
+                        }
+                    }
+                    else{
+                        for (i in 0 until stateRecipeWriteForm.stepsNum) {
+                            Step(
+                                stepNum = i+1,
+                                stepImage = stateRecipeWriteForm.steps[i].stepImage,
+                                value = stateRecipeWriteForm.steps[i].description,
+                                valueLength = stateRecipeWriteForm.steps[i].stepWordCount.toString(),
+                                onValueChanged = { newText, maxLength ->
+                                    if (newText.length <= maxLength) {
+                                        recipeWriteViewModel.onRecipeWriteFormEvent(RecipeWriteFormEvent.StepChanged(newText, i+1))
+                                    }
+                                },
+                                placeholderValue = "레시피를 만드는 Step "+(i+1)+"을 설명해 주세요. \n(최대 200자)",
+                                completeBtnVisible = stateRecipeWriteForm.steps[i].completeBtnVisible,
+                                completeBtnEnabled = stateRecipeWriteForm.steps[i].completeBtnEnabled,
+                                addBtnVisible = stateRecipeWriteForm.steps[i].addBtnVisible,
+                                height = 232.dp,
+                                maxLines = 7,
+                                maxLength = 200,
+                                imeAction = ImeAction.None,
+                                onClickImageAddBtn = {
+                                    recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.StepFileSelectChanged(true, i+1))
+                                },
+                                onClickDeleteStep = {
+                                    recipeWriteViewModel.onRecipeWriteFormEvent(RecipeWriteFormEvent.BtnStepDelete(stepNum = i+1 ))
+                                },
+                                onClickEditStep = {
+                                    recipeWriteViewModel.onRecipeWriteFormEvent(RecipeWriteFormEvent.BtnStepEdit(stepNum = i+1 ))
+                                },
+                                onClickComplete = {
+                                    recipeWriteViewModel.onRecipeWriteFormEvent(RecipeWriteFormEvent.BtnStepComplete(stepNum = i+1 ))
+                                },
+                                onClickAdd = {
+                                    recipeWriteViewModel.onRecipeWriteFormEvent(RecipeWriteFormEvent.BtnStepAdd(stepNum = i+1 ))
                                 }
-                            },
-                            placeholderValue = "레시피를 만드는 Step "+(i+1)+"을 설명해 주세요. \n(최대 200자)",
-                            completeBtnVisible = stateRecipeWriteForm.steps[i].completeBtnVisible,
-                            completeBtnEnabled = stateRecipeWriteForm.steps[i].completeBtnEnabled,
-                            addBtnVisible = stateRecipeWriteForm.steps[i].addBtnVisible,
-                            height = 232.dp,
-                            maxLines = 7,
-                            maxLength = 200,
-                            imeAction = ImeAction.None,
-                            onClickImageAddBtn = {
-                                recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.StepFileSelectChanged(true, i+1))
-                            },
-                            onClickDeleteStep = {
-                                recipeWriteViewModel.onRecipeWriteFormEvent(RecipeWriteFormEvent.BtnStepDelete(stepNum = i+1 ))
-                            },
-                            onClickEditStep = {
-                                recipeWriteViewModel.onRecipeWriteFormEvent(RecipeWriteFormEvent.BtnStepEdit(stepNum = i+1 ))
-                            },
-                            onClickComplete = {
-                                recipeWriteViewModel.onRecipeWriteFormEvent(RecipeWriteFormEvent.BtnStepComplete(stepNum = i+1 ))
-                            },
-                            onClickAdd = {
-                                recipeWriteViewModel.onRecipeWriteFormEvent(RecipeWriteFormEvent.BtnStepAdd(stepNum = i+1 ))
-                            }
-                        )
+                            )
+                        }
                     }
                     Row(
                         modifier = Modifier
@@ -705,23 +782,32 @@ fun RecipeWriteScreen(
                         style = ZipdabangandroidTheme.Typography.sixteen_700,
                         color = ZipdabangandroidTheme.Colors.Choco
                     )
-                    TextFieldForRecipeWriteMultiline(
-                        value = stateRecipeWriteForm.recipeTip,
-                        onValueChanged = { newText, maxLength ->
-                            if (newText.length <= maxLength) {
-                                recipeWriteViewModel.onRecipeWriteFormEvent(
-                                    RecipeWriteFormEvent.RecipeTipChanged(
-                                        newText
+                    if(shimmering){
+                        Box(
+                            modifier = Modifier.shimmeringEffect()
+                                .height(260.dp)
+                                .fillMaxWidth()
+                        )
+                    }
+                    else{
+                        TextFieldForRecipeWriteMultiline(
+                            value = stateRecipeWriteForm.recipeTip,
+                            onValueChanged = { newText, maxLength ->
+                                if (newText.length <= maxLength) {
+                                    recipeWriteViewModel.onRecipeWriteFormEvent(
+                                        RecipeWriteFormEvent.RecipeTipChanged(
+                                            newText
+                                        )
                                     )
-                                )
-                            }
-                        },
-                        height = 224.dp,
-                        maxLines = 8,
-                        maxLength = 200,
-                        placeholderValue = stringResource(id = R.string.my_recipewrite_recipetip_hint),
-                        imeAction = ImeAction.None,
-                    )
+                                }
+                            },
+                            height = 224.dp,
+                            maxLines = 8,
+                            maxLength = 200,
+                            placeholderValue = stringResource(id = R.string.my_recipewrite_recipetip_hint),
+                            imeAction = ImeAction.None,
+                        )
+                    }
                     Text(
                         modifier = Modifier
                             .align(Alignment.End)

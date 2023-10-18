@@ -78,26 +78,22 @@ sealed class TabItem(val tabTitle: String, val screen: ComposableFun) {
     )
 
     class MyCompleteRecipes(
-        shimmering: Boolean,
         onClickCompleteRecipes : (Int)->Unit,
     ) : TabItem (
         tabTitle ="업로드",
         screen = {
             MyCompleteRecipesScreen(
-                shimmering = shimmering,
                 onClickCompleteRecipes = onClickCompleteRecipes
             )
         }
     )
 
     class MyTempRecipes(
-        shimmering: Boolean,
         onClickTempRecipes : (Int)->Unit,
     ) : TabItem (
         tabTitle = "임시 저장",
         screen = {
             MyTempRecipesScreen(
-                shimmering = shimmering,
                 onClickTempRecipes = onClickTempRecipes
             )
         }

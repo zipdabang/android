@@ -16,7 +16,6 @@ import com.zipdabang.zipdabang_android.module.my.ui.viewmodel.MyRecipesViewModel
 
 @Composable
 fun MyCompleteRecipesScreen(
-    shimmering: Boolean,
     onClickCompleteRecipes : (Int)->Unit,
     viewModel : MyRecipesViewModel = hiltViewModel()
 ) {

@@ -15,11 +15,16 @@ import com.zipdabang.zipdabang_android.module.my.ui.viewmodel.MyRecipesViewModel
 
 @Composable
 fun MyTempRecipesScreen(
-    shimmering: Boolean,
     onClickTempRecipes : (Int)->Unit,
     viewModel : MyRecipesViewModel = hiltViewModel()
 ) {
     val tempRecipeItems = viewModel.tempRecipeItems.collectAsLazyPagingItems()
+    var shimmering: Boolean = true
+    /*if (stateMyUserInfo.isLoading || stateMyUserInfo.error.isNotBlank()) {
+        shimmering = true
+    } else {
+        shimmering = false
+    }*/
 
     LaunchedEffect(key1 = true ){
         viewModel.getTempRecipeItems()
