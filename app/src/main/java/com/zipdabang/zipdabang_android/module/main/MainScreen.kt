@@ -17,22 +17,30 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.zipdabang.zipdabang_android.core.navigation.MainNavGraph
+import com.zipdabang.zipdabang_android.core.navigation.MyScreen
+import com.zipdabang.zipdabang_android.core.navigation.SPLASH_ROUTE
 import com.zipdabang.zipdabang_android.core.navigation.SharedScreen
 import com.zipdabang.zipdabang_android.module.bottom.ui.BottomNavigationBar
+import com.zipdabang.zipdabang_android.module.main.common.FCMData
+import com.zipdabang.zipdabang_android.module.main.common.NotificationTarget
 import kotlinx.coroutines.launch
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun MainScreen(
     outerNavController: NavHostController,
+    fcmData: FCMData?
   //  innerNavController: NavHostController
 ){
     //drawer에 필요한 drawerState랑 scope
   //  val drawerState = rememberDrawerState(DrawerValue.Closed)
   //  val scope = rememberCoroutineScope()
+
+    val viewModel = hiltViewModel<NotificationViewModel>()
 
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
@@ -57,6 +65,34 @@ fun MainScreen(
                 showSnackBar = { text ->
                     scope.launch {
                         snackbarHostState.showSnackbar(text)
+                    }
+                },
+                fcmData = fcmData,
+                onFcmDataExist = {
+                    fcmData?.let { data ->
+                        viewModel.getDeleteNotificationResult(alarmId = data.targetNotificationPK)
+                        when (data.targetView) {
+                            NotificationTarget.Recipe.target -> {
+                                innerNavController.navigate(
+                                    route = SharedScreen.DetailRecipe.passRecipeId(data.targetPK)
+                                ) {
+                                    launchSingleTop = true
+                                }
+                            }
+                            NotificationTarget.User.target -> {
+                                innerNavController.navigate(
+                                    route = MyScreen.OtherPage.passUserId(data.targetPK)
+                                ) {
+                                    launchSingleTop = true
+                                }
+                            }
+                            NotificationTarget.MyPage.target -> {
+
+                            }
+                            NotificationTarget.Notification.target -> {
+
+                            }
+                        }
                     }
                 }
             )

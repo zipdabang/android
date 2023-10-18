@@ -132,7 +132,7 @@ class FirebaseCloudMessagingService: FirebaseMessagingService() {
             intent.putExtra(key, remoteMessage.data.getValue(key))
         }
 
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
         val pendingIntent = PendingIntent.getActivity(
             this,
             requestCode,
