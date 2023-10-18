@@ -49,6 +49,29 @@ fun MyrecipeScreen(
     ModalDrawer(
         scaffold = {
             Scaffold(
+                bottomBar = {
+                    // 레시피 작성하기
+                    Row(
+                        modifier = Modifier.height(56.dp)
+                    ){
+                        Box(
+                            modifier = Modifier
+                                .background(ZipdabangandroidTheme.Colors.Strawberry)
+                                .height(56.dp)
+                                .fillMaxWidth()
+                                .clickable(
+                                    onClick = {onClickWrite()}
+                                ),
+                            contentAlignment = Alignment.Center
+                        ){
+                            Text(
+                                text= stringResource(id = R.string.my_addnewrecipe),
+                                color = Color.White,
+                                style = ZipdabangandroidTheme.Typography.sixteen_700,
+                            )
+                        }
+                    }
+                },
                 modifier = Modifier
                     .fillMaxSize(),
                 topBar = {
@@ -79,28 +102,8 @@ fun MyrecipeScreen(
                         //Pager(tabsList = listOf(TabItem()), pagerState = pagerState)
                     }
 
-                    // 레시피 작성하기
-                    Row(
-                        verticalAlignment = Alignment.Bottom,
-                        modifier = Modifier.height(56.dp)
-                    ){
-                        Box(
-                            modifier = Modifier
-                                .background(ZipdabangandroidTheme.Colors.Strawberry)
-                                .height(56.dp)
-                                .fillMaxWidth()
-                                .clickable(
-                                    onClick = {onClickWrite()}
-                                ),
-                            contentAlignment = Alignment.Center
-                        ){
-                            Text(
-                                text= stringResource(id = R.string.my_addnewrecipe),
-                                color = Color.White,
-                                style = ZipdabangandroidTheme.Typography.sixteen_700,
-                            )
-                        }
-                    }
+
+
                 }
             }
         },
