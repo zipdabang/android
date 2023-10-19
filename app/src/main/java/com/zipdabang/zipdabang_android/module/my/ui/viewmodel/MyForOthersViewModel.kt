@@ -1,5 +1,6 @@
 package com.zipdabang.zipdabang_android.module.my.ui.viewmodel
 
+import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
@@ -19,6 +20,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
 
+@SuppressLint("SuspiciousIndentation")
 @HiltViewModel
 class MyForOthersViewModel @Inject constructor(
     val getOtherInfoUseCase: GeOtherInfoUseCase,

@@ -30,7 +30,7 @@ class ReportDetailViewModel @Inject constructor(
     }
 
 
-    private fun getReportDetail(reportId : Int){
+     fun getReportDetail(reportId : Int){
 
         getReportDetailUseCase(reportId).onEach {
 
