@@ -32,7 +32,8 @@ fun TempRecipeItem(
     thumbnail : String?,
     title : String?,
     createdAt : String,
-    onClick : ()->Unit
+    onEditClick : ()->Unit,
+    onDeleteClick : ()->Unit,
 ) {
     Column(
         modifier = Modifier
@@ -92,14 +93,15 @@ fun TempRecipeItem(
                     painter = painterResource(id = R.drawable.ic_recipewrite_trashcan),
                     contentDescription = "Icon",
                     tint = ZipdabangandroidTheme.Colors.Typo,
-                    modifier = Modifier.size(28.dp),
+                    modifier = Modifier.size(28.dp)
+                        .clickable(onClick={onDeleteClick()}),
                 )
                 Icon(
                     painter = painterResource(id = R.drawable.ic_my_edit),
                     contentDescription = "Icon",
                     tint = ZipdabangandroidTheme.Colors.Typo,
                     modifier = Modifier.size(28.dp)
-                        .clickable(onClick = { onClick() }),
+                        .clickable(onClick = { onEditClick() }),
                 )
             }
         }

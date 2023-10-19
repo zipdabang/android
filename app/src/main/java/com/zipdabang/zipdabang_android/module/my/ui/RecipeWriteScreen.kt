@@ -88,6 +88,9 @@ fun RecipeWriteScreen(
     val context = LocalContext.current
     val stateThumbnail = recipeWriteViewModel.stateRecipeWriteForm.thumbnail
     val stateUploadRecipeId = recipeWriteViewModel.uploadRecipeId // 기문이형 도와줘 ㅠㅠ
+
+    val stateTempRecipeWriteForm = recipeWriteViewModel.stateTempRecipeWriteForm
+    var tempRecipeApiCalled = recipeWriteViewModel.tempRecipeDetailApiCalled
     var shimmering: Boolean = true
 
     if (stateRecipeWriteForm.isLoading || stateRecipeWriteForm.error.isNotBlank()) {
@@ -105,7 +108,6 @@ fun RecipeWriteScreen(
             }
         }
     }
-
 
     LaunchedEffect(key1 = stateRecipeWriteForm){
         recipeWriteViewModel.onRecipeWriteFormEvent(RecipeWriteFormEvent.BtnEnabled(true))
@@ -130,6 +132,9 @@ fun RecipeWriteScreen(
     var thumbnailPhotoBitmap : Bitmap?
     var stepPhotoBitmap : Bitmap?
     val stepImageParts  = remember {
+        mutableStateListOf<MultipartBody.Part>()
+    }
+    val stepNewImageParts = remember {
         mutableStateListOf<MultipartBody.Part>()
     }
 
@@ -285,7 +290,13 @@ fun RecipeWriteScreen(
                         borderColor = ZipdabangandroidTheme.Colors.MainBackground,
                         text = stringResource(id = R.string.my_recipewrite_save),
                         onClick = {
-                            recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.SaveChanged(true))
+                            if(tempRecipeApiCalled > 0){
+                                CoroutineScope(Dispatchers.Main).launch {
+                                    //recipeWriteViewModel.postTempRecipeToTemp(tempId!!, stepNewImageParts.toList())
+                                }
+                            } else {
+                                recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.SaveChanged(true))
+                            }
                         },
                         enabled = stateRecipeWriteForm.btnEnabledSave
                     )
@@ -297,10 +308,17 @@ fun RecipeWriteScreen(
                         isFormFilled = stateRecipeWriteForm.btnEnabled,
                         text = stringResource(id = R.string.my_recipewrite_writedone),
                         onClick = {
-                            CoroutineScope(Dispatchers.Main).launch{
-                                try{
-                                    recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.UploadCategoryChanged(true))
-                                } catch (e:Exception){}
+                            if(tempRecipeApiCalled > 0) {
+                                CoroutineScope(Dispatchers.Main).launch {
+                                    // 임시저장 수정 api 호출하기
+                                    // save api 호출하기
+                                }
+                            } else{
+                                CoroutineScope(Dispatchers.Main).launch{
+                                    try{
+                                        recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.UploadCategoryChanged(true))
+                                    } catch (e:Exception){}
+                                } 
                             }
                         },
                     )
@@ -312,20 +330,14 @@ fun RecipeWriteScreen(
             AppBarSignUp(
                 navigationIcon = R.drawable.ic_topbar_backbtn,
                 onClickNavIcon = {
-                    Log.e("뭐지", "${recipeWriteViewModel.tempRecipeDetailApiCalled}")
                     if(recipeWriteViewModel.tempRecipeDetailApiCalled > 0){
-                        Log.e("뭐지 2","")
                         if(recipeWriteViewModel.isTempRecipeEdited()){
-                            Log.e("뭐지 2-1","")
                             recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.RecipeDeleteChanged(true))
                         } else{
-                            Log.e("뭐지 2-2","")
                             onClickBack()
                         }
                     } else {
-                        Log.e("뭐지 3","")
                         if(!recipeWriteViewModel.isEmpty()){
-                            Log.e("뭐지 3-1","")
                             recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.RecipeDeleteChanged(true))
                         } else {
                             onClickBack()

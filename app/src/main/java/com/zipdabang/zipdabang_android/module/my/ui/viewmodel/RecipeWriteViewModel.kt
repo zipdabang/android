@@ -16,10 +16,15 @@ import com.zipdabang.zipdabang_android.module.my.data.remote.recipewrite.RecipeW
 import com.zipdabang.zipdabang_android.module.my.data.remote.recipewrite.RecipeWriteTempContent
 import com.zipdabang.zipdabang_android.module.my.data.remote.recipewrite.RecipeWriteTempIngredient
 import com.zipdabang.zipdabang_android.module.my.data.remote.recipewrite.RecipeWriteTempStep
+import com.zipdabang.zipdabang_android.module.my.data.remote.recipewrite.TempRecipeWriteContent
+import com.zipdabang.zipdabang_android.module.my.data.remote.recipewrite.TempRecipeWriteIngredient
+import com.zipdabang.zipdabang_android.module.my.data.remote.recipewrite.TempRecipeWriteStep
 import com.zipdabang.zipdabang_android.module.my.domain.usecase.GetRecipeWriteBeveragesUseCase
 import com.zipdabang.zipdabang_android.module.my.domain.usecase.GetTempRecipeDetailUseCase
+import com.zipdabang.zipdabang_android.module.my.domain.usecase.PostAsPatchTempRecipeUseCase
 import com.zipdabang.zipdabang_android.module.my.domain.usecase.PostRecipeWriteTempUseCase
 import com.zipdabang.zipdabang_android.module.my.domain.usecase.PostRecipeWriteUseCase
+import com.zipdabang.zipdabang_android.module.my.domain.usecase.PostSaveTempRecipeUseCase
 import com.zipdabang.zipdabang_android.module.my.ui.state.recipewrite.Ingredient
 import com.zipdabang.zipdabang_android.module.my.ui.state.recipewrite.RecipeWriteBeveragesEvent
 import com.zipdabang.zipdabang_android.module.my.ui.state.recipewrite.RecipeWriteBeveragesState
@@ -37,6 +42,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import javax.inject.Inject
 
@@ -46,7 +52,9 @@ class RecipeWriteViewModel @Inject constructor(
     private val postRecipeWriteUseCase: PostRecipeWriteUseCase,
     private val getRecipeWriteBeveragesUseCase: GetRecipeWriteBeveragesUseCase,
     private val postRecipeWriteTempUseCase: PostRecipeWriteTempUseCase,
-    private val getTempRecipeDetailUseCase: GetTempRecipeDetailUseCase
+    private val getTempRecipeDetailUseCase: GetTempRecipeDetailUseCase,
+    private val postAsPatchTempRecipeUseCase: PostAsPatchTempRecipeUseCase,
+    private val postSaveTempRecipeUseCase: PostSaveTempRecipeUseCase,
 ) : ViewModel() {
 
     var stateRecipeWriteForm by mutableStateOf(
@@ -670,18 +678,67 @@ class RecipeWriteViewModel @Inject constructor(
                             time = result.data?.recipeInfo?.time ?: "",
                             intro = result.data?.recipeInfo?.intro ?: "",
                             recipeTip = result?.data?.recipeInfo?.recipeTip ?: "",
-                            btnEnabledSave = false
+                            btnEnabledSave = false,
+                            stepsNum = result?.data?.steps?.size ?: 1,
+                            steps = result?.data?.steps?.mapIndexed { index, step ->
+                                val completeBtnVisible = step.image == null || step.description == null
+                                val isLastStep = index == result.data.steps.size - 1
+                                val addBtnVisible = when {
+                                    result.data.steps.size == 1 && completeBtnVisible -> false // Case 1
+                                    !isLastStep -> false // Case 2
+                                    isLastStep && completeBtnVisible -> false // Case 3
+                                    else -> true
+                                }
+                                Step(
+                                    stepImage = step.image,
+                                    description = step.description ?: "",
+                                    stepWordCount = 0,
+                                    completeBtnEnabled = false, // Set to an appropriate value
+                                    completeBtnVisible = completeBtnVisible,
+                                    addBtnVisible = addBtnVisible
+                                )
+                            } ?: emptyList(),
+                            ingredients = result?.data?.ingredients?.map { ingredient ->
+                                Ingredient(
+                                    ingredientName = ingredient.ingredientName,
+                                    quantity = ingredient.quantity
+                                )
+                            } ?: emptyList(),
+                            ingredientsNum = result?.data?.ingredients?.size ?: 1,
                         )
                         stateTempRecipeWriteForm = stateTempRecipeWriteForm.copy(
                             isLoading = false,
                             thumbnail = result.data?.recipeInfo?.thumbnailUrl,
-                            title = result.data?.recipeInfo?.recipeName ?: "",
-                            time = result.data?.recipeInfo?.time ?: "",
-                            intro = result.data?.recipeInfo?.intro ?: "",
-                            recipeTip = result?.data?.recipeInfo?.recipeTip ?: "",
-                            btnEnabledSave = false
+                            stepsNum = result?.data?.steps?.size ?: 1,
+                            steps = result?.data?.steps?.mapIndexed { index, step ->
+                                val completeBtnVisible = step.image == null || step.description == null
+                                val isLastStep = index == result.data.steps.size - 1
+
+                                val addBtnVisible = when {
+                                    result.data.steps.size == 1 && completeBtnVisible -> false // Case 1
+                                    !isLastStep -> false // Case 2
+                                    isLastStep && completeBtnVisible -> false // Case 3
+                                    else -> true
+                                }
+                                Step(
+                                    stepImage = step.image,
+                                    description = step.description ?: "",
+                                    stepWordCount = 0,
+                                    completeBtnEnabled = false,
+                                    completeBtnVisible = completeBtnVisible,
+                                    addBtnVisible = addBtnVisible
+                                )
+                            } ?: emptyList(),
+                            ingredients = result?.data?.ingredients?.map { ingredient ->
+                                Ingredient(
+                                    ingredientName = ingredient.ingredientName,
+                                    quantity = ingredient.quantity
+                                )
+                            } ?: emptyList(),
+                            ingredientsNum = result?.data?.ingredients?.size ?: 1,
                         )
-                        Log.e("tempId 전달 후 api 요청", "성공 : ${stateRecipeWriteForm}")
+                        Log.e("my-stateRecipeWriteForm" ,"${stateRecipeWriteForm}")
+                        Log.e("my-stateTempRecipeWriteForm" ,"${stateTempRecipeWriteForm}")
                         tempRecipeDetailApiCalled ++
                         //Log.e("뭐지", "${tempRecipeDetailApiCalled}")
                     }
@@ -698,6 +755,49 @@ class RecipeWriteViewModel @Inject constructor(
                 }
             }
         } catch (e: Exception) {}
+
+    }
+    suspend fun postTempRecipeToTemp(tempId : Int, stepImageParts: List<MultipartBody.Part>, stepNewImageParts : List<MultipartBody.Part>){
+        var accessToken = "Bearer " + dataStore.data.first().accessToken.toString()
+
+        val ingredients = stateTempRecipeWriteForm.ingredients.map { ingredient ->
+            TempRecipeWriteIngredient(
+                ingredientName = ingredient.ingredientName,
+                quantity = ingredient.quantity
+            )
+        }
+        val steps = stateTempRecipeWriteForm.steps.mapIndexed { index, step ->
+            TempRecipeWriteStep(
+                description = step.description,
+                stepNum = index + 1,
+                stepUrl = "", // 기존에 있던 사진들 or 삭제된 것도 다 포함
+            )
+        }
+        val content = TempRecipeWriteContent(
+            thumbnailUrl =
+                if(stateTempRecipeWriteForm.thumbnail == null || stateTempRecipeWriteForm.thumbnail == "") null
+                else stateTempRecipeWriteForm.thumbnail.toString(),
+            name = stateTempRecipeWriteForm.title,
+            time = stateTempRecipeWriteForm.time,
+            intro = stateTempRecipeWriteForm.intro,
+            recipeTip = stateTempRecipeWriteForm.recipeTip,
+            ingredientCount = stateTempRecipeWriteForm.ingredientsNum,
+            stepCount = stateTempRecipeWriteForm.stepsNum,
+            steps = steps,
+            ingredients = ingredients
+        )
+        val gson = Gson()
+        val json = gson.toJson(content) // yourDataObject는 요청 본문의 데이터 객체입니다.
+        val contentRequestBody = json.toRequestBody("application/json".toMediaTypeOrNull())
+
+
+        try{
+            // val result = postAsPatchTempRecipeUseCase(accessToken, tempId, contentRequestBody, )
+
+
+        } catch (e: Exception) {}
+    }
+    suspend fun postSaveTempRecipe(){
 
     }
 }

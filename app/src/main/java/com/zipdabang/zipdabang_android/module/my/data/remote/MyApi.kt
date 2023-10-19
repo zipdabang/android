@@ -5,12 +5,9 @@ import com.zipdabang.zipdabang_android.module.my.data.remote.friendlist.follow.F
 import com.zipdabang.zipdabang_android.module.my.data.remote.friendlist.follow.search.SearchFollowingDto
 import com.zipdabang.zipdabang_android.module.my.data.remote.friendlist.following.FollowingDto
 import com.zipdabang.zipdabang_android.module.my.data.remote.friendlist.following.search.SearchFollowersDto
-import okhttp3.MultipartBody
-import okhttp3.RequestBody
 import com.zipdabang.zipdabang_android.module.my.data.remote.myinfo.MyInfoRecipesResponse
 import com.zipdabang.zipdabang_android.module.my.data.remote.myinfo.MyInfoResponse
 import com.zipdabang.zipdabang_android.module.my.data.remote.myrecipes.complete.CompleteRecipesResponse
-import com.zipdabang.zipdabang_android.module.my.data.remote.recipewrite.PostTempRecipeSaveRequestBody
 import com.zipdabang.zipdabang_android.module.my.data.remote.myrecipes.temp.TempRecipesResponse
 import com.zipdabang.zipdabang_android.module.my.data.remote.otherinfo.OtherInfoDto
 import com.zipdabang.zipdabang_android.module.my.data.remote.otherinfo.OtherRecipePreviewDto
@@ -18,10 +15,13 @@ import com.zipdabang.zipdabang_android.module.my.data.remote.recipedelete.Delete
 import com.zipdabang.zipdabang_android.module.my.data.remote.recipeedit.complete.GetCompleteRecipeResponse
 import com.zipdabang.zipdabang_android.module.my.data.remote.recipeedit.complete.PatchCompleteRecipeRequestBody
 import com.zipdabang.zipdabang_android.module.my.data.remote.recipeedit.temp.GetTempRecipeResponse
+import com.zipdabang.zipdabang_android.module.my.data.remote.recipewrite.PostTempRecipeSaveRequestBody
 import com.zipdabang.zipdabang_android.module.my.data.remote.recipewrite.RecipeWriteBeveragesResponse
 import com.zipdabang.zipdabang_android.module.my.data.remote.recipewrite.RecipeWriteResponse
 import com.zipdabang.zipdabang_android.module.my.data.remote.recipewrite.RecipeWriteTempResponse
 import com.zipdabang.zipdabang_android.module.my.data.remote.signout.SignOutResponseDto
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
@@ -114,14 +114,16 @@ interface MyApi {
 
     // 임시저장 수정 (임시저장->임시저장)
     @POST("members/recipes/temp/{tempId}")
-    suspend fun postMyTempRecipeToTemp(
+    suspend fun postTempRecipeToTemp(
         @Header("Authorization") accessToken: String,
         @Path("tempId") tempId : Int,
-
+        @Part("content") content: RequestBody,
+        @Part stepImages: List<MultipartBody.Part>?,
+        @Part thumbnail: MultipartBody.Part?
     ) : RecipeWriteResponse
     // 임시저장->업로드 : 최종 등록
     @POST("members/recipes/temp/{tempId}/save")
-    suspend fun postMyTempRecipeSave(
+    suspend fun postTempRecipeSave(
         @Header("Authorization") accessToken: String,
         @Path("tempId") tempId : Int,
         @Body categoryId : PostTempRecipeSaveRequestBody
@@ -129,7 +131,7 @@ interface MyApi {
 
     // 임시저장 삭제
     @DELETE("members/recipes/temp/{tempId}/")
-    suspend fun deleteMyTempRecipe(
+    suspend fun deleteTempRecipe(
         @Header("Authorization") accessToken: String,
         @Path("tempId") tempId : Int
     ) : DeleteRecipeResponse
@@ -138,14 +140,14 @@ interface MyApi {
 
     // 업로드 수정
     @PATCH("members/recipes/{recipeId}")
-    suspend fun patchMyCompleteRecipes(
+    suspend fun patchCompleteRecipe(
         @Header("Authorization") accessToken: String,
         @Path("recipeId") recipeId : Int,
         @Body content : PatchCompleteRecipeRequestBody
     ) : RecipeWriteResponse
     // 업로드 삭제
     @DELETE("members/recipes/{recipeId}")
-    suspend fun deleteMyCompleteRecipe(
+    suspend fun deleteCompleteRecipe(
         @Header("Authorization") accessToken: String,
         @Path("recipeId") recipeId : Int,
     ) : DeleteRecipeResponse
