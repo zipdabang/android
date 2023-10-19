@@ -1,47 +1,29 @@
 package com.zipdabang.zipdabang_android.module.main
 
-import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
-import android.Manifest
 import android.annotation.SuppressLint
-import android.content.Context
 import android.provider.Settings
-import android.telephony.TelephonyManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.material3.Text
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.core.content.ContextCompat
 import androidx.datastore.core.DataStore
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.rememberNavController
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.messaging.ktx.messaging
 import com.zipdabang.zipdabang_android.common.Constants.TOKEN_NULL
-import com.zipdabang.zipdabang_android.core.data_store.proto.CurrentPlatform
-import com.zipdabang.zipdabang_android.core.data_store.proto.ProtoDataViewModel
 import com.zipdabang.zipdabang_android.core.data_store.proto.Token
-import com.zipdabang.zipdabang_android.core.data_store.proto.tokenDataStore
 import com.zipdabang.zipdabang_android.core.navigation.RootNavGraph
+import com.zipdabang.zipdabang_android.module.main.common.FCMData
 import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
-import java.util.UUID
 import javax.inject.Inject
-import kotlin.reflect.typeOf
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -56,7 +38,8 @@ class MainActivity : ComponentActivity() {
     private lateinit var title: String
     private lateinit var body: String
     private lateinit var targetCategory: String
-    private lateinit var targetId: String
+    private lateinit var targetPK: String
+    private lateinit var targetNotificationPK: String
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -65,15 +48,18 @@ class MainActivity : ComponentActivity() {
         val fcmData = intent.extras?.let {
             title = it.getString("title", "no title")
             body = it.getString("body", "no body")
-            targetCategory = it.getString("targetView", "no body")
-            targetId = it.getString("targetPK", "no body")
-            Log.d(TAG, "title: $title, body: $body, targetCategory: $targetCategory, targetId: $targetId")
+            targetCategory = it.getString("targetView", "NONE")
+            targetPK = it.getString("targetPK", "0")
+            targetNotificationPK = it.getString("targetNotificationPK", "0")
+            Log.d(TAG, "title: $title, body: $body, targetCategory: $targetCategory, " +
+                    "targetPK: $targetPK, targetNotificationPK: $targetNotificationPK")
 
             FCMData(
                 title = title,
                 body = body,
-                targetCategory = targetCategory,
-                targetId = targetId.toInt()
+                targetView = targetCategory,
+                targetPK = targetPK.toInt(),
+                targetNotificationPK = targetNotificationPK.toInt()
             )
         }
         
@@ -82,7 +68,6 @@ class MainActivity : ComponentActivity() {
                 Log.d(TAG, "fcmData : $fcmData")
                 val navController = rememberNavController()
                 ZipdabangApp(navController)
-
                 RootNavGraph(outerNavController = navController, fcmData = fcmData)
             }
 

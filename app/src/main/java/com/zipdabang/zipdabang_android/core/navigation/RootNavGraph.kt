@@ -6,23 +6,23 @@ import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
-import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navArgument
-import com.zipdabang.zipdabang_android.module.main.FCMData
+import com.zipdabang.zipdabang_android.module.main.common.FCMData
 import com.zipdabang.zipdabang_android.module.main.MainScreen
+import com.zipdabang.zipdabang_android.module.main.NotificationViewModel
+import com.zipdabang.zipdabang_android.module.main.common.NotificationTarget
 import com.zipdabang.zipdabang_android.module.splash.ui.SplashScreen
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun RootNavGraph(
     outerNavController: NavHostController,
-    fcmData: FCMData? = null
+    fcmData: FCMData?
 ) {
 
-   val innerNavController = rememberNavController()
+    val innerNavController = rememberNavController()
     Log.d("RootNavGraph", fcmData.toString())
 
     NavHost(
@@ -49,23 +49,7 @@ fun RootNavGraph(
                     }
                 },
                 onNotificationClick = {
-                    fcmData?.let {
-                        when (it.targetCategory) {
-                            "레시피" -> {
-                                outerNavController.navigate(
-                                    route = SharedScreen.DetailRecipe.passRecipeId(it.targetId)
-                                ) {
-                                    popUpTo(SPLASH_ROUTE) {
-                                        inclusive = true
-                                    }
-                                    launchSingleTop = true
-                                }
-                            }
-                            else -> {
 
-                            }
-                        }
-                    }
                 },
                 fcmData = fcmData
             )
@@ -76,6 +60,7 @@ fun RootNavGraph(
         composable(route = MAIN_ROUTE) {
            MainScreen(
                outerNavController = outerNavController,
+               fcmData = fcmData
            )
         }
 

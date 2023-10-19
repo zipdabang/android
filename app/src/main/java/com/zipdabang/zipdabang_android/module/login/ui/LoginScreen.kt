@@ -53,17 +53,6 @@ fun LoginScreen(
 
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
-    var fcmToken = TOKEN_NULL
-    var deviceNumber = TOKEN_NULL
-/*    val deviceNumber = tm.simSerialNumber*/
-
-    LaunchedEffect(key1 = true) {
-        tokenStoreViewModel.tokens.collect { tokens ->
-            fcmToken = tokens.fcmToken ?: TOKEN_NULL
-            deviceNumber = tokens.deviceNumber ?: TOKEN_NULL
-            Log.d(TAG, "fcm token : $fcmToken, deviceNumber : $deviceNumber")
-        }
-    }
 
 
     val googleAuthClient by lazy {
@@ -98,19 +87,16 @@ fun LoginScreen(
 
                             val profile = googleUserInfo.profile
                             val email = googleUserInfo.email
-                            viewModel.getAuthResult(
-                                body = AuthBody(
-                                    email = email!!,
-                                    fcmToken = fcmToken,
-                                    serialNumber = deviceNumber
-                                ),
-                                platform = Constants.PLATFORM_GOOGLE,
-                                email = email,
-                                profile = profile!!,
-                                tokenStoreViewModel = tokenStoreViewModel,
-                                onSuccess = onSuccess,
-                                onRegister = onRegister
-                            )
+                            email?.let {
+                                viewModel.getAuthResult(
+                                    platform = Constants.PLATFORM_GOOGLE,
+                                    email = email,
+                                    profile = profile!!,
+                                    tokenStoreViewModel = tokenStoreViewModel,
+                                    onSuccess = onSuccess,
+                                    onRegister = onRegister
+                                )
+                            }
                         }
                     }
                 }
@@ -184,11 +170,6 @@ fun LoginScreen(
                                 val profile = result.data.profile
                                 Log.d(TAG, "email: $email, profile: $profile")
                                 viewModel.getAuthResult(
-                                    body = AuthBody(
-                                        email = email,
-                                        fcmToken = fcmToken,
-                                        serialNumber = deviceNumber
-                                    ),
                                     platform = Constants.PLATFORM_KAKAO,
                                     tokenStoreViewModel = tokenStoreViewModel,
                                     email = email,
