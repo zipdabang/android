@@ -105,9 +105,9 @@ sealed class SharedScreen(val route : String){
         }
     }
 
-    object BlockedRecipe: SharedScreen(route = "shared/detail/blocked/{recipeId}") {
-        fun passRecipeId(recipeId: Int): String{
-            return "shared/detail/blocked/$recipeId"
+    object BlockedRecipe: SharedScreen(route = "shared/detail/blocked?recipeId={recipeId}&ownerId={ownerId}") {
+        fun passRecipeId(recipeId: Int, ownerId: Int): String{
+            return "shared/detail/blocked?recipeId=$recipeId&ownerId=$ownerId"
         }
     }
 
