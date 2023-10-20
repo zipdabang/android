@@ -15,6 +15,7 @@ import com.zipdabang.zipdabang_android.module.my.data.remote.myrecipes.complete.
 import com.zipdabang.zipdabang_android.module.my.data.remote.myrecipes.temp.TempRecipe
 import com.zipdabang.zipdabang_android.module.my.domain.repository.PagingCompleteRecipesRepository
 import com.zipdabang.zipdabang_android.module.my.domain.repository.PagingTempRecipesRepository
+import com.zipdabang.zipdabang_android.module.my.domain.usecase.DeleteCompleteRecipeUseCase
 import com.zipdabang.zipdabang_android.module.my.domain.usecase.DeleteTempRecipeUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -28,6 +29,7 @@ class MyRecipesViewModel @OptIn(ExperimentalPagingApi::class)
 @Inject constructor(
     private val dataStore: DataStore<Token>,
     private val deleteTempRecipeUseCase: DeleteTempRecipeUseCase,
+    private val deleteCompleteRecipeUseCase: DeleteCompleteRecipeUseCase,
     val completeRecipesRepository : PagingCompleteRecipesRepository,
     val tempRecipesRepository: PagingTempRecipesRepository,
 ) : ViewModel(){
@@ -78,5 +80,27 @@ class MyRecipesViewModel @OptIn(ExperimentalPagingApi::class)
         getTempRecipeItems()
     }
 
+    suspend fun deleteCompleteRecipe(recipeId : Int){
+        var accessToken = "Bearer " + dataStore.data.first().accessToken.toString()
+
+        try{
+            val result = deleteCompleteRecipeUseCase(accessToken, recipeId)
+
+            result.collect {result->
+                when(result){
+                    is Resource.Success->{
+                        Log.e("my-delete-completerecipe", "성공 : ${result} ${result.message} ${result.data} ${result.code}")
+                    }
+                    is Resource.Error ->{
+                        Log.e("my-delete-completerecipe", "에러 : ${result} ${result.message} ${result.data} ${result.code}")
+                    }
+                    is Resource.Loading ->{
+                        Log.e("my-delete-completerecipe",  "로딩중 : ${result} ${result.message} ${result.data} ${result.code}")
+                    }
+                }
+            }
+        } catch (e: Exception) {}
+        getCompleteRecipeItems()
+    }
 
 }
