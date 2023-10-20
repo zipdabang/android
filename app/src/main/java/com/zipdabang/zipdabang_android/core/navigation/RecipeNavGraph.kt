@@ -29,6 +29,11 @@ fun NavGraphBuilder.RecipeNavGraph(
             }
 
             RecipeScreen(
+                onSearchIconClick = {
+                    navController.navigate(SharedScreen.Search.route) {
+                        launchSingleTop = true
+                    }
+                },
                 onCategoryClick = { categoryId ->
                     Log.d("type - category", "$categoryId")
                     navController.navigate(RecipeScreen.RecipeList.passQuery(category = categoryId)) {
@@ -97,6 +102,11 @@ fun NavGraphBuilder.RecipeNavGraph(
             RecipeListScreen(
                 navController = navController,
                 categoryState = categoryState,
+                onSearchIconClick = {
+                    navController.navigate(SharedScreen.Search.route) {
+                        launchSingleTop = true
+                    }
+                },
                 onShareClick = {
                     navController.navigate(
                         route = MyScreen.RecipeWrite.route
