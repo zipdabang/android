@@ -99,7 +99,7 @@ fun RecipeWriteScreen(
         shimmering = false
     }
 
-
+    // 화면 이동을 위함
     if(recipeWriteViewModel.tempRecipeDetailApiCalled == 0){
         if(tempId == 0 || tempId == null){}
         else {
@@ -110,6 +110,8 @@ fun RecipeWriteScreen(
     }
 
     LaunchedEffect(key1 = stateRecipeWriteForm){
+        Log.e("recipewrite-post-temp 전", "stateRecipeWriteForm : ${stateRecipeWriteForm}")
+
         recipeWriteViewModel.onRecipeWriteFormEvent(RecipeWriteFormEvent.BtnEnabled(true))
         if(recipeWriteViewModel.tempRecipeDetailApiCalled > 0){
             if(recipeWriteViewModel.isTempRecipeEdited()) {
@@ -132,9 +134,6 @@ fun RecipeWriteScreen(
     var thumbnailPhotoBitmap : Bitmap?
     var stepPhotoBitmap : Bitmap?
     val stepImageParts  = remember {
-        mutableStateListOf<MultipartBody.Part>()
-    }
-    val stepNewImageParts = remember {
         mutableStateListOf<MultipartBody.Part>()
     }
 
@@ -290,13 +289,7 @@ fun RecipeWriteScreen(
                         borderColor = ZipdabangandroidTheme.Colors.MainBackground,
                         text = stringResource(id = R.string.my_recipewrite_save),
                         onClick = {
-                            if(tempRecipeApiCalled > 0){
-                                CoroutineScope(Dispatchers.Main).launch {
-                                    //recipeWriteViewModel.postTempRecipeToTemp(tempId!!, stepNewImageParts.toList())
-                                }
-                            } else {
-                                recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.SaveChanged(true))
-                            }
+                            recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.SaveChanged(true))
                         },
                         enabled = stateRecipeWriteForm.btnEnabledSave
                     )
@@ -310,7 +303,7 @@ fun RecipeWriteScreen(
                         onClick = {
                             if(tempRecipeApiCalled > 0) {
                                 CoroutineScope(Dispatchers.Main).launch {
-                                    // 임시저장 수정 api 호출하기
+                                    recipeWriteViewModel.postTempRecipeToTemp(tempId!!, stepImageParts.toList(), context)
                                     // save api 호출하기
                                 }
                             } else{
@@ -898,8 +891,15 @@ fun RecipeWriteScreen(
                         recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.SaveChanged(it))
                     },
                     onAcceptClick = {
-                        CoroutineScope(Dispatchers.IO).launch {
-                            recipeWriteViewModel.postRecipeWriteTemp(stepImageParts = stepImageParts.toList())
+                        if(tempRecipeApiCalled > 0){
+                            CoroutineScope(Dispatchers.Main).launch {
+                                recipeWriteViewModel.postTempRecipeToTemp(tempId!!, stepImageParts.toList(), context)
+                            }
+                        }
+                        else{
+                            CoroutineScope(Dispatchers.Main).launch {
+                                recipeWriteViewModel.postRecipeWriteTemp(stepImageParts = stepImageParts.toList())
+                            }
                         }
                         onClickBack()
                         recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.SaveChanged(false))

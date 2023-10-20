@@ -38,7 +38,7 @@ class PostAsPatchTempRecipeUseCase @Inject constructor(
                             message = result.message
                         )
                     )
-                    Log.e("POST_TEMPRECIPE", "success")
+                    Log.e("recipewrite-post-temp 유즈케이스", "success")
                 }
 
                 else -> {
@@ -49,27 +49,27 @@ class PostAsPatchTempRecipeUseCase @Inject constructor(
                             code = result.code
                         )
                     )
-                    Log.e("POST_TEMPRECIPE", "success but not good")
+                    Log.e("recipewrite-post-temp 유즈케이스", "success but not good")
                 }
             }
         } catch (e: HttpException) {
             val errorBody = e.response()?.errorBody()
             val errorCode = errorBody?.getErrorCode()
-            Log.e("POST_TEMPRECIPE_NULL", "${errorBody?.string()} ${errorCode}")
+            Log.e("recipewrite-post-temp-null 유즈케이스", "${errorBody?.string()} ${errorCode}")
             errorCode?.let {
-                Log.e("POST_TEMPRECIPE_NOT_NULL", "${errorBody?.string()} ${errorCode}")
+                Log.e("recipewrite-post-temp-not-null 유즈케이스", "${errorBody?.string()} ${errorCode}")
                 emit(Resource.Error(message = ResponseCode.getMessageByCode(errorCode)))
                 return@flow
             }
             emit(Resource.Error(message = e.message ?: "unexpected http error"))
         } catch (e: IOException) {
-            Log.e("POST_TEMPRECIPE", "error IOException")
+            Log.e("recipewrite-post-temp-not-null 유즈케이스", "error IOException")
             emit(Resource.Error(message = e.message ?: "unexpected io error"))
         } catch (e: Exception) {
             if (e is CancellationException) {
                 throw e
             }
-            Log.e("POST_TEMPRECIPE", "error Exception")
+            Log.e("recipewrite-post-temp-not-null 유즈케이스", "error Exception")
             emit(Resource.Error(message = e.message ?: "unexpected error"))
         }
     }

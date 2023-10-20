@@ -86,8 +86,8 @@ fun TempRecipeItem(
             Spacer(modifier = Modifier.weight(1f))
             Row(
                 modifier = Modifier
-                    .padding(0.dp, 18.dp, 0.dp, 12.dp),
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
+                    .padding(0.dp, 16.dp, 0.dp, 12.dp),
+                horizontalArrangement = Arrangement.spacedBy(16.dp)
             ){
                 Icon(
                     painter = painterResource(id = R.drawable.ic_recipewrite_trashcan),

@@ -113,6 +113,7 @@ interface MyApi {
     ) : RecipeWriteTempResponse
 
     // 임시저장 수정 (임시저장->임시저장)
+    @Multipart
     @POST("members/recipes/temp/{tempId}")
     suspend fun postTempRecipeToTemp(
         @Header("Authorization") accessToken: String,
