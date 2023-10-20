@@ -2,6 +2,8 @@ package com.zipdabang.zipdabang_android.module.comment.ui.components
 
 import android.util.Log
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,6 +17,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material.IconButton
+import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
@@ -61,6 +64,7 @@ fun CommentItem(
     // 여기서 onClickEdit은 textfield 활성화를 의미
     onClickEdit: (Int, String) -> Unit,
     onClickDelete: (Int) -> Unit,
+    onClickProfile: (Int) -> Unit,
     showCommentReport: (Int, Int, Int) -> Unit,
     showCommentBlock: (Int) -> Unit,
 ) {
@@ -89,7 +93,12 @@ fun CommentItem(
     Row(
         modifier = Modifier.fillMaxWidth()
     ) {
-        Box(modifier = Modifier.size(32.dp)) {
+        Box(modifier = Modifier.size(32.dp).clickable(
+            interactionSource = remember { MutableInteractionSource() },
+            indication = rememberRipple()
+        ) {
+            onClickProfile(commentItem.ownerId)
+        }) {
             CircleImage(
                 imageUrl = commentItem.ownerImage, contentDescription = "profile image"
             )

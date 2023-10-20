@@ -29,6 +29,7 @@ fun CommentListContent(
     onClickEdit: (Int, String) -> Unit,
     onClickDelete: (Int) -> Unit,
     onClickSubmit: (Int, String) -> Unit,
+    onClickProfile: (Int) -> Unit,
     postResult: PostCommentState,
     recipeId: Int,
     showCommentReport: (Int, Int, Int) -> Unit,
@@ -100,6 +101,7 @@ fun CommentListContent(
                         textMode = TextMode.EDIT
                         currentCommentId = commentId
                     },
+                    onClickProfile = onClickProfile,
                     onClickDelete = onClickDelete,
                     showCommentReport = showCommentReport,
                     showCommentBlock = showCommentBlock
