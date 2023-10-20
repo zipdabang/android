@@ -51,7 +51,6 @@ class ToggleLikeUseCase @Inject constructor(
             Log.d(TAG, "like result : $likeToggleResult")
         } catch (e: HttpException) {
             val errorBody = e.response()?.errorBody()
-            Log.e(TAG, errorBody?.string() ?: "error body is null")
             val errorCode = errorBody?.getErrorCode()
             errorCode?.let {
                 emit(Resource.Error(message = ResponseCode.getMessageByCode(errorCode)))

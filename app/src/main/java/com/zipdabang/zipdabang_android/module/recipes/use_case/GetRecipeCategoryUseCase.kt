@@ -38,7 +38,6 @@ class GetRecipeCategoryUseCase @Inject constructor(
             emit(Resource.Success(data = result, code = result.code, message = result.message))
         } catch (e: HttpException) {
             val errorBody = e.response()?.errorBody()
-            Log.e(TAG, errorBody?.string() ?: "error body is null")
             val errorCode = errorBody?.getErrorCode()
             errorCode?.let {
                 emit(Resource.Error(message = ResponseCode.getMessageByCode(errorCode)))

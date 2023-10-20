@@ -42,7 +42,6 @@ class CancelBlockUseCase @Inject constructor(
 
         } catch (e: HttpException) {
             val errorBody = e.response()?.errorBody()
-            Log.e(BlockUserUseCase.TAG, errorBody?.string() ?: "error body is null")
             val errorCode = errorBody?.getErrorCode()
             errorCode?.let {
                 emit(Resource.Error(message = ResponseCode.getMessageByCode(errorCode)))
