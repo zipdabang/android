@@ -221,5 +221,7 @@
     <string name="dropdown_block_user">이용자 차단하기</string>
     <string name="recipe_owner_like_warning">본인 레시피에 좋아요를 누를 수 없습니다.</string>
 
-
+    <!--  Notice  -->
+    <string name="notice_blocked_recipe">차단한 회원의 프로필입니다.\n보시려면 차단을 해제해주세요.</string>
+    <string name="button_cancel_block">차단 해제하기</string>
 </resources>

@@ -41,6 +41,7 @@ fun RecipeScreen(
     onCategoryClick: (Int) -> Unit,
     onOwnerTypeClick: (String) -> Unit,
     onRecipeClick: (Int) -> Unit,
+    onBlockedRecipeClick: (Int, Int) -> Unit,
     onBannerClick: (String) -> Unit,
     onLoginRequest: () -> Unit,
     showSnackbar: (String) -> Unit,
@@ -134,6 +135,7 @@ fun RecipeScreen(
         TabItem.Coffee(
             hotItems = hotCoffeeRecipes,
             onRecipeClick = onRecipeClick,
+            onBlockedRecipeClick = onBlockedRecipeClick,
             onScrapClick = onScrapClick,
             onLikeClick = onLikeClick,
             likeState = likeState,
@@ -145,6 +147,7 @@ fun RecipeScreen(
         TabItem.CaffeineFree(
             hotItems = hotCaffeineFreeRecipes,
             onRecipeClick = onRecipeClick,
+            onBlockedRecipeClick = onBlockedRecipeClick,
             onScrapClick = onScrapClick,
             onLikeClick = onLikeClick,
             likeState = likeState,
@@ -156,6 +159,7 @@ fun RecipeScreen(
         TabItem.Tea(
             hotItems = hotTeaRecipes,
             onRecipeClick = onRecipeClick,
+            onBlockedRecipeClick = onBlockedRecipeClick,
             onScrapClick = onScrapClick,
             onLikeClick = onLikeClick,
             likeState = likeState,
@@ -167,6 +171,7 @@ fun RecipeScreen(
         TabItem.Ade(
             hotItems = hotAdeRecipes,
             onRecipeClick = onRecipeClick,
+            onBlockedRecipeClick = onBlockedRecipeClick,
             onScrapClick = onScrapClick,
             onLikeClick = onLikeClick,
             likeState = likeState,
@@ -178,6 +183,7 @@ fun RecipeScreen(
         TabItem.Smoothie(
             hotItems = hotSmoothieRecipes,
             onRecipeClick = onRecipeClick,
+            onBlockedRecipeClick = onBlockedRecipeClick,
             onScrapClick = onScrapClick,
             onLikeClick = onLikeClick,
             likeState = likeState,
@@ -189,6 +195,7 @@ fun RecipeScreen(
         TabItem.Fruit(
             hotItems = hotFruitRecipes,
             onRecipeClick = onRecipeClick,
+            onBlockedRecipeClick = onBlockedRecipeClick,
             onScrapClick = onScrapClick,
             onLikeClick = onLikeClick,
             likeState = likeState,
@@ -200,6 +207,7 @@ fun RecipeScreen(
         TabItem.WellBeing(
             hotItems = hotWellBeingRecipes,
             onRecipeClick = onRecipeClick,
+            onBlockedRecipeClick = onBlockedRecipeClick,
             onScrapClick = onScrapClick,
             onLikeClick = onLikeClick,
             likeState = likeState,
@@ -211,6 +219,7 @@ fun RecipeScreen(
         TabItem.All(
             hotItems = hotAllRecipes,
             onRecipeClick = onRecipeClick,
+            onBlockedRecipeClick = onBlockedRecipeClick,
             onScrapClick = onScrapClick,
             onLikeClick = onLikeClick,
             likeState = likeState,

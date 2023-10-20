@@ -48,6 +48,13 @@ fun NavGraphBuilder.RecipeNavGraph(
                         launchSingleTop = true
                     }
                 },
+                onBlockedRecipeClick = { recipeId, ownerId ->
+                    navController.navigate(
+                        route = SharedScreen.BlockedRecipe.passRecipeId(recipeId, ownerId)
+                    ) {
+                        launchSingleTop = true
+                    }
+                },
                 onBannerClick = { keyword ->
 
                 },
