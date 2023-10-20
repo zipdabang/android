@@ -32,7 +32,6 @@ fun Notice(
     buttonText: String,
     onButtonClick: () -> Unit
 ) {
-    // 어둡게 처리
     Column(
         modifier = Modifier
             .fillMaxSize()

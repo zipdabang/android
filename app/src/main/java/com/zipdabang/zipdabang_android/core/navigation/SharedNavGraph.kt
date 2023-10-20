@@ -34,6 +34,7 @@ import com.zipdabang.zipdabang_android.module.detail.recipe.ui.RecipeDetailViewM
 import com.zipdabang.zipdabang_android.module.search.ui.SearchCategoryScreen
 import com.zipdabang.zipdabang_android.module.search.ui.SearchScreen
 import com.zipdabang.zipdabang_android.ui.component.LoginRequestDialog
+import com.zipdabang.zipdabang_android.ui.component.Notice
 import com.zipdabang.zipdabang_android.ui.component.RecipeDeleteDialog
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
@@ -51,6 +52,26 @@ fun NavGraphBuilder.SharedNavGraph(
         startDestination = SharedScreen.DetailRecipe.route,
         route = SHARED_ROUTE
     ){
+        composable(
+            route = SharedScreen.BlockedRecipe.route,
+            arguments = listOf(
+                navArgument(name = "recipeId") { type = NavType.IntType }
+            )
+        ) { backStackEntry ->
+            val recipeId = backStackEntry.arguments?.getInt("recipeId") ?: -1
+            Notice(
+                contentText = stringResource(id = R.string.notice_blocked_recipe),
+                buttonText = stringResource(id = R.string.button_cancel_block)
+            ) {
+                navController.navigate(route = SharedScreen.DetailRecipe.passRecipeId(recipeId)) {
+                    launchSingleTop = true
+                    popUpTo(route = SharedScreen.BlockedRecipe.route) {
+                        inclusive = true
+                    }
+                }
+            }
+        }
+        
         composable(
             route = SharedScreen.DetailRecipe.route,
             arguments = listOf(
