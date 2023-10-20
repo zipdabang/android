@@ -1,5 +1,7 @@
 package com.zipdabang.zipdabang_android.module.my.data.remote
 
+import com.zipdabang.zipdabang_android.common.ResponseBody
+import com.zipdabang.zipdabang_android.module.comment.data.remote.UserBlockDto
 import com.zipdabang.zipdabang_android.module.my.data.remote.followorcancel.FollowOrCancelDto
 import com.zipdabang.zipdabang_android.module.my.data.remote.friendlist.follow.FollowDto
 import com.zipdabang.zipdabang_android.module.my.data.remote.friendlist.follow.search.SearchFollowingDto
@@ -16,6 +18,7 @@ import com.zipdabang.zipdabang_android.module.my.data.remote.recipewrite.RecipeW
 import com.zipdabang.zipdabang_android.module.my.data.remote.recipewrite.RecipeWriteResponse
 import com.zipdabang.zipdabang_android.module.my.data.remote.recipewrite.RecipeWriteTempResponse
 import com.zipdabang.zipdabang_android.module.my.data.remote.signout.SignOutResponseDto
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.Multipart
@@ -112,4 +115,10 @@ interface MyApi {
     suspend fun getRecipeWriteBeverages(
         @Header("Authorization") accessToken: String
     ) : RecipeWriteBeveragesResponse
+
+    @DELETE("members/unblock")
+    suspend fun cancelUserBlock(
+        @Header("Authorization") accessToken: String,
+        @Query("blocked") userId: Int
+    ): ResponseBody<UserBlockDto?>
 }
