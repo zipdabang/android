@@ -38,6 +38,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun RecipeScreen(
     navController: NavController,
+    onSearchIconClick: () -> Unit,
     onCategoryClick: (Int) -> Unit,
     onOwnerTypeClick: (String) -> Unit,
     onRecipeClick: (Int) -> Unit,
@@ -246,7 +247,7 @@ fun RecipeScreen(
                     AppBarHome(
                         endIcon1 = R.drawable.ic_topbar_search,
                         endIcon2 = R.drawable.ic_topbar_menu,
-                        onClickEndIcon1 = {},
+                        onClickEndIcon1 = { onSearchIconClick() },
                         onClickEndIcon2 = { scope.launch { drawerState.open() } },
                         centerText = "집다방"
                     )

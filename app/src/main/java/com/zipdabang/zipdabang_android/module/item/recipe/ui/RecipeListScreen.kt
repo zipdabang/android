@@ -40,6 +40,7 @@ fun RecipeListScreen(
     modifier: Modifier = Modifier,
     navController: NavController,
     categoryState: RecipeSubtitleState,
+    onSearchIconClick: () -> Unit,
     onBackClick: () -> Unit,
     onShareClick: () -> Unit,
     onItemClick: (Int) -> Unit,
@@ -125,7 +126,7 @@ fun RecipeListScreen(
                         onClickStartIcon = {
                             onBackClick()
                         },
-                        onClickEndIcon1 = {},
+                        onClickEndIcon1 = { onSearchIconClick() },
                         onClickEndIcon2 = { scope.launch { drawerState.open() } },
                         centerText = categoryState.let {
                             if (it.categoryId == -1 && it.ownerType != null) {
