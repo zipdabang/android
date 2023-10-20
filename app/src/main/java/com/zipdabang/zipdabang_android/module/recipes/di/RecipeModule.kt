@@ -9,6 +9,7 @@ import com.zipdabang.zipdabang_android.module.comment.data.RecipeCommentReposito
 import com.zipdabang.zipdabang_android.module.comment.domain.RecipeCommentRepository
 import com.zipdabang.zipdabang_android.module.detail.recipe.data.RecipeDetailRepositoryImpl
 import com.zipdabang.zipdabang_android.module.detail.recipe.domain.RecipeDetailRepository
+import com.zipdabang.zipdabang_android.module.my.data.remote.MyApi
 import com.zipdabang.zipdabang_android.module.recipes.data.RecipeApi
 import com.zipdabang.zipdabang_android.module.recipes.data.banner.RecipeBannerRepositoryImpl
 import com.zipdabang.zipdabang_android.module.recipes.data.category.RecipeCategoryRepositoryImpl
@@ -71,9 +72,10 @@ object RecipeModule {
     @Provides
     @Singleton
     fun provideRecipeDetailRepository(
-        recipeApi: RecipeApi
+        recipeApi: RecipeApi,
+        myApi: MyApi
     ): RecipeDetailRepository {
-        return RecipeDetailRepositoryImpl(recipeApi)
+        return RecipeDetailRepositoryImpl(recipeApi, myApi)
     }
 
     @Provides
