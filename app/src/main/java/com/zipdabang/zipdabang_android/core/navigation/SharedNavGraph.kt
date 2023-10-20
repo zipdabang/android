@@ -211,6 +211,7 @@ fun NavGraphBuilder.SharedNavGraph(
                 Log.d("SharedNavGraph", "recipe loading ended")
                 RecipeDetailScreen(
                     recipeId = recipeId,
+                    ownerId = ownerId,
                     onClickBackIcon = {
                         navController.popBackStack()
                     },
@@ -227,7 +228,13 @@ fun NavGraphBuilder.SharedNavGraph(
                             }
                         }
                     },
-                    onClickProfile = { ownerId -> },
+                    onClickProfile = { profileOwnerId ->
+                        navController.navigate(
+                            route = MyScreen.OtherPage.passUserId(profileOwnerId)
+                        ) {
+                            launchSingleTop = true
+                        }
+                    },
                     // onClickCart = { keyword -> },
                     onClickRecipeDelete = {
                         showDeleteDialog = true

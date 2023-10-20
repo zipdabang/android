@@ -29,6 +29,7 @@ import com.zipdabang.zipdabang_android.ui.component.loadXmlDrawable
 @Composable
 fun RecipeDetailScreen(
     recipeId: Int,
+    ownerId: Int,
     onClickBackIcon: () -> Unit,
     onClickMenuIcon: () -> Unit,
     onClickProfile: (Int) -> Unit,
@@ -96,6 +97,7 @@ fun RecipeDetailScreen(
             onClickDelete = onClickCommentDelete,
             onClickEdit = onClickCommentEdit, // 수정한 댓글 제출
             onClickSubmit = onClickCommentSubmit,
+            onClickProfile = onClickProfile,
             showCommentReport = showCommentReport,
             showCommentBlock = showCommentBlock,
             commentItems = commentItems,
@@ -116,6 +118,7 @@ fun RecipeDetailScreen(
         ) {
             item {
                 RecipeIntro(
+                    ownerId = ownerId,
                     profileUrl = profileUrl,
                     recipeTitle = recipeTitle,
                     recipeOwner = recipeOwner,
