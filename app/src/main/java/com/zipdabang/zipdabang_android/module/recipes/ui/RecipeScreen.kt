@@ -38,9 +38,11 @@ import kotlinx.coroutines.launch
 @Composable
 fun RecipeScreen(
     navController: NavController,
+    onSearchIconClick: () -> Unit,
     onCategoryClick: (Int) -> Unit,
     onOwnerTypeClick: (String) -> Unit,
     onRecipeClick: (Int) -> Unit,
+    onBlockedRecipeClick: (Int, Int) -> Unit,
     onBannerClick: (String) -> Unit,
     onLoginRequest: () -> Unit,
     showSnackbar: (String) -> Unit,
@@ -134,6 +136,7 @@ fun RecipeScreen(
         TabItem.Coffee(
             hotItems = hotCoffeeRecipes,
             onRecipeClick = onRecipeClick,
+            onBlockedRecipeClick = onBlockedRecipeClick,
             onScrapClick = onScrapClick,
             onLikeClick = onLikeClick,
             likeState = likeState,
@@ -145,6 +148,7 @@ fun RecipeScreen(
         TabItem.CaffeineFree(
             hotItems = hotCaffeineFreeRecipes,
             onRecipeClick = onRecipeClick,
+            onBlockedRecipeClick = onBlockedRecipeClick,
             onScrapClick = onScrapClick,
             onLikeClick = onLikeClick,
             likeState = likeState,
@@ -156,6 +160,7 @@ fun RecipeScreen(
         TabItem.Tea(
             hotItems = hotTeaRecipes,
             onRecipeClick = onRecipeClick,
+            onBlockedRecipeClick = onBlockedRecipeClick,
             onScrapClick = onScrapClick,
             onLikeClick = onLikeClick,
             likeState = likeState,
@@ -167,6 +172,7 @@ fun RecipeScreen(
         TabItem.Ade(
             hotItems = hotAdeRecipes,
             onRecipeClick = onRecipeClick,
+            onBlockedRecipeClick = onBlockedRecipeClick,
             onScrapClick = onScrapClick,
             onLikeClick = onLikeClick,
             likeState = likeState,
@@ -178,6 +184,7 @@ fun RecipeScreen(
         TabItem.Smoothie(
             hotItems = hotSmoothieRecipes,
             onRecipeClick = onRecipeClick,
+            onBlockedRecipeClick = onBlockedRecipeClick,
             onScrapClick = onScrapClick,
             onLikeClick = onLikeClick,
             likeState = likeState,
@@ -189,6 +196,7 @@ fun RecipeScreen(
         TabItem.Fruit(
             hotItems = hotFruitRecipes,
             onRecipeClick = onRecipeClick,
+            onBlockedRecipeClick = onBlockedRecipeClick,
             onScrapClick = onScrapClick,
             onLikeClick = onLikeClick,
             likeState = likeState,
@@ -200,6 +208,7 @@ fun RecipeScreen(
         TabItem.WellBeing(
             hotItems = hotWellBeingRecipes,
             onRecipeClick = onRecipeClick,
+            onBlockedRecipeClick = onBlockedRecipeClick,
             onScrapClick = onScrapClick,
             onLikeClick = onLikeClick,
             likeState = likeState,
@@ -211,6 +220,7 @@ fun RecipeScreen(
         TabItem.All(
             hotItems = hotAllRecipes,
             onRecipeClick = onRecipeClick,
+            onBlockedRecipeClick = onBlockedRecipeClick,
             onScrapClick = onScrapClick,
             onLikeClick = onLikeClick,
             likeState = likeState,
@@ -237,7 +247,7 @@ fun RecipeScreen(
                     AppBarHome(
                         endIcon1 = R.drawable.ic_topbar_search,
                         endIcon2 = R.drawable.ic_topbar_menu,
-                        onClickEndIcon1 = {},
+                        onClickEndIcon1 = { onSearchIconClick() },
                         onClickEndIcon2 = { scope.launch { drawerState.open() } },
                         centerText = "집다방"
                     )

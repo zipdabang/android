@@ -13,8 +13,8 @@ import com.zipdabang.zipdabang_android.module.my.data.remote.myrecipes.complete.
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import com.zipdabang.zipdabang_android.module.my.data.remote.otherinfo.OtherInfoDto
+import com.zipdabang.zipdabang_android.module.my.data.remote.otherinfo.OtherRecipeListDto
 import com.zipdabang.zipdabang_android.module.my.data.remote.otherinfo.OtherRecipePreviewDto
-import com.zipdabang.zipdabang_android.module.my.data.remote.otherinfo.recipe.OtherRecipeListDto
 import com.zipdabang.zipdabang_android.module.my.data.remote.recipewrite.RecipeWriteBeveragesResponse
 import com.zipdabang.zipdabang_android.module.my.data.remote.recipewrite.RecipeWriteTempResponse
 

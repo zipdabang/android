@@ -1,4 +1,4 @@
-package com.zipdabang.zipdabang_android.module.comment.use_case
+package com.zipdabang.zipdabang_android.module.detail.recipe.use_case
 
 import android.util.Log
 import androidx.datastore.core.DataStore
@@ -6,44 +6,37 @@ import com.zipdabang.zipdabang_android.common.Resource
 import com.zipdabang.zipdabang_android.common.ResponseCode
 import com.zipdabang.zipdabang_android.common.getErrorCode
 import com.zipdabang.zipdabang_android.core.data_store.proto.Token
-import com.zipdabang.zipdabang_android.module.comment.domain.RecipeCommentRepository
 import com.zipdabang.zipdabang_android.module.comment.domain.UserBlockResult
+import com.zipdabang.zipdabang_android.module.comment.use_case.BlockUserUseCase
 import com.zipdabang.zipdabang_android.module.comment.util.toUserBlockResult
-import com.zipdabang.zipdabang_android.module.recipes.use_case.GetHotRecipesByCategoryUseCase
+import com.zipdabang.zipdabang_android.module.detail.recipe.domain.RecipeDetailRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import retrofit2.HttpException
 import java.io.IOException
-import java.util.concurrent.CancellationException
 import javax.inject.Inject
+import kotlin.coroutines.cancellation.CancellationException
 
-class BlockUserUseCase @Inject constructor(
-    private val recipeCommentRepository: RecipeCommentRepository,
-    private val tokenDataStore: DataStore<Token>
+class CancelBlockUseCase @Inject constructor(
+    private val tokenDataStore: DataStore<Token>,
+    private val repository: RecipeDetailRepository
 ) {
-
-    companion object {
-        const val TAG = "BlockUserUseCase"
-    }
-    operator fun invoke(ownerId: Int): Flow<Resource<UserBlockResult>> = flow {
+    operator fun invoke(userId: Int): Flow<Resource<UserBlockResult>> = flow {
         try {
-            emit(Resource.Loading())
-            tokenDataStore.data.first().accessToken?.let {
-                val accessToken = "Bearer $it"
-                val result = recipeCommentRepository.blockUser(accessToken, ownerId).toUserBlockResult()
+            val accessToken = "Bearer ${tokenDataStore.data.first().accessToken}"
+            val result = repository.cancelUserBlock(accessToken, userId).toUserBlockResult()
 
-                when (result.code) {
-                    ResponseCode.RESPONSE_DEFAULT.code -> {
-                        emit(Resource.Success(
-                            data = result,
-                            code = result.code,
-                            message = result.message
-                        ))
-                    }
-                    else -> {
-                        emit(Resource.Error(message = result.message))
-                    }
+            when (result.code) {
+                ResponseCode.RESPONSE_DEFAULT.code -> {
+                    emit(Resource.Success(
+                        data = result,
+                        code = result.code,
+                        message = result.message
+                    ))
+                }
+                else -> {
+                    emit(Resource.Error(message = result.message))
                 }
             }
 

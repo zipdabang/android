@@ -92,6 +92,7 @@ fun MyScreen(
     onClickInquiry : ()->Unit,
     onClickLogout: () -> Unit,
     onClickUserInfo: () -> Unit,
+    onClickFriendsList : () -> Unit
 ) {
     //drawer에 필요한 drawerState랑 scope
     val drawerState = rememberDrawerState(DrawerValue.Closed)
@@ -176,6 +177,9 @@ fun MyScreen(
                                 // 팔로우팔로잉
                                 Row(
                                     modifier = Modifier.padding(6.dp, 2.dp, 0.dp, 0.dp)
+                                        .clickable {
+                                            onClickFriendsList()
+                                        }
                                 ) {
                                     Text(
                                         text = if (shimmering) {
@@ -307,5 +311,6 @@ fun PreviewMyScreen() {
         onClickUserInfo = {},
         onClickAlarm = {},
         onClickInquiry = {},
+        onClickFriendsList = {}
     )
 }

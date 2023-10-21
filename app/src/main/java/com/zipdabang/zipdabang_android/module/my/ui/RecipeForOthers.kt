@@ -34,6 +34,7 @@ import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
 @Composable
 fun RecipeForOthers(
     nickname : String,
+    onClickHeader : () -> Unit,
     viewModel : MyForOthersViewModel = hiltViewModel(),
     recipeMainViewModel : RecipeMainViewModel = hiltViewModel()
     ) {
@@ -50,7 +51,9 @@ fun RecipeForOthers(
             groupName = "다른 사람 레시피",
             formerHeaderStrawberry = nickname,
             latterHeaderChoco = "의 레시피",
-            onClick = {}
+            onClick = {
+                onClickHeader()
+            }
         )
         LazyRow(
             modifier = Modifier.fillMaxWidth()

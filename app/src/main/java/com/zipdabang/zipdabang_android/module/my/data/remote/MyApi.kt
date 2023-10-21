@@ -1,5 +1,7 @@
 package com.zipdabang.zipdabang_android.module.my.data.remote
 
+import com.zipdabang.zipdabang_android.common.ResponseBody
+import com.zipdabang.zipdabang_android.module.comment.data.remote.UserBlockDto
 import com.zipdabang.zipdabang_android.module.my.data.remote.followorcancel.FollowOrCancelDto
 import com.zipdabang.zipdabang_android.module.my.data.remote.friendlist.follow.FollowDto
 import com.zipdabang.zipdabang_android.module.my.data.remote.friendlist.follow.search.SearchFollowingDto
@@ -11,13 +13,14 @@ import com.zipdabang.zipdabang_android.module.my.data.remote.myinfo.MyInfoRecipe
 import com.zipdabang.zipdabang_android.module.my.data.remote.myinfo.MyInfoResponse
 import com.zipdabang.zipdabang_android.module.my.data.remote.myrecipes.complete.CompleteRecipesResponse
 import com.zipdabang.zipdabang_android.module.my.data.remote.otherinfo.OtherInfoDto
+import com.zipdabang.zipdabang_android.module.my.data.remote.otherinfo.OtherRecipeListDto
+import com.zipdabang.zipdabang_android.module.my.data.remote.otherinfo.OtherRecipeListResult
 import com.zipdabang.zipdabang_android.module.my.data.remote.otherinfo.OtherRecipePreviewDto
-import com.zipdabang.zipdabang_android.module.my.data.remote.otherinfo.recipe.OtherRecipeListDto
-import com.zipdabang.zipdabang_android.module.my.data.remote.otherinfo.recipe.OtherRecipeListResult
 import com.zipdabang.zipdabang_android.module.my.data.remote.recipewrite.RecipeWriteBeveragesResponse
 import com.zipdabang.zipdabang_android.module.my.data.remote.recipewrite.RecipeWriteResponse
 import com.zipdabang.zipdabang_android.module.my.data.remote.recipewrite.RecipeWriteTempResponse
 import com.zipdabang.zipdabang_android.module.my.data.remote.signout.SignOutResponseDto
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.Multipart
@@ -114,12 +117,17 @@ interface MyApi {
     suspend fun getRecipeWriteBeverages(
         @Header("Authorization") accessToken: String
     ) : RecipeWriteBeveragesResponse
-    @GET("memebers/recipes/owner/{memberId}")
+
+    @DELETE("members/unblock")
+    suspend fun cancelUserBlock(
+        @Header("Authorization") accessToken: String,
+        @Query("blocked") userId: Int
+    ): ResponseBody<UserBlockDto?>
+
+    @GET("members/recipes/owner/{memberId}")
     suspend fun getOtherRecipeList(
         @Header("Authorization") accessToken: String,
+        @Path("memberId") memberId : Int,
         @Query("pageIndex") page : Int,
-        @Path("memeberId") memeberId: Int
-    ) : OtherRecipeListDto
-
-
+        ) : OtherRecipeListDto
 }
