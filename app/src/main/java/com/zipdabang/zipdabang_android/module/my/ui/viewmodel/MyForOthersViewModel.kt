@@ -102,10 +102,15 @@ class MyForOthersViewModel @Inject constructor(
         getOtherRecipePreviewUseCase(memberId).onEach { result ->
             when (result) {
                 is Resource.Success -> {
-                    _otherRecipePreviewState.value = OtherRecipePreviewState(
-                        recipeList = result.data?.result!!.recipeList
-                    )
-                    Log.e("otherPreviewList", result.data.result.totalElements.toString())
+                    if(result.data?.result!=null) {
+                        _otherRecipePreviewState.value = OtherRecipePreviewState(
+                            recipeList = result.data?.result!!.recipeList
+                        )
+                    }else {
+                        _otherRecipePreviewState.value = OtherRecipePreviewState(
+                            recipeList = emptyList()
+                        )
+                    }
                 }
 
                 is Resource.Loading -> {

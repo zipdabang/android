@@ -25,6 +25,7 @@ import com.zipdabang.zipdabang_android.module.my.ui.MyScreen
 import com.zipdabang.zipdabang_android.module.my.ui.MyScreenForNotUser
 import com.zipdabang.zipdabang_android.module.my.ui.MyScreenForOther
 import com.zipdabang.zipdabang_android.module.my.ui.MyrecipeScreen
+import com.zipdabang.zipdabang_android.module.my.ui.OtherRecipeListScreen
 import com.zipdabang.zipdabang_android.module.my.ui.RecipeWriteScreen
 import com.zipdabang.zipdabang_android.module.my.ui.ScrapScreen
 import com.zipdabang.zipdabang_android.module.my.ui.ShoppingScreen
@@ -110,6 +111,10 @@ fun NavGraphBuilder.MyNavGraph(
                     },
                     onClickInquiry = {
 
+                    },
+                    onClickFriendsList = {
+                        navController.navigate(MyScreen.FriendList.route)
+
                     }
                 )
             }
@@ -155,7 +160,7 @@ fun NavGraphBuilder.MyNavGraph(
                     navController.popBackStack(MyScreen.Home.route, inclusive = false)
                 },
                 onClickOthers = {
-                    navController.navigate(MyScreen.OtherPage.passUserId(0))
+                    navController.navigate(MyScreen.OtherPage.passUserId(it))
                 }
             )
         }
@@ -227,7 +232,28 @@ fun NavGraphBuilder.MyNavGraph(
             if (userId != null) {
                 MyScreenForOther(
                     navController = navController,
-                    userId = userId
+                    userId = userId,
+                    onClickHeader = {
+                        nickName ->
+                        navController.navigate(MyScreen.OtherRecipeListPage.passUserInfo(userId,nickName))
+                    }
+                )
+            }
+        }
+
+        composable(
+            route = MyScreen.OtherRecipeListPage.route,
+            arguments = listOf(
+                navArgument("userId"){ type = NavType.IntType },
+                navArgument("nickName"){type = NavType.StringType}
+            )
+        ){
+            val userId = it.arguments!!.getInt("userId")
+            val nickName = it.arguments!!.getString("nickName")
+
+            if (nickName != null) {
+                OtherRecipeListScreen(
+                    nickName = nickName
                 )
             }
         }
