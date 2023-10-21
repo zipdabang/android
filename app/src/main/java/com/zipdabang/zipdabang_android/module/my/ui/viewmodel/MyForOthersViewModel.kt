@@ -105,18 +105,22 @@ class MyForOthersViewModel @Inject constructor(
                 is Resource.Success -> {
                     if(result.data?.result!=null) {
                         _otherRecipePreviewState.value = OtherRecipePreviewState(
-                            recipeList = result.data.result.recipeList
+                            recipeList = result.data.result.recipeList,
+                            isSuccess = true,
+                            isLoading = false
                         )
                     }
          //           Log.e("otherPreviewList", result.data.result.totalElements.toString())
                 }
 
                 is Resource.Loading -> {
-
+                    _otherRecipePreviewState.value = OtherRecipePreviewState(
+                        isLoading = true
+                    )
                 }
 
                 is Resource.Error -> {
-                    _otherInfoState.value = OtherInfo(
+                    _otherRecipePreviewState.value = OtherRecipePreviewState(
                         isError = true
                     )
                     result.message?.let { Log.e("error in other page Api", it) }

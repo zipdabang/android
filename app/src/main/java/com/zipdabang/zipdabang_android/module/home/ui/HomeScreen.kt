@@ -87,8 +87,6 @@ fun HomeScreen(
                            .verticalScroll(scrollState)
                    ) {
 
-
-
                             if (bannerState.value.isLoading) {
 
                             //Shimmering Effect
