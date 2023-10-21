@@ -4,6 +4,7 @@ import com.zipdabang.zipdabang_android.module.drawer.data.remote.noticedto.Notic
 import com.zipdabang.zipdabang_android.module.drawer.data.remote.quitdto.QuitDto
 import com.zipdabang.zipdabang_android.module.drawer.data.remote.quitdto.QuitRequest
 import com.zipdabang.zipdabang_android.module.drawer.data.remote.reporterror.ReportListDto
+import com.zipdabang.zipdabang_android.module.drawer.data.remote.reporterror.detail.ReportDetailDto
 import com.zipdabang.zipdabang_android.module.drawer.data.remote.reporterror.reportDto
 import com.zipdabang.zipdabang_android.module.drawer.data.remote.userinfodto.UserInfoBasicRequest
 import com.zipdabang.zipdabang_android.module.drawer.data.remote.userinfodto.UserInfoDetailRequest
@@ -24,6 +25,7 @@ import retrofit2.http.Multipart
 import retrofit2.http.PATCH
 import retrofit2.http.POST
 import retrofit2.http.Part
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface DrawerApi {
@@ -121,6 +123,13 @@ interface DrawerApi {
         @Header("Authorization") accessToken: String,
         @Query("page") page : Int
     ) : ReportListDto
+
+    @GET("members/inquiries/{inqueryId}")
+    suspend fun getReportDetail(
+        @Header("Authorization") accessToken: String,
+        @Path(value = "inqueryId") reportId : Int
+    ) : ReportDetailDto
+
     @GET("notices")
     suspend fun getNoticeList(
         @Header("Authorization") accessToken: String

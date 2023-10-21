@@ -1,5 +1,6 @@
 package com.zipdabang.zipdabang_android.module.drawer.ui.report
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,6 +16,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -43,8 +45,10 @@ fun ReportSuccessScreen(
     ) {
        Box(
             modifier = Modifier
+                .background(Color.White)
                 .padding(top = it.calculateTopPadding(),bottom = 40.dp)
                 .fillMaxSize()
+
         ) {
            Text(text = "정상적으로 문의가 접수되었습니다.\n" + "더 나은 집다방이 되기 위해 노력하겠습니다.\n" + "감사합니다",
                style = ZipdabangandroidTheme.Typography.sixteen_500,color = ZipdabangandroidTheme.Colors.Typo,

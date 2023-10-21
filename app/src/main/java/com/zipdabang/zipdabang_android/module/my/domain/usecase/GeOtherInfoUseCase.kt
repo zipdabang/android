@@ -1,5 +1,6 @@
 package com.zipdabang.zipdabang_android.module.my.domain.usecase
 
+import android.util.Log
 import androidx.datastore.core.DataStore
 import com.zipdabang.zipdabang_android.common.Resource
 import com.zipdabang.zipdabang_android.common.getErrorCode
@@ -19,8 +20,11 @@ class GeOtherInfoUseCase @Inject constructor(
 ) {
     operator fun invoke(targetId : Int) : Flow<Resource<OtherInfoDto>> = flow{
         try{
+            Log.e("error targetId",targetId.toString())
             emit(Resource.Loading())
             val token = "Bearer ${dataStore.data.first().accessToken}"
+            Log.e("error token",token)
+
             val followOrCancelResponse = repository.getOtherInfo(accessToken = token, targetId = targetId)
             emit(
                 Resource.Success(
@@ -30,12 +34,12 @@ class GeOtherInfoUseCase @Inject constructor(
             )
             )
         } catch (e: HttpException) {
-            val errorBody = e.response()?.errorBody()
-            val errorCode = errorBody?.getErrorCode()
+            val errorBody = e.response()?.errorBody()?.string()
+            val errorCode = e.response()?.errorBody()?.getErrorCode()
             errorCode?.let {
                 emit(
                     Resource.Error(
-                        message = e.response()?.errorBody().toString(),
+                        message = errorBody!!,
                         code = errorCode
                     )
                 )

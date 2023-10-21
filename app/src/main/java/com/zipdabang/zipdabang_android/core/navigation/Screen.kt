@@ -84,6 +84,12 @@ sealed class DrawerScreen(val route : String){
 
     object ReportSuccess : DrawerScreen(route = "drawer/report/success")
     object ReportList : DrawerScreen(route = "drawer/report/list")
+    object ReportDetail : DrawerScreen(route = "drawer/report/detail?={reportId}"){
+        fun passReportId(reportId : Int?) : String{
+            return "drawer/report/detail?=$reportId"
+        }
+    }
+
     //회원 정보
     object UserInfo : DrawerScreen(route = "drawer/userinfo")
     object UserInfoBasic : DrawerScreen(route="drawer/userinfo/basic")

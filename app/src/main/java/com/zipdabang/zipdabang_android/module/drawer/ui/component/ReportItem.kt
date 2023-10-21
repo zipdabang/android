@@ -1,6 +1,7 @@
 package com.zipdabang.zipdabang_android.module.drawer.ui.component
 
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -19,12 +20,16 @@ import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
 @Composable
 fun ReportItem(
     title : String,
-    createdAt : String
+    createdAt : String,
+    onClick : () -> Unit
 ) {
 
     Row(modifier = Modifier
         .fillMaxWidth()
-        .height(64.dp),
+        .height(64.dp)
+        .clickable {
+                   onClick()
+        },
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween){
 

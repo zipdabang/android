@@ -33,7 +33,5 @@ interface MyRepository {
     suspend fun getRecipeWriteBeverages(accessToken: String) : RecipeWriteBeveragesResponse
     suspend fun postRecipeTemp(accessToken: String, content: RequestBody, thumbnail : MultipartBody.Part?, stepImages: List<MultipartBody.Part>? ) : RecipeWriteTempResponse
     suspend fun getMyCompleteRecipes(accessToken: String, pageIndex : Int) : CompleteRecipesResponse
-    suspend fun getOtherRecipeList(accessToken: String, pageIndex : Int, memeberId : Int ) : OtherRecipeListDto
-
-
+    suspend fun getOtherRecipeList(accessToken: String, pageIndex: Int, memeberId : Int) : OtherRecipeListDto
 }
