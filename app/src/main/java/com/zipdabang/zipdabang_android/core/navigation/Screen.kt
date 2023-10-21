@@ -64,6 +64,12 @@ sealed class MyScreen(val route : String){
             return "my/other?userId=$userId"
         }
     }
+
+    object OtherRecipeListPage : MyScreen(route = "my/other/RecipeList?userId={userId}?nickName={nickName}")  {
+        fun passUserInfo(userId : Int,nickName : String) : String {
+            return "my/other/RecipeList?userId=$userId?nickName=$nickName"
+        }
+    }
     object NoticeList : MyScreen(route = "my/notice/list")
 
 }

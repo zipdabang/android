@@ -13,6 +13,8 @@ import com.zipdabang.zipdabang_android.module.my.data.remote.myinfo.MyInfoRecipe
 import com.zipdabang.zipdabang_android.module.my.data.remote.myinfo.MyInfoResponse
 import com.zipdabang.zipdabang_android.module.my.data.remote.myrecipes.complete.CompleteRecipesResponse
 import com.zipdabang.zipdabang_android.module.my.data.remote.otherinfo.OtherInfoDto
+import com.zipdabang.zipdabang_android.module.my.data.remote.otherinfo.OtherRecipeListDto
+import com.zipdabang.zipdabang_android.module.my.data.remote.otherinfo.OtherRecipeListResult
 import com.zipdabang.zipdabang_android.module.my.data.remote.otherinfo.OtherRecipePreviewDto
 import com.zipdabang.zipdabang_android.module.my.data.remote.recipewrite.RecipeWriteBeveragesResponse
 import com.zipdabang.zipdabang_android.module.my.data.remote.recipewrite.RecipeWriteResponse
@@ -121,4 +123,11 @@ interface MyApi {
         @Header("Authorization") accessToken: String,
         @Query("blocked") userId: Int
     ): ResponseBody<UserBlockDto?>
+
+    @GET("members/recipes/owner/{memberId}")
+    suspend fun getOtherRecipeList(
+        @Header("Authorization") accessToken: String,
+        @Path("memberId") memberId : Int,
+        @Query("pageIndex") page : Int,
+        ) : OtherRecipeListDto
 }
