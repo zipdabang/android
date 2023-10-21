@@ -88,8 +88,6 @@ fun RecipeWriteScreen(
     val context = LocalContext.current
     val stateThumbnail = recipeWriteViewModel.stateRecipeWriteForm.thumbnail
     val stateUploadRecipeId = recipeWriteViewModel.uploadRecipeId // 기문이형 도와줘 ㅠㅠ
-
-    val stateTempRecipeWriteForm = recipeWriteViewModel.stateTempRecipeWriteForm
     var tempRecipeApiCalled = recipeWriteViewModel.tempRecipeDetailApiCalled
     var shimmering: Boolean = true
 
@@ -135,6 +133,9 @@ fun RecipeWriteScreen(
     var stepPhotoBitmap : Bitmap?
     val stepImageParts  = remember {
         mutableStateListOf<MultipartBody.Part>()
+    }
+    val stepImageAddNum = remember {
+        mutableStateListOf<Int>()
     }
 
     // thumbnail
@@ -187,7 +188,15 @@ fun RecipeWriteScreen(
                 val stepPart = MultipartBody.Part.createFormData("stepImages", "${stateRecipeWriteDialog.stepNum - 1}_${System.currentTimeMillis()}.jpeg", stepRequestBody)
                 Log.e("recipewriteform-stepImages","${stateRecipeWriteDialog.stepNum - 1}_${System.currentTimeMillis()}.jpeg")
 
-                stepImageParts.add(stepPart)
+                // 이미 존재하는 경우, 기존 데이터를 지우고 새로운 데이터 추가
+                if (stepImageAddNum.contains(stateRecipeWriteDialog.stepNum)) {
+                    val existingIndex = stepImageAddNum.indexOf(stateRecipeWriteDialog.stepNum)
+                    stepImageParts[existingIndex] = stepPart
+                }
+                else {
+                    stepImageAddNum.add(stateRecipeWriteDialog.stepNum)
+                    stepImageParts.add(stepPart)
+                }
             } else {
                 Log.e("Error in camera", "No image selected")
             }
@@ -301,18 +310,7 @@ fun RecipeWriteScreen(
                         isFormFilled = stateRecipeWriteForm.btnEnabled,
                         text = stringResource(id = R.string.my_recipewrite_writedone),
                         onClick = {
-                            if(tempRecipeApiCalled > 0) {
-                                CoroutineScope(Dispatchers.Main).launch {
-                                    recipeWriteViewModel.postTempRecipeToTemp(tempId!!, stepImageParts.toList(), context)
-                                    // save api 호출하기
-                                }
-                            } else{
-                                CoroutineScope(Dispatchers.Main).launch{
-                                    try{
-                                        recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.UploadCategoryChanged(true))
-                                    } catch (e:Exception){}
-                                } 
-                            }
+                            recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.UploadCategoryChanged(true))
                         },
                     )
                 }
@@ -387,7 +385,6 @@ fun RecipeWriteScreen(
                 }
             }
 
-
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -434,14 +431,22 @@ fun RecipeWriteScreen(
                             }
                         )
                     }
-                    Text(
-                        modifier = Modifier
-                            .align(Alignment.End)
-                            .padding(0.dp, 0.dp, 4.dp, 0.dp),
-                        text = stateRecipeWriteForm.titleWordCount.toString() + "/20",
-                        style = ZipdabangandroidTheme.Typography.fourteen_300,
-                        color = ZipdabangandroidTheme.Colors.Typo
-                    )
+                    if(shimmering){
+                        Box(modifier = Modifier.align(Alignment.End)
+                            .width(32.dp)
+                            .height(20.dp)
+                            .shimmeringEffect())
+                    }
+                    else{
+                        Text(
+                            modifier = Modifier
+                                .align(Alignment.End)
+                                .padding(0.dp, 0.dp, 4.dp, 0.dp),
+                            text = stateRecipeWriteForm.titleWordCount.toString() + "/20",
+                            style = ZipdabangandroidTheme.Typography.fourteen_300,
+                            color = ZipdabangandroidTheme.Colors.Typo
+                        )
+                    }
                 }
 
                 // 소요 시간
@@ -484,14 +489,22 @@ fun RecipeWriteScreen(
                             }
                         )
                     }
-                    Text(
-                        modifier = Modifier
-                            .align(Alignment.End)
-                            .padding(0.dp, 0.dp, 4.dp, 0.dp),
-                        text = stateRecipeWriteForm.timeWordCount.toString() + "/20",
-                        style = ZipdabangandroidTheme.Typography.fourteen_300,
-                        color = ZipdabangandroidTheme.Colors.Typo
-                    )
+                    if(shimmering){
+                        Box(modifier = Modifier.align(Alignment.End)
+                            .width(32.dp)
+                            .height(20.dp)
+                            .shimmeringEffect())
+                    }
+                    else {
+                        Text(
+                            modifier = Modifier
+                                .align(Alignment.End)
+                                .padding(0.dp, 0.dp, 4.dp, 0.dp),
+                            text = stateRecipeWriteForm.timeWordCount.toString() + "/20",
+                            style = ZipdabangandroidTheme.Typography.fourteen_300,
+                            color = ZipdabangandroidTheme.Colors.Typo
+                        )
+                    }
                 }
 
                 // 레시피 한 줄 소개
@@ -529,14 +542,22 @@ fun RecipeWriteScreen(
                             imeAction = ImeAction.None,
                         )
                     }
-                    Text(
-                        modifier = Modifier
-                            .align(Alignment.End)
-                            .padding(0.dp, 0.dp, 4.dp, 0.dp),
-                        text = stateRecipeWriteForm.introWordCount.toString() + "/100",
-                        style = ZipdabangandroidTheme.Typography.fourteen_300,
-                        color = ZipdabangandroidTheme.Colors.Typo
-                    )
+                    if(shimmering){
+                        Box(modifier = Modifier.align(Alignment.End)
+                            .width(32.dp)
+                            .height(20.dp)
+                            .shimmeringEffect())
+                    }
+                    else{
+                        Text(
+                            modifier = Modifier
+                                .align(Alignment.End)
+                                .padding(0.dp, 0.dp, 4.dp, 0.dp),
+                            text = stateRecipeWriteForm.introWordCount.toString() + "/100",
+                            style = ZipdabangandroidTheme.Typography.fourteen_300,
+                            color = ZipdabangandroidTheme.Colors.Typo
+                        )
+                    }
                 }
 
                 // 재료
@@ -666,13 +687,20 @@ fun RecipeWriteScreen(
                                 modifier = Modifier.size(22.dp, 16.dp)
                             )
                         }
-
-                        Text(
-                            modifier = Modifier.padding(0.dp, 0.dp, 4.dp, 0.dp),
-                            text = stateRecipeWriteForm.ingredientsNum.toString() + "/10",
-                            style = ZipdabangandroidTheme.Typography.fourteen_300,
-                            color = ZipdabangandroidTheme.Colors.Typo
-                        )
+                        if(shimmering){
+                            Box(modifier = Modifier
+                                .width(52.dp)
+                                .height(20.dp)
+                                .shimmeringEffect())
+                        }
+                        else{
+                            Text(
+                                modifier = Modifier.padding(0.dp, 0.dp, 4.dp, 0.dp),
+                                text = stateRecipeWriteForm.ingredientsNum.toString() + "/10",
+                                style = ZipdabangandroidTheme.Typography.fourteen_300,
+                                color = ZipdabangandroidTheme.Colors.Typo
+                            )
+                        }
                     }
                 }
 
@@ -768,12 +796,20 @@ fun RecipeWriteScreen(
                                 modifier = Modifier.size(22.dp, 16.dp)
                             )
                         }
-                        Text(
-                            modifier = Modifier.padding(0.dp, 0.dp, 4.dp, 0.dp),
-                            text = "Step" + stateRecipeWriteForm.stepsNum + "/Step10",
-                            style = ZipdabangandroidTheme.Typography.fourteen_300,
-                            color = ZipdabangandroidTheme.Colors.Typo
-                        )
+                        if(shimmering){
+                            Box(modifier = Modifier
+                                .width(32.dp)
+                                .height(20.dp)
+                                .shimmeringEffect())
+                        }
+                        else{
+                            Text(
+                                modifier = Modifier.padding(0.dp, 0.dp, 4.dp, 0.dp),
+                                text = "Step" + stateRecipeWriteForm.stepsNum + "/Step10",
+                                style = ZipdabangandroidTheme.Typography.fourteen_300,
+                                color = ZipdabangandroidTheme.Colors.Typo
+                            )
+                        }
                     }
 
                 }
@@ -813,14 +849,22 @@ fun RecipeWriteScreen(
                             imeAction = ImeAction.None,
                         )
                     }
-                    Text(
-                        modifier = Modifier
-                            .align(Alignment.End)
-                            .padding(0.dp, 0.dp, 4.dp, 0.dp),
-                        text = stateRecipeWriteForm.recipeTipWordCount.toString() + "/200",
-                        style = ZipdabangandroidTheme.Typography.fourteen_300,
-                        color = ZipdabangandroidTheme.Colors.Typo
-                    )
+                    if(shimmering){
+                        Box(modifier = Modifier.align(Alignment.End)
+                            .width(32.dp)
+                            .height(20.dp)
+                            .shimmeringEffect())
+                    }
+                    else{
+                        Text(
+                            modifier = Modifier
+                                .align(Alignment.End)
+                                .padding(0.dp, 0.dp, 4.dp, 0.dp),
+                            text = stateRecipeWriteForm.recipeTipWordCount.toString() + "/200",
+                            style = ZipdabangandroidTheme.Typography.fourteen_300,
+                            color = ZipdabangandroidTheme.Colors.Typo
+                        )
+                    }
                 }
             }
 
@@ -893,7 +937,7 @@ fun RecipeWriteScreen(
                     onAcceptClick = {
                         if(tempRecipeApiCalled > 0){
                             CoroutineScope(Dispatchers.Main).launch {
-                                recipeWriteViewModel.postTempRecipeToTemp(tempId!!, stepImageParts.toList(), context)
+                                recipeWriteViewModel.postTempRecipeToTemp(tempId!!, stepImageParts.toList(), stepImageAddNum)
                             }
                         }
                         else{
@@ -917,14 +961,34 @@ fun RecipeWriteScreen(
                     },
                     isComplete = stateRecipeWriteBeverages.btnEnabled,
                     onCompleteClick = {
-                        CoroutineScope(Dispatchers.Main).launch {
-                            // post api success됐는지 확인하는 변수
-                            val isSuccess = recipeWriteViewModel.postRecipeWrite(stepImageParts = stepImageParts.toList())
-                            // post api 성공하면 업로드 완료 알럿을 띄운다
-                            if (isSuccess){
-                                recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.UploadCompleteChanged(true))
+                        if(tempRecipeApiCalled > 0) {
+                            CoroutineScope(Dispatchers.Main).launch {
+                                // temppost api success됐는지 확인하는 변수
+                                val isTempSuccess = recipeWriteViewModel.postTempRecipeToTemp(tempId!!, stepImageParts.toList(), stepImageAddNum)
+
+                                if(isTempSuccess){ // tempost api 성공하면 savepost api  호출한다.
+                                    // savepost api success됐는지 확인하는 변수
+                                    val isSaveSuccess = recipeWriteViewModel.postSaveTempRecipe(tempId!!)
+
+                                    if (isSaveSuccess){ // post api 성공하면 업로드 완료 알럿을 띄운다.
+                                        recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.UploadCompleteChanged(true))
+                                    }
+                                }
+                                // 알럿 닫기
+                                recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.UploadCategoryChanged(false))
                             }
-                            recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.UploadCategoryChanged(false))
+                        }
+                        else{
+                            CoroutineScope(Dispatchers.Main).launch {
+                                // post api success됐는지 확인하는 변수
+                                val isSuccess = recipeWriteViewModel.postRecipeWrite(stepImageParts = stepImageParts.toList())
+                                // post api 성공하면 업로드 완료 알럿을 띄운다
+                                if (isSuccess){
+                                    recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.UploadCompleteChanged(true))
+                                }
+                                // 알럿 닫기
+                                recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.UploadCategoryChanged(false))
+                            }
                         }
                     },
                     setShowDialog = {

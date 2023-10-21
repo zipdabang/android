@@ -8,6 +8,7 @@ import com.zipdabang.zipdabang_android.module.my.data.remote.friendlist.followin
 import com.zipdabang.zipdabang_android.module.my.data.remote.myinfo.MyInfoRecipesResponse
 import com.zipdabang.zipdabang_android.module.my.data.remote.myinfo.MyInfoResponse
 import com.zipdabang.zipdabang_android.module.my.data.remote.myrecipes.complete.CompleteRecipesResponse
+import com.zipdabang.zipdabang_android.module.my.data.remote.myrecipes.scraplike.GetScrapRecipesResponse
 import com.zipdabang.zipdabang_android.module.my.data.remote.myrecipes.temp.TempRecipesResponse
 import com.zipdabang.zipdabang_android.module.my.data.remote.otherinfo.OtherInfoDto
 import com.zipdabang.zipdabang_android.module.my.data.remote.otherinfo.OtherRecipePreviewDto
@@ -15,7 +16,7 @@ import com.zipdabang.zipdabang_android.module.my.data.remote.recipedelete.Delete
 import com.zipdabang.zipdabang_android.module.my.data.remote.recipeedit.complete.GetCompleteRecipeResponse
 import com.zipdabang.zipdabang_android.module.my.data.remote.recipeedit.complete.PatchCompleteRecipeRequestBody
 import com.zipdabang.zipdabang_android.module.my.data.remote.recipeedit.temp.GetTempRecipeResponse
-import com.zipdabang.zipdabang_android.module.my.data.remote.recipewrite.PostTempRecipeSaveRequestBody
+import com.zipdabang.zipdabang_android.module.my.data.remote.recipewrite.PostSaveRecipeRequest
 import com.zipdabang.zipdabang_android.module.my.data.remote.recipewrite.RecipeWriteBeveragesResponse
 import com.zipdabang.zipdabang_android.module.my.data.remote.recipewrite.RecipeWriteResponse
 import com.zipdabang.zipdabang_android.module.my.data.remote.recipewrite.RecipeWriteTempResponse
@@ -64,6 +65,21 @@ interface MyApi {
     ) : RecipeWriteBeveragesResponse
 
 
+    // 좋아요 목록 불러오기
+    @GET("members/likeRecipes")
+    suspend fun getLikeRecipes(
+        @Header("Authorization") accessToken: String,
+        @Query("page") pageIndex : Int
+    ) : GetScrapRecipesResponse
+
+    // 스크랩 목록 불러오기
+    @GET("members/scrapRecipes")
+    suspend fun getScrapRecipes(
+        @Header("Authorization") accessToken: String,
+        @Query("page") pageIndex : Int
+    ) : GetScrapRecipesResponse
+
+
 
     // 업로드 목록 가져오기
     @GET("members/recipes/owner/")
@@ -71,18 +87,21 @@ interface MyApi {
         @Header("Authorization") accessToken: String,
         @Query("pageIndex") pageIndex : Int
     ) : CompleteRecipesResponse
+
     // 임시저장 목록 가져오기
     @GET("members/recipes/temp/")
     suspend fun getMyTempRecipes(
         @Header("Authorization") accessToken: String,
         @Query("pageIndex") pageIndex : Int
     ) : TempRecipesResponse
+
     // 임시저장 상세정보 가져오기
     @GET("members/recipes/temp/{tempId}/")
     suspend fun getMyTempRecipesDetail(
         @Header("Authorization") accessToken: String,
         @Path("tempId") tempId : Int
     ) : GetTempRecipeResponse
+
     // 업로드 상세정보 가져오기
     @GET("members/recipes/")
     suspend fun getMyCompleteRecipesDetail(
@@ -127,7 +146,7 @@ interface MyApi {
     suspend fun postTempRecipeSave(
         @Header("Authorization") accessToken: String,
         @Path("tempId") tempId : Int,
-        @Body categoryId : PostTempRecipeSaveRequestBody
+        @Body categoryId : PostSaveRecipeRequest
     ) : RecipeWriteResponse
 
     // 임시저장 삭제
@@ -152,7 +171,6 @@ interface MyApi {
         @Header("Authorization") accessToken: String,
         @Path("recipeId") recipeId : Int,
     ) : DeleteRecipeResponse
-
 
 
 

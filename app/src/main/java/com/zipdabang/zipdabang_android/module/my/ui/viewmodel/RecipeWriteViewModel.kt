@@ -1,18 +1,16 @@
 package com.zipdabang.zipdabang_android.module.my.ui.viewmodel
 
-import android.content.Context
-import android.graphics.BitmapFactory
 import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.platform.LocalContext
 import androidx.datastore.core.DataStore
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
 import com.zipdabang.zipdabang_android.common.Resource
 import com.zipdabang.zipdabang_android.core.data_store.proto.Token
+import com.zipdabang.zipdabang_android.module.my.data.remote.recipewrite.PostSaveRecipeRequest
 import com.zipdabang.zipdabang_android.module.my.data.remote.recipewrite.RecipeWriteContent
 import com.zipdabang.zipdabang_android.module.my.data.remote.recipewrite.RecipeWriteIngredient
 import com.zipdabang.zipdabang_android.module.my.data.remote.recipewrite.RecipeWriteStep
@@ -45,13 +43,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
-import okhttp3.Request
-import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
-import java.io.ByteArrayOutputStream
-import java.io.File
-import java.io.FileOutputStream
-import java.io.InputStream
 import javax.inject.Inject
 
 @HiltViewModel
@@ -564,10 +556,6 @@ class RecipeWriteViewModel @Inject constructor(
         Log.e("recipewrite-result", "${json}")
         Log.e("recipewrite-result 내용", "${stepImageParts}")
         Log.e("recipewrite-result 내용", "${thumbnailPart}")
-        Log.e(
-            "recipewrite-result 내용",
-            "${"Bearer " + dataStore.data.first().accessToken.toString()}"
-        )
         var isSuccess = false
 
         try {
@@ -727,22 +715,6 @@ class RecipeWriteViewModel @Inject constructor(
         }.launchIn(viewModelScope)
     }
 
-    fun downloadFile(url: String, targetFile: File) {
-            val inputStream = url.byteInputStream()
-            val outputStream = FileOutputStream(targetFile)
-            val buffer = ByteArray(4096)
-            var bytesRead: Int = 0
-
-            // 파일을 다운로드하고 로컬 파일로 저장합니다.
-            while (inputStream != null && inputStream.read(buffer).also { bytesRead = it } != -1) {
-                outputStream.write(buffer, 0, bytesRead)
-            }
-
-            outputStream.flush()
-            outputStream.close()
-            inputStream?.close()
-    }
-
     suspend fun getTempRecipeDetail(tempId: Int) {
         var accessToken = "Bearer " + dataStore.data.first().accessToken.toString()
         Log.e("recipewrite-get-temp", "${tempId} ${accessToken}")
@@ -786,7 +758,7 @@ class RecipeWriteViewModel @Inject constructor(
                                 Step(
                                     stepImage = step.image,
                                     description = step.description ?: "",
-                                    stepWordCount = 0,
+                                    stepWordCount = step.description.length ?: 0,
                                     completeBtnEnabled = false, // Set to an appropriate value
                                     completeBtnVisible = completeBtnVisible,
                                     addBtnVisible = addBtnVisible
@@ -875,35 +847,28 @@ class RecipeWriteViewModel @Inject constructor(
 
     }
 
-    suspend fun postTempRecipeToTemp( tempId: Int, stepImageParts: List<MultipartBody.Part>, context: Context) {
-        var accessToken = "Bearer " + dataStore.data.first().accessToken.toString()
+    suspend fun postTempRecipeToTemp(
+        tempId: Int,
+        stepImageParts: List<MultipartBody.Part>,
+        stepImageAddNum : List<Int>
+    ) : Boolean {
+        // api 호출을 위해 필요한 변수 정의
+        val accessToken = "Bearer " + dataStore.data.first().accessToken.toString()
         val ingredients = stateRecipeWriteForm.ingredients.map { ingredient ->
             TempRecipeWriteIngredient(
                 ingredientName = ingredient.ingredientName,
                 quantity = ingredient.quantity
             )
         }
+        val steps = stateRecipeWriteForm.steps.mapIndexed { index, step ->
+            TempRecipeWriteStep(
+                description = step.description,
+                stepNum = index + 1,
+                stepUrl = stateRecipeWriteForm.steps[index].stepImage.toString(),
+            )
+        }
         var thumbnail: MultipartBody.Part? = null
         var stepImages: List<MultipartBody.Part>? = emptyList()
-        // 처음 받아왔을때 상태
-        var preStepState = stateRecipeWriteForm.steps.mapIndexed { index, step ->
-            TempRecipeWriteStep(
-                description = step.description,
-                stepNum = index + 1,
-                stepUrl = null //step.stepImage?
-            )
-        }
-        // 후에 바뀌었을때 상태
-        var nextStepState = stateRecipeWriteForm.steps.mapIndexed { index, step ->
-            TempRecipeWriteStep(
-                description = step.description,
-                stepNum = index + 1,
-                stepUrl = null
-//                if (step.stepImage?.toString() == "") null
-//                else step.stepImage?.toString()
-            )
-        }
-
         var content by mutableStateOf(
             TempRecipeWriteContent(
                 name = stateRecipeWriteForm.title,
@@ -914,60 +879,99 @@ class RecipeWriteViewModel @Inject constructor(
                 stepCount = stateRecipeWriteForm.stepsNum,
                 ingredients = ingredients,
                 thumbnailUrl = null,
-                steps = emptyList(),
+                steps = steps,
             )
         )
+        var isSuccess = false
 
         // 썸네일 관리
         if (thumbnailPart != null) { //썸네일 새로 추가
+            // content 밖에 thumbnail
             thumbnail = thumbnailPart
-            Log.e("recipewrite-post-temp 왜안돼", "첫번째 if문 ${thumbnailPart}")
+
+            // content 안에 thumbnail : null
+            Log.e("recipewrite-post-temp-thumbnail", "첫번째 if문 ${thumbnailPart}")
         }
         else { //썸네일 추가 안한 경우
+            // content 밖에 thumbnail
             thumbnail = null
+
+            // thumbnail 삭제한 경우 content 안에 thumbnail null로 해야함
+            val thumbnailUrl =
+            // thumbnail 삭제한 경우
+            if(stateRecipeWriteForm.thumbnail == null || stateRecipeWriteForm.thumbnail == "") { null }
+            // thumbnail 그대로인 경우
+            else { stateTempRecipeWriteForm.thumbnail.toString() }
+
             // content 안에 thumbnail
-            val thumbnailUrl = stateTempRecipeWriteForm.thumbnail.toString()
-
-            /*val tempThumbnailFile = File(context.cacheDir, "temp_thumbnail.jpg")
-            downloadFile(thumbnailUrl, tempThumbnailFile)
-            // 다운로드한 썸네일 파일을 MultipartBody.Part로 변환
-            val thumbnailPart = MultipartBody.Part.createFormData(
-                "thumbnail",
-                tempThumbnailFile.name,
-                RequestBody.create("multipart/form-data".toMediaTypeOrNull(), tempThumbnailFile)
-            )*/
-
             content = content.copy(thumbnailUrl = thumbnailUrl)
-            Log.e("recipewrite-post-temp 왜안돼", "두번째 if문 ${thumbnailPart}")
-            Log.e("recipewrite-post-temp 왜안돼", "content안에 thumbnailUrl : ${thumbnailUrl}")
-            Log.e("recipewrite-post-temp 왜안돼", "content안에 thumbnailPart : ${thumbnailPart}")
+
+            Log.e("recipewrite-post-temp-thumbnail", "두번째 if문 ${thumbnailPart}")
+            Log.e("recipewrite-post-temp-thumbnail", "content안에 thumbnailUrl : ${thumbnailUrl}")
+            Log.e("recipewrite-post-temp-thumbnail", "content안에 thumbnailPart : ${thumbnailPart}")
         }
+
 
         // 스텝사진 관리
         if (stepImageParts.isEmpty()) { //스텝 사진 추가 안함
+            // content 밖에 stepImages
             stepImages = null
-            content = content.copy(steps =
-                listOf(
-                    TempRecipeWriteStep(
-                        description = "",
-                        stepNum = 1,
-                        stepUrl = null
 
+            // stepUrl을 삭제했을 경우에 content 안에 stepUrl을 null로 해야함
+            val updatedSteps = stateRecipeWriteForm.steps.mapIndexed { index, step->
+                // stepUrl을 삭제했을 경우
+                if(step.stepImage == null || step.stepImage == ""){
+                    TempRecipeWriteStep(
+                        description = step.description,
+                        stepNum = index + 1,
+                        stepUrl = null
                     )
-                )
-            ) //스텝 삭제했을때는 content = null 해야함
-        } else { //스텝 사진 추가함
+                }
+                // stepUrl이 그대로일 경우
+                else {
+                    TempRecipeWriteStep(
+                        description = step.description,
+                        stepNum = index + 1,
+                        stepUrl = step.stepImage.toString()
+                    )
+                }
+            }
+
+            // content 안에 stepUrl
+            content = content.copy(steps = updatedSteps)
+            Log.e("recipewrite-post-temp-step", "첫번째 if문 ${stepImages}")
+        }
+        else { //스텝 사진 추가함
+            // content 밖에 stepImages
             stepImages = stepImageParts
-            content = content.copy(steps =
-                listOf(
-                    TempRecipeWriteStep(
-                        description = "",
-                        stepNum = 1,
-                        stepUrl = null
 
+            // stepUrl을 삭제했을 경우에 content 안에 stepUrl을 null로 해야함
+            val updatedSteps = stateRecipeWriteForm.steps.mapIndexed { index, step->
+                val addStepNum = stepImageAddNum.indexOf(index + 1)
+                // stepUrl을 삭제했을 경우
+                if(addStepNum != -1 || step.stepImage == null || step.stepImage == ""){
+                    TempRecipeWriteStep(
+                        description = step.description,
+                        stepNum = index + 1,
+                        stepUrl = null
                     )
-                )
-            )
+                }
+                // stepUrl이 그대로일 경우
+                else {
+                    TempRecipeWriteStep(
+                        description = step.description,
+                        stepNum = index + 1,
+                        stepUrl = step.stepImage.toString()
+                    )
+                }
+            }
+
+            // 추가한 stepUrl의 content 안에 stepUrl을 null로 해야함
+
+
+            // content 안에 stepUrl : null
+            content = content.copy(steps = updatedSteps)
+            Log.e("recipewrite-post-temp-step", "두번째 if문 ${stepImages}")
         }
 
 
@@ -976,7 +980,6 @@ class RecipeWriteViewModel @Inject constructor(
         val contentRequestBody = json.toRequestBody("application/json".toMediaTypeOrNull())
         Log.e("recipewrite-post-temp", "stateRecipeWriteForm : ${stateRecipeWriteForm}")
         Log.e("recipewrite-post-temp", "stateTempRecipeWriteForm : ${stateTempRecipeWriteForm}")
-        Log.e("recipewrite-post-temp", "content안에 thumbnail : ${stateTempRecipeWriteForm.thumbnail.toString()}")
         Log.e("recipewrite-post-temp", "tempId : ${tempId}")
         Log.e("recipewrite-post-temp", "content : ${json}")
         Log.e("recipewrite-post-temp", "thumbnail : ${thumbnail}")
@@ -996,9 +999,11 @@ class RecipeWriteViewModel @Inject constructor(
                when(result){
                    is Resource.Success ->{
                        Log.e("recipewrite-post-temp", "성공 : ${result.code}")
+                       isSuccess = true
                    }
                    is Resource.Error ->{
                        Log.e("recipewrite-post-temp", "에러 : ${result.code}")
+                       isSuccess = false
                    }
                    is Resource.Loading ->{
                        Log.e("recipewrite-post-temp", "로딩중 : ${result.code}")
@@ -1007,10 +1012,41 @@ class RecipeWriteViewModel @Inject constructor(
             }
 
         } catch (e: Exception) {}
+        return isSuccess
     }
 
-    suspend fun postSaveTempRecipe() {
+    suspend fun postSaveTempRecipe(tempId: Int) : Boolean {
+        val accessToken = "Bearer " + dataStore.data.first().accessToken.toString()
+        val categoryId =
+            stateRecipeWriteBeverages.beverageCheckList.mapIndexedNotNull { index, isSelected ->
+                if (isSelected) index + 1 else null
+            }
+        var isSuccess = false
 
+        try{
+            val result = postSaveTempRecipeUseCase(accessToken, tempId, PostSaveRecipeRequest(listOf(0) + categoryId))
+
+            Log.e("recipewrite-post-save 카테고리", (listOf(0) + categoryId).toString())
+            Log.e("recipewrite-post-save tempId", tempId.toString())
+
+
+            result.collect{result->
+                when(result){
+                    is Resource.Success->{
+                        Log.e("recipewrite-post-save", "성공 : ${result.code}")
+                        isSuccess = true
+                    }
+                    is Resource.Error ->{
+                        Log.e("recipewrite-post-save", "에러 : ${result} ${result.code} ${result.message} ${result.data}")
+                        isSuccess = false
+                    }
+                    is Resource.Loading ->{
+                        Log.e("recipewrite-post-save", "로딩중 : ${result.code}")
+                    }
+                }
+            }
+        } catch (e: Exception) {}
+        return isSuccess
     }
 
 }

@@ -8,13 +8,14 @@ import com.zipdabang.zipdabang_android.module.my.data.remote.friendlist.followin
 import com.zipdabang.zipdabang_android.module.my.data.remote.myinfo.MyInfoRecipesResponse
 import com.zipdabang.zipdabang_android.module.my.data.remote.myinfo.MyInfoResponse
 import com.zipdabang.zipdabang_android.module.my.data.remote.myrecipes.complete.CompleteRecipesResponse
+import com.zipdabang.zipdabang_android.module.my.data.remote.myrecipes.scraplike.GetScrapRecipesResponse
 import com.zipdabang.zipdabang_android.module.my.data.remote.otherinfo.OtherInfoDto
 import com.zipdabang.zipdabang_android.module.my.data.remote.otherinfo.OtherRecipePreviewDto
 import com.zipdabang.zipdabang_android.module.my.data.remote.recipedelete.DeleteRecipeResponse
 import com.zipdabang.zipdabang_android.module.my.data.remote.recipeedit.complete.GetCompleteRecipeResponse
 import com.zipdabang.zipdabang_android.module.my.data.remote.recipeedit.complete.PatchCompleteRecipeRequestBody
 import com.zipdabang.zipdabang_android.module.my.data.remote.recipeedit.temp.GetTempRecipeResponse
-import com.zipdabang.zipdabang_android.module.my.data.remote.recipewrite.PostTempRecipeSaveRequestBody
+import com.zipdabang.zipdabang_android.module.my.data.remote.recipewrite.PostSaveRecipeRequest
 import com.zipdabang.zipdabang_android.module.my.data.remote.recipewrite.RecipeWriteBeveragesResponse
 import com.zipdabang.zipdabang_android.module.my.data.remote.recipewrite.RecipeWriteResponse
 import com.zipdabang.zipdabang_android.module.my.data.remote.recipewrite.RecipeWriteTempResponse
@@ -40,8 +41,10 @@ interface MyRepository {
     suspend fun getMyTempRecipesDetail(accessToken: String, tempId : Int) : GetTempRecipeResponse
     suspend fun getMyCompleteRecipesDetail(accessToken: String, recipeId : Int ) : GetCompleteRecipeResponse
     suspend fun postTempRecipeToTemp(accessToken: String, tempId: Int, content : RequestBody, thumbnail : MultipartBody.Part?, stepImages: List<MultipartBody.Part>?) : RecipeWriteResponse
-    suspend fun postTempRecipeSave(accessToken: String, tempId: Int, categoryId : PostTempRecipeSaveRequestBody) : RecipeWriteResponse
+    suspend fun postTempRecipeSave(accessToken: String, tempId: Int, categoryId : PostSaveRecipeRequest) : RecipeWriteResponse
     suspend fun deleteTempRecipe(accessToken: String, tempId: Int) : DeleteRecipeResponse
     suspend fun patchCompleteRecipe(accessToken: String, recipeId: Int, content : PatchCompleteRecipeRequestBody) : RecipeWriteResponse
     suspend fun deleteCompleteRecipe(accessToken: String, recipeId: Int) : DeleteRecipeResponse
+    suspend fun getLikeRecipes(accessToken: String, page : Int) : GetScrapRecipesResponse
+    suspend fun getScrapRecipes(accessToken: String, page : Int) : GetScrapRecipesResponse
 }

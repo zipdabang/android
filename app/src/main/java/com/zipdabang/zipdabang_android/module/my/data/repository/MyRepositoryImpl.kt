@@ -9,13 +9,14 @@ import com.zipdabang.zipdabang_android.module.my.data.remote.friendlist.followin
 import com.zipdabang.zipdabang_android.module.my.data.remote.myinfo.MyInfoRecipesResponse
 import com.zipdabang.zipdabang_android.module.my.data.remote.myinfo.MyInfoResponse
 import com.zipdabang.zipdabang_android.module.my.data.remote.myrecipes.complete.CompleteRecipesResponse
+import com.zipdabang.zipdabang_android.module.my.data.remote.myrecipes.scraplike.GetScrapRecipesResponse
 import com.zipdabang.zipdabang_android.module.my.data.remote.otherinfo.OtherInfoDto
 import com.zipdabang.zipdabang_android.module.my.data.remote.otherinfo.OtherRecipePreviewDto
 import com.zipdabang.zipdabang_android.module.my.data.remote.recipedelete.DeleteRecipeResponse
 import com.zipdabang.zipdabang_android.module.my.data.remote.recipeedit.complete.GetCompleteRecipeResponse
 import com.zipdabang.zipdabang_android.module.my.data.remote.recipeedit.complete.PatchCompleteRecipeRequestBody
 import com.zipdabang.zipdabang_android.module.my.data.remote.recipeedit.temp.GetTempRecipeResponse
-import com.zipdabang.zipdabang_android.module.my.data.remote.recipewrite.PostTempRecipeSaveRequestBody
+import com.zipdabang.zipdabang_android.module.my.data.remote.recipewrite.PostSaveRecipeRequest
 import com.zipdabang.zipdabang_android.module.my.data.remote.recipewrite.RecipeWriteBeveragesResponse
 import com.zipdabang.zipdabang_android.module.my.data.remote.recipewrite.RecipeWriteResponse
 import com.zipdabang.zipdabang_android.module.my.data.remote.recipewrite.RecipeWriteTempResponse
@@ -136,7 +137,7 @@ class MyRepositoryImpl @Inject constructor(
     override suspend fun postTempRecipeSave(
         accessToken: String,
         tempId: Int,
-        categoryId: PostTempRecipeSaveRequestBody
+        categoryId: PostSaveRecipeRequest
     ): RecipeWriteResponse {
         return api.postTempRecipeSave(accessToken, tempId, categoryId)
     }
@@ -158,6 +159,14 @@ class MyRepositoryImpl @Inject constructor(
         recipeId: Int
     ): DeleteRecipeResponse {
         return api.deleteCompleteRecipe(accessToken, recipeId)
+    }
+
+    override suspend fun getLikeRecipes(accessToken: String, page: Int): GetScrapRecipesResponse {
+        return api.getLikeRecipes(accessToken, page)
+    }
+
+    override suspend fun getScrapRecipes(accessToken: String, page: Int): GetScrapRecipesResponse {
+        return api.getScrapRecipes(accessToken, page)
     }
 
 
