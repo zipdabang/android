@@ -15,6 +15,7 @@ import com.zipdabang.zipdabang_android.module.recipes.ui.state.PreferenceToggleS
 fun HotRecipeList(
     hotItems: UiState<List<HotRecipeItem>>,
     onRecipeClick: (Int) -> Unit,
+    onBlockedRecipeClick: (Int, Int) -> Unit,
     onScrapClick: (Int) -> Unit,
     onLikeClick: (Int) -> Unit,
     likeState: PreferenceToggleState,
@@ -40,6 +41,7 @@ fun HotRecipeList(
                     index = index + 1,
                     item = recipesByOwnerType,
                     onRecipeClick = onRecipeClick,
+                    onBlockedRecipeClick = onBlockedRecipeClick,
                     onLikeClick = onLikeClick,
                     onScrapClick = onScrapClick,
                     likeState = likeState,

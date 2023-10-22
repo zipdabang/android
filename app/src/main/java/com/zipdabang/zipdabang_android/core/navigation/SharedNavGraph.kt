@@ -1,6 +1,12 @@
 package com.zipdabang.zipdabang_android.core.navigation
 
 import android.util.Log
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.size
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
@@ -10,8 +16,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
@@ -27,14 +37,18 @@ import com.zipdabang.zipdabang_android.common.TogglePreferenceException
 import com.zipdabang.zipdabang_android.core.data_store.proto.CurrentPlatform
 import com.zipdabang.zipdabang_android.module.comment.ui.RecipeCommentViewModel
 import com.zipdabang.zipdabang_android.module.comment.ui.ReportCommentInfoState
+import com.zipdabang.zipdabang_android.module.detail.recipe.ui.BlockNoticeViewModel
 import com.zipdabang.zipdabang_android.module.detail.recipe.ui.RecipeDetailLoading
 import com.zipdabang.zipdabang_android.module.detail.recipe.ui.RecipeDetailScreen
 import com.zipdabang.zipdabang_android.module.detail.recipe.ui.RecipeDetailViewModel
 import com.zipdabang.zipdabang_android.module.search.ui.SearchCategoryScreen
 import com.zipdabang.zipdabang_android.module.search.ui.SearchScreen
 import com.zipdabang.zipdabang_android.ui.component.LoginRequestDialog
+import com.zipdabang.zipdabang_android.ui.component.Notice
 import com.zipdabang.zipdabang_android.ui.component.RecipeDeleteDialog
+import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 
@@ -50,12 +64,64 @@ fun NavGraphBuilder.SharedNavGraph(
         route = SHARED_ROUTE
     ){
         composable(
+            route = SharedScreen.BlockedRecipe.route,
+            arguments = listOf(
+                navArgument(name = "recipeId") { type = NavType.IntType },
+                navArgument(name = "ownerId") { type = NavType.IntType }
+            )
+        ) { backStackEntry ->
+            val recipeId = backStackEntry.arguments?.getInt("recipeId") ?: -1
+            val ownerId = backStackEntry.arguments?.getInt("ownerId") ?: -1
+
+            val viewModel = hiltViewModel<BlockNoticeViewModel>()
+            val cancelState = viewModel.cancelState.value
+
+            Notice(
+                contentText = stringResource(id = R.string.notice_blocked_recipe),
+                buttonText = stringResource(id = R.string.button_cancel_block)
+            ) {
+                viewModel.cancelUserBlock(ownerId)
+            }
+
+            if (cancelState.isLoading == true) {
+                Column(
+                    modifier = Modifier.fillMaxSize(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(48.dp),
+                        color = ZipdabangandroidTheme.Colors.Choco
+                    )
+                }
+            }
+
+            if (cancelState.isLoading == false && cancelState.data == true) {
+                navController.navigate(route = SharedScreen.DetailRecipe.passRecipeId(recipeId)) {
+                    popUpTo(route = SharedScreen.BlockedRecipe.route) {
+                        inclusive = true
+                    }
+                    launchSingleTop = true
+                }
+            }
+        }
+        
+        composable(
             route = SharedScreen.DetailRecipe.route,
             arguments = listOf(
                 navArgument(name = "recipeId") { type = NavType.IntType }
             )
         ) { backStackEntry ->
 
+            val currentBackStackEntry = backStackEntry?.destination?.route
+            LaunchedEffect(key1 = true) {
+                val backStackEntries: List<NavBackStackEntry> = navController.currentBackStack.first()
+                for (entry in backStackEntries) {
+                    val route = entry.destination.route
+                    Log.d("SharedNavGraph", "route : ${route}")
+                }
+            }
+            
             val recipeId = backStackEntry.arguments?.getInt("recipeId") ?: -1
 
             val scope = rememberCoroutineScope()
@@ -145,6 +211,7 @@ fun NavGraphBuilder.SharedNavGraph(
                 Log.d("SharedNavGraph", "recipe loading ended")
                 RecipeDetailScreen(
                     recipeId = recipeId,
+                    ownerId = ownerId,
                     onClickBackIcon = {
                         navController.popBackStack()
                     },
@@ -161,7 +228,13 @@ fun NavGraphBuilder.SharedNavGraph(
                             }
                         }
                     },
-                    onClickProfile = { ownerId -> },
+                    onClickProfile = { profileOwnerId ->
+                        navController.navigate(
+                            route = MyScreen.OtherPage.passUserId(profileOwnerId)
+                        ) {
+                            launchSingleTop = true
+                        }
+                    },
                     // onClickCart = { keyword -> },
                     onClickRecipeDelete = {
                         showDeleteDialog = true

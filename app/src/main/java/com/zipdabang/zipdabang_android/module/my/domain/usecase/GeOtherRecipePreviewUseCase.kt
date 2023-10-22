@@ -35,7 +35,7 @@ class GeOtherRecipePreviewUseCase @Inject constructor(
             errorCode?.let {
                 emit(
                     Resource.Error(
-                        message = e.response()?.errorBody().toString(),
+                        message = "error in GetOtherRecipePreviewUseCase",
                         code = errorCode
                     )
                 )

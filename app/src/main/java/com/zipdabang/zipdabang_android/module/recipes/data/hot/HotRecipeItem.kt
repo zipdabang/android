@@ -11,5 +11,8 @@ data class HotRecipeItem(
     val recipeId: Int,
     val recipeName: String,
     val comments: Int,
-    val thumbnailUrl: String?
+    val thumbnailUrl: String?,
+    // TODO API 확정 시 변수명 수정
+    val ownerId: Int,
+    val isBlocked: Boolean
 )

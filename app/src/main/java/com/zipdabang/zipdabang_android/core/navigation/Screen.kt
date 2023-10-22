@@ -69,6 +69,12 @@ sealed class MyScreen(val route : String){
             return "my/other?userId=$userId"
         }
     }
+
+    object OtherRecipeListPage : MyScreen(route = "my/other/RecipeList?userId={userId}?nickName={nickName}")  {
+        fun passUserInfo(userId : Int,nickName : String) : String {
+            return "my/other/RecipeList?userId=$userId?nickName=$nickName"
+        }
+    }
     object NoticeList : MyScreen(route = "my/notice/list")
 
 }
@@ -83,6 +89,12 @@ sealed class DrawerScreen(val route : String){
 
     object ReportSuccess : DrawerScreen(route = "drawer/report/success")
     object ReportList : DrawerScreen(route = "drawer/report/list")
+    object ReportDetail : DrawerScreen(route = "drawer/report/detail?={reportId}"){
+        fun passReportId(reportId : Int?) : String{
+            return "drawer/report/detail?=$reportId"
+        }
+    }
+
     //회원 정보
     object UserInfo : DrawerScreen(route = "drawer/userinfo")
     object UserInfoBasic : DrawerScreen(route="drawer/userinfo/basic")
@@ -107,6 +119,12 @@ sealed class SharedScreen(val route : String){
     object SearchRecipeCategory : SharedScreen(route = "shared/search?categoryId={categoryId}&keyword={keyword}"){
         fun passQuery(categoryId : Int?, keyword: String?) : String{
             return "shared/search?categoryId=$categoryId&keyword=$keyword"
+        }
+    }
+
+    object BlockedRecipe: SharedScreen(route = "shared/detail/blocked?recipeId={recipeId}&ownerId={ownerId}") {
+        fun passRecipeId(recipeId: Int, ownerId: Int): String{
+            return "shared/detail/blocked?recipeId=$recipeId&ownerId=$ownerId"
         }
     }
 

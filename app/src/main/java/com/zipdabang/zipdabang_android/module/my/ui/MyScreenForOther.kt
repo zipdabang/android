@@ -57,6 +57,7 @@ import kotlinx.coroutines.launch
 fun MyScreenForOther(
     navController : NavController,
     userId : Int,
+    onClickHeader : (String) -> Unit,
     viewModel : MyForOthersViewModel = hiltViewModel()
 ) {
 
@@ -257,7 +258,10 @@ fun MyScreenForOther(
                                     tabsList = listOf(
                                         TabItem.ProfileForOthers(),
                                         TabItem.RecipesForOthers(
-                                            nickname = commonInfoState.value.nickName
+                                            nickname = commonInfoState.value.nickName,
+                                            onClickHeader = {
+                                                onClickHeader(commonInfoState.value.nickName)
+                                            }
                                         )
                                     ),
                                     pagerState = pagerState

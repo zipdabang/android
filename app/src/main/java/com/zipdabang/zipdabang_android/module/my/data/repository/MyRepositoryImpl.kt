@@ -11,6 +11,7 @@ import com.zipdabang.zipdabang_android.module.my.data.remote.myinfo.MyInfoRespon
 import com.zipdabang.zipdabang_android.module.my.data.remote.myrecipes.complete.CompleteRecipesResponse
 import com.zipdabang.zipdabang_android.module.my.data.remote.myrecipes.scraplike.GetScrapRecipesResponse
 import com.zipdabang.zipdabang_android.module.my.data.remote.otherinfo.OtherInfoDto
+import com.zipdabang.zipdabang_android.module.my.data.remote.otherinfo.OtherRecipeListDto
 import com.zipdabang.zipdabang_android.module.my.data.remote.otherinfo.OtherRecipePreviewDto
 import com.zipdabang.zipdabang_android.module.my.data.remote.recipedelete.DeleteRecipeResponse
 import com.zipdabang.zipdabang_android.module.my.data.remote.recipeedit.complete.GetCompleteRecipeResponse
@@ -108,6 +109,7 @@ class MyRepositoryImpl @Inject constructor(
         return api.getMyCompleteRecipes(accessToken, pageIndex)
     }
 
+
     override suspend fun getMyTempRecipesDetail(
         accessToken: String,
         tempId: Int
@@ -171,5 +173,14 @@ class MyRepositoryImpl @Inject constructor(
         return api.getScrapRecipes(accessToken, page)
     }
 
+
+
+    override suspend fun getOtherRecipeList(
+        accessToken: String,
+        pageIndex: Int,
+        memeberId: Int
+    ): OtherRecipeListDto {
+        return api.getOtherRecipeList(accessToken,memeberId, pageIndex)
+    }
 
 }

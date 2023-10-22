@@ -22,6 +22,7 @@ import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
 
 @Composable
 fun ReportListScreen(
+    onReportClick : (Int) -> Unit,
     viewModel : ErrorListViewModel = hiltViewModel()
 ) {
 
@@ -53,7 +54,10 @@ fun ReportListScreen(
 
                     ReportItem(
                         title = reportItems[it]!!.title,
-                        createdAt = reportItems[it]!!.createdAt
+                        createdAt = reportItems[it]!!.createdAt,
+                        onClick = {
+                            onReportClick(reportItems[it]!!.id)
+                        }
                     )
 
                     Divider(

@@ -40,6 +40,7 @@ fun RecipeListScreen(
     modifier: Modifier = Modifier,
     navController: NavController,
     categoryState: RecipeSubtitleState,
+    onSearchIconClick: () -> Unit,
     onBackClick: () -> Unit,
     onShareClick: () -> Unit,
     onItemClick: (Int) -> Unit,
@@ -69,23 +70,20 @@ fun RecipeListScreen(
     )
 
     val sortBy = viewModel.sortBy.value
-    // val total = viewModel.total.value.toString()
 
     Log.i(TAG, "ownerType : $type")
     Log.i(TAG, "sortBy : $sortBy")
-    // Log.i(TAG, "total : $total")
 
 
     val recipeList =
         if (categoryState.categoryId == -1 && categoryState.ownerType != null) {
             Log.d("RecipeList", "ownerType")
-            viewModel.getOwnerItemCount(categoryState.ownerType)
             viewModel.getRecipeListByOwnerType(
                 ownerType = categoryState.ownerType,
                 orderBy = sortBy
             ).collectAsLazyPagingItems()
         } else {
-            viewModel.getCategoryItemCount(categoryState.categoryId ?: 0)
+            Log.d("RecipeList", "category type")
             viewModel.getRecipeListByCategory(
                 categoryId = categoryState.categoryId!!,
                 orderBy = sortBy
@@ -116,7 +114,6 @@ fun RecipeListScreen(
         mutableStateOf(false)
     }
 
-
     ModalDrawer(
         scaffold = {
             Scaffold(
@@ -129,7 +126,7 @@ fun RecipeListScreen(
                         onClickStartIcon = {
                             onBackClick()
                         },
-                        onClickEndIcon1 = {},
+                        onClickEndIcon1 = { onSearchIconClick() },
                         onClickEndIcon2 = { scope.launch { drawerState.open() } },
                         centerText = categoryState.let {
                             if (it.categoryId == -1 && it.ownerType != null) {
@@ -259,35 +256,4 @@ fun RecipeListScreen(
         drawerState = drawerState,
         navController = navController
     )
-
-/*    val currentOnBack by rememberUpdatedState(onBackClick)
-
-    // 뒤로가기 버튼을 눌렀을 때 callback을 실행
-    val backCallback = remember {
-        // Always intercept back events. See the SideEffect for
-        // a more complete version
-        object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                currentOnBack()
-                viewModel.deleteAllRecipes()
-            }
-        }
-    }
-
-    SideEffect {
-        backCallback.isEnabled = true
-    }
-
-    val backDispatcher = checkNotNull(LocalOnBackPressedDispatcherOwner.current) {
-        "No OnBackPressedDispatcherOwner was provided via LocalOnBackPressedDispatcherOwner"
-    }.onBackPressedDispatcher
-
-    val lifecycleOwner = LocalLifecycleOwner.current
-
-    DisposableEffect(lifecycleOwner, backDispatcher) {
-        backDispatcher.addCallback(lifecycleOwner, backCallback)
-        onDispose {
-            backCallback.remove()
-        }
-    }*/
 }

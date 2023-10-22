@@ -66,6 +66,7 @@ fun HotRecipeItem(
     index: Int,
     item: HotRecipeItem,
     onRecipeClick: (Int) -> Unit,
+    onBlockedRecipeClick: (Int, Int) -> Unit,
     onScrapClick: (Int) -> Unit,
     onLikeClick: (Int) -> Unit,
     likeState: PreferenceToggleState,
@@ -103,7 +104,11 @@ fun HotRecipeItem(
                 interactionSource = remember { MutableInteractionSource() },
                 indication = rememberRipple()
             ) {
-                onRecipeClick(item.recipeId)
+                if (item.isBlocked) {
+                    onBlockedRecipeClick(item.recipeId, item.ownerId)
+                } else {
+                    onRecipeClick(item.recipeId)
+                }
             },
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
@@ -385,8 +390,9 @@ fun HotRecipeItemLoading() {
 fun HotRecipeItemPreview() {
     com.zipdabang.zipdabang_android.module.recipes.ui.hot.HotRecipeItem(
         index = 1,
-        item = HotRecipeItem(false, false, 1, "false", 1, "dsafs", 1, "https://github.com/zipdabang/android/assets/101035437/3711da12-6056-47df-b177-94ba33bfdecc"),
+        item = HotRecipeItem(false, false, 1, "false", 1, "dsafs", 1, "https://github.com/zipdabang/android/assets/101035437/3711da12-6056-47df-b177-94ba33bfdecc", 1, false),
         onRecipeClick = { int -> },
+        onBlockedRecipeClick = { int, a -> },
         onScrapClick = { int -> },
         onLikeClick = { int -> },
         likeState = PreferenceToggleState(),

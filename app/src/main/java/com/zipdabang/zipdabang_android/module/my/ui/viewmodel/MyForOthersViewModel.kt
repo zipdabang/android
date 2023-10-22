@@ -1,5 +1,6 @@
 package com.zipdabang.zipdabang_android.module.my.ui.viewmodel
 
+import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
@@ -19,6 +20,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
 
+@SuppressLint("SuspiciousIndentation")
 @HiltViewModel
 class MyForOthersViewModel @Inject constructor(
     val getOtherInfoUseCase: GeOtherInfoUseCase,
@@ -42,16 +44,15 @@ class MyForOthersViewModel @Inject constructor(
     private var _followOrCancelSuccessState = mutableStateOf(FollowOrCancel())
     val followOrCancelSuccessState = _followOrCancelSuccessState
 
-    private var _userId = mutableStateOf(0)
-    val userId = _userId
 
     init {
-        _userId.value = savedStateHandle.get<Int>("userId")!!
+        val userId = savedStateHandle.get<Int>("userId")
 
-            getOtherInfo(_userId.value)
-            getOtherPreviewRecipe(_userId.value)
-
-        Log.e("OhterInfoViewModel", _userId.value.toString())
+          userId?.let {
+              getOtherInfo(userId)
+              getOtherPreviewRecipe(userId)
+          }
+        Log.e("OhterInfoViewModel",userId.toString())
     }
 
 
@@ -102,18 +103,29 @@ class MyForOthersViewModel @Inject constructor(
         getOtherRecipePreviewUseCase(memberId).onEach { result ->
             when (result) {
                 is Resource.Success -> {
-                    _otherRecipePreviewState.value = OtherRecipePreviewState(
-                        recipeList = result.data?.result!!.recipeList
-                    )
-                    Log.e("otherPreviewList", result.data.result.totalElements.toString())
+                    if (result.data?.result != null) {
+                        _otherRecipePreviewState.value = OtherRecipePreviewState(
+                            recipeList = result.data.result.recipeList,
+                            isSuccess = true,
+                            isLoading = false
+                        )
+                    }
+                    //           Log.e("otherPreviewList", result.data.result.totalElements.toString())
+                    else {
+                        _otherRecipePreviewState.value = OtherRecipePreviewState(
+                            recipeList = emptyList()
+                        )
+                    }
                 }
 
                 is Resource.Loading -> {
-
+                    _otherRecipePreviewState.value = OtherRecipePreviewState(
+                        isLoading = true
+                    )
                 }
 
                 is Resource.Error -> {
-                    _otherInfoState.value = OtherInfo(
+                    _otherRecipePreviewState.value = OtherRecipePreviewState(
                         isError = true
                     )
                     result.message?.let { Log.e("error in other page Api", it) }

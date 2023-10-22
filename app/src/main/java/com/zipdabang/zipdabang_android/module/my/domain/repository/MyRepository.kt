@@ -10,6 +10,7 @@ import com.zipdabang.zipdabang_android.module.my.data.remote.myinfo.MyInfoRespon
 import com.zipdabang.zipdabang_android.module.my.data.remote.myrecipes.complete.CompleteRecipesResponse
 import com.zipdabang.zipdabang_android.module.my.data.remote.myrecipes.scraplike.GetScrapRecipesResponse
 import com.zipdabang.zipdabang_android.module.my.data.remote.otherinfo.OtherInfoDto
+import com.zipdabang.zipdabang_android.module.my.data.remote.otherinfo.OtherRecipeListDto
 import com.zipdabang.zipdabang_android.module.my.data.remote.otherinfo.OtherRecipePreviewDto
 import com.zipdabang.zipdabang_android.module.my.data.remote.recipedelete.DeleteRecipeResponse
 import com.zipdabang.zipdabang_android.module.my.data.remote.recipeedit.complete.GetCompleteRecipeResponse
@@ -37,6 +38,7 @@ interface MyRepository {
     suspend fun getRecipeWriteBeverages(accessToken: String) : RecipeWriteBeveragesResponse
     suspend fun postRecipeTemp(accessToken: String, content: RequestBody, thumbnail : MultipartBody.Part?, stepImages: List<MultipartBody.Part>? ) : RecipeWriteTempResponse
     suspend fun getMyCompleteRecipes(accessToken: String, pageIndex : Int) : CompleteRecipesResponse
+
     suspend fun getMyTempRecipesDetail(accessToken: String, tempId : Int) : GetTempRecipeResponse
     suspend fun getMyCompleteRecipesDetail(accessToken: String, recipeId : Int ) : GetCompleteRecipeResponse
     suspend fun postTempRecipeToTemp(accessToken: String, tempId: Int, content : RequestBody, thumbnail : MultipartBody.Part?, stepImages: List<MultipartBody.Part>?) : RecipeWriteResponse
@@ -46,4 +48,7 @@ interface MyRepository {
     suspend fun deleteCompleteRecipe(accessToken: String, recipeId: Int) : DeleteRecipeResponse
     suspend fun getLikeRecipes(accessToken: String, page : Int) : GetScrapRecipesResponse
     suspend fun getScrapRecipes(accessToken: String, page : Int) : GetScrapRecipesResponse
+
+    suspend fun getOtherRecipeList(accessToken: String, pageIndex: Int, memeberId : Int) : OtherRecipeListDto
+
 }

@@ -9,7 +9,7 @@ import com.zipdabang.zipdabang_android.common.Resource
 import com.zipdabang.zipdabang_android.common.ResponseCode
 import com.zipdabang.zipdabang_android.core.data_store.proto.CurrentPlatform
 import com.zipdabang.zipdabang_android.core.data_store.proto.Token
-import com.zipdabang.zipdabang_android.module.main.FCMData
+import com.zipdabang.zipdabang_android.module.main.common.FCMData
 import com.zipdabang.zipdabang_android.module.splash.data.AutoLoginDto
 import com.zipdabang.zipdabang_android.module.splash.data.NewTokenDto
 import com.zipdabang.zipdabang_android.module.splash.use_case.CheckAccessTokenUseCase
@@ -53,11 +53,11 @@ class SplashViewModel @Inject constructor(
                     checkAccessTokenState.value.apply {
                         if (isCheckSuccessful == true) {
                             if (isAccessTokenValid == true) {
-                                if (fcmData != null) {
+/*                                if (fcmData != null) {
                                     onNotificationClick()
-                                } else {
+                                } else {*/
                                     onTokenValid()
-                                }
+/*                                }*/
                                 return@apply
                             }
 
@@ -106,11 +106,13 @@ class SplashViewModel @Inject constructor(
                                 )
                             }
 
-                            if (fcmData != null) {
+/*                            if (fcmData != null) {
                                 onNotificationClick()
-                            } else {
+                            } else {*/
                                 onTokenValid()
+/*
                             }
+*/
 
                             return@apply
                         }

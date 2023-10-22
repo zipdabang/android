@@ -44,8 +44,8 @@ class CheckAccessTokenUseCase @Inject constructor(
             }
         } catch (e: HttpException) {
             val errorBody = e.response()?.errorBody()
-            Log.e(TAG, errorBody?.string() ?: "error body is null")
             val errorCode = errorBody?.getErrorCode()
+            Log.d(TAG, "errorCode : $errorCode")
             errorCode?.let {
                 when (it) {
                     ResponseCode.UNAUTHORIZED_ACCESS_EXPIRED.code -> {

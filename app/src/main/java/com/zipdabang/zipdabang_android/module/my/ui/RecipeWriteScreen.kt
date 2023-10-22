@@ -116,7 +116,7 @@ fun RecipeWriteScreen(
             //Log.e("recipewrite-get-save", "첫번째 if문")
         }
         else{
-            CoroutineScope(Dispatchers.IO).launch {
+            CoroutineScope(Dispatchers.Main).launch {
                 recipeWriteViewModel.getCompleteRecipeDetail(recipeId)
                // Log.e("recipewrite-get-save", "두번째 if문")
             }
@@ -182,7 +182,7 @@ fun RecipeWriteScreen(
                 val inputStream: InputStream? = context.contentResolver?.openInputStream(uri) // 이미지에 대한 입력 스트림을 염
                 val bitmap = BitmapFactory.decodeStream(inputStream) //uri -> bitmap 변환
                 val byteOutputStream = ByteArrayOutputStream() // 이미지를 바이트 배열로 저장하기 위한 용도로 사용됨
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 10, byteOutputStream) //비트맵을 JPEG 형식으로 압축하고, 압축된 이미지를 byteOutPutStream에 저장함
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteOutputStream) //비트맵을 JPEG 형식으로 압축하고, 압축된 이미지를 byteOutPutStream에 저장함
 
                 thumbnailPhotoBitmap = bitmap
 
@@ -211,7 +211,7 @@ fun RecipeWriteScreen(
                 val inputStream: InputStream? = context.contentResolver?.openInputStream(uri) // 이미지에 대한 입력 스트림을 염
                 val bitmap = BitmapFactory.decodeStream(inputStream) //uri -> bitmap 변환
                 val byteOutputStream = ByteArrayOutputStream() // 이미지를 바이트 배열로 저장하기 위한 용도로 사용됨
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 10, byteOutputStream) //비트맵을 JPEG 형식으로 압축하고, 압축된 이미지를 byteOutPutStream에 저장함
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteOutputStream) //비트맵을 JPEG 형식으로 압축하고, 압축된 이미지를 byteOutPutStream에 저장함
 
                 stepPhotoBitmap = bitmap
 

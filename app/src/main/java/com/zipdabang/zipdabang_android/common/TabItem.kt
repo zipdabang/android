@@ -41,6 +41,7 @@ sealed class TabItem(val tabTitle: String, val screen: ComposableFun) {
         private val onClickEdit: (Int, String) -> Unit,
         private val onClickDelete: (Int) -> Unit,
         private val onClickSubmit: (Int, String) -> Unit,
+        private val onClickProfile: (Int) -> Unit,
         private val showCommentReport: (Int, Int, Int) -> Unit,
         private val showCommentBlock: (Int) -> Unit
     ) : TabItem(
@@ -52,6 +53,7 @@ sealed class TabItem(val tabTitle: String, val screen: ComposableFun) {
                 onClickDelete = onClickDelete,
                 onClickEdit = onClickEdit,
                 onClickSubmit = onClickSubmit,
+                onClickProfile = onClickProfile,
                 showCommentReport = showCommentReport,
                 showCommentBlock = showCommentBlock,
                 postResult = postResult,
@@ -178,6 +180,7 @@ sealed class TabItem(val tabTitle: String, val screen: ComposableFun) {
     class Coffee(
         hotItems:  UiState<List<HotRecipeItem>>,
         onRecipeClick: (Int) -> Unit,
+        onBlockedRecipeClick: (Int, Int) -> Unit,
         onScrapClick: (Int) -> Unit,
         onLikeClick: (Int) -> Unit,
         likeState: PreferenceToggleState,
@@ -191,6 +194,7 @@ sealed class TabItem(val tabTitle: String, val screen: ComposableFun) {
             HotRecipeList(
                 hotItems = hotItems,
                 onRecipeClick = onRecipeClick,
+                onBlockedRecipeClick = onBlockedRecipeClick,
                 onScrapClick = onScrapClick,
                 onLikeClick = onLikeClick,
                 likeState = likeState,
@@ -205,6 +209,7 @@ sealed class TabItem(val tabTitle: String, val screen: ComposableFun) {
     class CaffeineFree(
         hotItems:  UiState<List<HotRecipeItem>>,
         onRecipeClick: (Int) -> Unit,
+        onBlockedRecipeClick: (Int, Int) -> Unit,
         onScrapClick: (Int) -> Unit,
         onLikeClick: (Int) -> Unit,
         likeState: PreferenceToggleState,
@@ -218,6 +223,7 @@ sealed class TabItem(val tabTitle: String, val screen: ComposableFun) {
             HotRecipeList(
                 hotItems = hotItems,
                 onRecipeClick = onRecipeClick,
+                onBlockedRecipeClick = onBlockedRecipeClick,
                 onScrapClick = onScrapClick,
                 onLikeClick = onLikeClick,
                 likeState = likeState,
@@ -232,6 +238,7 @@ sealed class TabItem(val tabTitle: String, val screen: ComposableFun) {
     class Tea(
         hotItems:  UiState<List<HotRecipeItem>>,
         onRecipeClick: (Int) -> Unit,
+        onBlockedRecipeClick: (Int, Int) -> Unit,
         onScrapClick: (Int) -> Unit,
         onLikeClick: (Int) -> Unit,
         likeState: PreferenceToggleState,
@@ -245,6 +252,7 @@ sealed class TabItem(val tabTitle: String, val screen: ComposableFun) {
             HotRecipeList(
                 hotItems = hotItems,
                 onRecipeClick = onRecipeClick,
+                onBlockedRecipeClick = onBlockedRecipeClick,
                 onScrapClick = onScrapClick,
                 onLikeClick = onLikeClick,
                 likeState = likeState,
@@ -259,6 +267,7 @@ sealed class TabItem(val tabTitle: String, val screen: ComposableFun) {
     class Ade(
         hotItems:  UiState<List<HotRecipeItem>>,
         onRecipeClick: (Int) -> Unit,
+        onBlockedRecipeClick: (Int, Int) -> Unit,
         onScrapClick: (Int) -> Unit,
         onLikeClick: (Int) -> Unit,
         likeState: PreferenceToggleState,
@@ -272,6 +281,7 @@ sealed class TabItem(val tabTitle: String, val screen: ComposableFun) {
             HotRecipeList(
                 hotItems = hotItems,
                 onRecipeClick = onRecipeClick,
+                onBlockedRecipeClick = onBlockedRecipeClick,
                 onScrapClick = onScrapClick,
                 onLikeClick = onLikeClick,
                 likeState = likeState,
@@ -286,6 +296,7 @@ sealed class TabItem(val tabTitle: String, val screen: ComposableFun) {
     class Smoothie(
         hotItems:  UiState<List<HotRecipeItem>>,
         onRecipeClick: (Int) -> Unit,
+        onBlockedRecipeClick: (Int, Int) -> Unit,
         onScrapClick: (Int) -> Unit,
         onLikeClick: (Int) -> Unit,
         likeState: PreferenceToggleState,
@@ -299,6 +310,7 @@ sealed class TabItem(val tabTitle: String, val screen: ComposableFun) {
             HotRecipeList(
                 hotItems = hotItems,
                 onRecipeClick = onRecipeClick,
+                onBlockedRecipeClick = onBlockedRecipeClick,
                 onScrapClick = onScrapClick,
                 onLikeClick = onLikeClick,
                 likeState = likeState,
@@ -313,6 +325,7 @@ sealed class TabItem(val tabTitle: String, val screen: ComposableFun) {
     class Fruit(
         hotItems:  UiState<List<HotRecipeItem>>,
         onRecipeClick: (Int) -> Unit,
+        onBlockedRecipeClick: (Int, Int) -> Unit,
         onScrapClick: (Int) -> Unit,
         onLikeClick: (Int) -> Unit,
         likeState: PreferenceToggleState,
@@ -326,6 +339,7 @@ sealed class TabItem(val tabTitle: String, val screen: ComposableFun) {
             HotRecipeList(
                 hotItems = hotItems,
                 onRecipeClick = onRecipeClick,
+                onBlockedRecipeClick = onBlockedRecipeClick,
                 onScrapClick = onScrapClick,
                 onLikeClick = onLikeClick,
                 likeState = likeState,
@@ -340,6 +354,7 @@ sealed class TabItem(val tabTitle: String, val screen: ComposableFun) {
     class WellBeing(
         hotItems:  UiState<List<HotRecipeItem>>,
         onRecipeClick: (Int) -> Unit,
+        onBlockedRecipeClick: (Int, Int) -> Unit,
         onScrapClick: (Int) -> Unit,
         onLikeClick: (Int) -> Unit,
         likeState: PreferenceToggleState,
@@ -353,6 +368,7 @@ sealed class TabItem(val tabTitle: String, val screen: ComposableFun) {
             HotRecipeList(
                 hotItems = hotItems,
                 onRecipeClick = onRecipeClick,
+                onBlockedRecipeClick = onBlockedRecipeClick,
                 onScrapClick = onScrapClick,
                 onLikeClick = onLikeClick,
                 likeState = likeState,
@@ -367,6 +383,7 @@ sealed class TabItem(val tabTitle: String, val screen: ComposableFun) {
     class All(
         hotItems:  UiState<List<HotRecipeItem>>,
         onRecipeClick: (Int) -> Unit,
+        onBlockedRecipeClick: (Int, Int) -> Unit,
         onScrapClick: (Int) -> Unit,
         onLikeClick: (Int) -> Unit,
         likeState: PreferenceToggleState,
@@ -380,6 +397,7 @@ sealed class TabItem(val tabTitle: String, val screen: ComposableFun) {
             HotRecipeList(
                 hotItems = hotItems,
                 onRecipeClick = onRecipeClick,
+                onBlockedRecipeClick = onBlockedRecipeClick,
                 onScrapClick = onScrapClick,
                 onLikeClick = onLikeClick,
                 likeState = likeState,
@@ -402,11 +420,15 @@ sealed class TabItem(val tabTitle: String, val screen: ComposableFun) {
     )
 
     class RecipesForOthers(
-        nickname : String
+        nickname : String,
+        onClickHeader : ()->Unit
     ) : TabItem(
         tabTitle =  "레시피",
         screen = {
-            RecipeForOthers(nickname)
+            RecipeForOthers(
+                nickname = nickname,
+                onClickHeader = onClickHeader
+            )
         }
     )
 

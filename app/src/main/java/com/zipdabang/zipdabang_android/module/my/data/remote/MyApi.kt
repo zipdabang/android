@@ -1,5 +1,7 @@
 package com.zipdabang.zipdabang_android.module.my.data.remote
 
+import com.zipdabang.zipdabang_android.common.ResponseBody
+import com.zipdabang.zipdabang_android.module.comment.data.remote.UserBlockDto
 import com.zipdabang.zipdabang_android.module.my.data.remote.followorcancel.FollowOrCancelDto
 import com.zipdabang.zipdabang_android.module.my.data.remote.friendlist.follow.FollowDto
 import com.zipdabang.zipdabang_android.module.my.data.remote.friendlist.follow.search.SearchFollowingDto
@@ -11,6 +13,7 @@ import com.zipdabang.zipdabang_android.module.my.data.remote.myrecipes.complete.
 import com.zipdabang.zipdabang_android.module.my.data.remote.myrecipes.scraplike.GetScrapRecipesResponse
 import com.zipdabang.zipdabang_android.module.my.data.remote.myrecipes.temp.TempRecipesResponse
 import com.zipdabang.zipdabang_android.module.my.data.remote.otherinfo.OtherInfoDto
+import com.zipdabang.zipdabang_android.module.my.data.remote.otherinfo.OtherRecipeListDto
 import com.zipdabang.zipdabang_android.module.my.data.remote.otherinfo.OtherRecipePreviewDto
 import com.zipdabang.zipdabang_android.module.my.data.remote.recipedelete.DeleteRecipeResponse
 import com.zipdabang.zipdabang_android.module.my.data.remote.recipeedit.complete.GetCompleteRecipeResponse
@@ -44,24 +47,6 @@ interface MyApi {
 
 
 
-
-
-
-    @GET("members/selfMyZipdabang")
-    suspend fun getMyInfo(
-        @Header("Authorization") accessToken: String
-    ) : MyInfoResponse
-
-    @GET("members/recipes/owner")
-    suspend fun getMyInfoRecipes(
-        @Header("Authorization") accessToken: String,
-        @Query("pageIndex") pageIndex : Int
-    ) : MyInfoRecipesResponse
-
-    @GET("/categories")
-    suspend fun getRecipeWriteBeverages(
-        @Header("Authorization") accessToken: String
-    ) : RecipeWriteBeveragesResponse
 
 
     // 좋아요 목록 불러오기
@@ -224,5 +209,35 @@ interface MyApi {
         @Query("page") page : Int,
         @Query("nickname") nickname : String
     ): SearchFollowersDto
+
+
+    @GET("members/selfMyZipdabang")
+    suspend fun getMyInfo(
+        @Header("Authorization") accessToken: String
+    ) : MyInfoResponse
+
+    @GET("members/recipes/owner")
+    suspend fun getMyInfoRecipes(
+        @Header("Authorization") accessToken: String,
+        @Query("pageIndex") pageIndex : Int
+    ) : MyInfoRecipesResponse
+
+    @GET("/categories")
+    suspend fun getRecipeWriteBeverages(
+        @Header("Authorization") accessToken: String
+    ) : RecipeWriteBeveragesResponse
+
+    @DELETE("members/unblock")
+    suspend fun cancelUserBlock(
+        @Header("Authorization") accessToken: String,
+        @Query("blocked") userId: Int
+    ): ResponseBody<UserBlockDto?>
+
+    @GET("members/recipes/owner/{memberId}")
+    suspend fun getOtherRecipeList(
+        @Header("Authorization") accessToken: String,
+        @Path("memberId") memberId : Int,
+        @Query("pageIndex") page : Int,
+        ) : OtherRecipeListDto
 
 }

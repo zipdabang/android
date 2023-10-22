@@ -27,7 +27,7 @@ class GetNoticeUseCase @Inject constructor(
             emit(Resource.Loading())
             val accessToken = dataStore.data.first().accessToken ?: Constants.TOKEN_NULL
             val token = "Bearer " + accessToken
-            val response = repository.getNoticeList(accessToken)
+            val response = repository.getNoticeList(token)
             emit(
                 Resource.Success(
                     data = response,
