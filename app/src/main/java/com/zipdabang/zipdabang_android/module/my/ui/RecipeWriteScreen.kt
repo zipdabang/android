@@ -182,7 +182,15 @@ fun RecipeWriteScreen(
                 val inputStream: InputStream? = context.contentResolver?.openInputStream(uri) // 이미지에 대한 입력 스트림을 염
                 val bitmap = BitmapFactory.decodeStream(inputStream) //uri -> bitmap 변환
                 val byteOutputStream = ByteArrayOutputStream() // 이미지를 바이트 배열로 저장하기 위한 용도로 사용됨
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteOutputStream) //비트맵을 JPEG 형식으로 압축하고, 압축된 이미지를 byteOutPutStream에 저장함
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 10, byteOutputStream) //비트맵을 JPEG 형식으로 압축하고, 압축된 이미지를 byteOutPutStream에 저장함
+
+
+//                val compressedImageSize = byteOutputStream.size() // 압축된 이미지의 크기 (바이트)
+//                val compressedImageSizeInKb = compressedImageSize / 1024 // 크기를 킬로바이트로 변환
+//                val compressedImageSizeInMb = compressedImageSizeInKb / 1024.0 // 크기를 메가바이트로 변환
+//                Log.e("Compressed Image Size", "$compressedImageSizeInKb KB, $compressedImageSizeInMb MB")
+
+
 
                 thumbnailPhotoBitmap = bitmap
 
@@ -211,7 +219,26 @@ fun RecipeWriteScreen(
                 val inputStream: InputStream? = context.contentResolver?.openInputStream(uri) // 이미지에 대한 입력 스트림을 염
                 val bitmap = BitmapFactory.decodeStream(inputStream) //uri -> bitmap 변환
                 val byteOutputStream = ByteArrayOutputStream() // 이미지를 바이트 배열로 저장하기 위한 용도로 사용됨
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteOutputStream) //비트맵을 JPEG 형식으로 압축하고, 압축된 이미지를 byteOutPutStream에 저장함
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 10, byteOutputStream) //비트맵을 JPEG 형식으로 압축하고, 압축된 이미지를 byteOutPutStream에 저장함
+
+
+
+
+//                val compressedImageSize = byteOutputStream.size() // 압축된 이미지의 크기 (바이트)
+//                val compressedImageSizeInKb = compressedImageSize / 1024 // 크기를 킬로바이트로 변환
+//                val compressedImageSizeInMb = compressedImageSizeInKb / 1024.0 // 크기를 메가바이트로 변환
+//                Log.e("Compressed Image Size", "$compressedImageSize bytes, $compressedImageSizeInKb KB, $compressedImageSizeInMb MB")
+//
+//                // 이미지 크기를 누적
+//                var totalCompressedImageSizeInBytes = 0
+//                totalCompressedImageSizeInBytes += compressedImageSize
+//                var totalCompressedImageSizeInKb = totalCompressedImageSizeInBytes / 1024 // 누적된 크기를 킬로바이트로 변환
+//                var totalCompressedImageSizeInMb = totalCompressedImageSizeInKb / 1024.0 // 누적된 크기를 메가바이트로 변환
+//                Log.e("Total Compressed Image Size", "$totalCompressedImageSizeInMb MB")
+
+
+
+
 
                 stepPhotoBitmap = bitmap
 
