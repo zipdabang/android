@@ -7,23 +7,30 @@ import com.zipdabang.zipdabang_android.module.my.data.remote.friendlist.follow.F
 import com.zipdabang.zipdabang_android.module.my.data.remote.friendlist.follow.search.SearchFollowingDto
 import com.zipdabang.zipdabang_android.module.my.data.remote.friendlist.following.FollowingDto
 import com.zipdabang.zipdabang_android.module.my.data.remote.friendlist.following.search.SearchFollowersDto
-import okhttp3.MultipartBody
-import okhttp3.RequestBody
 import com.zipdabang.zipdabang_android.module.my.data.remote.myinfo.MyInfoRecipesResponse
 import com.zipdabang.zipdabang_android.module.my.data.remote.myinfo.MyInfoResponse
 import com.zipdabang.zipdabang_android.module.my.data.remote.myrecipes.complete.CompleteRecipesResponse
+import com.zipdabang.zipdabang_android.module.my.data.remote.myrecipes.scraplike.GetScrapRecipesResponse
+import com.zipdabang.zipdabang_android.module.my.data.remote.myrecipes.temp.TempRecipesResponse
 import com.zipdabang.zipdabang_android.module.my.data.remote.otherinfo.OtherInfoDto
 import com.zipdabang.zipdabang_android.module.my.data.remote.otherinfo.OtherRecipeListDto
-import com.zipdabang.zipdabang_android.module.my.data.remote.otherinfo.OtherRecipeListResult
 import com.zipdabang.zipdabang_android.module.my.data.remote.otherinfo.OtherRecipePreviewDto
+import com.zipdabang.zipdabang_android.module.my.data.remote.recipedelete.DeleteRecipeResponse
+import com.zipdabang.zipdabang_android.module.my.data.remote.recipeedit.complete.GetCompleteRecipeResponse
+import com.zipdabang.zipdabang_android.module.my.data.remote.recipeedit.temp.GetTempRecipeResponse
+import com.zipdabang.zipdabang_android.module.my.data.remote.recipewrite.PostSaveRecipeRequest
 import com.zipdabang.zipdabang_android.module.my.data.remote.recipewrite.RecipeWriteBeveragesResponse
 import com.zipdabang.zipdabang_android.module.my.data.remote.recipewrite.RecipeWriteResponse
 import com.zipdabang.zipdabang_android.module.my.data.remote.recipewrite.RecipeWriteTempResponse
 import com.zipdabang.zipdabang_android.module.my.data.remote.signout.SignOutResponseDto
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.Multipart
+import retrofit2.http.PATCH
 import retrofit2.http.POST
 import retrofit2.http.Part
 import retrofit2.http.Path
@@ -35,6 +42,60 @@ interface MyApi {
         @Header("Authorization") accessToken: String
     ): SignOutResponseDto
 
+
+
+
+
+
+
+
+    // 좋아요 목록 불러오기
+    @GET("members/likeRecipes")
+    suspend fun getLikeRecipes(
+        @Header("Authorization") accessToken: String,
+        @Query("page") pageIndex : Int
+    ) : GetScrapRecipesResponse
+
+    // 스크랩 목록 불러오기
+    @GET("members/scrapRecipes")
+    suspend fun getScrapRecipes(
+        @Header("Authorization") accessToken: String,
+        @Query("page") pageIndex : Int
+    ) : GetScrapRecipesResponse
+
+
+
+    // 업로드 목록 가져오기
+    @GET("members/recipes/owner/")
+    suspend fun getMyCompleteRecipes(
+        @Header("Authorization") accessToken: String,
+        @Query("pageIndex") pageIndex : Int
+    ) : CompleteRecipesResponse
+
+    // 임시저장 목록 가져오기
+    @GET("members/recipes/temp/")
+    suspend fun getMyTempRecipes(
+        @Header("Authorization") accessToken: String,
+        @Query("pageIndex") pageIndex : Int
+    ) : TempRecipesResponse
+
+    // 임시저장 상세정보 가져오기
+    @GET("members/recipes/temp/{tempId}/")
+    suspend fun getMyTempRecipesDetail(
+        @Header("Authorization") accessToken: String,
+        @Path("tempId") tempId : Int
+    ) : GetTempRecipeResponse
+
+    // 업로드 상세정보 가져오기
+    @GET("members/recipes/{recipeId}")
+    suspend fun getMyCompleteRecipesDetail(
+        @Header("Authorization") accessToken: String,
+        @Path("recipeId") recipeId : Int
+    ) : GetCompleteRecipeResponse
+
+
+
+    // 업로드 하기
     @Multipart
     @POST("members/recipes")
     suspend fun postRecipe(
@@ -44,6 +105,7 @@ interface MyApi {
         @Part thumbnail: MultipartBody.Part
     ): RecipeWriteResponse
 
+    // 임시저장 하기
     @Multipart
     @POST("members/recipes/temp")
     suspend fun postRecipeTemp(
@@ -53,11 +115,57 @@ interface MyApi {
         @Part thumbnail: MultipartBody.Part?
     ) : RecipeWriteTempResponse
 
-    @GET("members/recipes/owner")
-    suspend fun getMyCompleteRecipes(
+    // 임시저장 수정 (임시저장->임시저장)
+    @Multipart
+    @POST("members/recipes/temp/{tempId}")
+    suspend fun postTempRecipeToTemp(
         @Header("Authorization") accessToken: String,
-        @Query("pageIndex") pageIndex : Int
-    ) : CompleteRecipesResponse
+        @Path("tempId") tempId : Int,
+        @Part("content") content: RequestBody,
+        @Part stepImages: List<MultipartBody.Part>?,
+        @Part thumbnail: MultipartBody.Part?
+    ) : RecipeWriteResponse
+    // 임시저장->업로드 : 최종 등록
+    @POST("members/recipes/temp/{tempId}/save")
+    suspend fun postTempRecipeSave(
+        @Header("Authorization") accessToken: String,
+        @Path("tempId") tempId : Int,
+        @Body categoryId : PostSaveRecipeRequest
+    ) : RecipeWriteResponse
+
+    // 임시저장 삭제
+    @DELETE("members/recipes/temp/{tempId}/")
+    suspend fun deleteTempRecipe(
+        @Header("Authorization") accessToken: String,
+        @Path("tempId") tempId : Int
+    ) : DeleteRecipeResponse
+
+
+
+    // 업로드 수정
+    @Multipart
+    @PATCH("members/recipes/{recipeId}")
+    suspend fun patchCompleteRecipe(
+        @Header("Authorization") accessToken: String,
+        @Path("recipeId") recipeId : Int,
+        @Part("content") content: RequestBody,
+        @Part stepImages: List<MultipartBody.Part>?,
+        @Part thumbnail: MultipartBody.Part?
+    ) : RecipeWriteResponse
+    // 업로드 삭제
+    @DELETE("members/recipes/{recipeId}")
+    suspend fun deleteCompleteRecipe(
+        @Header("Authorization") accessToken: String,
+        @Path("recipeId") recipeId : Int,
+    ) : DeleteRecipeResponse
+
+
+
+
+
+
+
+
 
     @GET("members/followings")
     suspend fun getFollowings(
@@ -102,6 +210,7 @@ interface MyApi {
         @Query("nickname") nickname : String
     ): SearchFollowersDto
 
+
     @GET("members/selfMyZipdabang")
     suspend fun getMyInfo(
         @Header("Authorization") accessToken: String
@@ -130,4 +239,5 @@ interface MyApi {
         @Path("memberId") memberId : Int,
         @Query("pageIndex") page : Int,
         ) : OtherRecipeListDto
+
 }

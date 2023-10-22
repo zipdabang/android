@@ -13,9 +13,11 @@ import com.zipdabang.zipdabang_android.module.my.data.remote.friendlist.followin
 import com.zipdabang.zipdabang_android.module.my.data.remote.myinfo.MemberPreferCategoryDto
 import com.zipdabang.zipdabang_android.module.my.ui.FollowScreen
 import com.zipdabang.zipdabang_android.module.my.ui.FollowingScreen
+import com.zipdabang.zipdabang_android.module.my.ui.MyCompleteRecipesScreen
 import com.zipdabang.zipdabang_android.module.my.ui.MyPagerInfoScreen
 import com.zipdabang.zipdabang_android.module.my.ui.MyPagerProfileScreen
 import com.zipdabang.zipdabang_android.module.my.ui.MyPagerRecipesScreen
+import com.zipdabang.zipdabang_android.module.my.ui.MyTempRecipesScreen
 import com.zipdabang.zipdabang_android.module.my.ui.RecipeForOthers
 import com.zipdabang.zipdabang_android.module.recipes.data.hot.HotRecipeItem
 import com.zipdabang.zipdabang_android.module.recipes.ui.hot.HotRecipeList
@@ -77,6 +79,30 @@ sealed class TabItem(val tabTitle: String, val screen: ComposableFun) {
         }
     )
 
+    class MyCompleteRecipes(
+        onClickCompleteRecipes : (Int)->Unit,
+        onClickCompleteRecipeEdit : (Int)->Unit,
+    ) : TabItem (
+        tabTitle ="업로드",
+        screen = {
+            MyCompleteRecipesScreen(
+                onClickCompleteRecipes = onClickCompleteRecipes,
+                onClickCompleteRecipeEdit = onClickCompleteRecipeEdit
+            )
+        }
+    )
+
+    class MyTempRecipes(
+        onClickTempRecipes : (Int)->Unit,
+    ) : TabItem (
+        tabTitle = "임시 저장",
+        screen = {
+            MyTempRecipesScreen(
+                onClickTempRecipes = onClickTempRecipes
+            )
+        }
+    )
+
     class MyRecipes(
         shimmering : Boolean,
         nickname : String,
@@ -118,6 +144,8 @@ sealed class TabItem(val tabTitle: String, val screen: ComposableFun) {
             )
         }
     )
+
+
 
     class followList(
         onClickOthers: (Int) -> Unit,

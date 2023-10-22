@@ -7,12 +7,15 @@ import androidx.paging.LoadType
 import androidx.paging.PagingState
 import androidx.paging.RemoteMediator
 import androidx.room.withTransaction
+import com.zipdabang.zipdabang_android.common.getErrorCode
 import com.zipdabang.zipdabang_android.core.Paging3Database
 import com.zipdabang.zipdabang_android.core.data_store.proto.Token
 import com.zipdabang.zipdabang_android.core.remotekey.RemoteKeys
-import com.zipdabang.zipdabang_android.core.remotekey.dao.RemoteKeyDao
 import com.zipdabang.zipdabang_android.module.my.data.remote.MyApi
 import kotlinx.coroutines.flow.first
+import retrofit2.HttpException
+import java.io.IOException
+import java.util.concurrent.CancellationException
 import javax.inject.Inject
 
 @OptIn(ExperimentalPagingApi::class)
@@ -30,6 +33,7 @@ class CompleteRecipeMediator @Inject constructor(
         state: PagingState<Int, CompleteRecipe>
     ): MediatorResult {
         return try {
+            // 현재 페이지
             val currentPage = when (loadType) {
                 LoadType.REFRESH ->{
                     val remoteKeys = getRemoteKeyClosestToCurrentPosition(state)
@@ -39,9 +43,9 @@ class CompleteRecipeMediator @Inject constructor(
                 LoadType.PREPEND ->{
                     val remoteKeys = getRemotekeyForFirstItem(state)
                     val prevPage = remoteKeys?.prevPage ?:
-                        return MediatorResult.Success(
-                            endOfPaginationReached = remoteKeys != null
-                        )
+                    return MediatorResult.Success(
+                        endOfPaginationReached = remoteKeys != null
+                    )
                     prevPage
                 }
                 LoadType.APPEND ->{
@@ -54,24 +58,23 @@ class CompleteRecipeMediator @Inject constructor(
                 }
             }
 
+            //api 실행
             val accessToken = ("Bearer " + tokenDataStore.data.first().accessToken)
             val responseMapList = mutableListOf<CompleteRecipe>()
+            var response : CompleteRecipesResponse? = null
 
-            val response = myApi.getMyCompleteRecipes(
-                accessToken = accessToken,
-                pageIndex = currentPage
-            )
+            try {
+                Log.e("my_completerecipes_api 실행전", currentPage.toString())
+                Log.e("my_completerecipes_api 실행전", accessToken)
+                Log.e("my_completerecipes_api 실행", "api 실행함")
+                response = myApi.getMyCompleteRecipes(
+                    accessToken = accessToken,
+                    pageIndex = currentPage
+                )
 
-            // api response에서 emptylist일때
-            if (response.result == null){
-                myCompleteRecipesDao.deleteItems()
-                RemoteKeyDao.deleteRemoteKeys()
-                MediatorResult.Success(endOfPaginationReached = true)
-            }
-            else {
-                val responseList = response.result.recipeList
-
-                responseList.forEachIndexed{ index, recipes ->
+                val data = response.result!!.recipeList
+                Log.e("my_completerecipes_api 실행", data.toString())
+                data.forEach{ recipes ->
                     responseMapList.add(
                         CompleteRecipe(
                             categoryId = recipes.categoryId,
@@ -89,13 +92,39 @@ class CompleteRecipeMediator @Inject constructor(
                         )
                     )
                 }
+
+            }
+            catch (e: HttpException){
+                val errorBody = e.response()?.errorBody()
+                val errorCode = errorBody?.getErrorCode()
+
+                if (errorBody != null) {
+                    Log.e("my_completerecipes_api 실패1", "errorBody : ${e.response()?.code()}")
+                } else {
+                    Log.e("my_completerecipes_api 실패1", "errorBody : null")
+                }
+
+                errorCode?.let{
+                    if(errorCode==4055){
+                        Log.e("my_completerecipes_api 실패2", errorBody.toString())
+                        myCompleteRecipesDao.deleteItems()
+                        RemoteKeyDao.deleteRemoteKeys()
+                        MediatorResult.Success(endOfPaginationReached = true)
+                    }
+                }
+            }
+            catch (e:IOException){
+                Log.e("my_completerecipes_api 실패2", "왜지")
+            }
+            catch (e: Exception){
+                if (e is CancellationException){
+                    throw e
+                }
+                Log.e("my_completerecipes_api 실패3", "뭐지")
             }
 
-            if(!response.isSuccess){
-                Log.e("Error in CompleteRecipeMediator", response.message)
-            }
 
-            val endOfPaginationReached = response.result!!.isLast
+            val endOfPaginationReached = response?.result!!.isLast
             val prevPage = if (currentPage == 1) null else currentPage -1
             val nextPage = if (endOfPaginationReached) null else currentPage + 1
 
@@ -104,7 +133,7 @@ class CompleteRecipeMediator @Inject constructor(
                     myCompleteRecipesDao.deleteItems()
                     RemoteKeyDao.deleteRemoteKeys()
                 }
-                val keys = response.result.recipeList.map {items ->
+                val keys = responseMapList.map {items ->
                     RemoteKeys(
                         id = items.recipeId,
                         prevPage = prevPage,
@@ -116,7 +145,8 @@ class CompleteRecipeMediator @Inject constructor(
             }
 
             MediatorResult.Success(endOfPaginationReached = endOfPaginationReached!!)
-        } catch (e: Exception){
+        }
+        catch (e: Exception){
             return MediatorResult.Error(e)
         }
     }
@@ -129,7 +159,7 @@ class CompleteRecipeMediator @Inject constructor(
         //state.anchorposition은 현재 화면에 보이는 첫 번째 아이템의 포지션
         return state.anchorPosition?.let {position ->
             state.closestItemToPosition(position)?.recipeId?.let{ recipeId ->
-                RemoteKeyDao.getRemoteKeys(recipeId)
+                RemoteKeyDao.getRemoteKeys(id= recipeId)
             }
         }
     }
@@ -138,7 +168,7 @@ class CompleteRecipeMediator @Inject constructor(
         state : PagingState<Int, CompleteRecipe>
     ) : RemoteKeys? {
         return state.pages.firstOrNull{ it.data.isNotEmpty() }?.data?.firstOrNull()?.let{item ->
-            RemoteKeyDao.getRemoteKeys(item.recipeId)
+            RemoteKeyDao.getRemoteKeys(id = item.recipeId)
         }
     }
 
@@ -146,7 +176,7 @@ class CompleteRecipeMediator @Inject constructor(
         state : PagingState<Int, CompleteRecipe>
     ) : RemoteKeys? {
         return state.pages.lastOrNull{ it.data.isNotEmpty() }?.data?.lastOrNull()?.let{item ->
-            RemoteKeyDao.getRemoteKeys(item.recipeId)
+            RemoteKeyDao.getRemoteKeys(id = item.recipeId)
         }
     }
 }

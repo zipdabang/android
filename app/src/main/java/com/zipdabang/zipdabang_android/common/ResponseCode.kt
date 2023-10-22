@@ -30,6 +30,7 @@ enum class ResponseCode(val responseResult: ResponseResult, val code: Int, val m
     BAD_REQUEST_RECIPE_NOT_EXISTS(ResponseResult.ERROR, 4101, "존재하지 않는 레시피 아이디입니다."),
     BAD_REQUEST_RECIPE_BANNED(ResponseResult.ERROR, 4102, "차단한 사용자의 레시피입니다."),
     BAD_REQUEST_OWNER_TYPE(ResponseResult.ERROR, 4103, "레시피 작성자 타입이 잘못되었습니다."),
+    BAD_REQUEST_RECIPE_NOT_OWNER(ResponseResult.ERROR, 4106, "해당 레시피를 작성한 사용자가 아닙니다."),
     BAD_REQUEST_COMMENT_NOT_EXISTS(ResponseResult.ERROR, 4107, "해당 아이디를 가진 댓글이 존재하지 않습니다."),
     BAD_REQUEST_COMMENT_NOT_OWNER(ResponseResult.ERROR, 4108, "해당 댓글을 작성한 사용자가 아닙니다."),
     BAD_REQUEST_COMMENT_SELF_PREFERENCE(ResponseResult.ERROR, 4109, "본인의 레시피를 좋아요 혹은 스크랩할 수 없습니다."),

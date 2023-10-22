@@ -105,7 +105,7 @@
     <string name="my_market_notdeploy">준비 중인 서비스입니다.</string>
     <string name="my_searchbar_keyword">찾는 키워드를 검색해보세요.</string>
     <string name="my_searchbar_person">찾는 사람을 검색해보세요.</string>
-    <string name="my_searchbar_search">찾아보기</string>
+    <string name="my_searchbar_myrecipe">찾는 것이 있으신가요?</string>
     <string name="my_follow">팔로우</string>
     <string name="my_following">팔로잉</string>
     <string name="my_upload">업로드</string>

@@ -54,9 +54,14 @@ sealed class MyScreen(val route : String){
     object Myrecipe : MyScreen(route = "my/myrecipe")
     object Shopping : MyScreen(route = "my/shopping")
     object FriendList : MyScreen(route = "my/friendlist")
-    object RecipeWrite : MyScreen(route = "my/recipewrite?recipeId={recipeId}") {
+    object RecipeWrite : MyScreen(route = "my/recipewrite?tempId={tempId}") {
+        fun passTempId(tempId : Int?) : String {
+            return "my/recipewrite?tempId=$tempId"
+        }
+    }
+    object RecipeEdit : MyScreen(route = "my/recipeedit?recipeId={recipeId}"){
         fun passRecipeId(recipeId: Int?): String {
-            return "my/recipewrite?recipeId=$recipeId"
+            return "my/recipeedit?recipeId=$recipeId"
         }
     }
     object OtherPage : MyScreen(route = "my/other?userId={userId}")  {

@@ -240,7 +240,7 @@ fun NavGraphBuilder.SharedNavGraph(
                         showDeleteDialog = true
                     },
                     onClickRecipeEdit = {
-                        navController.navigate(route = MyScreen.RecipeWrite.passRecipeId(recipeId)) {
+                        navController.navigate(route = MyScreen.RecipeEdit.passRecipeId(recipeId = recipeId)) {
                             launchSingleTop = true
                         }
                     },
