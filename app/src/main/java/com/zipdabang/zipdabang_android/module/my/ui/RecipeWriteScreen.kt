@@ -39,7 +39,9 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import coil.compose.rememberImagePainter
 import com.zipdabang.zipdabang_android.R
+import com.zipdabang.zipdabang_android.module.bottom.BottomMenuContent
 import com.zipdabang.zipdabang_android.module.my.ui.component.recipewrite.ButtonAddForIngredient
 import com.zipdabang.zipdabang_android.module.my.ui.component.recipewrite.IngredientAndUnit
 import com.zipdabang.zipdabang_android.module.my.ui.component.recipewrite.Step
@@ -78,6 +80,7 @@ import java.io.InputStream
 @Composable
 fun RecipeWriteScreen(
     tempId : Int?,
+    recipeId : Int?,
     onClickBack: () -> Unit,
     recipeWriteViewModel: RecipeWriteViewModel = hiltViewModel(),
     onClickViewRecipe: (Int) -> Unit
@@ -87,18 +90,19 @@ fun RecipeWriteScreen(
     val stateRecipeWriteBeverages = recipeWriteViewModel.stateRecipeWriteBeverages
     val context = LocalContext.current
     val stateThumbnail = recipeWriteViewModel.stateRecipeWriteForm.thumbnail
-    val stateUploadRecipeId = recipeWriteViewModel.uploadRecipeId // 기문이형 도와줘 ㅠㅠ
+    val stateUploadRecipeId = recipeWriteViewModel.uploadRecipeId
     var tempRecipeApiCalled = recipeWriteViewModel.tempRecipeDetailApiCalled
-    var shimmering: Boolean = true
+    var completeRecipeApiCalled = recipeWriteViewModel.completeRecipeDetailApiCalled
 
+    var shimmering: Boolean = true
+    // shimmering을 위한 조건문
     if (stateRecipeWriteForm.isLoading || stateRecipeWriteForm.error.isNotBlank()) {
         shimmering = true
     } else {
         shimmering = false
     }
-
-    // 화면 이동을 위함
-    if(recipeWriteViewModel.tempRecipeDetailApiCalled == 0){
+    // temp를 edit하는 상황인지 판단
+    if(tempRecipeApiCalled == 0){
         if(tempId == 0 || tempId == null){}
         else {
             CoroutineScope(Dispatchers.Main).launch {
@@ -106,37 +110,64 @@ fun RecipeWriteScreen(
             }
         }
     }
+    // complete를 edit하는 상황인지 판단
+    if(completeRecipeApiCalled == 0){
+        if(recipeId == 0 || recipeId == null){
+            //Log.e("recipewrite-get-save", "첫번째 if문")
+        }
+        else{
+            CoroutineScope(Dispatchers.IO).launch {
+                recipeWriteViewModel.getCompleteRecipeDetail(recipeId)
+               // Log.e("recipewrite-get-save", "두번째 if문")
+            }
+        }
+    }
 
+    // 임시저장과 업로드 버튼 활성화에 대한 launchedEffect
     LaunchedEffect(key1 = stateRecipeWriteForm){
-        Log.e("recipewrite-post-temp 전", "stateRecipeWriteForm : ${stateRecipeWriteForm}")
-
-        recipeWriteViewModel.onRecipeWriteFormEvent(RecipeWriteFormEvent.BtnEnabled(true))
-        if(recipeWriteViewModel.tempRecipeDetailApiCalled > 0){
+        // 임시저장 일때
+        if(tempRecipeApiCalled > 0){
+            recipeWriteViewModel.onRecipeWriteFormEvent(RecipeWriteFormEvent.BtnEnabled(true))
+            // 수정을 했다면
             if(recipeWriteViewModel.isTempRecipeEdited()) {
                 recipeWriteViewModel.onRecipeWriteFormEvent(RecipeWriteFormEvent.BtnEnabledSave(true))
             }
-        } else {
+        }
+        // 업로드 된 레시피를 수정할때
+        else if(completeRecipeApiCalled > 0){
+            recipeWriteViewModel.onRecipeWriteFormEvent(RecipeWriteFormEvent.BtnEnabled(true))
+        }
+        // 처음 업로드할때
+        else {
+            recipeWriteViewModel.onRecipeWriteFormEvent(RecipeWriteFormEvent.BtnEnabled(true))
             recipeWriteViewModel.onRecipeWriteFormEvent(RecipeWriteFormEvent.BtnEnabledSave(true))
         }
     }
+    // ingredient 추가 버튼 활성화에 대한 launchedEffect
     LaunchedEffect(key1 = stateRecipeWriteForm.ingredients) {
         recipeWriteViewModel.onRecipeWriteFormEvent(RecipeWriteFormEvent.BtnIngredientAddEnabled(stateRecipeWriteForm.ingredientsNum))
     }
+    // step 추가 버튼 활성화에 대한 launchedEffect
     LaunchedEffect(key1= stateRecipeWriteForm.steps){
         recipeWriteViewModel.onRecipeWriteFormEvent(RecipeWriteFormEvent.StepIsValidate(stateRecipeWriteForm.stepsNum))
     }
+    // 카테고리 알럿 버튼 활성화에 대한 launchedEffect
     LaunchedEffect(key1 = stateRecipeWriteBeverages){
         recipeWriteViewModel.onRecipeWriteBeveragesEvent(RecipeWriteBeveragesEvent.BtnEnabled(true))
     }
 
+    // thumbnail, step에 대한 갤러리, 카메라 관련 변수
     var thumbnailPhotoBitmap : Bitmap?
     var stepPhotoBitmap : Bitmap?
+    // 서버 업로드를 위한 List<MultiPartBody.Part>
     val stepImageParts  = remember {
         mutableStateListOf<MultipartBody.Part>()
     }
+    // 몇번째 step의 이미지가 들어왔는지 확인하는 List<Int>
     val stepImageAddNum = remember {
         mutableStateListOf<Int>()
     }
+
 
     // thumbnail
     // 갤러리 -> Uri 형태
@@ -145,6 +176,7 @@ fun RecipeWriteScreen(
             if (uri != null) {
                 val file: File? = uri.path?.let { File(it) }
 
+                // 프론트 측에서 thumbnail 변경
                 recipeWriteViewModel.onRecipeWriteFormEvent(RecipeWriteFormEvent.ThumbnailChanged(uri))
 
                 val inputStream: InputStream? = context.contentResolver?.openInputStream(uri) // 이미지에 대한 입력 스트림을 염
@@ -160,6 +192,7 @@ fun RecipeWriteScreen(
                 val thumbnailPart = MultipartBody.Part.createFormData("thumbnail", "thumbnail_${System.currentTimeMillis()}.jpeg", thumbnailRequestBody)
                 Log.e("recipewriteform-thumbnail","${thumbnailRequestBody}.jpeg")
 
+                // 서버 업로드를 위한 thumbnailPart 변경
                 recipeWriteViewModel.thumbnailPart = thumbnailPart
             } else {
                 Log.e("Error in camera", "No image selected")
@@ -284,50 +317,91 @@ fun RecipeWriteScreen(
             .fillMaxSize(),
         bottomBar = {
             // 하단 버튼
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp, 12.dp, 16.dp, 12.dp),
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                verticalAlignment = Alignment.Bottom
-            ) {
+            if(shimmering){
                 Box(
-                    modifier = Modifier.weight(1f)
-                ) {
-                    PrimaryButtonOutLinedStatus(
-                        borderColor = ZipdabangandroidTheme.Colors.MainBackground,
-                        text = stringResource(id = R.string.my_recipewrite_save),
-                        onClick = {
-                            recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.SaveChanged(true))
-                        },
-                        enabled = stateRecipeWriteForm.btnEnabledSave
-                    )
-                }
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(72.dp)
+                        .padding(16.dp, 12.dp, 16.dp, 12.dp)
+                        .shimmeringEffect(),
+                )
+            }
+            // 업로드 된 레시피 수정할 때
+            else if(completeRecipeApiCalled > 0){
                 Box(
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp, 12.dp, 16.dp, 12.dp),
+                    contentAlignment = Alignment.Center
                 ) {
                     PrimaryButtonWithStatus(
                         isFormFilled = stateRecipeWriteForm.btnEnabled,
                         text = stringResource(id = R.string.my_recipewrite_writedone),
                         onClick = {
                             recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.UploadCategoryChanged(true))
-                        },
+                         },
                     )
                 }
+            }
+            // 임시저장 수정할때, 처음 업로드할때
+            else{
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp, 12.dp, 16.dp, 12.dp),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalAlignment = Alignment.Bottom
+                ) {
+                    Box(
+                        modifier = Modifier.weight(1f)
+                    ) {
+                        PrimaryButtonOutLinedStatus(
+                            borderColor = ZipdabangandroidTheme.Colors.MainBackground,
+                            text = stringResource(id = R.string.my_recipewrite_save),
+                            onClick = {
+                                recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.SaveChanged(true))
+                            },
+                            enabled = stateRecipeWriteForm.btnEnabledSave
+                        )
+                    }
+                    Box(
+                        modifier = Modifier.weight(1f)
+                    ) {
+                        PrimaryButtonWithStatus(
+                            isFormFilled = stateRecipeWriteForm.btnEnabled,
+                            text = stringResource(id = R.string.my_recipewrite_writedone),
+                            onClick = {
+                                recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.UploadCategoryChanged(true))
+                            },
+                        )
+                    }
 
+                }
             }
         },
         topBar = {
             AppBarSignUp(
                 navigationIcon = R.drawable.ic_topbar_backbtn,
                 onClickNavIcon = {
+                    // 임시저장을 수정할 경우
                     if(recipeWriteViewModel.tempRecipeDetailApiCalled > 0){
                         if(recipeWriteViewModel.isTempRecipeEdited()){
-                            recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.RecipeDeleteChanged(true))
+                            recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.TempRecipeDeleteChanged(true))
                         } else{
                             onClickBack()
                         }
-                    } else {
+                    }
+                    // 업로드를 수정할 경우
+                    else if(recipeWriteViewModel.completeRecipeDetailApiCalled >0){
+                        if(recipeWriteViewModel.isCompleteRecipeEdited()){
+                            recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.CompleteRecipeDeleteChanged(true))
+                        } else{
+                            onClickBack()
+                        }
+                    }
+                    // 처음 업로드 할 경우
+                    else {
+                        // 하나라도 차있는 경우
                         if(!recipeWriteViewModel.isEmpty()){
                             recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.RecipeDeleteChanged(true))
                         } else {
@@ -350,7 +424,7 @@ fun RecipeWriteScreen(
                 .verticalScroll(scrollState)
                 .background(Color.White)
         ) {
-            //썸네일
+            // 썸네일
             if(shimmering){
                 Box(
                     modifier = Modifier
@@ -385,6 +459,7 @@ fun RecipeWriteScreen(
                 }
             }
 
+            // 썸네일 외
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -402,7 +477,8 @@ fun RecipeWriteScreen(
                     )
                     if(shimmering){
                         Box(
-                            modifier = Modifier.shimmeringEffect()
+                            modifier = Modifier
+                                .shimmeringEffect()
                                 .height(56.dp)
                                 .fillMaxWidth()
                         )
@@ -432,7 +508,8 @@ fun RecipeWriteScreen(
                         )
                     }
                     if(shimmering){
-                        Box(modifier = Modifier.align(Alignment.End)
+                        Box(modifier = Modifier
+                            .align(Alignment.End)
                             .width(32.dp)
                             .height(20.dp)
                             .shimmeringEffect())
@@ -460,7 +537,8 @@ fun RecipeWriteScreen(
                     )
                     if(shimmering){
                         Box(
-                            modifier = Modifier.shimmeringEffect()
+                            modifier = Modifier
+                                .shimmeringEffect()
                                 .height(56.dp)
                                 .fillMaxWidth()
                         )
@@ -490,7 +568,8 @@ fun RecipeWriteScreen(
                         )
                     }
                     if(shimmering){
-                        Box(modifier = Modifier.align(Alignment.End)
+                        Box(modifier = Modifier
+                            .align(Alignment.End)
                             .width(32.dp)
                             .height(20.dp)
                             .shimmeringEffect())
@@ -518,7 +597,8 @@ fun RecipeWriteScreen(
                     )
                     if(shimmering){
                         Box(
-                            modifier = Modifier.shimmeringEffect()
+                            modifier = Modifier
+                                .shimmeringEffect()
                                 .height(168.dp)
                                 .fillMaxWidth()
                         )
@@ -543,7 +623,8 @@ fun RecipeWriteScreen(
                         )
                     }
                     if(shimmering){
-                        Box(modifier = Modifier.align(Alignment.End)
+                        Box(modifier = Modifier
+                            .align(Alignment.End)
                             .width(32.dp)
                             .height(20.dp)
                             .shimmeringEffect())
@@ -593,13 +674,15 @@ fun RecipeWriteScreen(
                     if(shimmering){
                         Row(){
                             Box(
-                                modifier = Modifier.shimmeringEffect()
+                                modifier = Modifier
+                                    .shimmeringEffect()
                                     .height(56.dp)
                                     .weight(3f)
                             )
                             Spacer(modifier = Modifier.width(8.dp))
                             Box(
-                                modifier = Modifier.shimmeringEffect()
+                                modifier = Modifier
+                                    .shimmeringEffect()
                                     .height(56.dp)
                                     .weight(3f)
                             )
@@ -716,13 +799,15 @@ fun RecipeWriteScreen(
                     if(shimmering){
                         Column{
                             Box(
-                                modifier = Modifier.shimmeringEffect()
+                                modifier = Modifier
+                                    .shimmeringEffect()
                                     .height(56.dp)
                                     .fillMaxWidth()
                             )
                             Spacer(modifier = Modifier.height(8.dp))
                             Box(
-                                modifier = Modifier.shimmeringEffect()
+                                modifier = Modifier
+                                    .shimmeringEffect()
                                     .height(260.dp)
                                     .fillMaxWidth()
                             )
@@ -825,7 +910,8 @@ fun RecipeWriteScreen(
                     )
                     if(shimmering){
                         Box(
-                            modifier = Modifier.shimmeringEffect()
+                            modifier = Modifier
+                                .shimmeringEffect()
                                 .height(260.dp)
                                 .fillMaxWidth()
                         )
@@ -850,7 +936,8 @@ fun RecipeWriteScreen(
                         )
                     }
                     if(shimmering){
-                        Box(modifier = Modifier.align(Alignment.End)
+                        Box(modifier = Modifier
+                            .align(Alignment.End)
                             .width(32.dp)
                             .height(20.dp)
                             .shimmeringEffect())
@@ -867,170 +954,216 @@ fun RecipeWriteScreen(
                     }
                 }
             }
+        }
 
 
-
-
-
-            // 알럿
-            // 권한허용 알럿
-            if (stateRecipeWriteDialog.isOpenPermission) {
-                CustomDialogType1(
-                    title = stringResource(id = R.string.my_dialog_permission),
-                    text = stringResource(id = R.string.my_dialog_permission_detail),
-                    declineText = stringResource(id = R.string.my_dialog_cancel),
-                    acceptText = stringResource(id = R.string.my_dialog_permit),
-                    setShowDialog = {
-                        recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.PermissionChanged(it))
-                    },
-                    onAcceptClick = {
-                        // 카메라 허용받기
-                        recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.PermissionChanged(false))
-                    }
-                )
-            }
-            // Thumbnail 파일선택 알럿
-            if (stateRecipeWriteDialog.isOpenFileSelect) {
-                CustomDialogCameraFile(
-                    title = stringResource(id = R.string.my_dialog_fileselect),
-                    setShowDialog = {
-                        recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.FileSelectChanged(it))
-                    },
-                    onCameraClick = {
-                        //takePhotoFromCameraLauncher.launch()
-                        //recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.FileSelectChanged(false))
-                    },
-                    onFileClick = {
-                        takeThumbnailFromAlbumLauncher.launch("image/*")
-                        recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.FileSelectChanged(false))
-                    }
-                )
-            }
-            // Step 파일선택 알럿
-            if (stateRecipeWriteDialog.isOpenStepFileSelect) {
-                CustomDialogCameraFile(
-                    title = stringResource(id = R.string.my_dialog_fileselect),
-                    setShowDialog = {
-                        recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.StepFileSelectChanged(it, stateRecipeWriteDialog.stepNum))
-                    },
-                    onCameraClick = {
-                        //takePhotoFromCameraStepLauncher.launch()
-                        //recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.StepFileSelectChanged(false, stateRecipeWriteDialog.stepNum))
-                    },
-                    onFileClick = {
-                        takeStepPhotoFromAlbumLauncher.launch("image/*")
-                        recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.StepFileSelectChanged(false, stateRecipeWriteDialog.stepNum))
-                    }
-                )
-            }
-            // 임시저장 알럿
-            if (stateRecipeWriteDialog.isOpenSave) {
-                CustomDialogType2(
-                    title = stringResource(id = R.string.my_save),
-                    text = "작성 중인 레시피를 임시저장 하시겠습니까?\n" +
-                            "저장된 레시피는 ‘내집다방 > 나의 레시피 > 임시저장’에서 확인 하실 수 있습니다.",
-                    declineText = stringResource(id = R.string.my_dialog_cancel),
-                    acceptText = stringResource(id = R.string.my_save),
-                    setShowDialog = {
-                        recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.SaveChanged(it))
-                    },
-                    onAcceptClick = {
-                        if(tempRecipeApiCalled > 0){
-                            CoroutineScope(Dispatchers.Main).launch {
-                                recipeWriteViewModel.postTempRecipeToTemp(tempId!!, stepImageParts.toList(), stepImageAddNum)
-                            }
+        // 알럿
+        // 권한허용 알럿
+        if (stateRecipeWriteDialog.isOpenPermission) {
+            CustomDialogType1(
+                title = stringResource(id = R.string.my_dialog_permission),
+                text = stringResource(id = R.string.my_dialog_permission_detail),
+                declineText = stringResource(id = R.string.my_dialog_cancel),
+                acceptText = stringResource(id = R.string.my_dialog_permit),
+                setShowDialog = {
+                    recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.PermissionChanged(it))
+                },
+                onAcceptClick = {
+                    // 카메라 허용받기
+                    recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.PermissionChanged(false))
+                }
+            )
+        }
+        // Thumbnail 파일선택 알럿
+        if (stateRecipeWriteDialog.isOpenFileSelect) {
+            CustomDialogCameraFile(
+                title = stringResource(id = R.string.my_dialog_fileselect),
+                setShowDialog = {
+                    recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.FileSelectChanged(it))
+                },
+                onCameraClick = {
+                    //takePhotoFromCameraLauncher.launch()
+                    //recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.FileSelectChanged(false))
+                },
+                onFileClick = {
+                    takeThumbnailFromAlbumLauncher.launch("image/*")
+                    recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.FileSelectChanged(false))
+                }
+            )
+        }
+        // Step 파일선택 알럿
+        if (stateRecipeWriteDialog.isOpenStepFileSelect) {
+            CustomDialogCameraFile(
+                title = stringResource(id = R.string.my_dialog_fileselect),
+                setShowDialog = {
+                    recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.StepFileSelectChanged(it, stateRecipeWriteDialog.stepNum))
+                },
+                onCameraClick = {
+                    //takePhotoFromCameraStepLauncher.launch()
+                    //recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.StepFileSelectChanged(false, stateRecipeWriteDialog.stepNum))
+                },
+                onFileClick = {
+                    takeStepPhotoFromAlbumLauncher.launch("image/*")
+                    recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.StepFileSelectChanged(false, stateRecipeWriteDialog.stepNum))
+                }
+            )
+        }
+        // 임시저장 알럿
+        if (stateRecipeWriteDialog.isOpenSave) {
+            CustomDialogType2(
+                title = stringResource(id = R.string.my_save),
+                text = "작성 중인 레시피를 임시저장 하시겠습니까?\n" +
+                        "저장된 레시피는 ‘내집다방 > 나의 레시피 > 임시저장’에서 확인 하실 수 있습니다.",
+                declineText = stringResource(id = R.string.my_dialog_cancel),
+                acceptText = stringResource(id = R.string.my_save),
+                setShowDialog = {
+                    recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.SaveChanged(it))
+                },
+                onAcceptClick = {
+                    // 임시저장한 레시피일 경우
+                    if(tempRecipeApiCalled > 0){
+                        CoroutineScope(Dispatchers.Main).launch {
+                            recipeWriteViewModel.postTempRecipeToTemp(tempId!!, stepImageParts.toList(), stepImageAddNum)
                         }
-                        else{
-                            CoroutineScope(Dispatchers.Main).launch {
-                                recipeWriteViewModel.postRecipeWriteTemp(stepImageParts = stepImageParts.toList())
-                            }
-                        }
-                        onClickBack()
-                        recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.SaveChanged(false))
                     }
-                )
-            }
-            // 카테고리 선택 알럿
-            if (stateRecipeWriteDialog.isOpenUploadCategory) {
-                CustomDialogSelectCategory(
-                    categoryList = stateRecipeWriteBeverages.beverageList,
-                    categoryParagraphList = listOf(3, 2, 2, 1),
-                    categorySelectedList = stateRecipeWriteBeverages.beverageCheckList,
-                    onSelectClick = { index, clicked ->
-                        recipeWriteViewModel.onRecipeWriteBeveragesEvent(RecipeWriteBeveragesEvent.StepFileSelectChanged(index, clicked))
-                    },
-                    isComplete = stateRecipeWriteBeverages.btnEnabled,
-                    onCompleteClick = {
-                        if(tempRecipeApiCalled > 0) {
-                            CoroutineScope(Dispatchers.Main).launch {
-                                // temppost api success됐는지 확인하는 변수
-                                val isTempSuccess = recipeWriteViewModel.postTempRecipeToTemp(tempId!!, stepImageParts.toList(), stepImageAddNum)
-
-                                if(isTempSuccess){ // tempost api 성공하면 savepost api  호출한다.
-                                    // savepost api success됐는지 확인하는 변수
-                                    val isSaveSuccess = recipeWriteViewModel.postSaveTempRecipe(tempId!!)
-
-                                    if (isSaveSuccess){ // post api 성공하면 업로드 완료 알럿을 띄운다.
-                                        recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.UploadCompleteChanged(true))
-                                    }
-                                }
-                                // 알럿 닫기
-                                recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.UploadCategoryChanged(false))
-                            }
-                        }
-                        else{
-                            CoroutineScope(Dispatchers.Main).launch {
-                                // post api success됐는지 확인하는 변수
-                                val isSuccess = recipeWriteViewModel.postRecipeWrite(stepImageParts = stepImageParts.toList())
-                                // post api 성공하면 업로드 완료 알럿을 띄운다
-                                if (isSuccess){
-                                    recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.UploadCompleteChanged(true))
-                                }
-                                // 알럿 닫기
-                                recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.UploadCategoryChanged(false))
-                            }
-                        }
-                    },
-                    setShowDialog = {
-                        recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.UploadCategoryChanged(it))
-                    }
-                )
-            }
-            // 업로드 알럿
-            if (stateRecipeWriteDialog.isOpenUploadComplete){
-                CustomDialogUploadComplete(
-                    image = stateThumbnail !!,
-                    setShowDialog = {
-                        recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.UploadCompleteChanged(it))
-                    },
-                    onAccept = {
-                        onClickViewRecipe(stateUploadRecipeId)
-                    },
-                    onLater = {
-                        recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.UploadCompleteChanged(false))
-                        onClickBack()
-                    }
-                )
-            }
-            // 작성 중 취소 알럿
-            if (stateRecipeWriteDialog.isOpenRecipeDelete) {
-                CustomDialogRecipeDelete(
-                    setShowDialog = {
-                        recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.RecipeDeleteChanged(it))
-                    },
-                    onDeleteClick = {
-                        recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.RecipeDeleteChanged(false))
-                        onClickBack()
-                    },
-                    onTemporalSave = {
-                        CoroutineScope(Dispatchers.IO).launch {
+                    else{
+                        CoroutineScope(Dispatchers.Main).launch {
                             recipeWriteViewModel.postRecipeWriteTemp(stepImageParts = stepImageParts.toList())
                         }
-                        onClickBack()
-                        recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.RecipeDeleteChanged(false))
                     }
-                )
-            }
+                    onClickBack()
+                    recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.SaveChanged(false))
+                }
+            )
+        }
+        // 카테고리 선택 알럿
+        if (stateRecipeWriteDialog.isOpenUploadCategory) {
+            CustomDialogSelectCategory(
+                categoryList = stateRecipeWriteBeverages.beverageList,
+                categoryParagraphList = listOf(3, 2, 2, 1),
+                categorySelectedList = stateRecipeWriteBeverages.beverageCheckList,
+                onSelectClick = { index, clicked ->
+                    recipeWriteViewModel.onRecipeWriteBeveragesEvent(RecipeWriteBeveragesEvent.StepFileSelectChanged(index, clicked))
+                },
+                isComplete = stateRecipeWriteBeverages.btnEnabled,
+                onCompleteClick = {
+                    // 임시저장을 업로드할 경우
+                    if(tempRecipeApiCalled > 0) {
+                        CoroutineScope(Dispatchers.Main).launch {
+                            // temppost api success됐는지 확인하는 변수
+                            val isTempSuccess = recipeWriteViewModel.postTempRecipeToTemp(tempId!!, stepImageParts.toList(), stepImageAddNum)
+
+                            if(isTempSuccess){ // tempost api 성공하면 savepost api  호출한다.
+                                // savepost api success됐는지 확인하는 변수
+                                val isSaveSuccess = recipeWriteViewModel.postSaveTempRecipe(tempId!!)
+
+                                if (isSaveSuccess){ // post api 성공하면 업로드 완료 알럿을 띄운다.
+                                    recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.UploadCompleteChanged(true))
+                                }
+                            }
+                            // 알럿 닫기
+                            recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.UploadCategoryChanged(false))
+                        }
+                    }
+                    // 업로드 된 레시피를 수정할 경우
+                    else if(completeRecipeApiCalled > 0){
+                        CoroutineScope(Dispatchers.Main).launch{
+                            val isSuccess = recipeWriteViewModel.patchCompleteRecipe(recipeId!!, stepImageParts.toList(), stepImageAddNum)
+
+                            if(isSuccess){
+                                recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.UploadCompleteChanged(true))
+                            }
+                        }
+                        // 알럿 닫기
+                        recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.UploadCategoryChanged(false))
+                    }
+                    // 처음 업로드할 경우
+                    else {
+                        CoroutineScope(Dispatchers.Main).launch {
+                            // post api success됐는지 확인하는 변수
+                            val isSuccess = recipeWriteViewModel.postRecipeWrite(stepImageParts = stepImageParts.toList())
+                            // post api 성공하면 업로드 완료 알럿을 띄운다
+                            if (isSuccess){
+                                recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.UploadCompleteChanged(true))
+                            }
+                            // 알럿 닫기
+                            recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.UploadCategoryChanged(false))
+                        }
+                    }
+                },
+                setShowDialog = {
+                    recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.UploadCategoryChanged(it))
+                }
+            )
+        }
+        // 업로드 완료 알럿
+        if (stateRecipeWriteDialog.isOpenUploadComplete){
+            CustomDialogUploadComplete(
+                image = stateThumbnail !!,
+                setShowDialog = {
+                    recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.UploadCompleteChanged(it))
+                },
+                onAccept = {
+                    onClickViewRecipe(stateUploadRecipeId)
+                },
+                onLater = {
+                    recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.UploadCompleteChanged(false))
+                    onClickBack()
+                }
+            )
+        }
+        // 처음으로 작성 중, 취소 알럿
+        if (stateRecipeWriteDialog.isOpenRecipeDelete) {
+            CustomDialogRecipeDelete(
+                setShowDialog = {
+                    recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.RecipeDeleteChanged(it))
+                },
+                onDeleteClick = {
+                    recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.RecipeDeleteChanged(false))
+                    onClickBack()
+                },
+                onTemporalSave = {
+                    CoroutineScope(Dispatchers.IO).launch {
+                        recipeWriteViewModel.postRecipeWriteTemp(stepImageParts = stepImageParts.toList())
+                    }
+                    onClickBack()
+                    recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.RecipeDeleteChanged(false))
+                }
+            )
+        }
+        // 임시저장 수정 중, 취소 알럿
+        if(stateRecipeWriteDialog.isOpenTempRecipeDelete) {
+            CustomDialogType1(
+                title = "작성 중인 레시피 취소하기",
+                text = "지금 돌아가면 작성 내용이 모두 삭제됩니다.\n" +
+                        "마지막 임시 저장 상태로 돌아가시겠습니까?",
+                declineText = "취소",
+                acceptText = "레시피 작성 취소하기",
+                setShowDialog = {
+                    recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.TempRecipeDeleteChanged(it))
+                },
+                onAcceptClick = {
+                    onClickBack()
+                    recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.TempRecipeDeleteChanged(false))
+                }
+            )
+        }
+        // 업로드 수정 중, 취소 알럿
+        if(stateRecipeWriteDialog.isOpenCompleteRecipeDelete){
+            CustomDialogType1(
+                title = "작성 중인 레시피 취소하기",
+                text = "지금 돌아가면 작성 내용이 모두 삭제됩니다.\n" +
+                        "마지막 업로드 상태로 돌아가시겠습니까?",
+                declineText = "취소",
+                acceptText = "마지막 상태로 돌아가기",
+                setShowDialog = {
+                    recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.CompleteRecipeDeleteChanged(it))
+                },
+                onAcceptClick = {
+                    onClickBack()
+                    recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.CompleteRecipeDeleteChanged(false))
+                }
+            )
         }
     }
 }
@@ -1041,6 +1174,7 @@ fun RecipeWriteScreen(
 fun PreviewRecipeWriteScreen() {
     RecipeWriteScreen(
         tempId = null,
+        recipeId = null,
         onClickBack = {},
         onClickViewRecipe = { recipeId -> }
     )

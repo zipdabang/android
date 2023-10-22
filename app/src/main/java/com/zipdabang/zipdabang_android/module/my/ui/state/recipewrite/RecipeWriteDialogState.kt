@@ -2,6 +2,8 @@ package com.zipdabang.zipdabang_android.module.my.ui.state.recipewrite
 
 data class RecipeWriteDialogState(
     val isOpenRecipeDelete : Boolean = false,
+    val isOpenTempRecipeDelete : Boolean = false,
+    val isOpenCompleteRecipeDelete : Boolean = false,
     val isOpenFileSelect : Boolean = false,
     val isOpenStepFileSelect : Boolean = false,
     val stepNum : Int = 1,

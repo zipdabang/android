@@ -2,6 +2,9 @@ package com.zipdabang.zipdabang_android.module.my.ui.state.recipewrite
 
 sealed class RecipeWriteDialogEvent{
     data class RecipeDeleteChanged(val isOpen : Boolean) : RecipeWriteDialogEvent()
+    data class TempRecipeDeleteChanged(val isOpen : Boolean) : RecipeWriteDialogEvent()
+    data class CompleteRecipeDeleteChanged(val isOpen : Boolean) : RecipeWriteDialogEvent()
+
     data class FileSelectChanged(val isOpen : Boolean) : RecipeWriteDialogEvent()
     data class StepFileSelectChanged(val isOpen : Boolean, val stepNum : Int) : RecipeWriteDialogEvent()
 

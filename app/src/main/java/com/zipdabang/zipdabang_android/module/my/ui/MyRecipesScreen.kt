@@ -46,6 +46,7 @@ fun MyRecipesScreen(
     onClickBack : ()->Unit,
     onClickWrite : ()->Unit,
     onClickCompleteRecipes : (Int)->Unit,
+    onClickCompleteRecipeEdit : (Int)->Unit,
     onClickTempRecipes : (Int)->Unit,
 ) {
     val drawerState = rememberDrawerState(DrawerValue.Closed)
@@ -118,6 +119,9 @@ fun MyRecipesScreen(
                                 TabItem.MyCompleteRecipes(
                                     onClickCompleteRecipes = {
                                         onClickCompleteRecipes(it)
+                                    },
+                                    onClickCompleteRecipeEdit = {
+                                        onClickCompleteRecipeEdit(it)
                                     }
                                 ),
                                 TabItem.MyTempRecipes(
@@ -149,6 +153,7 @@ fun PreviewMyrecipeScreen() {
         onClickBack = {},
         onClickWrite = {},
         onClickCompleteRecipes = {},
-        onClickTempRecipes = {}
+        onClickTempRecipes = {},
+        onClickCompleteRecipeEdit = {}
     )
 }

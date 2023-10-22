@@ -4,12 +4,12 @@ import android.util.Log
 import com.zipdabang.zipdabang_android.common.Resource
 import com.zipdabang.zipdabang_android.common.ResponseCode
 import com.zipdabang.zipdabang_android.common.getErrorCode
-import com.zipdabang.zipdabang_android.module.my.data.remote.recipedelete.DeleteRecipeResponse
-import com.zipdabang.zipdabang_android.module.my.data.remote.recipeedit.complete.PatchCompleteRecipeRequestBody
 import com.zipdabang.zipdabang_android.module.my.data.remote.recipewrite.RecipeWriteResponse
 import com.zipdabang.zipdabang_android.module.my.domain.repository.MyRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.HttpException
 import java.io.IOException
 import java.util.concurrent.CancellationException
@@ -18,10 +18,10 @@ import javax.inject.Inject
 class PatchCompleteRecipeUseCase @Inject constructor(
     private val repository: MyRepository
 ){
-    operator fun invoke(accessToken : String, recipeId : Int, content : PatchCompleteRecipeRequestBody) : Flow<Resource<RecipeWriteResponse>> = flow{
+    operator fun invoke(accessToken : String, recipeId : Int, content : RequestBody, thumbnail : MultipartBody.Part?, stepImages : List<MultipartBody.Part>?) : Flow<Resource<RecipeWriteResponse>> = flow{
         try {
             emit(Resource.Loading())
-            val result = repository.patchCompleteRecipe(accessToken, recipeId, content)
+            val result = repository.patchCompleteRecipe(accessToken, recipeId, content, thumbnail, stepImages)
 
             when (result.code){
                 ResponseCode.RESPONSE_DEFAULT.code ->{

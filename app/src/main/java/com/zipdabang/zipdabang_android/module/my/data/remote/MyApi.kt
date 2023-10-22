@@ -14,7 +14,6 @@ import com.zipdabang.zipdabang_android.module.my.data.remote.otherinfo.OtherInfo
 import com.zipdabang.zipdabang_android.module.my.data.remote.otherinfo.OtherRecipePreviewDto
 import com.zipdabang.zipdabang_android.module.my.data.remote.recipedelete.DeleteRecipeResponse
 import com.zipdabang.zipdabang_android.module.my.data.remote.recipeedit.complete.GetCompleteRecipeResponse
-import com.zipdabang.zipdabang_android.module.my.data.remote.recipeedit.complete.PatchCompleteRecipeRequestBody
 import com.zipdabang.zipdabang_android.module.my.data.remote.recipeedit.temp.GetTempRecipeResponse
 import com.zipdabang.zipdabang_android.module.my.data.remote.recipewrite.PostSaveRecipeRequest
 import com.zipdabang.zipdabang_android.module.my.data.remote.recipewrite.RecipeWriteBeveragesResponse
@@ -103,7 +102,7 @@ interface MyApi {
     ) : GetTempRecipeResponse
 
     // 업로드 상세정보 가져오기
-    @GET("members/recipes/")
+    @GET("members/recipes/{recipeId}")
     suspend fun getMyCompleteRecipesDetail(
         @Header("Authorization") accessToken: String,
         @Path("recipeId") recipeId : Int
@@ -159,11 +158,14 @@ interface MyApi {
 
 
     // 업로드 수정
+    @Multipart
     @PATCH("members/recipes/{recipeId}")
     suspend fun patchCompleteRecipe(
         @Header("Authorization") accessToken: String,
         @Path("recipeId") recipeId : Int,
-        @Body content : PatchCompleteRecipeRequestBody
+        @Part("content") content: RequestBody,
+        @Part stepImages: List<MultipartBody.Part>?,
+        @Part thumbnail: MultipartBody.Part?
     ) : RecipeWriteResponse
     // 업로드 삭제
     @DELETE("members/recipes/{recipeId}")

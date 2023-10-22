@@ -142,7 +142,11 @@ fun NavGraphBuilder.MyNavGraph(
                 },
                 onClickTempRecipes = {
                     navController.navigate(MyScreen.RecipeWrite.passTempId(it))
-                    Log.e("tempId 전달 3","tempId : ${it}")
+                    //Log.e("tempId 전달 3","tempId : ${it}")
+                },
+                onClickCompleteRecipeEdit = {
+                    navController.navigate(MyScreen.RecipeEdit.passRecipeId(it))
+                    Log.e("recipewrite-get-save","recipeId : ${it}")
                 }
             )
         }
@@ -166,20 +170,42 @@ fun NavGraphBuilder.MyNavGraph(
             )
         }
         composable(
+            route = MyScreen.RecipeEdit.route,
+            arguments = listOf(navArgument(name = "recipeId") { type = NavType.IntType})
+        ){ navBackStackEntry->
+            val recipeId = navBackStackEntry.arguments?.getInt("recipeId")
+
+            RecipeWriteScreen(
+                tempId = 0,
+                recipeId = recipeId,
+                onClickBack = {
+                    navController.popBackStack()
+                },
+                onClickViewRecipe = {recipeId ->
+                    navController.navigate(
+                        route = SharedScreen.DetailRecipe.passRecipeId(recipeId)
+                    ) {
+                        popUpTo(route = MyScreen.RecipeWrite.route) {
+                            inclusive = true
+                        }
+                        launchSingleTop = true
+                    }
+                }
+            )
+        }
+        composable(
             route = MyScreen.RecipeWrite.route,
             arguments = listOf(
-                //navArgument(name = "recipeId") { type = NavType.IntType },
                 navArgument(name = "tempId") { type = NavType.IntType}
             )
         ) { navBackStackEntry->
             val recipeWriteViewModel = navBackStackEntry
                 .recipeWriteViewModel<RecipeWriteViewModel>(navController = navController)
-            //val recipeId = navBackStackEntry.arguments?.getString("recipeId")?.toInt()
             val tempId = navBackStackEntry.arguments?.getInt("tempId")
 
-            Log.e("tempId 전달 4","tempId : ${tempId}")
             RecipeWriteScreen(
                 tempId = tempId,
+                recipeId = null,
                 onClickBack = {
                     navController.popBackStack(MyScreen.Myrecipe.route, inclusive = false)
                 },
@@ -194,46 +220,6 @@ fun NavGraphBuilder.MyNavGraph(
                     }
                 }
             )
-
-            /*if(tempId != null && tempId != 0){
-                CoroutineScope(Dispatchers.Main).launch {
-                    recipeWriteViewModel.getTempRecipeDetail(tempId)
-                }
-                RecipeWriteScreen(
-                    tempId = tempId,
-                    onClickBack = {
-                        navController.popBackStack(MyScreen.Myrecipe.route, inclusive = false)
-                    },
-                    onClickViewRecipe = { recipeId ->
-                        navController.navigate(
-                            route = SharedScreen.DetailRecipe.passRecipeId(recipeId)
-                        ) {
-                            popUpTo(route = MyScreen.RecipeWrite.route) {
-                                inclusive = true
-                            }
-                            launchSingleTop = true
-                        }
-                    }
-                )
-            } else {
-                RecipeWriteScreen(
-                    tempId = tempId,
-                    onClickBack = {
-                        navController.popBackStack(MyScreen.Myrecipe.route, inclusive = false)
-                    },
-                    onClickViewRecipe = { recipeId ->
-                        navController.navigate(
-                            route = SharedScreen.DetailRecipe.passRecipeId(recipeId)
-                        ) {
-                            popUpTo(route = MyScreen.RecipeWrite.route) {
-                                inclusive = true
-                            }
-                            launchSingleTop = true
-                        }
-                    }
-                )
-            }*/
-
         }
         composable(MyScreen.NoticeList.route) {
             NoticeScreen(

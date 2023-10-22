@@ -1,15 +1,23 @@
 package com.zipdabang.zipdabang_android.module.my.ui.viewmodel
 
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.util.Log
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.datastore.core.DataStore
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
 import com.zipdabang.zipdabang_android.common.Resource
 import com.zipdabang.zipdabang_android.core.data_store.proto.Token
+import com.zipdabang.zipdabang_android.module.my.data.remote.recipewrite.CompleteRecipeEditContent
+import com.zipdabang.zipdabang_android.module.my.data.remote.recipewrite.CompleteRecipeEditIngredient
+import com.zipdabang.zipdabang_android.module.my.data.remote.recipewrite.CompleteRecipeEditStep
 import com.zipdabang.zipdabang_android.module.my.data.remote.recipewrite.PostSaveRecipeRequest
 import com.zipdabang.zipdabang_android.module.my.data.remote.recipewrite.RecipeWriteContent
 import com.zipdabang.zipdabang_android.module.my.data.remote.recipewrite.RecipeWriteIngredient
@@ -20,8 +28,10 @@ import com.zipdabang.zipdabang_android.module.my.data.remote.recipewrite.RecipeW
 import com.zipdabang.zipdabang_android.module.my.data.remote.recipewrite.TempRecipeWriteContent
 import com.zipdabang.zipdabang_android.module.my.data.remote.recipewrite.TempRecipeWriteIngredient
 import com.zipdabang.zipdabang_android.module.my.data.remote.recipewrite.TempRecipeWriteStep
+import com.zipdabang.zipdabang_android.module.my.domain.usecase.GetCompleteRecipeUseCase
 import com.zipdabang.zipdabang_android.module.my.domain.usecase.GetRecipeWriteBeveragesUseCase
 import com.zipdabang.zipdabang_android.module.my.domain.usecase.GetTempRecipeDetailUseCase
+import com.zipdabang.zipdabang_android.module.my.domain.usecase.PatchCompleteRecipeUseCase
 import com.zipdabang.zipdabang_android.module.my.domain.usecase.PostAsPatchTempRecipeUseCase
 import com.zipdabang.zipdabang_android.module.my.domain.usecase.PostRecipeWriteTempUseCase
 import com.zipdabang.zipdabang_android.module.my.domain.usecase.PostRecipeWriteUseCase
@@ -41,9 +51,14 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.toRequestBody
+import java.io.ByteArrayOutputStream
+import java.io.IOException
+import java.io.InputStream
+import java.net.URL
 import javax.inject.Inject
 
 @HiltViewModel
@@ -53,6 +68,8 @@ class RecipeWriteViewModel @Inject constructor(
     private val getRecipeWriteBeveragesUseCase: GetRecipeWriteBeveragesUseCase,
     private val postRecipeWriteTempUseCase: PostRecipeWriteTempUseCase,
     private val getTempRecipeDetailUseCase: GetTempRecipeDetailUseCase,
+    private val getCompleteRecipeUseCase: GetCompleteRecipeUseCase,
+    private val patchCompleteRecipeUseCase: PatchCompleteRecipeUseCase,
     private val postAsPatchTempRecipeUseCase: PostAsPatchTempRecipeUseCase,
     private val postSaveTempRecipeUseCase: PostSaveTempRecipeUseCase,
 ) : ViewModel() {
@@ -97,14 +114,39 @@ class RecipeWriteViewModel @Inject constructor(
             ),
         ),
     )
+    var stateCompleteRecipeWriteForm by mutableStateOf(
+        RecipeWriteFormState(
+            ingredients = listOf(
+                Ingredient(
+                    ingredientName = "",
+                    quantity = "",
+                )
+            ),
+            steps = listOf(
+                Step(
+                    stepImage = null,
+                    description = "",
+                    stepWordCount = 0,
+                    completeBtnEnabled = false,
+                    completeBtnVisible = true,
+                    addBtnVisible = false,
+                )
+            ),
+        ),
+    )
     var stateRecipeWriteDialog by mutableStateOf(RecipeWriteDialogState())
-    var thumbnailPart by mutableStateOf<MultipartBody.Part?>(null)
+    var thumbnailPart by mutableStateOf<MultipartBody.Part?>(null)  // 서버 업로드를 위한 MultiPartBody.Part
     var stateRecipeWriteBeverages by mutableStateOf(RecipeWriteBeveragesState())
-    var uploadRecipeId by mutableStateOf(0) //기문이형 도와줘
+
+    // 업로드 완료 한후 업로드 레시피로 넘어가기 위한 변수
+    var uploadRecipeId by mutableStateOf(0)
+
+    // temp인지 complete 레시피인지 판단하는 변수
     var tempRecipeDetailApiCalled by mutableStateOf(0)
+    var completeRecipeDetailApiCalled by mutableStateOf(0)
 
 
-    // stateRecipeWriteForm 비어있는지 확인하는 함수
+    // stateRecipeWriteForm 하나라도 비어있는지 확인하는 함수
     fun isEmpty(): Boolean {
         val isEmpty = listOf(
             stateRecipeWriteForm.ingredients[0].ingredientName.isEmpty()
@@ -123,13 +165,75 @@ class RecipeWriteViewModel @Inject constructor(
         return isEmpty
     }
 
-    // stateRecipeWriteForm과 stateTempRecipeWriteForm의 차이점을 확인하는 함수
+    // stateRecipeWriteForm과 stateTempRecipeWriteForm의 차이를 확인하는 함수
     fun isTempRecipeEdited(): Boolean {
-        Log.e("뭐지 stateRecipeWriteForm", "${stateRecipeWriteForm}")
-        Log.e("뭐지 stateTempRecipeWriteForm", "${stateTempRecipeWriteForm}")
-        Log.e("뭐지", "${stateRecipeWriteForm != stateTempRecipeWriteForm}")
-        return stateRecipeWriteForm != stateTempRecipeWriteForm
+        val isSame = stateRecipeWriteForm.thumbnail == stateTempRecipeWriteForm.thumbnail &&
+                stateRecipeWriteForm.title == stateTempRecipeWriteForm.title &&
+                stateRecipeWriteForm.time == stateTempRecipeWriteForm.time &&
+                stateRecipeWriteForm.intro == stateTempRecipeWriteForm.intro &&
+                stateRecipeWriteForm.recipeTip == stateTempRecipeWriteForm.recipeTip &&
+                stateRecipeWriteForm.ingredientsNum == stateTempRecipeWriteForm.ingredientsNum &&
+                stateRecipeWriteForm.stepsNum == stateTempRecipeWriteForm.stepsNum &&
+                areIngredientsEqual(
+                    stateRecipeWriteForm.ingredients,
+                    stateTempRecipeWriteForm.ingredients
+                ) &&
+                areStepsEqual(stateRecipeWriteForm.steps, stateTempRecipeWriteForm.steps)
+
+        return !isSame
     }
+
+    // stateRecipeWriteForm과 stateCompleteRecipeWriteForm의 차이를 확인하는 함수
+    fun isCompleteRecipeEdited(): Boolean {
+        val isSame = stateRecipeWriteForm.thumbnail == stateCompleteRecipeWriteForm.thumbnail &&
+                stateRecipeWriteForm.title == stateCompleteRecipeWriteForm.title &&
+                stateRecipeWriteForm.time == stateCompleteRecipeWriteForm.time &&
+                stateRecipeWriteForm.intro == stateCompleteRecipeWriteForm.intro &&
+                stateRecipeWriteForm.recipeTip == stateCompleteRecipeWriteForm.recipeTip &&
+                stateRecipeWriteForm.ingredientsNum == stateCompleteRecipeWriteForm.ingredientsNum &&
+                stateRecipeWriteForm.stepsNum == stateCompleteRecipeWriteForm.stepsNum &&
+                areIngredientsEqual(
+                    stateRecipeWriteForm.ingredients,
+                    stateCompleteRecipeWriteForm.ingredients
+                ) &&
+                areStepsEqual(stateRecipeWriteForm.steps, stateCompleteRecipeWriteForm.steps)
+
+        return !isSame
+    }
+
+    fun areIngredientsEqual(
+        ingredients1: List<Ingredient>,
+        ingredients2: List<Ingredient>
+    ): Boolean {
+        if (ingredients1.size != ingredients2.size) return false
+
+        for (i in ingredients1.indices) {
+            val ingredient1 = ingredients1[i]
+            val ingredient2 = ingredients2[i]
+
+            if (ingredient1.ingredientName != ingredient2.ingredientName || ingredient1.quantity != ingredient2.quantity) {
+                return false
+            }
+        }
+
+        return true
+    }
+
+    fun areStepsEqual(steps1: List<Step>, steps2: List<Step>): Boolean {
+        if (steps1.size != steps2.size) return false
+
+        for (i in steps1.indices) {
+            val step1 = steps1[i]
+            val step2 = steps2[i]
+
+            if (step1.stepImage != step2.stepImage || step1.description != step2.description) {
+                return false
+            }
+        }
+
+        return true
+    }
+
 
     // stateRecipeWriteForm에 대한 event
     fun onRecipeWriteFormEvent(event: RecipeWriteFormEvent) {
@@ -407,19 +511,75 @@ class RecipeWriteViewModel @Inject constructor(
             }
 
             is RecipeWriteFormEvent.BtnEnabled -> {
-                val isAllFieldsFilled =
-                    stateRecipeWriteForm.title.isNotBlank()
-                            && !(stateRecipeWriteForm.thumbnail == null || stateRecipeWriteForm.thumbnail == "")
-                            && stateRecipeWriteForm.time.isNotBlank()
-                            && stateRecipeWriteForm.intro.isNotBlank()
-                            && stateRecipeWriteForm.recipeTip.isNotBlank()
-                            && stateRecipeWriteForm.ingredients.all { it.ingredientName.isNotBlank() && it.quantity.isNotBlank() }
-                            && stateRecipeWriteForm.steps.all { it.description.isNotBlank() && it.stepImage != null }
-                            && stateRecipeWriteForm.steps.all { !it.completeBtnVisible }
+                var isAllFieldsFilled = false
 
-                stateRecipeWriteForm = stateRecipeWriteForm.copy(
-                    btnEnabled = isAllFieldsFilled
-                )
+                // 업로드 한 레시피 수정을 위한 조건문
+                if (completeRecipeDetailApiCalled > 0) {
+                    Log.e("뭐지 BtnEnabled 안 state", "stateRecipeWriteForm : ${stateRecipeWriteForm}")
+                    Log.e(
+                        "뭐지 BtnEnabled 안 state",
+                        "stateCompleteRecipeWriteForm : ${stateCompleteRecipeWriteForm}"
+                    )
+                    Log.e(
+                        "뭐지 BtnEnabled 안",
+                        "isCompleteRecipeEdited() : ${isCompleteRecipeEdited()}"
+                    )
+                    if (isCompleteRecipeEdited()) {
+                        Log.e("뭐지 BtnEnabled 안", "isAllFieldsFilled : ${isAllFieldsFilled}")
+                        isAllFieldsFilled = stateRecipeWriteForm.title.isNotBlank()
+                                && !(stateRecipeWriteForm.thumbnail == null || stateRecipeWriteForm.thumbnail == "")
+                                && stateRecipeWriteForm.time.isNotBlank()
+                                && stateRecipeWriteForm.intro.isNotBlank()
+                                && stateRecipeWriteForm.recipeTip.isNotBlank()
+                                && stateRecipeWriteForm.ingredients.all { it.ingredientName.isNotBlank() && it.quantity.isNotBlank() }
+                                && stateRecipeWriteForm.steps.all { it.description.isNotBlank() && it.stepImage != null }
+                                && stateRecipeWriteForm.steps.all { !it.completeBtnVisible }
+
+                        stateRecipeWriteForm = stateRecipeWriteForm.copy(
+                            btnEnabled = isAllFieldsFilled
+                        )
+                    } else {
+                        stateRecipeWriteForm = stateRecipeWriteForm.copy(
+                            btnEnabled = false
+                        )
+                    }
+                }
+                // 임시저장 한 레시피 수정을 위한 조건문
+                else if (tempRecipeDetailApiCalled > 0) {
+                    if (isTempRecipeEdited()) {
+                        isAllFieldsFilled = stateRecipeWriteForm.title.isNotBlank()
+                                && !(stateRecipeWriteForm.thumbnail == null || stateRecipeWriteForm.thumbnail == "")
+                                && stateRecipeWriteForm.time.isNotBlank()
+                                && stateRecipeWriteForm.intro.isNotBlank()
+                                && stateRecipeWriteForm.recipeTip.isNotBlank()
+                                && stateRecipeWriteForm.ingredients.all { it.ingredientName.isNotBlank() && it.quantity.isNotBlank() }
+                                && stateRecipeWriteForm.steps.all { it.description.isNotBlank() && it.stepImage != null }
+                                && stateRecipeWriteForm.steps.all { !it.completeBtnVisible }
+                        stateRecipeWriteForm = stateRecipeWriteForm.copy(
+                            btnEnabled = isAllFieldsFilled
+                        )
+                    } else {
+                        stateRecipeWriteForm = stateRecipeWriteForm.copy(
+                            btnEnabled = false
+                        )
+                    }
+                }
+                // 처음 업로드 할때
+                else {
+                    isAllFieldsFilled =
+                        stateRecipeWriteForm.title.isNotBlank()
+                                && !(stateRecipeWriteForm.thumbnail == null || stateRecipeWriteForm.thumbnail == "")
+                                && stateRecipeWriteForm.time.isNotBlank()
+                                && stateRecipeWriteForm.intro.isNotBlank()
+                                && stateRecipeWriteForm.recipeTip.isNotBlank()
+                                && stateRecipeWriteForm.ingredients.all { it.ingredientName.isNotBlank() && it.quantity.isNotBlank() }
+                                && stateRecipeWriteForm.steps.all { it.description.isNotBlank() && it.stepImage != null }
+                                && stateRecipeWriteForm.steps.all { !it.completeBtnVisible }
+
+                    stateRecipeWriteForm = stateRecipeWriteForm.copy(
+                        btnEnabled = isAllFieldsFilled
+                    )
+                }
             }
 
             is RecipeWriteFormEvent.BtnEnabledSave -> {
@@ -450,6 +610,16 @@ class RecipeWriteViewModel @Inject constructor(
             is RecipeWriteDialogEvent.RecipeDeleteChanged -> {
                 stateRecipeWriteDialog =
                     stateRecipeWriteDialog.copy(isOpenRecipeDelete = event.isOpen)
+            }
+
+            is RecipeWriteDialogEvent.TempRecipeDeleteChanged -> {
+                stateRecipeWriteDialog =
+                    stateRecipeWriteDialog.copy(isOpenTempRecipeDelete = event.isOpen)
+            }
+
+            is RecipeWriteDialogEvent.CompleteRecipeDeleteChanged -> {
+                stateRecipeWriteDialog =
+                    stateRecipeWriteDialog.copy(isOpenCompleteRecipeDelete = event.isOpen)
             }
 
             is RecipeWriteDialogEvent.FileSelectChanged -> {
@@ -514,11 +684,13 @@ class RecipeWriteViewModel @Inject constructor(
         }
     }
 
+
     // api
     init {
         getRecipeWriteBeverages()
     }
 
+    // temp recipe와 save recipe를 위한 api
     suspend fun postRecipeWrite(stepImageParts: List<MultipartBody.Part>): Boolean {
         val ingredients = stateRecipeWriteForm.ingredients.map { ingredient ->
             RecipeWriteIngredient(
@@ -743,8 +915,8 @@ class RecipeWriteViewModel @Inject constructor(
                             recipeTipWordCount = result.data?.recipeInfo?.recipeTip?.length ?: 0,
                             btnEnabledSave = false,
                             stepsNum =
-                                if(result?.data?.steps?.size == 0) 1
-                                else result?.data?.steps?.size ?: 1,
+                            if (result?.data?.steps?.size == 0) 1
+                            else result?.data?.steps?.size ?: 1,
                             steps = result?.data?.steps?.mapIndexed { index, step ->
                                 val completeBtnVisible =
                                     step.image == null || step.description == null
@@ -771,6 +943,7 @@ class RecipeWriteViewModel @Inject constructor(
                                 )
                             } ?: emptyList(),
                             ingredientsNum = result?.data?.ingredients?.size ?: 1,
+                            ingredientBtnEnabled = true
                         )
                         stateTempRecipeWriteForm = stateTempRecipeWriteForm.copy(
                             isLoading = false,
@@ -785,7 +958,7 @@ class RecipeWriteViewModel @Inject constructor(
                             recipeTipWordCount = result.data?.recipeInfo?.recipeTip?.length ?: 0,
                             btnEnabledSave = false,
                             stepsNum =
-                            if(result?.data?.steps?.size == 0) 1
+                            if (result?.data?.steps?.size == 0) 1
                             else result?.data?.steps?.size ?: 1,
                             steps = result?.data?.steps?.mapIndexed { index, step ->
                                 val completeBtnVisible =
@@ -813,6 +986,7 @@ class RecipeWriteViewModel @Inject constructor(
                                 )
                             } ?: emptyList(),
                             ingredientsNum = result?.data?.ingredients?.size ?: 1,
+                            ingredientBtnEnabled = true
                         )
                         Log.e("recipewrite-get-temp", "${stateRecipeWriteForm}")
                         Log.e("recipewrite-get-temp", "${stateTempRecipeWriteForm}")
@@ -843,15 +1017,16 @@ class RecipeWriteViewModel @Inject constructor(
                     }
                 }
             }
-        } catch (e: Exception) {}
+        } catch (e: Exception) {
+        }
 
     }
 
     suspend fun postTempRecipeToTemp(
         tempId: Int,
         stepImageParts: List<MultipartBody.Part>,
-        stepImageAddNum : List<Int>
-    ) : Boolean {
+        stepImageAddNum: List<Int>
+    ): Boolean {
         // api 호출을 위해 필요한 변수 정의
         val accessToken = "Bearer " + dataStore.data.first().accessToken.toString()
         val ingredients = stateRecipeWriteForm.ingredients.map { ingredient ->
@@ -891,17 +1066,20 @@ class RecipeWriteViewModel @Inject constructor(
 
             // content 안에 thumbnail : null
             Log.e("recipewrite-post-temp-thumbnail", "첫번째 if문 ${thumbnailPart}")
-        }
-        else { //썸네일 추가 안한 경우
+        } else { //썸네일 추가 안한 경우
             // content 밖에 thumbnail
             thumbnail = null
 
             // thumbnail 삭제한 경우 content 안에 thumbnail null로 해야함
             val thumbnailUrl =
-            // thumbnail 삭제한 경우
-            if(stateRecipeWriteForm.thumbnail == null || stateRecipeWriteForm.thumbnail == "") { null }
-            // thumbnail 그대로인 경우
-            else { stateTempRecipeWriteForm.thumbnail.toString() }
+                // thumbnail 삭제한 경우
+                if (stateRecipeWriteForm.thumbnail == null || stateRecipeWriteForm.thumbnail == "") {
+                    null
+                }
+                // thumbnail 그대로인 경우
+                else {
+                    stateTempRecipeWriteForm.thumbnail.toString()
+                }
 
             // content 안에 thumbnail
             content = content.copy(thumbnailUrl = thumbnailUrl)
@@ -918,9 +1096,9 @@ class RecipeWriteViewModel @Inject constructor(
             stepImages = null
 
             // stepUrl을 삭제했을 경우에 content 안에 stepUrl을 null로 해야함
-            val updatedSteps = stateRecipeWriteForm.steps.mapIndexed { index, step->
+            val updatedSteps = stateRecipeWriteForm.steps.mapIndexed { index, step ->
                 // stepUrl을 삭제했을 경우
-                if(step.stepImage == null || step.stepImage == ""){
+                if (step.stepImage == null || step.stepImage == "") {
                     TempRecipeWriteStep(
                         description = step.description,
                         stepNum = index + 1,
@@ -940,16 +1118,15 @@ class RecipeWriteViewModel @Inject constructor(
             // content 안에 stepUrl
             content = content.copy(steps = updatedSteps)
             Log.e("recipewrite-post-temp-step", "첫번째 if문 ${stepImages}")
-        }
-        else { //스텝 사진 추가함
+        } else { //스텝 사진 추가함
             // content 밖에 stepImages
             stepImages = stepImageParts
 
             // stepUrl을 삭제했을 경우에 content 안에 stepUrl을 null로 해야함
-            val updatedSteps = stateRecipeWriteForm.steps.mapIndexed { index, step->
+            val updatedSteps = stateRecipeWriteForm.steps.mapIndexed { index, step ->
                 val addStepNum = stepImageAddNum.indexOf(index + 1)
                 // stepUrl을 삭제했을 경우
-                if(addStepNum != -1 || step.stepImage == null || step.stepImage == ""){
+                if (addStepNum != -1 || step.stepImage == null || step.stepImage == "") {
                     TempRecipeWriteStep(
                         description = step.description,
                         stepNum = index + 1,
@@ -979,7 +1156,6 @@ class RecipeWriteViewModel @Inject constructor(
         val json = gson.toJson(content) // yourDataObject는 요청 본문의 데이터 객체입니다.
         val contentRequestBody = json.toRequestBody("application/json".toMediaTypeOrNull())
         Log.e("recipewrite-post-temp", "stateRecipeWriteForm : ${stateRecipeWriteForm}")
-        Log.e("recipewrite-post-temp", "stateTempRecipeWriteForm : ${stateTempRecipeWriteForm}")
         Log.e("recipewrite-post-temp", "tempId : ${tempId}")
         Log.e("recipewrite-post-temp", "content : ${json}")
         Log.e("recipewrite-post-temp", "thumbnail : ${thumbnail}")
@@ -996,26 +1172,29 @@ class RecipeWriteViewModel @Inject constructor(
             )
 
             result.collect { result ->
-               when(result){
-                   is Resource.Success ->{
-                       Log.e("recipewrite-post-temp", "성공 : ${result.code}")
-                       isSuccess = true
-                   }
-                   is Resource.Error ->{
-                       Log.e("recipewrite-post-temp", "에러 : ${result.code}")
-                       isSuccess = false
-                   }
-                   is Resource.Loading ->{
-                       Log.e("recipewrite-post-temp", "로딩중 : ${result.code}")
-                   }
-               }
+                when (result) {
+                    is Resource.Success -> {
+                        Log.e("recipewrite-post-temp", "성공 : ${result.code}")
+                        isSuccess = true
+                    }
+
+                    is Resource.Error -> {
+                        Log.e("recipewrite-post-temp", "에러 : ${result.code}")
+                        isSuccess = false
+                    }
+
+                    is Resource.Loading -> {
+                        Log.e("recipewrite-post-temp", "로딩중 : ${result.code}")
+                    }
+                }
             }
 
-        } catch (e: Exception) {}
+        } catch (e: Exception) {
+        }
         return isSuccess
     }
 
-    suspend fun postSaveTempRecipe(tempId: Int) : Boolean {
+    suspend fun postSaveTempRecipe(tempId: Int): Boolean {
         val accessToken = "Bearer " + dataStore.data.first().accessToken.toString()
         val categoryId =
             stateRecipeWriteBeverages.beverageCheckList.mapIndexedNotNull { index, isSelected ->
@@ -1023,31 +1202,325 @@ class RecipeWriteViewModel @Inject constructor(
             }
         var isSuccess = false
 
-        try{
-            val result = postSaveTempRecipeUseCase(accessToken, tempId, PostSaveRecipeRequest(listOf(0) + categoryId))
+        try {
+            val result = postSaveTempRecipeUseCase(
+                accessToken,
+                tempId,
+                PostSaveRecipeRequest(listOf(0) + categoryId)
+            )
 
             Log.e("recipewrite-post-save 카테고리", (listOf(0) + categoryId).toString())
             Log.e("recipewrite-post-save tempId", tempId.toString())
 
 
-            result.collect{result->
-                when(result){
-                    is Resource.Success->{
+            result.collect { result ->
+                when (result) {
+                    is Resource.Success -> {
                         Log.e("recipewrite-post-save", "성공 : ${result.code}")
                         isSuccess = true
                     }
-                    is Resource.Error ->{
-                        Log.e("recipewrite-post-save", "에러 : ${result} ${result.code} ${result.message} ${result.data}")
+
+                    is Resource.Error -> {
+                        Log.e(
+                            "recipewrite-post-save",
+                            "에러 : ${result} ${result.code} ${result.message} ${result.data}"
+                        )
                         isSuccess = false
                     }
-                    is Resource.Loading ->{
+
+                    is Resource.Loading -> {
                         Log.e("recipewrite-post-save", "로딩중 : ${result.code}")
                     }
                 }
             }
-        } catch (e: Exception) {}
+        } catch (e: Exception) {
+        }
         return isSuccess
     }
 
+    fun decodeBitmapFromInputStream(inputStream: InputStream): ByteArray {
+        val buffer = ByteArray(1024)
+        val output = ByteArrayOutputStream()
+
+        var bytesRead: Int
+        while (inputStream.read(buffer).also { bytesRead = it } != -1) {
+            output.write(buffer, 0, bytesRead)
+        }
+
+        return output.toByteArray()
+    }
+
+    // complete recipe를 get하고 patch하는 api
+    suspend fun getCompleteRecipeDetail(recipeId: Int) {
+        var accessToken = "Bearer " + dataStore.data.first().accessToken.toString()
+
+        try {
+            val result = getCompleteRecipeUseCase(accessToken, recipeId)
+
+            result.collect { result ->
+                when (result) {
+                    is Resource.Success -> {
+                        Log.e("recipewrite-get-save", "성공 : ${result.code}")
+
+                        /* val url = URL(result.data?.recipeInfo?.thumbnailUrl)
+                         Log.e("recipewrite-get-save", "url : ${url}")
+                         val connection = url.openConnection()
+                         connection.connect()
+
+                         val inputStream = connection.getInputStream()
+                         //val bitmap = BitmapFactory.decodeStream(inputStream)
+                         val compressedImageData = decodeBitmapFromInputStream(inputStream) // 이미지를 바이트 배열로 읽어옴
+
+                         val options = BitmapFactory.Options()
+                         options.inPreferredConfig = Bitmap.Config.ARGB_8888 // 원본 이미지 설정
+                         val bitmap = BitmapFactory.decodeByteArray(compressedImageData, 0, compressedImageData.size, options)
+                         Log.e("recipewrite-get-save", "bitmap : ${bitmap}")
+
+                         withContext(Dispatchers.Main) {
+                             Log.e("recipewrite-get-save", "bitmap 반영 후 : ${bitmap}")*/
+
+                        stateRecipeWriteForm = stateRecipeWriteForm.copy(
+                            isLoading = false,
+                            thumbnail = result.data?.recipeInfo?.thumbnailUrl,
+                            title = result.data?.recipeInfo?.recipeName ?: "",
+                            titleWordCount = result.data?.recipeInfo?.recipeName?.length
+                                ?: 0,
+                            time = result.data?.recipeInfo?.time ?: "",
+                            timeWordCount = result.data?.recipeInfo?.time?.length ?: 0,
+                            intro = result.data?.recipeInfo?.intro ?: "",
+                            introWordCount = result.data?.recipeInfo?.intro?.length ?: 0,
+                            recipeTip = result?.data?.recipeInfo?.recipeTip ?: "",
+                            recipeTipWordCount = result.data?.recipeInfo?.recipeTip?.length
+                                ?: 0,
+                            btnEnabledSave = false,
+                            btnEnabled = false,
+                            stepsNum =
+                            if (result?.data?.steps?.size == 0) 1
+                            else result?.data?.steps?.size ?: 1,
+                            steps = result?.data?.steps?.mapIndexed { index, step ->
+                                val completeBtnVisible =
+                                    step.image == null || step.description == null
+                                val isLastStep = index == result.data.steps.size - 1
+                                val addBtnVisible = when {
+                                    result.data.steps.size == 1 && completeBtnVisible -> false // Case 1
+                                    !isLastStep -> false // Case 2
+                                    isLastStep && completeBtnVisible -> false // Case 3
+                                    else -> true
+                                }
+                                Step(
+                                    stepImage = step.image,
+                                    description = step.description ?: "",
+                                    stepWordCount = step.description.length ?: 0,
+                                    completeBtnEnabled = false, // Set to an appropriate value
+                                    completeBtnVisible = completeBtnVisible,
+                                    addBtnVisible = addBtnVisible
+                                )
+                            } ?: listOf(Step()),
+                            ingredients = result?.data?.ingredients?.map { ingredient ->
+                                Ingredient(
+                                    ingredientName = ingredient.ingredientName,
+                                    quantity = ingredient.quantity
+                                )
+                            } ?: emptyList(),
+                            ingredientsNum = result?.data?.ingredients?.size ?: 1,
+                            ingredientBtnEnabled = true
+                        )
+                        stateCompleteRecipeWriteForm = stateCompleteRecipeWriteForm.copy(
+                            isLoading = false,
+                            thumbnail = result.data?.recipeInfo?.thumbnailUrl,
+                            title = result.data?.recipeInfo?.recipeName ?: "",
+                            titleWordCount = result.data?.recipeInfo?.recipeName?.length
+                                ?: 0,
+                            time = result.data?.recipeInfo?.time ?: "",
+                            timeWordCount = result.data?.recipeInfo?.time?.length ?: 0,
+                            intro = result.data?.recipeInfo?.intro ?: "",
+                            introWordCount = result.data?.recipeInfo?.intro?.length ?: 0,
+                            recipeTip = result?.data?.recipeInfo?.recipeTip ?: "",
+                            recipeTipWordCount = result.data?.recipeInfo?.recipeTip?.length
+                                ?: 0,
+                            btnEnabledSave = false,
+                            btnEnabled = false,
+                            stepsNum =
+                            if (result?.data?.steps?.size == 0) 1
+                            else result?.data?.steps?.size ?: 1,
+                            steps = result?.data?.steps?.mapIndexed { index, step ->
+                                val completeBtnVisible =
+                                    step.image == null || step.description == null
+                                val isLastStep = index == result.data.steps.size - 1
+                                val addBtnVisible = when {
+                                    result.data.steps.size == 1 && completeBtnVisible -> false // Case 1
+                                    !isLastStep -> false // Case 2
+                                    isLastStep && completeBtnVisible -> false // Case 3
+                                    else -> true
+                                }
+                                Step(
+                                    stepImage = step.image,
+                                    description = step.description ?: "",
+                                    stepWordCount = step.description.length ?: 0,
+                                    completeBtnEnabled = false, // Set to an appropriate value
+                                    completeBtnVisible = completeBtnVisible,
+                                    addBtnVisible = addBtnVisible
+                                )
+                            } ?: listOf(Step()),
+                            ingredients = result?.data?.ingredients?.map { ingredient ->
+                                Ingredient(
+                                    ingredientName = ingredient.ingredientName,
+                                    quantity = ingredient.quantity
+                                )
+                            } ?: emptyList(),
+                            ingredientsNum = result?.data?.ingredients?.size ?: 1,
+                            ingredientBtnEnabled = true
+                        )
+                        completeRecipeDetailApiCalled++
+
+
+                    }
+
+                    is Resource.Error -> {
+                        Log.e("recipewrite-get-save", "에러 : ${result.code}")
+                        stateRecipeWriteForm = stateRecipeWriteForm.copy(
+                            error = result.message ?: "An unexpeted error occured"
+                        )
+                        stateCompleteRecipeWriteForm = stateCompleteRecipeWriteForm.copy(
+                            error = result.message ?: "An unexpeted error occured"
+                        )
+                    }
+
+                    is Resource.Loading -> {
+                        Log.e("recipewrite-get-save", "로딩중 : ${result.code}")
+                        stateRecipeWriteForm = stateRecipeWriteForm.copy(isLoading = true)
+                        stateCompleteRecipeWriteForm =
+                            stateCompleteRecipeWriteForm.copy(isLoading = true)
+                    }
+                }
+            }
+        } catch (e: Exception) {
+        }
+    }
+
+    suspend fun patchCompleteRecipe(
+        recipeId: Int,
+        stepImageParts: List<MultipartBody.Part>,
+        stepImageAddNum: List<Int>
+    ): Boolean {
+        // api 호출을 위해 필요한 변수 정의
+        val accessToken = "Bearer " + dataStore.data.first().accessToken.toString()
+        val ingredients = stateRecipeWriteForm.ingredients.map { ingredient ->
+            CompleteRecipeEditIngredient(
+                ingredientName = ingredient.ingredientName,
+                quantity = ingredient.quantity
+            )
+        }
+        val steps = stateRecipeWriteForm.steps.mapIndexed { index, step ->
+            CompleteRecipeEditStep(
+                description = step.description,
+                stepNum = index + 1,
+                stepUrl = stateRecipeWriteForm.steps[index].stepImage.toString(),
+            )
+        }
+        var thumbnail: MultipartBody.Part? = thumbnailPart
+        var stepImages: List<MultipartBody.Part>? = stepImageParts
+        var content by mutableStateOf(
+            CompleteRecipeEditContent(
+                ingredientCount = stateRecipeWriteForm.ingredientsNum,
+                intro = stateRecipeWriteForm.intro,
+                recipeTip = stateRecipeWriteForm.recipeTip,
+                name = stateRecipeWriteForm.title,
+                time = stateRecipeWriteForm.time,
+                stepCount = stateRecipeWriteForm.stepsNum,
+                categoryId = listOf(0) + stateRecipeWriteBeverages.beverageCheckList.mapIndexedNotNull { index, isSelected ->
+                    if (isSelected) index + 1 else null
+                },
+                ingredients = ingredients,
+                steps = steps
+            )
+        )
+        var isSuccess = false
+
+        // 스텝사진 관리
+        if (stepImageParts.isEmpty()) { //스텝 사진 추가 안함
+            // content 밖에 stepImages
+            stepImages = null
+
+            // 기존의 stepImage를 content 안에 stepUrl에 담아야함
+            val updatedSteps = stateRecipeWriteForm.steps.mapIndexed { index, step ->
+                CompleteRecipeEditStep(
+                    description = step.description,
+                    stepNum = index + 1,
+                    stepUrl = step.stepImage.toString()
+                )
+            }
+
+            // content 안에 stepUrl
+            content = content.copy(steps = updatedSteps)
+            Log.e("recipewrite-post-temp-step", "첫번째 if문 ${stepImages}")
+        } else { //스텝 사진 추가함
+            // content 밖에 stepImages
+            stepImages = stepImageParts
+
+            // 추가한 stepUrl의 content 안에 stepUrl을 null로 해야함
+            val updatedSteps = stateRecipeWriteForm.steps.mapIndexed { index, step ->
+                val addStepNum = stepImageAddNum.indexOf(index + 1)
+                if (addStepNum != -1) { // 새로 추가된 단계
+                    CompleteRecipeEditStep(
+                        description = step.description,
+                        stepNum = index + 1,
+                        stepUrl = null
+                    )
+                } else {
+                    CompleteRecipeEditStep(
+                        description = step.description,
+                        stepNum = index + 1,
+                        stepUrl = step.stepImage.toString()
+                    )
+                }
+            }
+
+            // content 안에 stepUrl : null
+            content = content.copy(steps = updatedSteps)
+            Log.e("recipewrite-post-temp-step", "두번째 if문 ${stepImages}")
+        }
+
+        val gson = Gson()
+        val json = gson.toJson(content) // yourDataObject는 요청 본문의 데이터 객체입니다.
+        val contentRequestBody = json.toRequestBody("application/json".toMediaTypeOrNull())
+        Log.e("recipewrite-patch-complete", "stateRecipeWriteForm : ${stateRecipeWriteForm}")
+        Log.e("recipewrite-patch-complete", "recipeId : ${recipeId}")
+        Log.e("recipewrite-patch-complete", "content : ${json}")
+        Log.e("recipewrite-patch-complete", "thumbnail : ${thumbnail}")
+        Log.e("recipewrite-patch-complete", "stepImages : ${stepImages}")
+
+
+        try {
+            val result = patchCompleteRecipeUseCase(
+                accessToken,
+                recipeId,
+                contentRequestBody,
+                thumbnail,
+                stepImages
+            )
+
+            result.collect { result ->
+                when (result) {
+                    is Resource.Success -> {
+                        Log.e("recipewrite-patch-complete", "성공 : ${result.code}")
+                        isSuccess = true
+                    }
+
+                    is Resource.Error -> {
+                        Log.e("recipewrite-patch-complete", "에러 : ${result.code}")
+                        isSuccess = false
+                    }
+
+                    is Resource.Loading -> {
+                        Log.e("recipewrite-patch-complete", "로딩중 : ${result.code}")
+                    }
+                }
+            }
+
+        } catch (e: Exception) {
+        }
+        return isSuccess
+    }
 }
 

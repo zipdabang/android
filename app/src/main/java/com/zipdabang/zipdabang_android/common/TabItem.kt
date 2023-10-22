@@ -79,11 +79,13 @@ sealed class TabItem(val tabTitle: String, val screen: ComposableFun) {
 
     class MyCompleteRecipes(
         onClickCompleteRecipes : (Int)->Unit,
+        onClickCompleteRecipeEdit : (Int)->Unit,
     ) : TabItem (
         tabTitle ="업로드",
         screen = {
             MyCompleteRecipesScreen(
-                onClickCompleteRecipes = onClickCompleteRecipes
+                onClickCompleteRecipes = onClickCompleteRecipes,
+                onClickCompleteRecipeEdit = onClickCompleteRecipeEdit
             )
         }
     )

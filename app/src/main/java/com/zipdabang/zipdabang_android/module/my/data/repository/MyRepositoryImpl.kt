@@ -14,7 +14,6 @@ import com.zipdabang.zipdabang_android.module.my.data.remote.otherinfo.OtherInfo
 import com.zipdabang.zipdabang_android.module.my.data.remote.otherinfo.OtherRecipePreviewDto
 import com.zipdabang.zipdabang_android.module.my.data.remote.recipedelete.DeleteRecipeResponse
 import com.zipdabang.zipdabang_android.module.my.data.remote.recipeedit.complete.GetCompleteRecipeResponse
-import com.zipdabang.zipdabang_android.module.my.data.remote.recipeedit.complete.PatchCompleteRecipeRequestBody
 import com.zipdabang.zipdabang_android.module.my.data.remote.recipeedit.temp.GetTempRecipeResponse
 import com.zipdabang.zipdabang_android.module.my.data.remote.recipewrite.PostSaveRecipeRequest
 import com.zipdabang.zipdabang_android.module.my.data.remote.recipewrite.RecipeWriteBeveragesResponse
@@ -149,10 +148,13 @@ class MyRepositoryImpl @Inject constructor(
     override suspend fun patchCompleteRecipe(
         accessToken: String,
         recipeId: Int,
-        content: PatchCompleteRecipeRequestBody
+        content: RequestBody,
+        thumbnail: MultipartBody.Part?,
+        stepImages: List<MultipartBody.Part>?
     ): RecipeWriteResponse {
-        return api.patchCompleteRecipe(accessToken, recipeId, content)
+        return api.patchCompleteRecipe(accessToken, recipeId, content, stepImages, thumbnail)
     }
+
 
     override suspend fun deleteCompleteRecipe(
         accessToken: String,

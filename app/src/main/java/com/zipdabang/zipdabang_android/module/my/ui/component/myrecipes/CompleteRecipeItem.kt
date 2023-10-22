@@ -140,6 +140,7 @@ fun CompleteRecipeItem(
                         DropdownMenuItem(
                             onClick = {
                                 if(index==0){
+                                    isContextMenuVisible = false
                                     onEditClick()
                                 }
                                 else{
