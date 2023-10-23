@@ -1,6 +1,4 @@
-package com.zipdabang.zipdabang_android.module.my.ui.state.recipewrite
-
-import com.zipdabang.zipdabang_android.core.navigation.MyScreen
+package com.zipdabang.zipdabang_android.module.my.ui.state.myrecipe.write
 
 sealed class RecipeWriteBeveragesEvent{
     data class StepFileSelectChanged(val index : Int, val clicked : Boolean) : RecipeWriteBeveragesEvent()

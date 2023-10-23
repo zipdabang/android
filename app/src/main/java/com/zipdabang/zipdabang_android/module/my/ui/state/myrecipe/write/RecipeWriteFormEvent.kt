@@ -1,6 +1,4 @@
-package com.zipdabang.zipdabang_android.module.my.ui.state.recipewrite
-
-import com.zipdabang.zipdabang_android.module.drawer.ui.state.userinfo.UserInfoBasicEvent
+package com.zipdabang.zipdabang_android.module.my.ui.state.myrecipe.write
 
 sealed class RecipeWriteFormEvent{
     data class ThumbnailChanged(val thumbnail : Any?) : RecipeWriteFormEvent()

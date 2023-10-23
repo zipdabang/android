@@ -39,15 +39,13 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import coil.compose.rememberImagePainter
 import com.zipdabang.zipdabang_android.R
-import com.zipdabang.zipdabang_android.module.bottom.BottomMenuContent
 import com.zipdabang.zipdabang_android.module.my.ui.component.recipewrite.ButtonAddForIngredient
 import com.zipdabang.zipdabang_android.module.my.ui.component.recipewrite.IngredientAndUnit
 import com.zipdabang.zipdabang_android.module.my.ui.component.recipewrite.Step
-import com.zipdabang.zipdabang_android.module.my.ui.state.recipewrite.RecipeWriteBeveragesEvent
-import com.zipdabang.zipdabang_android.module.my.ui.state.recipewrite.RecipeWriteDialogEvent
-import com.zipdabang.zipdabang_android.module.my.ui.state.recipewrite.RecipeWriteFormEvent
+import com.zipdabang.zipdabang_android.module.my.ui.state.myrecipe.write.RecipeWriteBeveragesEvent
+import com.zipdabang.zipdabang_android.module.my.ui.state.myrecipe.write.RecipeWriteDialogEvent
+import com.zipdabang.zipdabang_android.module.my.ui.state.myrecipe.write.RecipeWriteFormEvent
 import com.zipdabang.zipdabang_android.module.my.ui.viewmodel.RecipeWriteViewModel
 import com.zipdabang.zipdabang_android.ui.component.AppBarSignUp
 import com.zipdabang.zipdabang_android.ui.component.CustomDialogCameraFile
@@ -57,7 +55,6 @@ import com.zipdabang.zipdabang_android.ui.component.CustomDialogType1
 import com.zipdabang.zipdabang_android.ui.component.CustomDialogType2
 import com.zipdabang.zipdabang_android.ui.component.CustomDialogUploadComplete
 import com.zipdabang.zipdabang_android.ui.component.ImageWithIconAndText
-import com.zipdabang.zipdabang_android.ui.component.PreviewCustomDialogType1
 import com.zipdabang.zipdabang_android.ui.component.PrimaryButtonOutLinedStatus
 import com.zipdabang.zipdabang_android.ui.component.PrimaryButtonWithStatus
 import com.zipdabang.zipdabang_android.ui.component.TextFieldForRecipeWriteMultiline
@@ -725,7 +722,8 @@ fun RecipeWriteScreen(
                                 valueIngredient = stateRecipeWriteForm.ingredients[i].ingredientName,
                                 onValueChangedIngredient = { newText, maxLength ->
                                     if (newText.length <= maxLength) {
-                                        recipeWriteViewModel.onRecipeWriteFormEvent(RecipeWriteFormEvent.IngredientChanged(newText,i+1))
+                                        recipeWriteViewModel.onRecipeWriteFormEvent(
+                                            RecipeWriteFormEvent.IngredientChanged(newText,i+1))
                                     }
                                 },
                                 placeholderValueIngredient = stringResource(id = R.string.my_recipewrite_milk),
@@ -742,7 +740,8 @@ fun RecipeWriteScreen(
                                 valueUnit = stateRecipeWriteForm.ingredients[i].quantity,
                                 onValueChangedUnit = { newText, maxLength ->
                                     if (newText.length <= maxLength) {
-                                        recipeWriteViewModel.onRecipeWriteFormEvent(RecipeWriteFormEvent.QuantityChanged(newText,i+1))
+                                        recipeWriteViewModel.onRecipeWriteFormEvent(
+                                            RecipeWriteFormEvent.QuantityChanged(newText,i+1))
                                     }
                                 },
                                 placeholderValueUnit = stringResource(id = R.string.my_recipewrite_hundredmilli),
@@ -849,7 +848,8 @@ fun RecipeWriteScreen(
                                 valueLength = stateRecipeWriteForm.steps[i].stepWordCount.toString(),
                                 onValueChanged = { newText, maxLength ->
                                     if (newText.length <= maxLength) {
-                                        recipeWriteViewModel.onRecipeWriteFormEvent(RecipeWriteFormEvent.StepChanged(newText, i+1))
+                                        recipeWriteViewModel.onRecipeWriteFormEvent(
+                                            RecipeWriteFormEvent.StepChanged(newText, i+1))
                                     }
                                 },
                                 placeholderValue = "레시피를 만드는 Step "+(i+1)+"을 설명해 주세요. \n(최대 200자)",
@@ -861,7 +861,8 @@ fun RecipeWriteScreen(
                                 maxLength = 200,
                                 imeAction = ImeAction.None,
                                 onClickImageAddBtn = {
-                                    recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.StepFileSelectChanged(true, i+1))
+                                    recipeWriteViewModel.onRecipeWriteDialogEvent(
+                                        RecipeWriteDialogEvent.StepFileSelectChanged(true, i+1))
                                 },
                                 onClickDeleteStep = {
                                     recipeWriteViewModel.onRecipeWriteFormEvent(RecipeWriteFormEvent.BtnStepDelete(stepNum = i+1 ))
@@ -1085,7 +1086,8 @@ fun RecipeWriteScreen(
                                 val isSaveSuccess = recipeWriteViewModel.postSaveTempRecipe(tempId!!)
 
                                 if (isSaveSuccess){ // post api 성공하면 업로드 완료 알럿을 띄운다.
-                                    recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.UploadCompleteChanged(true))
+                                    recipeWriteViewModel.onRecipeWriteDialogEvent(
+                                        RecipeWriteDialogEvent.UploadCompleteChanged(true))
                                 }
                             }
                             // 알럿 닫기

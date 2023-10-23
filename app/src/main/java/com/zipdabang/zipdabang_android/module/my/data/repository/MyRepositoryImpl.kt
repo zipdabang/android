@@ -9,7 +9,10 @@ import com.zipdabang.zipdabang_android.module.my.data.remote.friendlist.followin
 import com.zipdabang.zipdabang_android.module.my.data.remote.myinfo.MyInfoRecipesResponse
 import com.zipdabang.zipdabang_android.module.my.data.remote.myinfo.MyInfoResponse
 import com.zipdabang.zipdabang_android.module.my.data.remote.myrecipes.complete.CompleteRecipesResponse
-import com.zipdabang.zipdabang_android.module.my.data.remote.myrecipes.scraplike.GetScrapRecipesResponse
+import com.zipdabang.zipdabang_android.module.my.data.remote.myrecipes.completewithimage.CompleteRecipesWithImgResponse
+import com.zipdabang.zipdabang_android.module.my.data.remote.myrecipes.like.LikeRecipesResponse
+import com.zipdabang.zipdabang_android.module.my.data.remote.myrecipes.preview.CompleteRecipesWithImgPreviewResponse
+import com.zipdabang.zipdabang_android.module.my.data.remote.myrecipes.scrap.ScrapRecipesResponse
 import com.zipdabang.zipdabang_android.module.my.data.remote.otherinfo.OtherInfoDto
 import com.zipdabang.zipdabang_android.module.my.data.remote.otherinfo.OtherRecipeListDto
 import com.zipdabang.zipdabang_android.module.my.data.remote.otherinfo.OtherRecipePreviewDto
@@ -109,6 +112,13 @@ class MyRepositoryImpl @Inject constructor(
         return api.getMyCompleteRecipes(accessToken, pageIndex)
     }
 
+    override suspend fun getMyCompleteRecipesWithImg(
+        accessToken: String,
+        pageIndex: Int
+    ): CompleteRecipesWithImgResponse {
+        return api.getMyCompleteRecipesWithImg(accessToken, pageIndex)
+    }
+
 
     override suspend fun getMyTempRecipesDetail(
         accessToken: String,
@@ -165,14 +175,17 @@ class MyRepositoryImpl @Inject constructor(
         return api.deleteCompleteRecipe(accessToken, recipeId)
     }
 
-    override suspend fun getLikeRecipes(accessToken: String, page: Int): GetScrapRecipesResponse {
+    override suspend fun getLikeRecipes(accessToken: String, page: Int): LikeRecipesResponse {
         return api.getLikeRecipes(accessToken, page)
     }
 
-    override suspend fun getScrapRecipes(accessToken: String, page: Int): GetScrapRecipesResponse {
-        return api.getScrapRecipes(accessToken, page)
+    override suspend fun getScrapRecipes(accessToken: String, page: Int): ScrapRecipesResponse {
+       return api.getScrapRecipes(accessToken, page)
     }
 
+    override suspend fun getMyCompleteRecipesWithImgPreview(accessToken: String): CompleteRecipesWithImgPreviewResponse {
+        return api.getMyCompleteRecipesWithImgPreview(accessToken)
+    }
 
 
     override suspend fun getOtherRecipeList(

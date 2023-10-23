@@ -46,6 +46,7 @@ object Constants {
     const val MY_TEMPED_RECIPES_TABLE = "my_temped_recipes_table"
     const val MY_LIKED_RECIPES_TABLE = "my_liked_recipes_table"
     const val MY_SCRAPED_RECIPES_TABLE = "my_scraped_recipes_table"
+    const val MY_COMPLETE_RECIPES_WITH_IMAGES_TABLE = "my_complete_recipes_with_images_table"
 
     const val ITEMS_PER_PAGE = 10
 

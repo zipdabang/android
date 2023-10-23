@@ -1,4 +1,4 @@
-package com.zipdabang.zipdabang_android.module.my.ui.state.recipewrite
+package com.zipdabang.zipdabang_android.module.my.ui.state.myrecipe.write
 
 import com.zipdabang.zipdabang_android.module.my.data.remote.recipewrite.BeverageCategory
 

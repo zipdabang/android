@@ -8,7 +8,10 @@ import com.zipdabang.zipdabang_android.module.my.data.remote.friendlist.followin
 import com.zipdabang.zipdabang_android.module.my.data.remote.myinfo.MyInfoRecipesResponse
 import com.zipdabang.zipdabang_android.module.my.data.remote.myinfo.MyInfoResponse
 import com.zipdabang.zipdabang_android.module.my.data.remote.myrecipes.complete.CompleteRecipesResponse
-import com.zipdabang.zipdabang_android.module.my.data.remote.myrecipes.scraplike.GetScrapRecipesResponse
+import com.zipdabang.zipdabang_android.module.my.data.remote.myrecipes.completewithimage.CompleteRecipesWithImgResponse
+import com.zipdabang.zipdabang_android.module.my.data.remote.myrecipes.like.LikeRecipesResponse
+import com.zipdabang.zipdabang_android.module.my.data.remote.myrecipes.preview.CompleteRecipesWithImgPreviewResponse
+import com.zipdabang.zipdabang_android.module.my.data.remote.myrecipes.scrap.ScrapRecipesResponse
 import com.zipdabang.zipdabang_android.module.my.data.remote.otherinfo.OtherInfoDto
 import com.zipdabang.zipdabang_android.module.my.data.remote.otherinfo.OtherRecipeListDto
 import com.zipdabang.zipdabang_android.module.my.data.remote.otherinfo.OtherRecipePreviewDto
@@ -38,7 +41,7 @@ interface MyRepository {
     suspend fun getRecipeWriteBeverages(accessToken: String) : RecipeWriteBeveragesResponse
     suspend fun postRecipeTemp(accessToken: String, content: RequestBody, thumbnail : MultipartBody.Part?, stepImages: List<MultipartBody.Part>? ) : RecipeWriteTempResponse
     suspend fun getMyCompleteRecipes(accessToken: String, pageIndex : Int) : CompleteRecipesResponse
-
+    suspend fun getMyCompleteRecipesWithImg(accessToken: String, pageIndex: Int) : CompleteRecipesWithImgResponse
     suspend fun getMyTempRecipesDetail(accessToken: String, tempId : Int) : GetTempRecipeResponse
     suspend fun getMyCompleteRecipesDetail(accessToken: String, recipeId : Int ) : GetCompleteRecipeResponse
     suspend fun postTempRecipeToTemp(accessToken: String, tempId: Int, content : RequestBody, thumbnail : MultipartBody.Part?, stepImages: List<MultipartBody.Part>?) : RecipeWriteResponse
@@ -46,8 +49,9 @@ interface MyRepository {
     suspend fun deleteTempRecipe(accessToken: String, tempId: Int) : DeleteRecipeResponse
     suspend fun patchCompleteRecipe(accessToken: String, recipeId: Int, content : RequestBody, thumbnail : MultipartBody.Part?, stepImages: List<MultipartBody.Part>?) : RecipeWriteResponse
     suspend fun deleteCompleteRecipe(accessToken: String, recipeId: Int) : DeleteRecipeResponse
-    suspend fun getLikeRecipes(accessToken: String, page : Int) : GetScrapRecipesResponse
-    suspend fun getScrapRecipes(accessToken: String, page : Int) : GetScrapRecipesResponse
+    suspend fun getLikeRecipes(accessToken: String, page : Int) : LikeRecipesResponse
+    suspend fun getScrapRecipes(accessToken: String, page : Int) : ScrapRecipesResponse
+    suspend fun getMyCompleteRecipesWithImgPreview(accessToken: String) : CompleteRecipesWithImgPreviewResponse
 
     suspend fun getOtherRecipeList(accessToken: String, pageIndex: Int, memeberId : Int) : OtherRecipeListDto
 
