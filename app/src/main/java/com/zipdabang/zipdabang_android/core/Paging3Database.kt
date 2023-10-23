@@ -21,6 +21,12 @@ import com.zipdabang.zipdabang_android.module.my.data.remote.myrecipes.complete.
 import com.zipdabang.zipdabang_android.module.my.data.remote.myrecipes.complete.CompleteRecipesDao
 import com.zipdabang.zipdabang_android.module.my.data.remote.friendlist.following.search.FollowerInfoDB
 import com.zipdabang.zipdabang_android.module.my.data.remote.friendlist.following.search.SearchFollowerDao
+import com.zipdabang.zipdabang_android.module.my.data.remote.myrecipes.completewithimage.CompleteRecipeWithImg
+import com.zipdabang.zipdabang_android.module.my.data.remote.myrecipes.completewithimage.CompleteRecipesWithImgDao
+import com.zipdabang.zipdabang_android.module.my.data.remote.myrecipes.like.LikeRecipe
+import com.zipdabang.zipdabang_android.module.my.data.remote.myrecipes.like.LikeRecipesDao
+import com.zipdabang.zipdabang_android.module.my.data.remote.myrecipes.scrap.ScrapRecipe
+import com.zipdabang.zipdabang_android.module.my.data.remote.myrecipes.scrap.ScrapRecipesDao
 import com.zipdabang.zipdabang_android.module.my.data.remote.myrecipes.temp.TempRecipe
 import com.zipdabang.zipdabang_android.module.my.data.remote.myrecipes.temp.TempRecipesDao
 import com.zipdabang.zipdabang_android.module.recipes.data.local.RecipeItemEntity
@@ -34,10 +40,11 @@ import com.zipdabang.zipdabang_android.module.search.data.SearchDao
         RecipeItemEntity::class, SearchRecipe::class,
         RecipeCommentEntity::class , Following :: class,
         Follower :: class, InqueryDB :: class,
-        CompleteRecipe :: class, TempRecipe::class,
+        CompleteRecipe :: class, TempRecipe::class, CompleteRecipeWithImg::class,
+        LikeRecipe :: class, ScrapRecipe::class,
         FollowerInfoDB :: class, FollowInfoDB::class
     ],
-    version = 18, exportSchema = false)
+    version = 19, exportSchema = false)
 
 @TypeConverters(ListConverter::class)
 abstract class Paging3Database : RoomDatabase() {
@@ -53,5 +60,7 @@ abstract class Paging3Database : RoomDatabase() {
     abstract fun tempRecipesDao() : TempRecipesDao
     abstract fun searchFollowDao() : SearchFollowDao
     abstract fun searchFollowerDao() : SearchFollowerDao
-
+    abstract fun likeRecipesDao() : LikeRecipesDao
+    abstract fun scrapRecipesDao() : ScrapRecipesDao
+    abstract fun completeRecipesWithImgDao() : CompleteRecipesWithImgDao
 }

@@ -102,11 +102,11 @@ fun MyRecipesScreen(
                         .background(Color.White)
                 ) {
                     // 검색바
-                    Box(
+                    /*Box(
                         modifier = Modifier.padding(16.dp, 10.dp, 16.dp, 10.dp)
                     ){
                         SearchBar(hintText = stringResource(id = R.string.my_searchbar_myrecipe))
-                    }
+                    }*/
 
                     // 업로드/임시저장 목록
                     Column(

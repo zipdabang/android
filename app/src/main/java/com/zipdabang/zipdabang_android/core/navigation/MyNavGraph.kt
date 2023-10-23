@@ -20,6 +20,7 @@ import com.zipdabang.zipdabang_android.core.data_store.proto.Token
 import com.zipdabang.zipdabang_android.module.drawer.ui.NoticeScreen
 import com.zipdabang.zipdabang_android.module.my.ui.FriendListScreen
 import com.zipdabang.zipdabang_android.module.my.ui.LikeScreen
+import com.zipdabang.zipdabang_android.module.my.ui.MyRecipeListScreen
 import com.zipdabang.zipdabang_android.module.my.ui.MyRecipesScreen
 import com.zipdabang.zipdabang_android.module.my.ui.MyScreen
 import com.zipdabang.zipdabang_android.module.my.ui.MyScreenForNotUser
@@ -108,6 +109,12 @@ fun NavGraphBuilder.MyNavGraph(
                     onClickFriendsList = {
                         navController.navigate(MyScreen.FriendList.route)
 
+                    },
+                    onClickMyRecipeList = {
+                        navController.navigate(MyScreen.MyRecipeList.passNickname(it))
+                    },
+                    onRecipeItemClick = {recipeId->
+                        navController.navigate(SharedScreen.DetailRecipe.passRecipeId(recipeId))
                     }
                 )
             }
@@ -117,6 +124,9 @@ fun NavGraphBuilder.MyNavGraph(
             LikeScreen(
                 onClickBack = {
                     navController.popBackStack(MyScreen.Home.route, inclusive = false)
+                },
+                onRecipeItemClick = { recipeId->
+                    navController.navigate(SharedScreen.DetailRecipe.passRecipeId(recipeId))
                 }
             )
         }
@@ -124,6 +134,28 @@ fun NavGraphBuilder.MyNavGraph(
             ScrapScreen(
                 onClickBack = {
                     navController.popBackStack(MyScreen.Home.route, inclusive = false)
+                },
+                onRecipeItemClick = { recipeId->
+                    navController.navigate(SharedScreen.DetailRecipe.passRecipeId(recipeId))
+                }
+            )
+        }
+        composable(
+            route = MyScreen.MyRecipeList.route,
+            arguments = listOf(navArgument(name = "nickname") { type = NavType.StringType})
+        ){ navBackStackEntry->
+            val nickname = navBackStackEntry.arguments?.getString("nickname")
+
+            MyRecipeListScreen(
+                nickname = nickname!!,
+                onClickBack = {
+                    navController.popBackStack(MyScreen.Home.route, inclusive = false)
+                },
+                onRecipeItemClick = { recipeId->
+                    navController.navigate(SharedScreen.DetailRecipe.passRecipeId(recipeId))
+                },
+                onClickMyrecipe = {
+                    navController.navigate(MyScreen.Myrecipe.route)
                 }
             )
         }
@@ -131,7 +163,7 @@ fun NavGraphBuilder.MyNavGraph(
             MyRecipesScreen(
                 navController = navController,
                 onClickBack = {
-                    navController.popBackStack(MyScreen.Home.route, inclusive = false)
+                    navController.popBackStack()
                 },
                 onClickWrite = {
                     //navController.navigate(MyScreen.RecipeWrite.passRecipeId(0))

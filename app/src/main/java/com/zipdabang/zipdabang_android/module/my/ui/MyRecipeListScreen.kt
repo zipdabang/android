@@ -1,18 +1,18 @@
 package com.zipdabang.zipdabang_android.module.my.ui
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardColors
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -23,7 +23,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -31,19 +30,19 @@ import com.zipdabang.zipdabang_android.R
 import com.zipdabang.zipdabang_android.module.item.recipe.ui.RecipeCard
 import com.zipdabang.zipdabang_android.module.my.ui.viewmodel.MyRecipesViewModel
 import com.zipdabang.zipdabang_android.ui.component.AppBarSignUp
-import com.zipdabang.zipdabang_android.ui.component.SearchBar
 import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
 
 @Composable
-fun ScrapScreen(
+fun MyRecipeListScreen(
+    nickname : String,
     onClickBack: () -> Unit,
     onRecipeItemClick: (Int) -> Unit,
+    onClickMyrecipe : ()->Unit,
     viewModel: MyRecipesViewModel = hiltViewModel()
 ) {
-    val scrapRecipeItems = viewModel.scrapRecipeItems.collectAsLazyPagingItems()
-
+    val completeRecipeWithImgItems = viewModel.completeRecipeWithImgItems.collectAsLazyPagingItems()
     LaunchedEffect(key1 = true) {
-        viewModel.getScrapRecipeItems()
+        viewModel.getCompleteRecipeWithImgItems()
     }
 
     Scaffold(
@@ -53,9 +52,32 @@ fun ScrapScreen(
             AppBarSignUp(
                 navigationIcon = R.drawable.ic_topbar_backbtn,
                 onClickNavIcon = { onClickBack() },
-                centerText = stringResource(id = R.string.my_scrap)
+                centerText = nickname + "님의 레시피"
             )
         },
+        bottomBar = {
+            // 레시피 작성하기
+            Row(
+                modifier = Modifier.height(56.dp)
+            ){
+                Box(
+                    modifier = Modifier
+                        .background(ZipdabangandroidTheme.Colors.Strawberry)
+                        .fillMaxHeight()
+                        .fillMaxWidth()
+                        .clickable(
+                            onClick = { onClickMyrecipe() }
+                        ),
+                    contentAlignment = Alignment.Center
+                ){
+                    Text(
+                        text= stringResource(id = R.string.my_addnewrecipe),
+                        color = Color.White,
+                        style = ZipdabangandroidTheme.Typography.sixteen_700,
+                    )
+                }
+            }
+        }
     ) {
         Surface(
             modifier = Modifier
@@ -63,12 +85,12 @@ fun ScrapScreen(
                 .fillMaxSize()
         ) {
             /*Box(
-            modifier = Modifier.padding(16.dp, 10.dp, 16.dp,0.dp)
-                .background(Color.White)
-        ){
-            SearchBar(hintText = stringResource(id = R.string.my_searchbar_keyword))
-        }*/
-            if (scrapRecipeItems.itemCount == 0) {
+                modifier = Modifier.padding(16.dp, 10.dp, 16.dp,0.dp)
+                    .background(Color.White)
+            ){
+                SearchBar(hintText = stringResource(id = R.string.my_searchbar_keyword))
+            }*/
+            if (completeRecipeWithImgItems.itemCount == 0) {
                 Column(
                     modifier = Modifier.fillMaxSize(),
                     verticalArrangement = Arrangement.Center,
@@ -76,7 +98,7 @@ fun ScrapScreen(
                 ) {
                     Text(
                         textAlign = TextAlign.Center,
-                        text = "스크랩 한 레시피가 없습니다.",
+                        text = "제작해 본 레시피가 아직 없습니다",
                         style = ZipdabangandroidTheme.Typography.fourteen_300,
                         color = ZipdabangandroidTheme.Colors.Typo
                     )
@@ -89,17 +111,17 @@ fun ScrapScreen(
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    items(scrapRecipeItems.itemCount) {
+                    items(completeRecipeWithImgItems.itemCount) {
                         RecipeCard(
-                            recipeId = scrapRecipeItems[it]!!.recipeId,
-                            title = scrapRecipeItems[it]!!.recipeName,
-                            user = scrapRecipeItems[it]!!.nickname,
-                            thumbnail = scrapRecipeItems[it]!!.thumbnailUrl,
-                            date = scrapRecipeItems[it]!!.createdAt,
-                            likes = scrapRecipeItems[it]!!.likes,
-                            comments = scrapRecipeItems[it]!!.comments,
-                            isLikeSelected = scrapRecipeItems[it]!!.isLiked,
-                            isScrapSelected = scrapRecipeItems[it]!!.isScrapped,
+                            recipeId = completeRecipeWithImgItems[it]!!.recipeId,
+                            title = completeRecipeWithImgItems[it]!!.recipeName,
+                            user = completeRecipeWithImgItems[it]!!.nickname,
+                            thumbnail = completeRecipeWithImgItems[it]!!.thumbnailUrl,
+                            date = completeRecipeWithImgItems[it]!!.createdAt,
+                            likes = completeRecipeWithImgItems[it]!!.likes,
+                            comments = completeRecipeWithImgItems[it]!!.comments,
+                            isLikeSelected = completeRecipeWithImgItems[it]!!.isLiked,
+                            isScrapSelected = completeRecipeWithImgItems[it]!!.isScrapped,
                             onLikeClick = {  },
                             onScrapClick = { },
                             onItemClick = {
