@@ -18,6 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -36,6 +37,8 @@ import com.zipdabang.zipdabang_android.module.recipes.ui.state.PreferenceToggleS
 import com.zipdabang.zipdabang_android.ui.component.SortSpinner
 import com.zipdabang.zipdabang_android.ui.component.Spinner
 import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.launch
 
 @Composable
 fun RecipeListContent(
@@ -47,13 +50,17 @@ fun RecipeListContent(
     category: RecipeSubtitleState,
     likeState: PreferenceToggleState,
     scrapState: PreferenceToggleState,
-    onToggleLike: (Int, Int?, String?) -> Unit,
-    onToggleScrap: (Int, Int?, String?) -> Unit,
+    checkLoggedIn: () -> Boolean,
+    onToggleLike: (Int) -> Deferred<Boolean>,
+    onToggleScrap: (Int) -> Deferred<Boolean>,
     lazyGridState: LazyGridState,
+    showSnackbar: (String) -> Unit,
     content: @Composable() () -> Unit,
 ) {
 
     val TAG = "RecipeListContent"
+
+    val scope = rememberCoroutineScope()
 
 /*    LaunchedEffect(key1 = items.loadState) {
         if (items.loadState.refresh is LoadState.Loading) {
@@ -77,7 +84,9 @@ fun RecipeListContent(
         ) {
             content()
             Row(
-                modifier = Modifier.fillMaxWidth().height(56.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(56.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
@@ -145,15 +154,26 @@ fun RecipeListContent(
                         onLikeClick = { recipeId ->
                             Log.d("RecipeCard Status-before", "$isLiked")
                             try {
-                                onToggleLike(recipeId, category.categoryId, category.ownerType)
-                                recipeItem.isLiked = !recipeItem.isLiked
-                                isLiked = recipeItem.isLiked
-                                if (isLiked) {
-                                    recipeItem.likes += 1
-                                } else {
-                                    recipeItem.likes -= 1
+                                val isLoggedIn = checkLoggedIn()
+                                if (isLoggedIn) {
+                                    scope.launch {
+                                        val isSuccessful = onToggleLike(recipeId).await()
+                                        if (isSuccessful) {
+                                            recipeItem.isLiked = !recipeItem.isLiked
+                                            isLiked = recipeItem.isLiked
+                                            if (isLiked) {
+                                                recipeItem.likes += 1
+                                            } else {
+                                                recipeItem.likes -= 1
+                                            }
+                                            likes = recipeItem.likes
+                                        } else {
+                                            showSnackbar("레시피에 좋아요를 누를 수 없습니다.")
+                                        }
+                                    }
+
                                 }
-                                likes = recipeItem.likes
+
                             } catch (e: TogglePreferenceException) {
                                 Log.e(TAG, "like toggle failure ${e.message}")
                             } catch (e: Exception) {
@@ -162,9 +182,20 @@ fun RecipeListContent(
                         },
                         onScrapClick = { recipeId ->
                             try {
-                                onToggleScrap(recipeId, category.categoryId, category.ownerType)
-                                recipeItem.isScrapped = !recipeItem.isScrapped
-                                isScraped = recipeItem.isScrapped
+                                val isLoggedIn = checkLoggedIn()
+                                if (isLoggedIn) {
+                                    scope.launch {
+                                        val isSuccessful = onToggleScrap(recipeId).await()
+                                        if (isSuccessful) {
+                                            recipeItem.isScrapped = !recipeItem.isScrapped
+                                            isScraped = recipeItem.isScrapped
+                                        } else {
+                                            showSnackbar("레시피를 스크랩 할 수 없습니다.")
+                                        }
+
+                                    }
+                                }
+
                             } catch (e: TogglePreferenceException) {
                                 Log.e(TAG, "scrap toggle failure ${e.message}")
                             } catch (e: Exception) {

@@ -26,9 +26,12 @@ import com.zipdabang.zipdabang_android.module.recipes.mapper.toRecipeItem
 import com.zipdabang.zipdabang_android.module.recipes.ui.state.PreferenceToggleState
 import com.zipdabang.zipdabang_android.module.recipes.use_case.GetCategoryItemCountUseCase
 import com.zipdabang.zipdabang_android.module.recipes.use_case.GetOwnerItemCountUseCase
+import com.zipdabang.zipdabang_android.module.recipes.use_case.ToggleLikeItemUseCase
 import com.zipdabang.zipdabang_android.module.recipes.use_case.ToggleLikeListUseCase
+import com.zipdabang.zipdabang_android.module.recipes.use_case.ToggleScrapItemUseCase
 import com.zipdabang.zipdabang_android.module.recipes.use_case.ToggleScrapListUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -40,6 +43,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
@@ -48,6 +52,8 @@ class RecipeListViewModel @Inject constructor(
     private val protoRepository: ProtoRepository,
     private val toggleLikeListUseCase: ToggleLikeListUseCase,
     private val toggleScrapListUseCase: ToggleScrapListUseCase,
+    private val toggleItemLikeUseCase: ToggleLikeItemUseCase,
+    private val toggleItemScrapUseCase: ToggleScrapItemUseCase,
     private val getCategoryItemCountUseCase: GetCategoryItemCountUseCase,
     private val getOwnerItemCountUseCase: GetOwnerItemCountUseCase,
     private val savedState: SavedStateHandle,
@@ -225,6 +231,15 @@ class RecipeListViewModel @Inject constructor(
             }.cachedIn(viewModelScope)
         }
     }
+
+    suspend fun toggleItemLike(recipeId: Int): Boolean = withContext(Dispatchers.IO) {
+        toggleItemLikeUseCase(recipeId)
+    }
+
+    suspend fun toggleItemScrap(recipeId: Int): Boolean = withContext(Dispatchers.IO) {
+        toggleItemScrapUseCase(recipeId)
+    }
+
 
     /* TODO 리스트 아이템에서 좋아요/스크랩 변경 발생 시 동작
         api 호출뿐만 아니라 db 조작 필요
