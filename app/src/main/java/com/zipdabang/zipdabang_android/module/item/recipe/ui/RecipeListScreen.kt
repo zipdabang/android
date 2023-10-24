@@ -33,6 +33,7 @@ import com.zipdabang.zipdabang_android.ui.component.AppBarWithFullFunction
 import com.zipdabang.zipdabang_android.ui.component.FloatingActionButton
 import com.zipdabang.zipdabang_android.ui.component.LoginRequestDialog
 import com.zipdabang.zipdabang_android.ui.component.ModalDrawer
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 
 @Composable
@@ -81,6 +82,31 @@ fun RecipeListScreen(
     Log.i(TAG, "ownerType : $type")
     Log.i(TAG, "sortBy : $sortBy")
 
+    var showLoginRequestDialog by remember {
+        mutableStateOf(false)
+    }
+
+    val checkLoggedIn = {
+        if (currentPlatformState == CurrentPlatform.TEMP
+            || currentPlatformState == CurrentPlatform.NONE) {
+            showLoginRequestDialog = true
+            false
+        } else {
+            true
+        }
+    }
+
+    val onLikeClick = { recipeId: Int ->
+        scope.async {
+            viewModel.toggleItemLike(recipeId)
+        }
+    }
+
+    val onScrapClick = { recipeId: Int ->
+        scope.async {
+            viewModel.toggleItemScrap(recipeId)
+        }
+    }
 
     val recipeList =
         if (categoryState.categoryId == -1 && categoryState.ownerType != null) {
@@ -119,9 +145,7 @@ fun RecipeListScreen(
         showSnackbar(scrapState.errorMessage)
     }
 
-    var showLoginRequestDialog by remember {
-        mutableStateOf(false)
-    }
+
 
     ModalDrawer(
         scaffold = {
@@ -201,22 +225,14 @@ fun RecipeListScreen(
                         recipeList = recipeList,
                         likeState = likeState,
                         scrapState = scrapState,
-                        onToggleLike = { recipeId, categoryId, ownerType ->
-                            if (currentPlatformState == CurrentPlatform.TEMP
-                                || currentPlatformState == CurrentPlatform.NONE) {
-                                showLoginRequestDialog = true
-                            } else {
-                                viewModel.toggleLike(recipeId, categoryId, ownerType)
-                            }
+                        checkLoggedIn = checkLoggedIn,
+                        onToggleLike = { recipeId ->
+                            onLikeClick(recipeId)
                         },
-                        onToggleScrap = { recipeId, categoryId, ownerType ->
-                            if (currentPlatformState == CurrentPlatform.TEMP
-                                || currentPlatformState == CurrentPlatform.NONE) {
-                                showLoginRequestDialog = true
-                            } else {
-                                viewModel.toggleScrap(recipeId, categoryId, ownerType)
-                            }
+                        onToggleScrap = { recipeId ->
+                            onScrapClick(recipeId)
                         },
+                        showSnackbar = showSnackbar,
                         lazyGridState = lazyGridState
                     ) {
                         categoryState.let {
