@@ -114,7 +114,7 @@ fun HotRecipeItem(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Row(
-            modifier = Modifier.padding(start = 8.dp),
+            modifier = Modifier.padding(start = 8.dp).weight(85f),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
@@ -136,73 +136,71 @@ fun HotRecipeItem(
 
             Spacer(modifier = Modifier.width(12.dp))
 
+
             Column(
-                verticalArrangement = Arrangement.Center
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.Start,
             ) {
-                Column(
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.Start,
+
+                Text(
+                    text = item.nickname,
+                    overflow = TextOverflow.Ellipsis,
+                    style = ZipdabangandroidTheme.Typography.ten_300.copy(letterSpacing = 0.sp)
+                )
+
+                Text(
+                    text = item.recipeName,
+                    overflow = TextOverflow.Ellipsis,
+                    style = ZipdabangandroidTheme.Typography.fourteen_500.copy(letterSpacing = 0.sp),
+                    maxLines = 1
+                )
+
+                Row(
+                    modifier = Modifier,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-
-                    Text(
-                        text = item.nickname,
-                        overflow = TextOverflow.Ellipsis,
-                        style = ZipdabangandroidTheme.Typography.ten_300.copy(letterSpacing = 0.sp)
+                    Icon(
+                        painter = painterResource(id = favoriteCountIcon),
+                        contentDescription = "likes",
+                        tint = ZipdabangandroidTheme.Colors.Strawberry
                     )
 
+                    Spacer(modifier = Modifier.width(2.dp))
+
                     Text(
-                        text = item.recipeName,
-                        overflow = TextOverflow.Ellipsis,
-                        style = ZipdabangandroidTheme.Typography.fourteen_500.copy(letterSpacing = 0.sp)
+                        text = likes.toString(),
+                        style = TextStyle(
+                            color = ZipdabangandroidTheme.Colors.Typo,
+                            fontSize = 8.sp,
+                            fontWeight = FontWeight(300),
+                            fontFamily = FontFamily(Font(R.font.kopubworlddotum_light))
+                        )
                     )
 
-                    Row(
-                        modifier = Modifier,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Icon(
-                            painter = painterResource(id = favoriteCountIcon),
-                            contentDescription = "likes",
-                            tint = ZipdabangandroidTheme.Colors.Strawberry
-                        )
+                    Spacer(modifier = Modifier.width(4.dp))
 
-                        Spacer(modifier = Modifier.width(2.dp))
-
-                        Text(
-                            text = likes.toString(),
-                            style = TextStyle(
-                                color = ZipdabangandroidTheme.Colors.Typo,
-                                fontSize = 8.sp,
-                                fontWeight = FontWeight(300),
-                                fontFamily = FontFamily(Font(R.font.kopubworlddotum_light))
-                            )
+                    Icon(
+                        painter = painterResource(id = commentCountIcon),
+                        contentDescription = "comments",
+                        tint = ZipdabangandroidTheme.Colors.Cream
+                    )
+                    Spacer(modifier = Modifier.width(2.dp))
+                    Text(
+                        // TODO comment 수 추가하기
+                        text = item.comments.toString(),
+                        style = TextStyle(
+                            color = ZipdabangandroidTheme.Colors.Typo,
+                            fontSize = 8.sp,
+                            fontWeight = FontWeight(300),
+                            fontFamily = FontFamily(Font(R.font.kopubworlddotum_light))
                         )
-
-                        Spacer(modifier = Modifier.width(4.dp))
-
-                        Icon(
-                            painter = painterResource(id = commentCountIcon),
-                            contentDescription = "comments",
-                            tint = ZipdabangandroidTheme.Colors.Cream
-                        )
-                        Spacer(modifier = Modifier.width(2.dp))
-                        Text(
-                            // TODO comment 수 추가하기
-                            text = item.comments.toString(),
-                            style = TextStyle(
-                                color = ZipdabangandroidTheme.Colors.Typo,
-                                fontSize = 8.sp,
-                                fontWeight = FontWeight(300),
-                                fontFamily = FontFamily(Font(R.font.kopubworlddotum_light))
-                            )
-                        )
-                    }
+                    )
                 }
             }
         }
 
         Row(
-            modifier = Modifier,
+            modifier = Modifier.weight(15f),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Box(modifier = Modifier.size(26.dp)) {
@@ -262,10 +260,7 @@ fun HotRecipeItem(
                     checkedColor = ZipdabangandroidTheme.Colors.Strawberry
                 )
             }
-
         }
-
-
     }
 }
 
