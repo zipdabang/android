@@ -10,7 +10,9 @@ import com.zipdabang.zipdabang_android.module.my.data.remote.myinfo.MyInfoRespon
 import com.zipdabang.zipdabang_android.module.my.data.remote.myrecipes.complete.CompleteRecipesResponse
 import com.zipdabang.zipdabang_android.module.my.data.remote.myrecipes.completewithimage.CompleteRecipesWithImgResponse
 import com.zipdabang.zipdabang_android.module.my.data.remote.myrecipes.like.LikeRecipesResponse
+import com.zipdabang.zipdabang_android.module.my.data.remote.myrecipes.like.PostLikeResponse
 import com.zipdabang.zipdabang_android.module.my.data.remote.myrecipes.preview.CompleteRecipesWithImgPreviewResponse
+import com.zipdabang.zipdabang_android.module.my.data.remote.myrecipes.scrap.PostScrapResponse
 import com.zipdabang.zipdabang_android.module.my.data.remote.myrecipes.scrap.ScrapRecipesResponse
 import com.zipdabang.zipdabang_android.module.my.data.remote.otherinfo.OtherInfoDto
 import com.zipdabang.zipdabang_android.module.my.data.remote.otherinfo.OtherRecipeListDto
@@ -54,5 +56,8 @@ interface MyRepository {
     suspend fun getMyCompleteRecipesWithImgPreview(accessToken: String) : CompleteRecipesWithImgPreviewResponse
 
     suspend fun getOtherRecipeList(accessToken: String, pageIndex: Int, memeberId : Int) : OtherRecipeListDto
+
+    suspend fun postLike(accessToken: String, recipeId:Int) : PostLikeResponse
+    suspend fun postScrap(accessToken: String, recipeId:Int) : PostScrapResponse
 
 }

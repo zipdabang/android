@@ -24,7 +24,7 @@ fun RectangleImage(
                   .clip(RectangleShape)
                   .fillMaxSize()
                 ,
-        contentScale = ContentScale.FillBounds
+        contentScale = ContentScale.Crop
     )
 
 }

@@ -108,6 +108,7 @@ sealed class TabItem(val tabTitle: String, val screen: ComposableFun) {
         nickname : String,
         onClickMyRecipeList : (String)->Unit,
         onClickMyrecipe : ()->Unit,
+        showSnackBar: (String) -> Unit,
         onRecipeItemClick : (Int) ->Unit,
     ) : TabItem(
         tabTitle = "게시글",
@@ -117,7 +118,8 @@ sealed class TabItem(val tabTitle: String, val screen: ComposableFun) {
                 nickname= nickname,
                 onClickMyRecipeList = onClickMyRecipeList,
                 onClickMyrecipe = onClickMyrecipe,
-                onRecipeItemClick = onRecipeItemClick
+                onRecipeItemClick = onRecipeItemClick,
+                showSnackBar= showSnackBar
             )
         }
     )

@@ -30,16 +30,20 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.zipdabang.zipdabang_android.R
 import com.zipdabang.zipdabang_android.module.item.recipe.ui.RecipeCard
+import com.zipdabang.zipdabang_android.module.item.recipe.ui.RecipeCardLoading
 import com.zipdabang.zipdabang_android.module.my.ui.viewmodel.MyRecipesViewModel
+import com.zipdabang.zipdabang_android.module.my.ui.viewmodel.MyViewModel
 import com.zipdabang.zipdabang_android.ui.shimmeringEffect
 import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
 
@@ -50,12 +54,10 @@ fun MyPagerRecipesScreen(
     onClickMyRecipeList : (String)->Unit,
     onClickMyrecipe : ()->Unit,
     onRecipeItemClick : (Int) ->Unit,
-    viewModel : MyRecipesViewModel = hiltViewModel()
+    showSnackBar: (String) -> Unit,
+    viewModel : MyViewModel = hiltViewModel()
 ) {
     val stateCompleteRecipesPreview = viewModel.stateCompleteRecipesPreview
-    LaunchedEffect(key1 = true) {
-        viewModel.getCompleteRecipesPreview()
-    }
 
     // 레시피
     Column(
@@ -80,11 +82,22 @@ fun MyPagerRecipesScreen(
             verticalAlignment = Alignment.CenterVertically
         ) {
             if(shimmering){
-                Box(
-                    modifier = Modifier.width(80.dp)
-                        .height(24.dp)
-                        .shimmeringEffect()
-                )
+
+                Row(
+                    modifier = Modifier,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Box(
+                        modifier = Modifier.width(40.dp)
+                            .height(20.dp)
+                            .shimmeringEffect()
+                    )
+                    Text(
+                        text = "님의 레시피",
+                        style = ZipdabangandroidTheme.Typography.sixteen_700,
+                        color = ZipdabangandroidTheme.Colors.Typo,
+                    )
+                }
             }
             else{
                 Row(
@@ -107,14 +120,15 @@ fun MyPagerRecipesScreen(
         }
 
         // 내 레시피 미리보기 목록
-        if(shimmering){
-            Box(
-                modifier = Modifier
-                    .height(56.dp)
-                    .padding(16.dp, 0.dp, 16.dp, 0.dp)
-                    .fillMaxWidth()
-                    .shimmeringEffect()
-            )
+        if(stateCompleteRecipesPreview.isLoading){
+            LazyRow(
+                modifier = Modifier.padding(start = 16.dp, end =16.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                items(5) {
+                    RecipeCardLoading()
+                }
+            }
         }
         else if(stateCompleteRecipesPreview.totalElements == 0){
             Box(
@@ -137,27 +151,36 @@ fun MyPagerRecipesScreen(
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    text = AnnotatedString(
-                        text = "제작해 본 레시피가 아직 없습니다",
-                        spanStyle = SpanStyle(
-                            color = ZipdabangandroidTheme.Colors.Typo,
-                            fontFamily = FontFamily(Font(R.font.kopubworlddotum_bold)),
-                            fontSize = 14.sp
-                        )
-                    ) + AnnotatedString(
-                        text = "(만들어보기)",
-                        spanStyle = SpanStyle(
-                            color = ZipdabangandroidTheme.Colors.Typo.copy(alpha = 0.5f),
-                            fontFamily = FontFamily(Font(R.font.kopubworlddotum_bold)),
-                            fontSize = 14.sp
-                        )
-                    )
+                    modifier = Modifier,
+                    text = buildAnnotatedString {
+                        withStyle(
+                            style = SpanStyle(
+                                color = ZipdabangandroidTheme.Colors.Typo,
+                                fontFamily = FontFamily(Font(R.font.kopubworlddotum_bold)),
+                                fontSize = 14.sp
+                            )
+                        ) {
+                            append("제작해 본 레시피가 아직 없습니다")
+                        }
+
+                        append("  ")
+
+                        withStyle(
+                            style = SpanStyle(
+                                color = ZipdabangandroidTheme.Colors.Typo.copy(alpha = 0.5f),
+                                fontFamily = FontFamily(Font(R.font.kopubworlddotum_bold)),
+                                fontSize = 14.sp
+                            )
+                        ) {
+                            append("(만들어보기)")
+                        }
+                    }
                 )
             }
         }
         else{
             LazyRow(
-                modifier = Modifier.padding(start = 16.dp, end =16.dp),
+                modifier = Modifier.padding(start = 16.dp, end =16.dp, top= 8.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 items(stateCompleteRecipesPreview.totalElements) {
@@ -171,8 +194,12 @@ fun MyPagerRecipesScreen(
                         comments = stateCompleteRecipesPreview.recipeList[it]!!.comments,
                         isLikeSelected = stateCompleteRecipesPreview.recipeList[it]!!.isLiked,
                         isScrapSelected = stateCompleteRecipesPreview.recipeList[it]!!.isScrapped,
-                        onLikeClick = {  },
-                        onScrapClick = { },
+                        onLikeClick = {
+                            showSnackBar("본인 레시피에 좋아요를 누를 수 없습니다.")
+                        },
+                        onScrapClick = {
+                            showSnackBar("본인 레시피를 스크랩 할 수 없습니다.")
+                        },
                         onItemClick = {
                             onRecipeItemClick(it)
                         }

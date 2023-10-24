@@ -9,9 +9,9 @@ data class ScrapRecipe(
     val categoryId: List<Int>,
     val comments: Int,
     val createdAt: String,
-    val isLiked: Boolean,
-    val isScrapped: Boolean,
-    val likes: Int,
+    var isLiked: Boolean,
+    var isScrapped: Boolean,
+    var likes: Int,
     val nickname: String,
     @PrimaryKey(autoGenerate = false)
     val recipeId: Int,

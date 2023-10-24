@@ -12,7 +12,9 @@ import com.zipdabang.zipdabang_android.module.my.data.remote.myinfo.MyInfoRespon
 import com.zipdabang.zipdabang_android.module.my.data.remote.myrecipes.complete.CompleteRecipesResponse
 import com.zipdabang.zipdabang_android.module.my.data.remote.myrecipes.completewithimage.CompleteRecipesWithImgResponse
 import com.zipdabang.zipdabang_android.module.my.data.remote.myrecipes.like.LikeRecipesResponse
+import com.zipdabang.zipdabang_android.module.my.data.remote.myrecipes.like.PostLikeResponse
 import com.zipdabang.zipdabang_android.module.my.data.remote.myrecipes.preview.CompleteRecipesWithImgPreviewResponse
+import com.zipdabang.zipdabang_android.module.my.data.remote.myrecipes.scrap.PostScrapResponse
 import com.zipdabang.zipdabang_android.module.my.data.remote.myrecipes.scrap.ScrapRecipesResponse
 import com.zipdabang.zipdabang_android.module.my.data.remote.myrecipes.temp.TempRecipesResponse
 import com.zipdabang.zipdabang_android.module.my.data.remote.otherinfo.OtherInfoDto
@@ -175,7 +177,18 @@ interface MyApi {
         @Path("recipeId") recipeId : Int,
     ) : DeleteRecipeResponse
 
-
+    // 좋아요/취소
+    @POST("members/recipes/{recipeId}/likes")
+    suspend fun postLike(
+        @Header("Authorization") accessToken: String,
+        @Path("recipeId") recipeId : Int,
+    ) : PostLikeResponse
+    // 스크랩/취소
+    @POST("members/recipes/{recipeId}/scrap")
+    suspend fun postScrap(
+        @Header("Authorization") accessToken: String,
+        @Path("recipeId") recipeId : Int,
+    ) : PostScrapResponse
 
 
 

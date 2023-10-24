@@ -95,6 +95,7 @@ fun MyScreen(
     onClickFriendsList : () -> Unit,
     onClickMyRecipeList : (String)->Unit,
     onRecipeItemClick : (Int)->Unit,
+    showSnackBar: (String) -> Unit,
 ) {
     //drawer에 필요한 drawerState랑 scope
     val drawerState = rememberDrawerState(DrawerValue.Closed)
@@ -273,7 +274,8 @@ fun MyScreen(
                                         nickname = stateMyUserInfo.nickname,
                                         onClickMyRecipeList = onClickMyRecipeList,
                                         onClickMyrecipe= onClickMyrecipe,
-                                        onRecipeItemClick = onRecipeItemClick
+                                        onRecipeItemClick = onRecipeItemClick,
+                                        showSnackBar = showSnackBar
                                     ),
                                     TabItem.MyInfo(
                                         onClickLike = onClickLike,

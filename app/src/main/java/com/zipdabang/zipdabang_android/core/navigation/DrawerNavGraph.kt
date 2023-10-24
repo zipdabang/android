@@ -39,7 +39,10 @@ import com.zipdabang.zipdabang_android.module.drawer.ui.report.ReportSuccessScre
 import com.zipdabang.zipdabang_android.module.drawer.ui.viewmodel.DrawerUserInfoViewModel
 
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
-fun NavGraphBuilder.DrawerNavGraph(navController: NavHostController, outerNavController: NavHostController){
+fun NavGraphBuilder.DrawerNavGraph(
+    navController: NavHostController,
+    outerNavController: NavHostController,
+){
 
     navigation(startDestination = DrawerScreen.Notice.route, route = DRAWER_ROUTE){
         composable(DrawerScreen.Notice.route){
