@@ -66,7 +66,8 @@ class MyForOthersViewModel @Inject constructor(
                         followNum = result.data.result.followerCount,
                         profileUrl = result.data.result.imageUrl,
                         isFollowing = result.data.result.checkFollowing,
-                        isFollower = result.data.result.checkFollower
+                        isFollower = result.data.result.checkFollower,
+                        isCheckSelf = result.data.result.checkSelf
                     )
                     _profileState.value = ProfileState(
                         caption = result.data.result.caption,

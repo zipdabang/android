@@ -1,4 +1,4 @@
-package com.zipdabang.zipdabang_android.module.search.data
+package com.zipdabang.zipdabang_android.module.search.data.dto.common
 
 enum class SearchCategory(val categoryName : String,val categoryId : Int) {
     Coffee("커피",1),

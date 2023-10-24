@@ -18,19 +18,14 @@ class PagingSearchRepository @Inject constructor(
     private val paging3Database: Paging3Database,
     private val tokenDataStore : DataStore<Token>
 ){
-    fun getAllItems(categoryId: Int,keyword: String): Flow<PagingData<SearchRecipe>> {
+    fun getAllItems(categoryId: Int,searchOrder : String, keyword: String): Flow<PagingData<SearchRecipe>> {
 
-       val pagingSourceFactory = { paging3Database.SearchRecipeDao().getAllItem()}
         return Pager(
             config = PagingConfig(pageSize = 10),
-            remoteMediator = SearchRecipeCategoryMediator(
-                searchApi= searchApi,
-                paging3Database = paging3Database,
-                categoryId = categoryId,
-                searchText = keyword,
-                tokenDataStore = tokenDataStore
-                ),
-            pagingSourceFactory = pagingSourceFactory
+
+            pagingSourceFactory = {
+                SearchRecipeCategoryPagingSource(searchApi,categoryId,searchOrder,keyword,tokenDataStore)
+            }
         ).flow
     }
 

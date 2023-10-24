@@ -6,6 +6,7 @@ import com.zipdabang.zipdabang_android.common.Resource
 import com.zipdabang.zipdabang_android.common.SearchResource
 import com.zipdabang.zipdabang_android.common.getErrorCode
 import com.zipdabang.zipdabang_android.core.data_store.proto.Token
+import com.zipdabang.zipdabang_android.module.search.data.dto.recipecategory.SearchCountDto
 import com.zipdabang.zipdabang_android.module.search.data.dto.searchpreview.SearchDto
 import com.zipdabang.zipdabang_android.module.search.domain.SearchRepository
 import kotlinx.coroutines.flow.Flow
@@ -16,21 +17,19 @@ import java.io.IOException
 import javax.inject.Inject
 
 
-class GetSearchPreviewUseCase @Inject constructor(
+class GetSearchCountUseCase @Inject constructor(
     private val repository: SearchRepository,
     private val tokenDataStore : DataStore<Token>
 ) {
 
-    operator fun invoke(keyword: String?) : Flow<Resource<SearchDto>> = flow {
+    operator fun invoke(cateogryId: Int,keyword: String) : Flow<Resource<SearchCountDto>> = flow {
         try{
             emit(Resource.Loading())
             val accessToken = ("Bearer " + tokenDataStore.data.first().accessToken)
             Log.e("search token",accessToken)
-            if (keyword != null) {
-                Log.e("search keyword",keyword)
-            }
+            Log.e("search keyword",keyword)
 
-            val data = repository.getSearchPreview(accessToken,keyword)
+            val data = repository.getSearchCount(accessToken,cateogryId,keyword)
             emit(Resource.Success(data =data ,code =data.code, message = data.message))
         } catch (e : HttpException){
             val errorBody = e.response()?.errorBody()

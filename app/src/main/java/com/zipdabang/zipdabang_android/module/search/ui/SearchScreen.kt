@@ -12,6 +12,9 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
@@ -21,8 +24,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.zipdabang.zipdabang_android.R
 import com.zipdabang.zipdabang_android.core.navigation.SharedScreen
-import com.zipdabang.zipdabang_android.module.search.data.SearchCategory
-import com.zipdabang.zipdabang_android.module.search.data.dto.searchpreview.SearchCategoryList
+import com.zipdabang.zipdabang_android.module.search.data.dto.common.SearchCategory
+import com.zipdabang.zipdabang_android.module.search.data.dto.searchpreview.recipeList
 
 @Composable
 fun SearchScreen(
@@ -36,6 +39,11 @@ fun SearchScreen(
     var keyword = searchViewModel.searchText.value
 
     val searchState= searchViewModel.searchState
+
+    val isLoading = remember{
+        mutableStateOf(searchState.value.isLoading)
+    }
+
     Column(
         modifier = Modifier
             .padding(top = 24.dp)
@@ -59,27 +67,33 @@ fun SearchScreen(
                 com.zipdabang.zipdabang_android.ui.component.SearchBar(hintText = "찾는 레시피가 있으신가요?", keyword = keyword, viewModel = searchViewModel)
             }
         }
-        var categoryList : List<SearchCategoryList> = emptyList()
+        var categoryList : List<recipeList> = emptyList()
 
         val categoryTitleList = SearchCategory.values()
-
-        if(searchState.value.isLoading){
-            //shimmering
-        }else if(searchState.value.isError){
+        categoryList = searchState.value.searchList
+       if(searchState.value.isError){
             Box(Modifier.height(60.dp)){
 
             }
             Log.e("SearchScreen Error",searchState.value.error)
 
-        }else{
-            categoryList = searchState.value.searchList
-
+        }else if(searchState.value.isLoading) {
+            Log.e("loading in search","loading")
+           categoryTitleList.forEachIndexed {
+                   index, item ->
+               SearchCategoryPreviewLoading(
+                   title =item.categoryName,
+               )
+           }
+        }
+       else
+       {
             categoryList.forEachIndexed{
                 index, item ->
                 SearchCategoryPreview(
                     title = categoryTitleList[index].categoryName,
                     previewList = categoryList[index].recipeList,
-                    onRecipeItemClick =  onRecipeItemClick
+                    onRecipeItemClick =  onRecipeItemClick,
                 ) {
                     navController.navigate(
                         SharedScreen.SearchRecipeCategory.passQuery(
@@ -93,15 +107,6 @@ fun SearchScreen(
             }
 
         }
-
-
-
-
-
-
-
-
-
 
     }
 

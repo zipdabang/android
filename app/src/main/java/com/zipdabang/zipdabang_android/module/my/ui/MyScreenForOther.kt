@@ -181,7 +181,7 @@ fun MyScreenForOther(
                                     ) {
 
                                         Log.e("friendlist test",buttonState.toString())
-                                        ButtonForFollow(
+                                       if(!commonInfoState.value.isCheckSelf) ButtonForFollow(
                                             onClick = {
                                                 //내가 상대방 팔로우
 
