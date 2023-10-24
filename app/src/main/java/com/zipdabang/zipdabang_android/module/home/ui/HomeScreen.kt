@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
@@ -42,6 +43,7 @@ import com.zipdabang.zipdabang_android.ui.component.AppBarHome
 import com.zipdabang.zipdabang_android.ui.component.Banner
 import com.zipdabang.zipdabang_android.ui.component.GroupHeaderReversedNoIcon
 import com.zipdabang.zipdabang_android.ui.component.ModalDrawer
+import com.zipdabang.zipdabang_android.ui.shimmeringEffect
 import kotlinx.coroutines.launch
 
 @Composable
@@ -60,7 +62,6 @@ fun HomeScreen(
 
     val bannerState = viewModel.bannerState
     val recipeState = viewModel.recipeState
-
 
 
     ModalDrawer(
@@ -118,10 +119,7 @@ fun HomeScreen(
                                 latterHeaderStrawberry = "레시피",
                             )
 
-                            if (recipeState.value.isLoading) {
-                                //Shimmering Effect
-                            }
-                            else if(recipeState.value.isError){
+                           if(recipeState.value.isError){
                                 val recipeList = emptyList<BestRecipe>()
                                 Box(
                                     modifier = Modifier
@@ -142,63 +140,62 @@ fun HomeScreen(
                                     ) {
 
 
-                                    item {
-                                        if (recipeState.value.recipeList.isEmpty()) {
-                                            Box(
-                                                modifier = Modifier
-                                                    .fillMaxWidth()
-                                                    .height(100.dp)
-                                                    .padding(horizontal = 20.dp)
-                                            ) {
+                                    if (recipeState.value.isLoading) {
 
-                                            }
+                                        items(10){
+                                            Box(modifier = Modifier
+                                                .width(160.dp)
+                                                .height(228.dp)
+                                                .shimmeringEffect()
+                                            )
+
+                                        }
+
+                                    }
+                                    else {
+                                        itemsIndexed(recipeState.value.recipeList) { index, item ->
+
+                                            var isLiked by rememberSaveable { mutableStateOf(item.isLiked) }
+                                            var isScraped by rememberSaveable { mutableStateOf(item.isScrapped) }
+                                            var likes by rememberSaveable { mutableStateOf(item.likes) }
+                                            RecipeCard(
+                                                recipeId = item.recipeId,
+                                                title = item.recipeName,
+                                                user = item.nickname,
+                                                thumbnail = item.thumbnailUrl,
+                                                date = item.createdAt,
+                                                likes = likes,
+                                                comments = item.comments,
+                                                isLikeSelected = isLiked,
+                                                isScrapSelected = isScraped,
+                                                onLikeClick = {
+                                                    recipeMainViewModel.toggleLike(item.recipeId)
+                                                    isLiked = !isLiked
+                                                    item.isLiked = !item.isLiked
+                                                    if (isLiked) {
+                                                        item.likes += 1
+                                                    } else {
+                                                        item.likes -= 1
+                                                    }
+                                                    likes = item.likes
+
+                                                    // 예은 임시로 해둠
+                                                },
+                                                onScrapClick = {
+                                                    recipeMainViewModel.toggleScrap(item.recipeId)
+                                                    isScraped = !isScraped
+                                                    //   item.isScrapped=  !item.isScrapped
+
+                                                    // 예은 임시로 해둠
+                                                },
+                                                onItemClick = {
+                                                    onRecipeItemClick(item.recipeId)
+                                                }
+                                            )
                                         }
                                     }
 
-                                    itemsIndexed(recipeState.value.recipeList) {
-                                            index, item ->
-
-                                        var isLiked by rememberSaveable { mutableStateOf(item.isLiked) }
-                                        var isScraped by rememberSaveable { mutableStateOf(item.isScrapped) }
-                                        var likes by rememberSaveable { mutableStateOf(item.likes) }
-                                        RecipeCard(
-                                            recipeId = item.recipeId,
-                                            title = item.recipeName,
-                                            user = item.nickname,
-                                            thumbnail = item.thumbnailUrl,
-                                            date = item.createdAt,
-                                            likes  = likes ,
-                                            comments = item.comments,
-                                            isLikeSelected = isLiked,
-                                            isScrapSelected = isScraped,
-                                            onLikeClick = {
-                                                recipeMainViewModel.toggleLike(item.recipeId)
-                                                isLiked = !isLiked
-                                                item.isLiked = !item.isLiked
-                                                if (isLiked) {
-                                                    item.likes += 1
-                                                } else {
-                                                    item.likes -= 1
-                                                }
-                                                likes = item.likes
-
-                                                 // 예은 임시로 해둠
-                                            },
-                                            onScrapClick = {
-                                                recipeMainViewModel.toggleScrap(item.recipeId)
-                                                isScraped = !isScraped
-                                             //   item.isScrapped=  !item.isScrapped
-
-                                                // 예은 임시로 해둠
-                                            },
-                                            onItemClick = {
-                                                onRecipeItemClick(item.recipeId)
-                                            }
-                                        )
-                                    }
                                 }
-
-
                             }
 
                             Spacer(modifier = Modifier.height(20.dp))

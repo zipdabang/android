@@ -48,12 +48,12 @@ class RecipeListRepositoryImpl(
     private val dataStore: DataStore<Token>,
     private val isNetworkAvailable: Boolean
 ): RecipeListRepository {
-    override suspend fun getItemCountByCategory(accessToken: String, categoryId: Int, pageIndex: Int): RecipeListDto? {
-        return recipeApi.getRecipeListByCategory(accessToken, categoryId, pageIndex = pageIndex, order = "latest")
+    override suspend fun getItemCountByCategory(accessToken: String, categoryId: Int): ResponseBody<Int?> {
+        return recipeApi.getItemCountByCategory(accessToken, categoryId)
     }
 
-    override suspend fun getItemCountByOwner(accessToken: String, ownerType: String, pageIndex: Int): RecipeListDto? {
-        return recipeApi.getRecipeListByOwnerType(accessToken, ownerType, pageIndex = pageIndex, order = "latest")
+    override suspend fun getItemCountByOwner(accessToken: String, ownerType: String): ResponseBody<Int?> {
+        return recipeApi.getItemCountByOwnerType(accessToken, ownerType)
     }
     /*    override suspend fun getRecipePreviewList(
             accessToken: String,

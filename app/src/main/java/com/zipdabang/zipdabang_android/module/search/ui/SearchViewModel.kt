@@ -27,7 +27,7 @@ class SearchViewModel @Inject constructor(
     private var _searchState = mutableStateOf(SearchState())
     val searchState = _searchState
 
-    private var _searchText= mutableStateOf("")
+    private var _searchText = mutableStateOf("")
     var searchText= _searchText
 
 

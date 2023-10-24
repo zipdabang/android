@@ -27,7 +27,7 @@ fun RecipeList(
     category: RecipeSubtitleState,
     sortList: List<RecipeSort>,
     onSortChange: (String) -> Unit,
-    // total: String,
+    total: String,
     // 매개변수 명을 content로 해야 composable을 넣을 수 있음
     recipeList: LazyPagingItems<RecipeItem>,
     likeState: PreferenceToggleState,
@@ -44,7 +44,7 @@ fun RecipeList(
         RecipeListContent(
             items = recipeList,
             onItemClick = onItemClick,
-            // total = total,
+            total = total,
             sortList = sortList,
             onSortChange = onSortChange,
             category = category,

@@ -57,6 +57,13 @@ fun RecipeListScreen(
 
     val currentPlatformState = viewModel.currentPlatform.value
 
+    val total by remember {
+        derivedStateOf {
+            viewModel.total.value.toString()
+        }
+    }
+
+
     val type: RecipeSubtitleState by remember {
         derivedStateOf {
             categoryState
@@ -78,12 +85,14 @@ fun RecipeListScreen(
     val recipeList =
         if (categoryState.categoryId == -1 && categoryState.ownerType != null) {
             Log.d("RecipeList", "ownerType")
+            viewModel.getOwnerItemCount(categoryState.ownerType)
             viewModel.getRecipeListByOwnerType(
                 ownerType = categoryState.ownerType,
                 orderBy = sortBy
             ).collectAsLazyPagingItems()
         } else {
             Log.d("RecipeList", "category type")
+            viewModel.getCategoryItemCount(categoryState.categoryId!!)
             viewModel.getRecipeListByCategory(
                 categoryId = categoryState.categoryId!!,
                 orderBy = sortBy
@@ -172,7 +181,7 @@ fun RecipeListScreen(
                     RecipeList(
                         modifier = Modifier,
                         onItemClick = onItemClick,
-                        // total = total,
+                        total = total,
                         sortList = sortList,
                         onSortChange = { changedValue ->
                             when (changedValue) {
@@ -240,7 +249,7 @@ fun RecipeListScreen(
                             .align(Alignment.BottomEnd)
                             .padding(bottom = 40.dp, end = 16.dp),
                         isScrolled = isScrolled,
-                        icon = R.drawable.zipdabanglogo_white,
+                        icon = R.drawable.zipdabanglogo_transparent_normal,
                         title = "나의 레시피 공유하기"
                     ) {
                         if (currentPlatformState == CurrentPlatform.TEMP

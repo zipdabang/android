@@ -26,7 +26,7 @@ class GetCategoryItemCountUseCase @Inject constructor(
             val accessToken = "Bearer ${tokens.data.first().accessToken}"
             val result = repository
                 .getItemCountByCategory(accessToken, categoryId)
-                ?.result?.totalElements ?: 0
+                .result ?: 0
 
             emit(result)
 
