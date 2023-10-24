@@ -106,6 +106,7 @@ fun RecipeDetailScreen(
     )
 
     AppBarCollapsing(
+        title = "레시피",
         startIcon = loadXmlDrawable(resId = R.drawable.recipe_arrow_left),
         endIcon = loadXmlDrawable(resId = R.drawable.recipe_more_white),
         imageUrl = thumbnailUrl,
