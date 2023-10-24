@@ -54,6 +54,7 @@ fun MyPagerRecipesScreen(
     onClickMyRecipeList : (String)->Unit,
     onClickMyrecipe : ()->Unit,
     onRecipeItemClick : (Int) ->Unit,
+    showSnackBar: (String) -> Unit,
     viewModel : MyViewModel = hiltViewModel()
 ) {
     val stateCompleteRecipesPreview = viewModel.stateCompleteRecipesPreview
@@ -179,7 +180,7 @@ fun MyPagerRecipesScreen(
         }
         else{
             LazyRow(
-                modifier = Modifier.padding(start = 16.dp, end =16.dp),
+                modifier = Modifier.padding(start = 16.dp, end =16.dp, top= 8.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 items(stateCompleteRecipesPreview.totalElements) {
@@ -193,8 +194,12 @@ fun MyPagerRecipesScreen(
                         comments = stateCompleteRecipesPreview.recipeList[it]!!.comments,
                         isLikeSelected = stateCompleteRecipesPreview.recipeList[it]!!.isLiked,
                         isScrapSelected = stateCompleteRecipesPreview.recipeList[it]!!.isScrapped,
-                        onLikeClick = {  },
-                        onScrapClick = { },
+                        onLikeClick = {
+                            showSnackBar("본인 레시피에 좋아요를 누를 수 없습니다.")
+                        },
+                        onScrapClick = {
+                            showSnackBar("본인 레시피를 스크랩 할 수 없습니다.")
+                        },
                         onItemClick = {
                             onRecipeItemClick(it)
                         }

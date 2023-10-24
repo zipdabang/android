@@ -11,7 +11,9 @@ import com.zipdabang.zipdabang_android.module.my.data.remote.myinfo.MyInfoRespon
 import com.zipdabang.zipdabang_android.module.my.data.remote.myrecipes.complete.CompleteRecipesResponse
 import com.zipdabang.zipdabang_android.module.my.data.remote.myrecipes.completewithimage.CompleteRecipesWithImgResponse
 import com.zipdabang.zipdabang_android.module.my.data.remote.myrecipes.like.LikeRecipesResponse
+import com.zipdabang.zipdabang_android.module.my.data.remote.myrecipes.like.PostLikeResponse
 import com.zipdabang.zipdabang_android.module.my.data.remote.myrecipes.preview.CompleteRecipesWithImgPreviewResponse
+import com.zipdabang.zipdabang_android.module.my.data.remote.myrecipes.scrap.PostScrapResponse
 import com.zipdabang.zipdabang_android.module.my.data.remote.myrecipes.scrap.ScrapRecipesResponse
 import com.zipdabang.zipdabang_android.module.my.data.remote.otherinfo.OtherInfoDto
 import com.zipdabang.zipdabang_android.module.my.data.remote.otherinfo.OtherRecipeListDto
@@ -194,6 +196,14 @@ class MyRepositoryImpl @Inject constructor(
         memeberId: Int
     ): OtherRecipeListDto {
         return api.getOtherRecipeList(accessToken,memeberId, pageIndex)
+    }
+
+    override suspend fun postLike(accessToken: String, recipeId: Int): PostLikeResponse {
+        return api.postLike(accessToken, recipeId)
+    }
+
+    override suspend fun postScrap(accessToken: String, recipeId: Int): PostScrapResponse {
+        return api.postScrap(accessToken, recipeId)
     }
 
 }

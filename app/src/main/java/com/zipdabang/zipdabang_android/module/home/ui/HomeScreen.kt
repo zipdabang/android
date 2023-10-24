@@ -174,7 +174,7 @@ fun HomeScreen(
                                             onLikeClick = {
                                                 recipeMainViewModel.toggleLike(item.recipeId)
                                                 isLiked = !isLiked
-                                               item.isLiked = !item.isLiked
+                                                item.isLiked = !item.isLiked
                                                 if (isLiked) {
                                                     item.likes += 1
                                                 } else {

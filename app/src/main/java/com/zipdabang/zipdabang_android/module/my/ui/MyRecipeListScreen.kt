@@ -42,6 +42,7 @@ fun MyRecipeListScreen(
     onClickBack: () -> Unit,
     onRecipeItemClick: (Int) -> Unit,
     onClickMyrecipe : ()->Unit,
+    showSnackBar: (String) -> Unit,
     viewModel: MyRecipesViewModel = hiltViewModel()
 ) {
     val completeRecipeWithImgItems = viewModel.completeRecipeWithImgItems.collectAsLazyPagingItems()
@@ -52,8 +53,7 @@ fun MyRecipeListScreen(
     }
 
     Scaffold(
-        modifier = Modifier
-            .fillMaxSize(),
+        modifier = Modifier.fillMaxSize(),
         topBar = {
             AppBarSignUp(
                 navigationIcon = R.drawable.ic_topbar_backbtn,
@@ -141,8 +141,12 @@ fun MyRecipeListScreen(
                             comments = completeRecipeWithImgItems[it]!!.comments,
                             isLikeSelected = completeRecipeWithImgItems[it]!!.isLiked,
                             isScrapSelected = completeRecipeWithImgItems[it]!!.isScrapped,
-                            onLikeClick = {  },
-                            onScrapClick = { },
+                            onLikeClick = {
+                                showSnackBar("본인 레시피에 좋아요를 누를 수 없습니다.")
+                            },
+                            onScrapClick = {
+                                showSnackBar("본인 레시피를 스크랩 할 수 없습니다.")
+                            },
                             onItemClick = {
                                 onRecipeItemClick(it)
                             }
