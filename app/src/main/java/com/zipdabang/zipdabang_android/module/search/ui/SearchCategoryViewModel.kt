@@ -10,10 +10,19 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.ExperimentalPagingApi
+import androidx.paging.PagingData
 import androidx.paging.cachedIn
+import com.zipdabang.zipdabang_android.common.Resource
 import com.zipdabang.zipdabang_android.core.Paging3Database
+import com.zipdabang.zipdabang_android.module.my.data.remote.otherinfo.OtherRecipe
+import com.zipdabang.zipdabang_android.module.search.data.dto.common.SearchRecipe
 import com.zipdabang.zipdabang_android.module.search.data.dto.recipecategory.PagingSearchRepository
+import com.zipdabang.zipdabang_android.module.search.domain.usecase.GetSearchCountUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -21,6 +30,7 @@ class SearchCategoryViewModel @OptIn(ExperimentalPagingApi::class)
 @Inject constructor(
     private val repository: PagingSearchRepository,
     private val savedStateHandle: SavedStateHandle,
+    private val countUseCase: GetSearchCountUseCase
 ): ViewModel(){
 
     private var _categoryId = mutableStateOf(0)
@@ -29,15 +39,63 @@ class SearchCategoryViewModel @OptIn(ExperimentalPagingApi::class)
     private var _keyword= mutableStateOf("")
     var keyword = _keyword
 
+    private var _order = mutableStateOf("latest")
+    var order = _order
+
+    private var _searchState = mutableStateOf(SearchState())
+    val searchState = _searchState
+
+
+    private val _recipeList = MutableStateFlow<PagingData<SearchRecipe>>(PagingData.empty())
+    val recipeList = _recipeList
+
     init{
         categoryId.value= savedStateHandle.get<Int>("categoryId")!!
         keyword.value = savedStateHandle.get<String>("keyword").toString()
+        getSearchRecipeList()
+        getCount()
     }
 
+    fun getCount(){
+        countUseCase(categoryId.value,keyword.value).onEach {
+            result ->
+            when (result) {
+                is Resource.Success -> {
+                    if (result.data?.isSuccess == true) {
+                        val count = result.data.result
+                        Log.e("searchResult", result.data.result.toString())
+                        _searchState.value = SearchState(count = count)
+                    }
+                }
 
+                is Resource.Error -> {
+                    _searchState.value = SearchState(
+                        isError = true,
+                        error = result.message.toString()
+                    )
+                }
+
+                is Resource.Loading-> {
+                    _searchState.value = SearchState(isLoading = true)
+                }
+
+            }
+
+
+
+
+        }.launchIn(viewModelScope)
+    }
 
     @OptIn(ExperimentalPagingApi::class)
-    val getSearchRecipeCategoryItems = repository.getAllItems(categoryId.value,keyword.value).cachedIn(viewModelScope)
+    fun getSearchRecipeList(){
+        viewModelScope.launch {
+            repository.getAllItems(categoryId.value,order.value,keyword.value).cachedIn(viewModelScope).collect{
+                _recipeList.value = it
+            }
+        }
+    }
+
 
 
 

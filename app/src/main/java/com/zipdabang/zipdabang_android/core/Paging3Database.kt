@@ -37,7 +37,7 @@ import com.zipdabang.zipdabang_android.module.search.data.SearchDao
 @Database(
     entities = [
         Category_Product::class, RemoteKeys::class,
-        RecipeItemEntity::class, SearchRecipe::class,
+        RecipeItemEntity::class,
         RecipeCommentEntity::class , Following :: class,
         Follower :: class, InqueryDB :: class,
         CompleteRecipe :: class, TempRecipe::class, CompleteRecipeWithImg::class,
@@ -51,7 +51,6 @@ abstract class Paging3Database : RoomDatabase() {
     abstract fun CategoryDao() : MarketCategoryDao
     abstract fun RemoteKeyDao() : RemoteKeyDao
     abstract fun recipeListDao(): RecipeListDao
-    abstract fun SearchRecipeDao() : SearchDao
     abstract fun recipeCommentDao(): RecipeCommentDao
     abstract fun followDao() : FollowDao
     abstract fun followingDao() : FollowingDao
