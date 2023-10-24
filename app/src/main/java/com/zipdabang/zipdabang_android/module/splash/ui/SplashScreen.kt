@@ -12,6 +12,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import coil.compose.AsyncImage
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
@@ -28,7 +29,7 @@ fun SplashScreen(
     onNotificationClick: () -> Unit
 ) {
     val viewModel = hiltViewModel<SplashViewModel>()
-    val composition = rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.splash_background))
+    val composition = rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.splash_background_season_fall))
     val progress by animateLottieCompositionAsState(
         composition = composition.value,
         iterations = LottieConstants.IterateForever
@@ -37,11 +38,18 @@ fun SplashScreen(
     Box(modifier = Modifier
         .fillMaxSize()
     ) {
-        LottieAnimation(
+/*        LottieAnimation(
             composition = composition.value,
             progress = { progress },
             modifier = Modifier.fillMaxSize(),
             contentScale = ContentScale.Crop
+        )*/
+
+        AsyncImage(
+            model = R.drawable.splash_background_fall,
+            contentDescription = "splash",
+            contentScale = ContentScale.Crop,
+            modifier = Modifier.fillMaxSize()
         )
 
         Column(
