@@ -34,14 +34,12 @@ interface RecipeListRepository {
     suspend fun getItemCountByCategory(
         accessToken: String,
         categoryId: Int,
-        pageIndex: Int = 1
-    ): RecipeListDto?
+    ): ResponseBody<Int?>
 
     suspend fun getItemCountByOwner(
         accessToken: String,
         ownerType: String,
-        pageIndex: Int = 1
-    ): RecipeListDto?
+    ): ResponseBody<Int?>
 
     fun getZipdabangRecipeList(
         orderBy: String,

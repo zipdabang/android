@@ -80,8 +80,8 @@ class RecipeListViewModel @Inject constructor(
     private val _sortBy = mutableStateOf("latest")
     val sortBy: State<String> = _sortBy
 
-    private val _total = MutableStateFlow(0)
-    val total: StateFlow<Int>
+    private val _total = mutableStateOf(0)
+    val total: State<Int>
         get() = _total
 
     /* TODO 먼저 데이터를 가져오고(완료)

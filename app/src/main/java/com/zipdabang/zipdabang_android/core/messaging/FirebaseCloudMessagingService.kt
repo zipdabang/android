@@ -18,21 +18,17 @@ import coil.request.ImageRequest
 import coil.request.SuccessResult
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
-import com.google.firebase.messaging.ktx.remoteMessage
 import com.zipdabang.zipdabang_android.R
 import com.zipdabang.zipdabang_android.common.Constants
 import com.zipdabang.zipdabang_android.core.data_store.proto.Token
 import com.zipdabang.zipdabang_android.module.main.MainActivity
-import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
-import kotlin.reflect.typeOf
 
 @AndroidEntryPoint
 class FirebaseCloudMessagingService: FirebaseMessagingService() {
@@ -162,9 +158,22 @@ class FirebaseCloudMessagingService: FirebaseMessagingService() {
             val iconBitmap = getBitmap(remoteMessage.data[""].toString())
         }*/
 
+        /*
+        * 아이콘 설정 시 주의
+        * https://romannurik.github.io/AndroidAssetStudio/icons-notification.html#source.type=image&source.space.trim=1&source.space.pad=0.15&name=ic_notification
+        * svg 파일을 icon 형태로 변환한 형태를 아이콘으로 설정해야 잘려나오지 않음
+        * 아이콘의 사이즈는 무조건 24dp x 24dp
+        */
         val notificationBuilder =
             NotificationCompat.Builder(this@FirebaseCloudMessagingService, channelId)
-                .setSmallIcon(R.drawable.zipdabanglogo_brown)
+                .setSmallIcon(R.drawable.zipdabang_logo_transparent)
+/*                .setLargeIcon(
+                    BitmapFactory.decodeResource(
+                        resources,
+                        R.drawable.notification_logo
+                    )
+                )*/
+                .setColor(Color.argb(100, 134, 119, 104))
                 .setContentTitle(remoteMessage.data["title"].toString())
                 .setContentText(remoteMessage.data["body"].toString())
                 .setAutoCancel(true)
