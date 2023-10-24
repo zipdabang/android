@@ -122,7 +122,7 @@ fun MyPagerRecipesScreen(
         // 내 레시피 미리보기 목록
         if(stateCompleteRecipesPreview.isLoading){
             LazyRow(
-                modifier = Modifier.padding(start = 16.dp, end =16.dp),
+                modifier = Modifier.padding(start = 16.dp, end =16.dp, top= 8.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 items(5) {
