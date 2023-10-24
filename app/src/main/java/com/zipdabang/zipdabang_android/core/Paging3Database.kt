@@ -44,7 +44,7 @@ import com.zipdabang.zipdabang_android.module.search.data.SearchDao
         LikeRecipe :: class, ScrapRecipe::class,
         FollowerInfoDB :: class, FollowInfoDB::class
     ],
-    version = 19, exportSchema = false)
+    version = 20, exportSchema = false)
 
 @TypeConverters(ListConverter::class)
 abstract class Paging3Database : RoomDatabase() {
