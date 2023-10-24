@@ -23,15 +23,19 @@ import com.zipdabang.zipdabang_android.module.recipes.use_case.GetHotRecipesByCa
 import com.zipdabang.zipdabang_android.module.recipes.use_case.GetRecipeBannerUseCase
 import com.zipdabang.zipdabang_android.module.recipes.use_case.GetRecipeCategoryUseCase
 import com.zipdabang.zipdabang_android.module.recipes.use_case.GetRecipePreviewUseCase
+import com.zipdabang.zipdabang_android.module.recipes.use_case.ToggleLikeItemUseCase
 import com.zipdabang.zipdabang_android.module.recipes.use_case.ToggleLikeUseCase
+import com.zipdabang.zipdabang_android.module.recipes.use_case.ToggleScrapItemUseCase
 import com.zipdabang.zipdabang_android.module.recipes.use_case.ToggleScrapUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.Serializable
 import javax.inject.Inject
 
@@ -42,6 +46,8 @@ class RecipeMainViewModel @Inject constructor(
     private val getRecipeCategoryUseCase: GetRecipeCategoryUseCase,
     private val toggleLikeUseCase: ToggleLikeUseCase,
     private val toggleScrapUseCase: ToggleScrapUseCase,
+    private val toggleItemLikeUseCase: ToggleLikeItemUseCase,
+    private val toggleItemScrapUseCase: ToggleScrapItemUseCase,
     @DeviceSize private val deviceSize: DeviceScreenSize,
     private val savedStateHandle: SavedStateHandle
 ): ViewModel() {
@@ -191,6 +197,14 @@ class RecipeMainViewModel @Inject constructor(
         }
     }
 
+    suspend fun toggleItemLike(recipeId: Int): Boolean = withContext(Dispatchers.IO) {
+        toggleItemLikeUseCase(recipeId)
+    }
+
+    suspend fun toggleItemScrap(recipeId: Int): Boolean = withContext(Dispatchers.IO) {
+        toggleItemScrapUseCase(recipeId)
+    }
+
     fun toggleLike(recipeId: Int) {
         toggleLikeUseCase(recipeId).onEach { result ->
             result.data?.let {
@@ -205,52 +219,7 @@ class RecipeMainViewModel @Inject constructor(
                                 )
                             }
 
-                            ResponseCode.UNAUTHORIZED_TOKEN_UNUSUAL.code -> {
-                                _toggleLikeResult.value = PreferenceToggleState(
-                                    isLoading = false,
-                                    errorMessage = it.message,
-                                    isSuccessful = false
-                                )
-                                _errorMessage.value = ResponseCode.UNAUTHORIZED_TOKEN_UNUSUAL.message
-                            }
-
-                            ResponseCode.UNAUTHORIZED_ACCESS_EXPIRED.code -> {
-                                _toggleLikeResult.value = PreferenceToggleState(
-                                    isLoading = false,
-                                    errorMessage = it.message,
-                                    isSuccessful = false
-                                )
-                                _errorMessage.value = ResponseCode.UNAUTHORIZED_ACCESS_EXPIRED.message
-                            }
-
-                            ResponseCode.UNAUTHORIZED_TOKEN_NOT_EXISTS.code -> {
-                                _toggleLikeResult.value = PreferenceToggleState(
-                                    isLoading = false,
-                                    errorMessage = it.message,
-                                    isSuccessful = false
-                                )
-                                _errorMessage.value = ResponseCode.UNAUTHORIZED_TOKEN_NOT_EXISTS.message
-                            }
-
-                            ResponseCode.BAD_REQUEST_USER_NOT_EXISTS.code -> {
-                                _toggleLikeResult.value = PreferenceToggleState(
-                                    isLoading = false,
-                                    errorMessage = it.message,
-                                    isSuccessful = false
-                                )
-                                _errorMessage.value = ResponseCode.BAD_REQUEST_USER_NOT_EXISTS.message
-                            }
-
-                            ResponseCode.BAD_REQUEST_RECIPE_NOT_EXISTS.code -> {
-                                _toggleLikeResult.value = PreferenceToggleState(
-                                    isLoading = false,
-                                    errorMessage = it.message,
-                                    isSuccessful = false
-                                )
-                                _errorMessage.value = ResponseCode.BAD_REQUEST_RECIPE_NOT_EXISTS.message
-                            }
-
-                            ResponseCode.SERVER_ERROR.code -> {
+                            else -> {
                                 _toggleLikeResult.value = PreferenceToggleState(
                                     isLoading = false,
                                     errorMessage = it.message,
@@ -296,59 +265,12 @@ class RecipeMainViewModel @Inject constructor(
                                     isSuccessful = true
                                 )
                             }
-
-                            ResponseCode.UNAUTHORIZED_TOKEN_UNUSUAL.code -> {
+                            else -> {
                                 _toggleScrapResult.value = PreferenceToggleState(
                                     isLoading = false,
                                     errorMessage = it.message,
                                     isSuccessful = false
                                 )
-                                _errorMessage.value = ResponseCode.UNAUTHORIZED_TOKEN_UNUSUAL.message
-                            }
-
-                            ResponseCode.UNAUTHORIZED_ACCESS_EXPIRED.code -> {
-                                _toggleScrapResult.value = PreferenceToggleState(
-                                    isLoading = false,
-                                    errorMessage = it.message,
-                                    isSuccessful = false
-                                )
-                                _errorMessage.value = ResponseCode.UNAUTHORIZED_ACCESS_EXPIRED.message
-                            }
-
-                            ResponseCode.UNAUTHORIZED_TOKEN_NOT_EXISTS.code -> {
-                                _toggleScrapResult.value = PreferenceToggleState(
-                                    isLoading = false,
-                                    errorMessage = it.message,
-                                    isSuccessful = false
-                                )
-                                _errorMessage.value = ResponseCode.UNAUTHORIZED_TOKEN_NOT_EXISTS.message
-                            }
-
-                            ResponseCode.BAD_REQUEST_USER_NOT_EXISTS.code -> {
-                                _toggleScrapResult.value = PreferenceToggleState(
-                                    isLoading = false,
-                                    errorMessage = it.message,
-                                    isSuccessful = false
-                                )
-                                _errorMessage.value = ResponseCode.BAD_REQUEST_USER_NOT_EXISTS.message
-                            }
-
-                            ResponseCode.BAD_REQUEST_RECIPE_NOT_EXISTS.code -> {
-                                _toggleScrapResult.value = PreferenceToggleState(
-                                    isLoading = false,
-                                    errorMessage = it.message,
-                                    isSuccessful = false
-                                )
-                                _errorMessage.value = ResponseCode.BAD_REQUEST_RECIPE_NOT_EXISTS.message
-                            }
-
-                            ResponseCode.SERVER_ERROR.code -> {
-                                _toggleScrapResult.value = PreferenceToggleState(
-                                    isLoading = false,
-                                    errorMessage = it.message,
-                                    isSuccessful = false
-                                )
-                                _errorMessage.value = ResponseCode.SERVER_ERROR.message
                             }
                         }
                     }

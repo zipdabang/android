@@ -10,14 +10,16 @@ import com.zipdabang.zipdabang_android.common.UiState
 import com.zipdabang.zipdabang_android.core.data_store.proto.CurrentPlatform
 import com.zipdabang.zipdabang_android.module.recipes.data.hot.HotRecipeItem
 import com.zipdabang.zipdabang_android.module.recipes.ui.state.PreferenceToggleState
+import kotlinx.coroutines.Deferred
 
 @Composable
 fun HotRecipeList(
     hotItems: UiState<List<HotRecipeItem>>,
     onRecipeClick: (Int) -> Unit,
     onBlockedRecipeClick: (Int, Int) -> Unit,
-    onScrapClick: (Int) -> Unit,
-    onLikeClick: (Int) -> Unit,
+    checkLoggedIn: () -> Boolean,
+    onScrapClick: (Int) -> Deferred<Boolean>,
+    onLikeClick: (Int) -> Deferred<Boolean>,
     likeState: PreferenceToggleState,
     scrapState: PreferenceToggleState,
     setShowLoginRequestDialog: () -> Unit,
@@ -42,6 +44,7 @@ fun HotRecipeList(
                     item = recipesByOwnerType,
                     onRecipeClick = onRecipeClick,
                     onBlockedRecipeClick = onBlockedRecipeClick,
+                    checkLoggedIn = checkLoggedIn,
                     onLikeClick = onLikeClick,
                     onScrapClick = onScrapClick,
                     likeState = likeState,
