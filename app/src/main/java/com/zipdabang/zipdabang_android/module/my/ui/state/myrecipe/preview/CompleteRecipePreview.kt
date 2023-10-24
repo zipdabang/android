@@ -5,7 +5,7 @@ import com.zipdabang.zipdabang_android.module.my.ui.state.myrecipe.write.Ingredi
 import com.zipdabang.zipdabang_android.module.my.ui.state.myrecipe.write.Step
 
 data class CompleteRecipePreview(
-    val isLoading : Boolean = false,
+    val isLoading : Boolean = true,
 
     val recipeList: List<CompleteRecipesWithImgPreviewRecipe>,
     val totalElements: Int,

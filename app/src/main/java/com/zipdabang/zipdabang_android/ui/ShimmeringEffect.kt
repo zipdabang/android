@@ -1,5 +1,7 @@
 package com.zipdabang.zipdabang_android.ui
 
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
@@ -17,17 +19,29 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.unit.IntSize
 
-fun Modifier.shimmeringEffect() : Modifier = composed {
-    var size by remember{
+fun Modifier.shimmeringEffect(): Modifier = composed {
+    var size by remember {
         mutableStateOf(IntSize.Zero)
     }
     val transition = rememberInfiniteTransition()
-    val startOffsetX by transition.animateFloat(
+   /* val startOffsetX by transition.animateFloat(
         initialValue = -2 * size.width.toFloat(),
-        targetValue = 2 * size.width.toFloat() ,
-        animationSpec =  infiniteRepeatable(
+        targetValue = 2 * size.width.toFloat(),
+        animationSpec = infiniteRepeatable(
             animation = tween(1000)
         ), label = ""
+    )*/
+    val translateAnim = transition.animateFloat(
+        initialValue = 0f,
+        targetValue = 1000f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(
+                durationMillis = 1000,
+                easing = FastOutSlowInEasing,
+            ),
+            repeatMode = RepeatMode.Restart
+        ),
+        label = ""
     )
 
     background(
@@ -37,8 +51,10 @@ fun Modifier.shimmeringEffect() : Modifier = composed {
                 Color.LightGray.copy(alpha = 0.2f),
                 Color.LightGray.copy(alpha = 0.35f),
             ),
-            start = Offset(startOffsetX,0f),
-            end = Offset(startOffsetX + size.width.toFloat(),size.height.toFloat())
+            start = Offset.Zero,
+            end = Offset(x = translateAnim.value, y = translateAnim.value)
+//            start = Offset(startOffsetX, 0f),
+//            end = Offset(startOffsetX + size.width.toFloat(), size.height.toFloat())
         )
     )
         .onGloballyPositioned {

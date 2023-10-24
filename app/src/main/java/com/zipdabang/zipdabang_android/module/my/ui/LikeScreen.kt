@@ -15,6 +15,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -23,9 +24,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.zipdabang.zipdabang_android.R
 import com.zipdabang.zipdabang_android.module.item.recipe.ui.RecipeCard
+import com.zipdabang.zipdabang_android.module.item.recipe.ui.RecipeCardLoading
 import com.zipdabang.zipdabang_android.module.my.ui.viewmodel.MyRecipesViewModel
 import com.zipdabang.zipdabang_android.ui.component.AppBarSignUp
 import com.zipdabang.zipdabang_android.ui.component.SearchBar
@@ -38,6 +41,7 @@ fun LikeScreen(
     viewModel : MyRecipesViewModel = hiltViewModel()
 ) {
     val likeRecipeItems = viewModel.likeRecipeItems.collectAsLazyPagingItems()
+    val loadingState = rememberUpdatedState(likeRecipeItems.loadState)
 
     LaunchedEffect(key1 = true ){
         viewModel.getLikeRecipeItems()
@@ -60,14 +64,27 @@ fun LikeScreen(
         Surface(
             modifier = Modifier
                 .padding(it)
-                .fillMaxSize()
+                .fillMaxSize(),
+            color = Color.White,
         ) {
             /*Box(
                 modifier = Modifier.padding(16.dp, 10.dp, 16.dp,0.dp)
             ){
                 SearchBar(hintText = stringResource(id = R.string.my_searchbar_keyword))
             }*/
-            if (likeRecipeItems.itemCount == 0) {
+            if(loadingState.value.refresh is LoadState.Loading){
+                LazyVerticalGrid(
+                    columns = GridCells.Fixed(2),
+                    modifier = Modifier.padding(8.dp, 10.dp, 8.dp, 10.dp),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    items(8) {
+                        RecipeCardLoading()
+                    }
+                }
+            }
+            else if (likeRecipeItems.itemCount == 0) {
                 Column(
                     modifier = Modifier.fillMaxSize(),
                     verticalArrangement = Arrangement.Center,

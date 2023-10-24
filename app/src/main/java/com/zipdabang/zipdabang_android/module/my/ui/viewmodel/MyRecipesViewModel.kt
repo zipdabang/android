@@ -43,7 +43,6 @@ class MyRecipesViewModel @OptIn(ExperimentalPagingApi::class)
     private val dataStore: DataStore<Token>,
     private val deleteTempRecipeUseCase: DeleteTempRecipeUseCase,
     private val deleteCompleteRecipeUseCase: DeleteCompleteRecipeUseCase,
-    private val getCompleteRecipesPreviewUseCase: GetCompleteRecipesPreviewUseCase,
     val completeRecipesRepository : PagingCompleteRecipesRepository,
     val tempRecipesRepository: PagingTempRecipesRepository,
     val scrapRecipesRepository: PagingScrapRecipesRepository,
@@ -66,14 +65,7 @@ class MyRecipesViewModel @OptIn(ExperimentalPagingApi::class)
     private val _completeRecipeWithImgItems = MutableStateFlow<PagingData<CompleteRecipeWithImg>>(PagingData.empty())
     val completeRecipeWithImgItems = _completeRecipeWithImgItems
 
-    var stateCompleteRecipesPreview by mutableStateOf(
-        CompleteRecipePreview(
-            isLoading = false,
-            recipeList = emptyList(),
-            totalElements = 0,
-            error = ""
-        )
-    )
+
 
 
     @OptIn(ExperimentalPagingApi::class)
@@ -169,49 +161,5 @@ class MyRecipesViewModel @OptIn(ExperimentalPagingApi::class)
         getCompleteRecipeItems()
     }
 
-    suspend fun getCompleteRecipesPreview(){
-        var accessToken = "Bearer " + dataStore.data.first().accessToken.toString()
 
-        try{
-            val result = getCompleteRecipesPreviewUseCase(accessToken)
-
-            result.collect{result->
-                when(result){
-                    is Resource.Success->{
-                        stateCompleteRecipesPreview = stateCompleteRecipesPreview.copy(
-                            isLoading = false,
-                            totalElements = result.data?.totalElements ?: 0,
-                            recipeList = result.data?.recipeList?.mapIndexed { index, items ->
-                                CompleteRecipesWithImgPreviewRecipe(
-                                    categoryId = items.categoryId,
-                                    comments= items.comments,
-                                    createdAt= items.createdAt,
-                                    isLiked= items.isLiked,
-                                    isScrapped= items.isScrapped,
-                                    likes= items.likes,
-                                    nickname= items.nickname,
-                                    recipeId= items.recipeId,
-                                   recipeName= items.recipeName,
-                                    scraps= items.scraps,
-                                    thumbnailUrl= items.thumbnailUrl,
-                                    updatedAt= items.updatedAt,
-                                )
-                            } ?: emptyList()
-                        )
-                        Log.e("my_completerecipe_preview", "성공 : ${result} ${result.message} ${result.data} ${result.code}")
-                    }
-                    is Resource.Error ->{
-                        Log.e("my_completerecipe_preview", "에러 : ${result} ${result.message} ${result.data} ${result.code}")
-                        stateCompleteRecipesPreview = stateCompleteRecipesPreview.copy(
-                            error = result.message ?: "An unexpeted error occured"
-                        )
-                    }
-                    is Resource.Loading ->{
-                        stateCompleteRecipesPreview = stateCompleteRecipesPreview.copy(isLoading = true)
-                        Log.e("my_completerecipe_preview",  "로딩중 : ${result} ${result.message} ${result.data} ${result.code}")
-                    }
-                }
-            }
-        }  catch (e: Exception) {}
-    }
 }

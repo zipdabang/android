@@ -27,8 +27,10 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
@@ -72,7 +74,8 @@ fun MyPagerProfileScreen(
                     style = ZipdabangandroidTheme.Typography.sixteen_500,
                     color = ZipdabangandroidTheme.Colors.Typo,
                 )
-            } else if (shimmering) {
+            }
+            else if (shimmering) {
                 Text(
                     text = "",
                     style = ZipdabangandroidTheme.Typography.sixteen_500,
@@ -87,7 +90,8 @@ fun MyPagerProfileScreen(
                             }
                         )
                 )
-            } else {
+            }
+            else {
                 Box(
                     modifier = Modifier
                         .height(56.dp)
@@ -107,21 +111,30 @@ fun MyPagerProfileScreen(
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        text = AnnotatedString(
-                            text = stringResource(id = R.string.my_profile_oneline_none),
-                            spanStyle = SpanStyle(
-                                color = ZipdabangandroidTheme.Colors.Typo,
-                                fontFamily = FontFamily(Font(R.font.kopubworlddotum_bold)),
-                                fontSize = 14.sp
-                            )
-                        ) + AnnotatedString(
-                            text = stringResource(id = R.string.my_profile_oneline_write),
-                            spanStyle = SpanStyle(
-                                color = ZipdabangandroidTheme.Colors.Typo.copy(alpha = 0.5f),
-                                fontFamily = FontFamily(Font(R.font.kopubworlddotum_bold)),
-                                fontSize = 14.sp
-                            )
-                        )
+                        modifier = Modifier,
+                        text = buildAnnotatedString {
+                            withStyle(
+                                style = SpanStyle(
+                                    color = ZipdabangandroidTheme.Colors.Typo,
+                                    fontFamily = FontFamily(Font(R.font.kopubworlddotum_bold)),
+                                    fontSize = 14.sp
+                                )
+                            ) {
+                                append(stringResource(id = R.string.my_profile_oneline_none))
+                            }
+
+                            append("  ")
+
+                            withStyle(
+                                style = SpanStyle(
+                                    color = ZipdabangandroidTheme.Colors.Typo.copy(alpha = 0.5f),
+                                    fontFamily = FontFamily(Font(R.font.kopubworlddotum_bold)),
+                                    fontSize = 14.sp
+                                )
+                            ) {
+                                append(stringResource(id = R.string.my_profile_oneline_write))
+                            }
+                        }
                     )
                 }
             }
@@ -153,7 +166,8 @@ fun MyPagerProfileScreen(
                             }
                         )
                 )
-            } else if (preferCategoryList.size == 0) {
+            }
+            else if (preferCategoryList.size == 0) {
                 Box(
                     modifier = Modifier
                         .height(56.dp)
@@ -166,24 +180,34 @@ fun MyPagerProfileScreen(
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        text = AnnotatedString(
-                            text = stringResource(id = R.string.my_profile_prefercategory_none),
-                            spanStyle = SpanStyle(
-                                color = ZipdabangandroidTheme.Colors.Typo,
-                                fontFamily = FontFamily(Font(R.font.kopubworlddotum_bold)),
-                                fontSize = 14.sp
-                            )
-                        ) + AnnotatedString(
-                            text = stringResource(id = R.string.my_profile_prefercategory_choose),
-                            spanStyle = SpanStyle(
-                                color = ZipdabangandroidTheme.Colors.Typo.copy(alpha = 0.5f),
-                                fontFamily = FontFamily(Font(R.font.kopubworlddotum_bold)),
-                                fontSize = 14.sp
-                            )
-                        )
+                        modifier = Modifier,
+                        text = buildAnnotatedString {
+                            withStyle(
+                                style = SpanStyle(
+                                    color = ZipdabangandroidTheme.Colors.Typo,
+                                    fontFamily = FontFamily(Font(R.font.kopubworlddotum_bold)),
+                                    fontSize = 14.sp
+                                )
+                            ) {
+                                append(stringResource(id = R.string.my_profile_prefercategory_none))
+                            }
+
+                            append("  ") // 원하는 공백 문자 수로 대체하실 수 있습니다
+
+                            withStyle(
+                                style = SpanStyle(
+                                    color = ZipdabangandroidTheme.Colors.Typo.copy(alpha = 0.5f),
+                                    fontFamily = FontFamily(Font(R.font.kopubworlddotum_bold)),
+                                    fontSize = 14.sp
+                                )
+                            ) {
+                                append(stringResource(id = R.string.my_profile_prefercategory_choose))
+                            }
+                        }
                     )
                 }
-            } else {
+            }
+            else {
                 val imageUrls = preferCategoryList.categories.map { it.imageUrl }
                 LazyRow {
                     items(imageUrls) { imageUrl ->
