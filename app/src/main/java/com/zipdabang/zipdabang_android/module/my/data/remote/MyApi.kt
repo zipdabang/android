@@ -10,7 +10,10 @@ import com.zipdabang.zipdabang_android.module.my.data.remote.friendlist.followin
 import com.zipdabang.zipdabang_android.module.my.data.remote.myinfo.MyInfoRecipesResponse
 import com.zipdabang.zipdabang_android.module.my.data.remote.myinfo.MyInfoResponse
 import com.zipdabang.zipdabang_android.module.my.data.remote.myrecipes.complete.CompleteRecipesResponse
-import com.zipdabang.zipdabang_android.module.my.data.remote.myrecipes.scraplike.GetScrapRecipesResponse
+import com.zipdabang.zipdabang_android.module.my.data.remote.myrecipes.completewithimage.CompleteRecipesWithImgResponse
+import com.zipdabang.zipdabang_android.module.my.data.remote.myrecipes.like.LikeRecipesResponse
+import com.zipdabang.zipdabang_android.module.my.data.remote.myrecipes.preview.CompleteRecipesWithImgPreviewResponse
+import com.zipdabang.zipdabang_android.module.my.data.remote.myrecipes.scrap.ScrapRecipesResponse
 import com.zipdabang.zipdabang_android.module.my.data.remote.myrecipes.temp.TempRecipesResponse
 import com.zipdabang.zipdabang_android.module.my.data.remote.otherinfo.OtherInfoDto
 import com.zipdabang.zipdabang_android.module.my.data.remote.otherinfo.OtherRecipeListDto
@@ -54,14 +57,27 @@ interface MyApi {
     suspend fun getLikeRecipes(
         @Header("Authorization") accessToken: String,
         @Query("page") pageIndex : Int
-    ) : GetScrapRecipesResponse
+    ) : LikeRecipesResponse
 
     // 스크랩 목록 불러오기
     @GET("members/scrapRecipes")
     suspend fun getScrapRecipes(
         @Header("Authorization") accessToken: String,
         @Query("page") pageIndex : Int
-    ) : GetScrapRecipesResponse
+    ) : ScrapRecipesResponse
+
+    // 내 레시피 목록 불러오기
+    @GET("members/recipes/owner/")
+    suspend fun getMyCompleteRecipesWithImg(
+        @Header("Authorization") accessToken: String,
+        @Query("pageIndex") pageIndex : Int
+    ) : CompleteRecipesWithImgResponse
+
+    // 내 레시피 미리보기 목록
+    @GET("members/recipes/owner/preview/")
+    suspend fun getMyCompleteRecipesWithImgPreview(
+        @Header("Authorization") accessToken: String
+    ) : CompleteRecipesWithImgPreviewResponse
 
 
 

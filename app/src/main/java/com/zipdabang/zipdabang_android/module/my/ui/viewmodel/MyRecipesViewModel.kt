@@ -1,6 +1,9 @@
 package com.zipdabang.zipdabang_android.module.my.ui.viewmodel
 
 import android.util.Log
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.datastore.core.DataStore
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -12,11 +15,21 @@ import com.zipdabang.zipdabang_android.core.DeviceSize
 import com.zipdabang.zipdabang_android.core.data_store.proto.Token
 import com.zipdabang.zipdabang_android.module.detail.recipe.common.DeviceScreenSize
 import com.zipdabang.zipdabang_android.module.my.data.remote.myrecipes.complete.CompleteRecipe
+import com.zipdabang.zipdabang_android.module.my.data.remote.myrecipes.completewithimage.CompleteRecipeWithImg
+import com.zipdabang.zipdabang_android.module.my.data.remote.myrecipes.completewithimage.CompleteRecipesWithImgResponse
+import com.zipdabang.zipdabang_android.module.my.data.remote.myrecipes.like.LikeRecipe
+import com.zipdabang.zipdabang_android.module.my.data.remote.myrecipes.preview.CompleteRecipesWithImgPreviewRecipe
+import com.zipdabang.zipdabang_android.module.my.data.remote.myrecipes.scrap.ScrapRecipe
 import com.zipdabang.zipdabang_android.module.my.data.remote.myrecipes.temp.TempRecipe
+import com.zipdabang.zipdabang_android.module.my.domain.repository.PagingCompleteRecipeWithImgRepository
 import com.zipdabang.zipdabang_android.module.my.domain.repository.PagingCompleteRecipesRepository
+import com.zipdabang.zipdabang_android.module.my.domain.repository.PagingLikeRecipesRepository
+import com.zipdabang.zipdabang_android.module.my.domain.repository.PagingScrapRecipesRepository
 import com.zipdabang.zipdabang_android.module.my.domain.repository.PagingTempRecipesRepository
 import com.zipdabang.zipdabang_android.module.my.domain.usecase.DeleteCompleteRecipeUseCase
 import com.zipdabang.zipdabang_android.module.my.domain.usecase.DeleteTempRecipeUseCase
+import com.zipdabang.zipdabang_android.module.my.domain.usecase.GetCompleteRecipesPreviewUseCase
+import com.zipdabang.zipdabang_android.module.my.ui.state.myrecipe.preview.CompleteRecipePreview
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collectIndexed
@@ -30,8 +43,12 @@ class MyRecipesViewModel @OptIn(ExperimentalPagingApi::class)
     private val dataStore: DataStore<Token>,
     private val deleteTempRecipeUseCase: DeleteTempRecipeUseCase,
     private val deleteCompleteRecipeUseCase: DeleteCompleteRecipeUseCase,
+    private val getCompleteRecipesPreviewUseCase: GetCompleteRecipesPreviewUseCase,
     val completeRecipesRepository : PagingCompleteRecipesRepository,
     val tempRecipesRepository: PagingTempRecipesRepository,
+    val scrapRecipesRepository: PagingScrapRecipesRepository,
+    val likeRecipesRepository: PagingLikeRecipesRepository,
+    val completeRecipeWithImgRepository: PagingCompleteRecipeWithImgRepository,
 ) : ViewModel(){
 
     private val _completeRecipeItems = MutableStateFlow<PagingData<CompleteRecipe>>(PagingData.empty())
@@ -39,6 +56,25 @@ class MyRecipesViewModel @OptIn(ExperimentalPagingApi::class)
 
     private val _tempRecipeItems = MutableStateFlow<PagingData<TempRecipe>>(PagingData.empty())
     val tempRecipeItems = _tempRecipeItems
+
+    private val _scrapRecipeItems = MutableStateFlow<PagingData<ScrapRecipe>>(PagingData.empty())
+    val scrapRecipeItems = _scrapRecipeItems
+
+    private val _likeRecipeItems = MutableStateFlow<PagingData<LikeRecipe>>(PagingData.empty())
+    val likeRecipeItems = _likeRecipeItems
+
+    private val _completeRecipeWithImgItems = MutableStateFlow<PagingData<CompleteRecipeWithImg>>(PagingData.empty())
+    val completeRecipeWithImgItems = _completeRecipeWithImgItems
+
+    var stateCompleteRecipesPreview by mutableStateOf(
+        CompleteRecipePreview(
+            isLoading = false,
+            recipeList = emptyList(),
+            totalElements = 0,
+            error = ""
+        )
+    )
+
 
     @OptIn(ExperimentalPagingApi::class)
     fun getCompleteRecipeItems(){
@@ -56,6 +92,36 @@ class MyRecipesViewModel @OptIn(ExperimentalPagingApi::class)
             }
         }
     }
+
+    @OptIn(ExperimentalPagingApi::class)
+    fun getScrapRecipeItems(){
+        viewModelScope.launch {
+            scrapRecipesRepository.getScrapRecipeItems().cachedIn(viewModelScope).collect{
+                _scrapRecipeItems.value = it
+            }
+        }
+    }
+
+    @OptIn(ExperimentalPagingApi::class)
+    fun getLikeRecipeItems(){
+        viewModelScope.launch {
+            likeRecipesRepository.getLikeRecipeItems().cachedIn(viewModelScope).collect{
+                _likeRecipeItems.value = it
+            }
+        }
+    }
+
+    @OptIn(ExperimentalPagingApi::class)
+    fun getCompleteRecipeWithImgItems(){
+        viewModelScope.launch {
+            completeRecipeWithImgRepository.getCompleteRecipeWithImgItems().cachedIn(viewModelScope).collect{
+                _completeRecipeWithImgItems.value = it
+            }
+        }
+    }
+
+
+
 
     suspend fun deleteTempRecipe(tempId : Int){
         var accessToken = "Bearer " + dataStore.data.first().accessToken.toString()
@@ -103,4 +169,49 @@ class MyRecipesViewModel @OptIn(ExperimentalPagingApi::class)
         getCompleteRecipeItems()
     }
 
+    suspend fun getCompleteRecipesPreview(){
+        var accessToken = "Bearer " + dataStore.data.first().accessToken.toString()
+
+        try{
+            val result = getCompleteRecipesPreviewUseCase(accessToken)
+
+            result.collect{result->
+                when(result){
+                    is Resource.Success->{
+                        stateCompleteRecipesPreview = stateCompleteRecipesPreview.copy(
+                            isLoading = false,
+                            totalElements = result.data?.totalElements ?: 0,
+                            recipeList = result.data?.recipeList?.mapIndexed { index, items ->
+                                CompleteRecipesWithImgPreviewRecipe(
+                                    categoryId = items.categoryId,
+                                    comments= items.comments,
+                                    createdAt= items.createdAt,
+                                    isLiked= items.isLiked,
+                                    isScrapped= items.isScrapped,
+                                    likes= items.likes,
+                                    nickname= items.nickname,
+                                    recipeId= items.recipeId,
+                                   recipeName= items.recipeName,
+                                    scraps= items.scraps,
+                                    thumbnailUrl= items.thumbnailUrl,
+                                    updatedAt= items.updatedAt,
+                                )
+                            } ?: emptyList()
+                        )
+                        Log.e("my_completerecipe_preview", "성공 : ${result} ${result.message} ${result.data} ${result.code}")
+                    }
+                    is Resource.Error ->{
+                        Log.e("my_completerecipe_preview", "에러 : ${result} ${result.message} ${result.data} ${result.code}")
+                        stateCompleteRecipesPreview = stateCompleteRecipesPreview.copy(
+                            error = result.message ?: "An unexpeted error occured"
+                        )
+                    }
+                    is Resource.Loading ->{
+                        stateCompleteRecipesPreview = stateCompleteRecipesPreview.copy(isLoading = true)
+                        Log.e("my_completerecipe_preview",  "로딩중 : ${result} ${result.message} ${result.data} ${result.code}")
+                    }
+                }
+            }
+        }  catch (e: Exception) {}
+    }
 }

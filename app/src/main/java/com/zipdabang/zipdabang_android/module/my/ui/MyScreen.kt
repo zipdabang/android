@@ -92,7 +92,9 @@ fun MyScreen(
     onClickInquiry : ()->Unit,
     onClickLogout: () -> Unit,
     onClickUserInfo: () -> Unit,
-    onClickFriendsList : () -> Unit
+    onClickFriendsList : () -> Unit,
+    onClickMyRecipeList : (String)->Unit,
+    onRecipeItemClick : (Int)->Unit,
 ) {
     //drawer에 필요한 drawerState랑 scope
     val drawerState = rememberDrawerState(DrawerValue.Closed)
@@ -269,7 +271,9 @@ fun MyScreen(
                                     TabItem.MyRecipes(
                                         shimmering = shimmering,
                                         nickname = stateMyUserInfo.nickname,
-                                        onClickMyrecipe = onClickMyrecipe,
+                                        onClickMyRecipeList = onClickMyRecipeList,
+                                        onClickMyrecipe= onClickMyrecipe,
+                                        onRecipeItemClick = onRecipeItemClick
                                     ),
                                     TabItem.MyInfo(
                                         onClickLike = onClickLike,
@@ -294,23 +298,4 @@ fun MyScreen(
         navController = navController,
     )
 
-}
-
-@Preview
-@Composable
-fun PreviewMyScreen() {
-    MyScreen(
-        navController = rememberNavController(),
-        onClickBack = {},
-        onClickLike = {},
-        onClickScrap = {},
-        onClickMyrecipe = {},
-        onClickShopping = {},
-        onClickNotice = {},
-        onClickLogout = {},
-        onClickUserInfo = {},
-        onClickAlarm = {},
-        onClickInquiry = {},
-        onClickFriendsList = {}
-    )
 }

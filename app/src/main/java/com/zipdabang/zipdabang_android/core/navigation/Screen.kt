@@ -1,5 +1,7 @@
 package com.zipdabang.zipdabang_android.core.navigation
 
+import android.provider.ContactsContract.CommonDataKinds.Nickname
+
 const val ROOT_ROUTE = "root"
 const val SPLASH_ROUTE = "splash"
 const val AUTH_ROUTE = "auth"
@@ -64,6 +66,11 @@ sealed class MyScreen(val route : String){
             return "my/recipeedit?recipeId=$recipeId"
         }
     }
+    object MyRecipeList : MyScreen(route = "my/myrecipelist?nickname={nickname}"){
+        fun passNickname(nickname: String) : String{
+            return "my/myrecipelist?nickname=$nickname"
+        }
+    }
     object OtherPage : MyScreen(route = "my/other?userId={userId}")  {
         fun passUserId(userId : Int) : String {
             return "my/other?userId=$userId"
@@ -76,6 +83,7 @@ sealed class MyScreen(val route : String){
         }
     }
     object NoticeList : MyScreen(route = "my/notice/list")
+
 
 }
 

@@ -1,6 +1,6 @@
-package com.zipdabang.zipdabang_android.module.my.data.remote.myrecipes.scraplike
+package com.zipdabang.zipdabang_android.module.my.data.remote.myrecipes.preview
 
-data class GetScrapRecipe(
+data class CompleteRecipesWithImgPreviewRecipe(
     val categoryId: List<Int>,
     val comments: Int,
     val createdAt: String,

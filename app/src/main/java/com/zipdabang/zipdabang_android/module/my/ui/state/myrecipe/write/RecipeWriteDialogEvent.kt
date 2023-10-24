@@ -1,4 +1,4 @@
-package com.zipdabang.zipdabang_android.module.my.ui.state.recipewrite
+package com.zipdabang.zipdabang_android.module.my.ui.state.myrecipe.write
 
 sealed class RecipeWriteDialogEvent{
     data class RecipeDeleteChanged(val isOpen : Boolean) : RecipeWriteDialogEvent()

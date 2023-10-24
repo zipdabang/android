@@ -106,14 +106,18 @@ sealed class TabItem(val tabTitle: String, val screen: ComposableFun) {
     class MyRecipes(
         shimmering : Boolean,
         nickname : String,
+        onClickMyRecipeList : (String)->Unit,
         onClickMyrecipe : ()->Unit,
+        onRecipeItemClick : (Int) ->Unit,
     ) : TabItem(
         tabTitle = "게시글",
         screen = {
             MyPagerRecipesScreen(
                 shimmering = shimmering,
                 nickname= nickname,
-                onClickMyrecipe=onClickMyrecipe,
+                onClickMyRecipeList = onClickMyRecipeList,
+                onClickMyrecipe = onClickMyrecipe,
+                onRecipeItemClick = onRecipeItemClick
             )
         }
     )
