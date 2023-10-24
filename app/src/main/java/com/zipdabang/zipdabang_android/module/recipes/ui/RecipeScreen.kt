@@ -110,7 +110,7 @@ fun RecipeScreen(
             borderColor = Color(0xFFB8AFAB),
             backgroundColor = ZipdabangandroidTheme.Colors.BlackSesame,
             textColor = ZipdabangandroidTheme.Colors.Typo,
-            drawable = R.drawable.recipe_category_zipdabang
+            drawable = R.drawable.recipe_category_zipdabang_revised
         ),
         OwnerCategory(
             groupName = OwnerType.BARISTA.type,
