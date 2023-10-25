@@ -1,5 +1,6 @@
 package com.zipdabang.zipdabang_android.module.splash.ui
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -9,9 +10,11 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import coil.compose.AsyncImage
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
@@ -28,35 +31,45 @@ fun SplashScreen(
     onNotificationClick: () -> Unit
 ) {
     val viewModel = hiltViewModel<SplashViewModel>()
-    val composition = rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.splash_background))
-    val progress by animateLottieCompositionAsState(
-        composition = composition.value,
-        iterations = LottieConstants.IterateForever
-    )
+//    val composition = rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.splash_background_season_fall))
+//    val progress by animateLottieCompositionAsState(
+//        composition = composition.value,
+//        iterations = LottieConstants.IterateForever
+//    )
 
     Box(modifier = Modifier
         .fillMaxSize()
     ) {
-        LottieAnimation(
+
+/*        LottieAnimation(
             composition = composition.value,
             progress = { progress },
             modifier = Modifier.fillMaxSize(),
             contentScale = ContentScale.Crop
+        )*/
+
+        Image(
+            modifier = Modifier.fillMaxSize(),
+            painter = painterResource(id = R.drawable.splash_background_season_fall),
+            contentDescription = "splash",
+            contentScale = ContentScale.Crop
         )
+
+
+        LaunchedEffect(key1 = true) {
+            viewModel.checkAccessToken(
+                onTokenValid = onTokenValid,
+                onTokenInvalid = onTokenInvalid,
+                onNotificationClick = onNotificationClick,
+                fcmData = fcmData
+            )
+        }
 
         Column(
             modifier = Modifier
                 .padding(top = 100.dp, start = 20.dp)
         ) {
             SplashTitle()
-            LaunchedEffect(key1 = true) {
-                viewModel.checkAccessToken(
-                    onTokenValid = onTokenValid,
-                    onTokenInvalid = onTokenInvalid,
-                    onNotificationClick = onNotificationClick,
-                    fcmData = fcmData
-                )
-            }
         }
     }
 }
