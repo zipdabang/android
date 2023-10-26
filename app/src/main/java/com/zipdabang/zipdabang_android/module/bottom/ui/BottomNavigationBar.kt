@@ -97,8 +97,8 @@ fun RowScope.AddItem(
                     }
 
             },
-            selectedContentColor = ZipdabangandroidTheme.Colors.Latte,
-            unselectedContentColor = NavBlack,
+//            selectedContentColor =Color.Transparent,
+//            unselectedContentColor = NavBlack,
             icon = {
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
@@ -107,7 +107,8 @@ fun RowScope.AddItem(
                     if (selected) {
                         Icon(
                             painter = painterResource(id = screen.activeIcon),
-                            contentDescription = null
+                            contentDescription = null,
+                            tint = Color.Unspecified
                         )
 
                         Text(
@@ -121,6 +122,7 @@ fun RowScope.AddItem(
                         Icon(
                             painter = painterResource(id = screen.inactiveIcon),
                             contentDescription = null,
+                            tint = Color.Unspecified
                         )
 
                         Text(

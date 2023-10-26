@@ -26,7 +26,7 @@ object SearchModule {
             .baseUrl(Constants.BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
-            .create(SearchApi  :: class.java)
+            .create(SearchApi::class.java)
     }
 
     @Provides

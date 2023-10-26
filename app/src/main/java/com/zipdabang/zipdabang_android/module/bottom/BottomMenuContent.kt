@@ -15,21 +15,21 @@ BottomMenuContent(
         "마켓",
         "market/home",
         R.drawable.nav_market_inactive,
-        R.drawable.nav_active_market
+        R.drawable.nav_market_active
     )
 
     object basket : BottomMenuContent(
         "장바구니",
         "basket/home",
         R.drawable.nav_basket_inactive,
-        R.drawable.nav_active_basket
+        R.drawable.nav_basket_actvie
     )
 
     object home : BottomMenuContent(
         "홈",
         "home/home",
         R.drawable.nav_home_inactive,
-        R.drawable.nav_active_home
+        R.drawable.nav_home_active
     )
 
     object recipes : BottomMenuContent(
