@@ -395,9 +395,10 @@ fun ModalDrawer(
                     DrawerContent(
                         infoOnClick = { Log.d("drawer", "집다방 정보")},
                         noticeOnClick = { navController.navigate(DrawerScreen.Notice.route) },
-                        ToSOnClick = { Log.d("drawer","서비스 이용 약관")},
+                        ToSOnClick = {  navController.navigate(DrawerScreen.Service.route)
+                                     },
                         privacyAgreeOnClick = { Log.d("drawer","개인정보 제 3자 동의")},
-                        privacyOnClick = { Log.d("drawer","개인정보 처리방침")},
+                        privacyOnClick = { navController.navigate(DrawerScreen.PersonalInfo.route)},
                         FAGOnClick = { Log.d("drawer","FAG")},
                         inquiryOnClick = { navController.navigate(DrawerScreen.Report.route)},
                         inquiryListOnClick = { navController.navigate(DrawerScreen.ReportList.route)},

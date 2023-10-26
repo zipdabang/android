@@ -94,6 +94,9 @@ sealed class DrawerScreen(val route : String){
     object FAQ : DrawerScreen(route = "drawer/faq")
     //오류문의 및 신고
     object Report : DrawerScreen(route = "drawer/report")
+    object Service : DrawerScreen(route = "drawer/service")
+    object PersonalInfo : DrawerScreen(route = "drawer/personalInfo")
+
 
     object ReportSuccess : DrawerScreen(route = "drawer/report/success")
     object ReportList : DrawerScreen(route = "drawer/report/list")
