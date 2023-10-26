@@ -94,16 +94,17 @@ fun SearchScreen(
                     title = categoryTitleList[index].categoryName,
                     previewList = categoryList[index].recipeList,
                     onRecipeItemClick =  onRecipeItemClick,
-                ) {
-                    navController.navigate(
-                        SharedScreen.SearchRecipeCategory.passQuery(
-                            categoryId = index + 1,
-                            keyword = keyword
-                        )
-                    ) {
-                        launchSingleTop = true
+                    onClick = {
+                        navController.navigate(
+                            SharedScreen.SearchRecipeCategory.passQuery(
+                                categoryId = index + 1,
+                                keyword = keyword
+                            )
+                        ) {
+                            launchSingleTop = true
+                        }
                     }
-                }
+                )
             }
 
         }

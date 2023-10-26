@@ -279,6 +279,10 @@ fun NavGraphBuilder.MyNavGraph(
                     onClickHeader = {
                         nickName ->
                         navController.navigate(MyScreen.OtherRecipeListPage.passUserInfo(userId,nickName))
+                    },
+                    onRecipeItemClick = {
+                        id ->
+                        navController.navigate(SharedScreen.DetailRecipe.passRecipeId(id))
                     }
                 )
             }
@@ -296,7 +300,10 @@ fun NavGraphBuilder.MyNavGraph(
 
             if (nickName != null) {
                 OtherRecipeListScreen(
-                    nickName = nickName
+                    nickName = nickName,
+                    onRecipeItemClick =  {
+                        navController.navigate(SharedScreen.DetailRecipe.passRecipeId(it))
+                    }
                 )
             }
         }

@@ -35,11 +35,11 @@ import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
 fun RecipeForOthers(
     nickname : String,
     onClickHeader : () -> Unit,
+    onRecipeItemClick : (Int) -> Unit,
     viewModel : MyForOthersViewModel = hiltViewModel(),
     recipeMainViewModel : RecipeMainViewModel = hiltViewModel()
     ) {
 
-    val profileState = viewModel.profileState
     val recipePreviewState = viewModel.otherRecipePreviewState
     Column(
         modifier = Modifier
@@ -62,6 +62,7 @@ fun RecipeForOthers(
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             if (recipePreviewState.value.isSuccess) {
+
                 items(recipePreviewState.value.recipeList) {
                         item ->
                     var isLiked by rememberSaveable { mutableStateOf(item.isLiked) }
@@ -92,7 +93,9 @@ fun RecipeForOthers(
                             recipeMainViewModel.toggleScrap(item.recipeId)
                             isScraped = !isScraped
                         },
-                        onItemClick = {}
+                        onItemClick = {
+                            onRecipeItemClick(item.recipeId)
+                        }
                     )
 
                 }
