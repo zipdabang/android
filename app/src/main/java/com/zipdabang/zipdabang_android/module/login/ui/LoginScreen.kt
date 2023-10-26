@@ -125,7 +125,7 @@ fun LoginScreen(
             val googleIcon = R.drawable.login_google
             val kakaoIcon = R.drawable.login_kakao
 
-            SplashTitle()
+            SplashTitle(color = ZipdabangandroidTheme.Colors.Choco)
 
             Column(
                 modifier = Modifier

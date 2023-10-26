@@ -26,7 +26,9 @@ import com.zipdabang.zipdabang_android.R
 import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
 
 @Composable
-fun SplashTitle() {
+fun SplashTitle(
+    color: Color
+) {
 
     val splashLogo = R.drawable.zipdabanglogo_transparent_normal
 
@@ -53,7 +55,7 @@ fun SplashTitle() {
                 text = stringResource(R.string.zipdabang_title),
                 fontSize = 60.sp,
                 fontFamily = FontFamily(Font(R.font.cafe24ssurroundair)),
-                color = Color.White,
+                color = color,
                 textAlign = TextAlign.Center
             )
         }
@@ -62,7 +64,7 @@ fun SplashTitle() {
             fontSize = 18.sp,
             fontFamily = FontFamily(Font(R.font.cafe24ssurroundair)),
             fontWeight = FontWeight(300),
-            color = Color.White
+            color = color
         )
     }
 }
@@ -70,5 +72,5 @@ fun SplashTitle() {
 @Preview
 @Composable
 fun SplashTitlePreview() {
-    SplashTitle()
+    SplashTitle(color = Color.White)
 }
