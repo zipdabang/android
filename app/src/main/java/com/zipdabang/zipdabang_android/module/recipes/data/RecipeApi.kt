@@ -81,6 +81,18 @@ interface RecipeApi {
         @Query("pageIndex") pageIndex: Int
     ): RecipeListDto
 
+    @GET("members/recipes/categories/{categoryId}/count")
+    suspend fun getItemCountByCategory(
+        @Header("Authorization") accessToken: String,
+        @Path("categoryId") categoryId: Int
+    ): ResponseBody<Int?>
+
+    @GET("members/recipes/types/count")
+    suspend fun getItemCountByOwnerType(
+        @Header("Authorization") accessToken: String,
+        @Query("writtenby") ownerType: String
+    ): ResponseBody<Int?>
+
     //----------------------------------------------------------------------------------------------
     @GET("members/recipes/{recipeId}")
     suspend fun getRecipeDetail(

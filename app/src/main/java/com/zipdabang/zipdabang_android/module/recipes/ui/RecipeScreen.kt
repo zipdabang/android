@@ -8,6 +8,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -32,6 +33,7 @@ import com.zipdabang.zipdabang_android.ui.component.AppBarHome
 import com.zipdabang.zipdabang_android.ui.component.LoginRequestDialog
 import com.zipdabang.zipdabang_android.ui.component.ModalDrawer
 import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalPagerApi::class)
@@ -75,25 +77,56 @@ fun RecipeScreen(
     val scrapState = viewModel.toggleScrapResult.collectAsState().value
 
     val deviceSize = viewModel.getDeviceSize()
-    val pagerState =  rememberPagerState()
+    val pagerState = rememberPagerState()
+
+    val checkLoggedIn = {
+        if (currentPlatform == CurrentPlatform.TEMP
+            || currentPlatform == CurrentPlatform.NONE) {
+            setShowLoginRequestDialog(true)
+            false
+        } else {
+            true
+        }
+    }
 
     val onLikeClick = { recipeId: Int ->
+        scope.async {
+            viewModel.toggleItemLike(recipeId)
+        }
+    }
+
+    val onScrapClick = { recipeId: Int ->
+        scope.async {
+            viewModel.toggleItemScrap(recipeId)
+        }
+    }
+
+
+/*    val onLikeClick = { recipeId: Int ->
         if (currentPlatform == CurrentPlatform.TEMP
             || currentPlatform == CurrentPlatform.NONE) {
             setShowLoginRequestDialog(true)
         } else {
             viewModel.toggleLike(recipeId = recipeId)
+            Log.d("RecipeScreen", "$likeState")
+            if (likeState.errorMessage != null) {
+                Log.d("RecipeScreen", "my recipe")
+                showSnackbar("레시피에 좋아요를 누를 수 없습니다.")
+            }
         }
-    }
+    }*/
 
-    val onScrapClick = { recipeId: Int ->
+/*    val onScrapClick = { recipeId: Int ->
         if (currentPlatform == CurrentPlatform.TEMP
             || currentPlatform == CurrentPlatform.NONE) {
             setShowLoginRequestDialog(true)
         } else {
             viewModel.toggleScrap(recipeId = recipeId)
+            if (scrapState.errorMessage != null) {
+                showSnackbar("레시피를 스크랩 할 수 없습니다.")
+            }
         }
-    }
+    }*/
 
     LoginRequestDialog(
         showDialog = showLoginRequestDialog,
@@ -110,7 +143,7 @@ fun RecipeScreen(
             borderColor = Color(0xFFB8AFAB),
             backgroundColor = ZipdabangandroidTheme.Colors.BlackSesame,
             textColor = ZipdabangandroidTheme.Colors.Typo,
-            drawable = R.drawable.recipe_category_zipdabang
+            drawable = R.drawable.recipe_category_zipdabang_revised
         ),
         OwnerCategory(
             groupName = OwnerType.BARISTA.type,
@@ -137,6 +170,7 @@ fun RecipeScreen(
             hotItems = hotCoffeeRecipes,
             onRecipeClick = onRecipeClick,
             onBlockedRecipeClick = onBlockedRecipeClick,
+            checkLoggedIn = checkLoggedIn,
             onScrapClick = onScrapClick,
             onLikeClick = onLikeClick,
             likeState = likeState,
@@ -149,6 +183,7 @@ fun RecipeScreen(
             hotItems = hotCaffeineFreeRecipes,
             onRecipeClick = onRecipeClick,
             onBlockedRecipeClick = onBlockedRecipeClick,
+            checkLoggedIn = checkLoggedIn,
             onScrapClick = onScrapClick,
             onLikeClick = onLikeClick,
             likeState = likeState,
@@ -160,6 +195,7 @@ fun RecipeScreen(
         TabItem.Tea(
             hotItems = hotTeaRecipes,
             onRecipeClick = onRecipeClick,
+            checkLoggedIn = checkLoggedIn,
             onBlockedRecipeClick = onBlockedRecipeClick,
             onScrapClick = onScrapClick,
             onLikeClick = onLikeClick,
@@ -172,6 +208,7 @@ fun RecipeScreen(
         TabItem.Ade(
             hotItems = hotAdeRecipes,
             onRecipeClick = onRecipeClick,
+            checkLoggedIn = checkLoggedIn,
             onBlockedRecipeClick = onBlockedRecipeClick,
             onScrapClick = onScrapClick,
             onLikeClick = onLikeClick,
@@ -184,6 +221,7 @@ fun RecipeScreen(
         TabItem.Smoothie(
             hotItems = hotSmoothieRecipes,
             onRecipeClick = onRecipeClick,
+            checkLoggedIn = checkLoggedIn,
             onBlockedRecipeClick = onBlockedRecipeClick,
             onScrapClick = onScrapClick,
             onLikeClick = onLikeClick,
@@ -196,6 +234,7 @@ fun RecipeScreen(
         TabItem.Fruit(
             hotItems = hotFruitRecipes,
             onRecipeClick = onRecipeClick,
+            checkLoggedIn = checkLoggedIn,
             onBlockedRecipeClick = onBlockedRecipeClick,
             onScrapClick = onScrapClick,
             onLikeClick = onLikeClick,
@@ -208,6 +247,7 @@ fun RecipeScreen(
         TabItem.WellBeing(
             hotItems = hotWellBeingRecipes,
             onRecipeClick = onRecipeClick,
+            checkLoggedIn = checkLoggedIn,
             onBlockedRecipeClick = onBlockedRecipeClick,
             onScrapClick = onScrapClick,
             onLikeClick = onLikeClick,
@@ -220,6 +260,7 @@ fun RecipeScreen(
         TabItem.All(
             hotItems = hotAllRecipes,
             onRecipeClick = onRecipeClick,
+            checkLoggedIn = checkLoggedIn,
             onBlockedRecipeClick = onBlockedRecipeClick,
             onScrapClick = onScrapClick,
             onLikeClick = onLikeClick,
@@ -232,7 +273,8 @@ fun RecipeScreen(
     )
 
     if (likeState.errorMessage != null) {
-        showSnackbar(likeState.errorMessage)
+        Log.d("RecipeScreen", likeState.errorMessage!!)
+        showSnackbar(likeState.errorMessage!!)
     }
 
     if (scrapState.errorMessage != null) {
@@ -277,3 +319,4 @@ fun RecipeScreen(
         navController = navController
     )
 }
+

@@ -796,7 +796,18 @@ fun UserInfoScreen(
                                 .size(24.dp, 22.dp)
                                 .padding(4.dp, 0.dp, 0.dp, 4.dp)
                         )
-                        if (stateUserInfo.preferBeverageList.size == 0) {
+                        if (shimmering) {
+                            Text(
+                                modifier = Modifier
+                                    .padding(8.dp, 0.dp, 0.dp, 0.dp)
+                                    .shimmeringEffect()
+                                    .fillMaxWidth(),
+                                text = "",
+                                style = ZipdabangandroidTheme.Typography.sixteen_500,
+                                color = ZipdabangandroidTheme.Colors.Typo,
+                            )
+                        }
+                        else if (stateUserInfo.preferBeverageList.size == 0) {
                             Text(
                                 modifier = Modifier
                                     .padding(8.dp, 0.dp, 0.dp, 0.dp)
@@ -811,17 +822,8 @@ fun UserInfoScreen(
                                 style = ZipdabangandroidTheme.Typography.sixteen_500,
                                 color = ZipdabangandroidTheme.Colors.Typo,
                             )
-                        } else if (shimmering) {
-                            Text(
-                                modifier = Modifier
-                                    .padding(8.dp, 0.dp, 0.dp, 0.dp)
-                                    .shimmeringEffect()
-                                    .fillMaxWidth(),
-                                text = "",
-                                style = ZipdabangandroidTheme.Typography.sixteen_500,
-                                color = ZipdabangandroidTheme.Colors.Typo,
-                            )
-                        } else {
+                        }
+                        else {
                             stateUserInfo.preferBeverageList.take(4)
                                 .forEachIndexed { index, beverage ->
                                     Text(

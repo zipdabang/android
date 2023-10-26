@@ -368,6 +368,7 @@ fun AppBarMy( //내집다방 그라데이션을 위해 특수제작했다고 생
 
 @Composable
 fun AppBarCollapsing(
+    title: String,
     startIcon: ImageBitmap?,
     endIcon: ImageBitmap?,
     imageUrl: String,
@@ -428,11 +429,28 @@ fun AppBarCollapsing(
                         modifier = Modifier
                             .padding(4.dp)
                             .alpha(1f),
-                        tint = if (state.toolbarState.progress > 0) Color.White else Color.Gray
+                        tint = if (state.toolbarState.progress > 0) Color.White else ZipdabangandroidTheme.Colors.Typo
                     )
                 }
             }
 
+            Column(
+                modifier = Modifier.fillMaxWidth().padding(14.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = title,
+                    fontSize = 24.sp,
+                    fontFamily = FontFamily(Font(R.font.cafe24ssurroundair)),
+                    color = ZipdabangandroidTheme.Colors.Typo
+                        .copy(alpha = if (state.toolbarState.progress.toDouble() == 0.0) (1).toFloat() else (0).toFloat()),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier
+                        .padding(top = 4.dp, bottom = 2.dp),
+                    textAlign = TextAlign.Center
+                )
+            }
 
             endIcon?.let {
                 Box(
@@ -454,7 +472,7 @@ fun AppBarCollapsing(
                             modifier = Modifier
                                 .padding(4.dp)
                                 .alpha(1f),
-                            tint = if (state.toolbarState.progress > 0) Color.White else Color.Gray
+                            tint = if (state.toolbarState.progress > 0) Color.White else ZipdabangandroidTheme.Colors.Typo
                         )
                     }
                 }
@@ -668,6 +686,7 @@ fun AppBarMyPreview() {
 @Composable
 fun AppBarCollapsingPreview() {
     AppBarCollapsing(
+        title = "레시피",
         startIcon = loadXmlDrawable(resId = R.drawable.recipe_arrow_left),
         endIcon = loadXmlDrawable(resId = R.drawable.recipe_more_white),
         imageUrl = "https://github.com/kmkim2689/jetpack-compose-practice/assets/101035437/2bb0c4ab-e42b-4697-87c6-2fbe3c836cd7",

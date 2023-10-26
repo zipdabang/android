@@ -151,7 +151,8 @@ fun HomeScreen(
 
                                         }
 
-                                    } else {
+                                    }
+                                    else {
                                         itemsIndexed(recipeState.value.recipeList) { index, item ->
 
                                             var isLiked by rememberSaveable { mutableStateOf(item.isLiked) }

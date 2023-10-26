@@ -12,6 +12,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
@@ -25,9 +26,11 @@ import com.zipdabang.zipdabang_android.R
 import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
 
 @Composable
-fun SplashTitle() {
+fun SplashTitle(
+    color: Color
+) {
 
-    val splashLogo = R.drawable.zipdabanglogo_white
+    val splashLogo = R.drawable.zipdabanglogo_transparent_normal
 
     Column(
         modifier = Modifier
@@ -52,7 +55,7 @@ fun SplashTitle() {
                 text = stringResource(R.string.zipdabang_title),
                 fontSize = 60.sp,
                 fontFamily = FontFamily(Font(R.font.cafe24ssurroundair)),
-                color = ZipdabangandroidTheme.Colors.Latte,
+                color = color,
                 textAlign = TextAlign.Center
             )
         }
@@ -61,13 +64,13 @@ fun SplashTitle() {
             fontSize = 18.sp,
             fontFamily = FontFamily(Font(R.font.cafe24ssurroundair)),
             fontWeight = FontWeight(300),
-            color = ZipdabangandroidTheme.Colors.Latte
+            color = color
         )
     }
 }
 
-@Preview(showBackground = true)
+@Preview
 @Composable
 fun SplashTitlePreview() {
-    SplashTitle()
+    SplashTitle(color = Color.White)
 }

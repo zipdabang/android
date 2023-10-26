@@ -19,6 +19,7 @@ import com.zipdabang.zipdabang_android.module.item.recipe.common.RecipeSort
 import com.zipdabang.zipdabang_android.module.item.recipe.common.RecipeSubtitleState
 import com.zipdabang.zipdabang_android.module.recipes.data.common.RecipeItem
 import com.zipdabang.zipdabang_android.module.recipes.ui.state.PreferenceToggleState
+import kotlinx.coroutines.Deferred
 
 @Composable
 fun RecipeList(
@@ -27,14 +28,16 @@ fun RecipeList(
     category: RecipeSubtitleState,
     sortList: List<RecipeSort>,
     onSortChange: (String) -> Unit,
-    // total: String,
+    total: String,
+    checkLoggedIn: () -> Boolean,
     // 매개변수 명을 content로 해야 composable을 넣을 수 있음
     recipeList: LazyPagingItems<RecipeItem>,
     likeState: PreferenceToggleState,
     scrapState: PreferenceToggleState,
-    onToggleLike: (Int, Int?, String?) -> Unit,
-    onToggleScrap: (Int, Int?, String?) -> Unit,
+    onToggleLike: (Int) -> Deferred<Boolean>,
+    onToggleScrap: (Int) -> Deferred<Boolean>,
     lazyGridState: LazyGridState,
+    showSnackbar: (String) -> Unit,
     content: @Composable() () -> Unit,
 ) {
 
@@ -44,15 +47,17 @@ fun RecipeList(
         RecipeListContent(
             items = recipeList,
             onItemClick = onItemClick,
-            // total = total,
+            total = total,
             sortList = sortList,
             onSortChange = onSortChange,
             category = category,
             likeState = likeState,
             scrapState = scrapState,
+            checkLoggedIn = checkLoggedIn,
             onToggleLike = onToggleLike,
             onToggleScrap = onToggleScrap,
             lazyGridState = lazyGridState,
+            showSnackbar = showSnackbar,
             content = content
         )
     }

@@ -32,6 +32,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -57,8 +58,11 @@ import com.zipdabang.zipdabang_android.module.item.recipe.ui.IconToggle
 import com.zipdabang.zipdabang_android.module.recipes.data.hot.HotRecipeItem
 import com.zipdabang.zipdabang_android.module.recipes.ui.state.PreferenceToggleState
 import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
 
 @Composable
 fun HotRecipeItem(
@@ -67,8 +71,9 @@ fun HotRecipeItem(
     item: HotRecipeItem,
     onRecipeClick: (Int) -> Unit,
     onBlockedRecipeClick: (Int, Int) -> Unit,
-    onScrapClick: (Int) -> Unit,
-    onLikeClick: (Int) -> Unit,
+    checkLoggedIn: () -> Boolean,
+    onScrapClick: (Int) -> Deferred<Boolean>,
+    onLikeClick: (Int) -> Deferred<Boolean>,
     likeState: PreferenceToggleState,
     scrapState: PreferenceToggleState,
     setShowLoginRequestDialog: () -> Unit,
@@ -79,6 +84,8 @@ fun HotRecipeItem(
     var isLiked by remember { mutableStateOf(item.isLiked) }
     var isScraped by remember { mutableStateOf(item.isScrapped) }
     var likes by remember { mutableStateOf(item.likes) }
+
+    val scope = rememberCoroutineScope()
 
     if (likeState.errorMessage != null
         || scrapState.errorMessage != null) {
@@ -114,7 +121,9 @@ fun HotRecipeItem(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Row(
-            modifier = Modifier.padding(start = 8.dp),
+            modifier = Modifier
+                .padding(start = 8.dp)
+                .weight(85f),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
@@ -136,73 +145,70 @@ fun HotRecipeItem(
 
             Spacer(modifier = Modifier.width(12.dp))
 
+
             Column(
-                verticalArrangement = Arrangement.Center
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.Start,
             ) {
-                Column(
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.Start,
+
+                Text(
+                    text = item.nickname,
+                    overflow = TextOverflow.Ellipsis,
+                    style = ZipdabangandroidTheme.Typography.ten_300.copy(letterSpacing = 0.sp)
+                )
+
+                Text(
+                    text = item.recipeName,
+                    overflow = TextOverflow.Ellipsis,
+                    style = ZipdabangandroidTheme.Typography.fourteen_500.copy(letterSpacing = 0.sp),
+                    maxLines = 1
+                )
+
+                Row(
+                    modifier = Modifier,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-
-                    Text(
-                        text = item.nickname,
-                        overflow = TextOverflow.Ellipsis,
-                        style = ZipdabangandroidTheme.Typography.ten_300.copy(letterSpacing = 0.sp)
+                    Icon(
+                        painter = painterResource(id = favoriteCountIcon),
+                        contentDescription = "likes",
+                        tint = ZipdabangandroidTheme.Colors.Strawberry
                     )
 
+                    Spacer(modifier = Modifier.width(2.dp))
+
                     Text(
-                        text = item.recipeName,
-                        overflow = TextOverflow.Ellipsis,
-                        style = ZipdabangandroidTheme.Typography.fourteen_500.copy(letterSpacing = 0.sp)
+                        text = likes.toString(),
+                        style = TextStyle(
+                            color = ZipdabangandroidTheme.Colors.Typo,
+                            fontSize = 8.sp,
+                            fontWeight = FontWeight(300),
+                            fontFamily = FontFamily(Font(R.font.kopubworlddotum_light))
+                        )
                     )
 
-                    Row(
-                        modifier = Modifier,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Icon(
-                            painter = painterResource(id = favoriteCountIcon),
-                            contentDescription = "likes",
-                            tint = ZipdabangandroidTheme.Colors.Strawberry
-                        )
+                    Spacer(modifier = Modifier.width(4.dp))
 
-                        Spacer(modifier = Modifier.width(2.dp))
-
-                        Text(
-                            text = likes.toString(),
-                            style = TextStyle(
-                                color = ZipdabangandroidTheme.Colors.Typo,
-                                fontSize = 8.sp,
-                                fontWeight = FontWeight(300),
-                                fontFamily = FontFamily(Font(R.font.kopubworlddotum_light))
-                            )
+                    Icon(
+                        painter = painterResource(id = commentCountIcon),
+                        contentDescription = "comments",
+                        tint = ZipdabangandroidTheme.Colors.Cream
+                    )
+                    Spacer(modifier = Modifier.width(2.dp))
+                    Text(
+                        text = item.comments.toString(),
+                        style = TextStyle(
+                            color = ZipdabangandroidTheme.Colors.Typo,
+                            fontSize = 8.sp,
+                            fontWeight = FontWeight(300),
+                            fontFamily = FontFamily(Font(R.font.kopubworlddotum_light))
                         )
-
-                        Spacer(modifier = Modifier.width(4.dp))
-
-                        Icon(
-                            painter = painterResource(id = commentCountIcon),
-                            contentDescription = "comments",
-                            tint = ZipdabangandroidTheme.Colors.Cream
-                        )
-                        Spacer(modifier = Modifier.width(2.dp))
-                        Text(
-                            // TODO comment 수 추가하기
-                            text = item.comments.toString(),
-                            style = TextStyle(
-                                color = ZipdabangandroidTheme.Colors.Typo,
-                                fontSize = 8.sp,
-                                fontWeight = FontWeight(300),
-                                fontFamily = FontFamily(Font(R.font.kopubworlddotum_light))
-                            )
-                        )
-                    }
+                    )
                 }
             }
         }
 
         Row(
-            modifier = Modifier,
+            modifier = Modifier.weight(15f),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Box(modifier = Modifier.size(26.dp)) {
@@ -212,14 +218,26 @@ fun HotRecipeItem(
                     checked = isScraped,
                     onClick = {
                         try {
-                            if (currentPlatform != CurrentPlatform.NONE
+                            val isLoggedIn = checkLoggedIn()
+                            if (isLoggedIn) {
+                                scope.launch {
+                                    val isSuccessful = onScrapClick(item.recipeId).await()
+                                    if (isSuccessful) {
+                                        item.isScrapped = !item.isScrapped
+                                        isScraped = item.isScrapped
+                                    } else {
+                                        showSnackbar("레시피를 스크랩할 수 없습니다.")
+                                    }
+                                }
+                            }
+/*                            if (currentPlatform != CurrentPlatform.NONE
                                 && currentPlatform != CurrentPlatform.TEMP) {
                                 onScrapClick(item.recipeId)
                                 item.isScrapped = !item.isScrapped
                                 isScraped = item.isScrapped
                             } else {
                                 onScrapClick(item.recipeId)
-                            }
+                            }*/
                         } catch (e: TogglePreferenceException) {
                             Log.e("HotRecipeItem", "like toggle failure ${e.message}")
                         } catch (e: Exception) {
@@ -239,19 +257,23 @@ fun HotRecipeItem(
                     checked = isLiked,
                     onClick = {
                         try {
-                            if (currentPlatform != CurrentPlatform.NONE
-                                && currentPlatform != CurrentPlatform.TEMP) {
-                                onLikeClick(item.recipeId)
-                                item.isLiked = !item.isLiked
-                                isLiked = item.isLiked
-                                if (isLiked) {
-                                    item.likes += 1
-                                } else {
-                                    item.likes -= 1
+                            val isLoggedIn = checkLoggedIn()
+                            if (isLoggedIn) {
+                                scope.launch {
+                                    val isSuccessful = onLikeClick(item.recipeId).await()
+                                    if (isSuccessful) {
+                                        item.isLiked = !item.isLiked
+                                        isLiked = item.isLiked
+                                        if (isLiked) {
+                                            item.likes += 1
+                                        } else {
+                                            item.likes -= 1
+                                        }
+                                        likes = item.likes
+                                    } else {
+                                        showSnackbar("레시피에 좋아요를 누를 수 없습니다.")
+                                    }
                                 }
-                                likes = item.likes
-                            } else {
-                                onLikeClick(item.recipeId)
                             }
                         } catch (e: TogglePreferenceException) {
                             Log.e("HotRecipeItem", "like toggle failure ${e.message}")
@@ -262,10 +284,7 @@ fun HotRecipeItem(
                     checkedColor = ZipdabangandroidTheme.Colors.Strawberry
                 )
             }
-
         }
-
-
     }
 }
 
@@ -388,17 +407,20 @@ fun HotRecipeItemLoading() {
 @Preview
 @Composable
 fun HotRecipeItemPreview() {
+    val scope = rememberCoroutineScope()
+
     com.zipdabang.zipdabang_android.module.recipes.ui.hot.HotRecipeItem(
         index = 1,
         item = HotRecipeItem(false, false, 1, "false", 1, "dsafs", 1, "https://github.com/zipdabang/android/assets/101035437/3711da12-6056-47df-b177-94ba33bfdecc", 1, false),
         onRecipeClick = { int -> },
         onBlockedRecipeClick = { int, a -> },
-        onScrapClick = { int -> },
-        onLikeClick = { int -> },
+        onScrapClick = { int -> scope.async { true } },
+        onLikeClick = { int -> scope.async { true } },
         likeState = PreferenceToggleState(),
         scrapState = PreferenceToggleState(),
         setShowLoginRequestDialog = {  },
         showSnackbar = { k -> },
-        currentPlatform = CurrentPlatform.NONE
+        currentPlatform = CurrentPlatform.NONE,
+        checkLoggedIn = { true }
     )
 }

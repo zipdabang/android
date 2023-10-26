@@ -35,7 +35,8 @@ import com.zipdabang.zipdabang_android.module.my.ui.viewmodel.RecipeWriteViewMod
 @SuppressLint("CoroutineCreationDuringComposition")
 fun NavGraphBuilder.MyNavGraph(
     navController: NavHostController,
-    outerNavController: NavHostController
+    outerNavController: NavHostController,
+    showSnackBar: (String) -> Unit
 ) {
 
     navigation(startDestination = MyScreen.Home.route, route = MY_ROUTE) {
@@ -115,7 +116,8 @@ fun NavGraphBuilder.MyNavGraph(
                     },
                     onRecipeItemClick = {recipeId->
                         navController.navigate(SharedScreen.DetailRecipe.passRecipeId(recipeId))
-                    }
+                    },
+                    showSnackBar = showSnackBar
                 )
             }
         }
@@ -156,7 +158,8 @@ fun NavGraphBuilder.MyNavGraph(
                 },
                 onClickMyrecipe = {
                     navController.navigate(MyScreen.Myrecipe.route)
-                }
+                },
+                showSnackBar= showSnackBar
             )
         }
         composable(MyScreen.Myrecipe.route) {

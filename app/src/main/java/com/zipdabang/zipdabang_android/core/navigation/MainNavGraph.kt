@@ -34,7 +34,8 @@ fun MainNavGraph(
 
         MyNavGraph(
             navController = innerNavController,
-            outerNavController = outerNavController
+            outerNavController = outerNavController,
+            showSnackBar = showSnackBar
         )
 
         SharedNavGraph(
@@ -43,8 +44,10 @@ fun MainNavGraph(
             showSnackBar = showSnackBar
         )
 
-        DrawerNavGraph(navController = innerNavController,
-            outerNavController= outerNavController)
+        DrawerNavGraph(
+            navController = innerNavController,
+            outerNavController= outerNavController,
+        )
 
 
     }

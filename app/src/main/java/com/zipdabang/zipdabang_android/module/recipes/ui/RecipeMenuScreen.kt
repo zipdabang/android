@@ -37,8 +37,6 @@ fun RecipeMenuScreen(
 
     Box(modifier = Modifier.fillMaxSize()) {
 
-
-
         LazyColumn(
             modifier = modifier
                 .fillMaxSize()
