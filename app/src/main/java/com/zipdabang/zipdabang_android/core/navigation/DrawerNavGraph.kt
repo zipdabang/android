@@ -24,6 +24,8 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.navArgument
 import androidx.navigation.navigation
 import com.zipdabang.zipdabang_android.module.drawer.ui.NoticeScreen
+import com.zipdabang.zipdabang_android.module.drawer.ui.PersonalInfoScreen
+import com.zipdabang.zipdabang_android.module.drawer.ui.ServiceInfoScreen
 import com.zipdabang.zipdabang_android.module.drawer.ui.UserInfoBasicScreen
 import com.zipdabang.zipdabang_android.module.drawer.ui.UserInfoDetailScreen
 import com.zipdabang.zipdabang_android.module.drawer.ui.UserInfoNicknameScreen
@@ -232,7 +234,17 @@ fun NavGraphBuilder.DrawerNavGraph(
                 }
             )
         }
+        composable(DrawerScreen.Service.route){
+            ServiceInfoScreen(navController = navController) {
+                navController.navigateUp()
 
+            }
+        }
+        composable(DrawerScreen.PersonalInfo.route){
+           PersonalInfoScreen(navController = navController) {
+                navController.navigateUp()
+            }
+        }
         composable(DrawerScreen.Quit.route){
            QuitScreen(onQuitClick = { outerNavController.navigate(AuthScreen.SignIn.route) })
         }
