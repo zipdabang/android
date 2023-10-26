@@ -20,6 +20,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -34,6 +35,7 @@ import com.zipdabang.zipdabang_android.module.item.recipe.ui.RecipeCard
 import com.zipdabang.zipdabang_android.module.my.data.remote.friendlist.follow.search.FollowInfoDB
 import com.zipdabang.zipdabang_android.module.my.data.remote.otherinfo.OtherRecipe
 import com.zipdabang.zipdabang_android.module.my.ui.viewmodel.OtherRecipeListViewModel
+import com.zipdabang.zipdabang_android.module.recipes.ui.viewmodel.RecipeMainViewModel
 import com.zipdabang.zipdabang_android.ui.component.AppBarDefault
 import com.zipdabang.zipdabang_android.ui.component.FriendListSearchBar
 import com.zipdabang.zipdabang_android.ui.component.ModalDrawer
@@ -46,7 +48,9 @@ import kotlinx.coroutines.launch
 fun OtherRecipeListScreen(
     nickName : String,
     onClickBack : () -> Unit={},
-    otherRecipeListViewModel: OtherRecipeListViewModel = hiltViewModel()
+    onRecipeItemClick : (Int) -> Unit,
+    otherRecipeListViewModel: OtherRecipeListViewModel = hiltViewModel(),
+    recipeMainViewModel : RecipeMainViewModel= hiltViewModel()
 ){
 
     val drawerState = rememberDrawerState(DrawerValue.Closed)
@@ -104,29 +108,50 @@ fun OtherRecipeListScreen(
                         ){
                         if(!isLoading) {
                             items(recipeListItem.itemCount) {
-
+                                var isLiked by rememberSaveable { mutableStateOf(recipeListItem[it]!!.isLiked) }
+                                var isScraped by rememberSaveable { mutableStateOf(recipeListItem[it]!!.isScrapped) }
+                                var likes by rememberSaveable { mutableStateOf(recipeListItem[it]!!.likes) }
                                 RecipeCard(
                                     recipeId = recipeListItem[it]!!.recipeId,
                                     title = recipeListItem[it]!!.recipeName,
                                     user = recipeListItem[it]!!.nickname,
                                     thumbnail = recipeListItem[it]!!.thumbnailUrl,
                                     date = recipeListItem[it]!!.createdAt,
-                                    likes = recipeListItem[it]!!.likes,
+                                    likes = likes,
                                     comments = recipeListItem[it]!!.comments,
-                                    isLikeSelected = recipeListItem[it]!!.isLiked,
-                                    isScrapSelected = recipeListItem[it]!!.isScrapped,
-                                    onLikeClick = {},
-                                    onScrapClick = {},
-                                    onItemClick = {}
+                                    isLikeSelected = isLiked,
+                                    isScrapSelected = isScraped,
+                                    onLikeClick = {
+                                        id ->
+                                        recipeMainViewModel.toggleLike(id)
+                                        isLiked = !isLiked
+                                        if (isLiked) {
+                                            recipeListItem[it]!!.likes += 1
+                                        } else {
+                                            recipeListItem[it]!!.likes -= 1
+                                        }
+                                        likes =recipeListItem[it]!!.likes
+                                    },
+                                    onScrapClick = {
+                                        id ->
+                                        recipeMainViewModel.toggleScrap(id)
+                                        isScraped = !isScraped
+
+                                    },
+                                    onItemClick = {
+                                        id ->
+                                        onRecipeItemClick(id)
+
+                                    }
                                 )
                             }
                         }else{
 
                            items(10){
                                Box(modifier = Modifier
-                               .width(160.dp)
-                               .height(228.dp)
-                               .shimmeringEffect()
+                                   .width(160.dp)
+                                   .height(228.dp)
+                                   .shimmeringEffect()
                            )
 
 

@@ -120,7 +120,7 @@ fun SearchCategoryScreen(
                         allItems.itemCount
                     ) { index ->
                         var isLiked by rememberSaveable { mutableStateOf(allItems[index]!!.isLiked) }
-                        var isScraped by rememberSaveable { mutableStateOf(allItems[index]!!.isScrapped) }
+                        var isScrapped by rememberSaveable { mutableStateOf(allItems[index]!!.isScrapped) }
                         var likes by rememberSaveable { mutableStateOf(allItems[index]!!.likes) }
                         RecipeCard(
                             recipeId = allItems[index]!!.recipeId,
@@ -128,14 +128,13 @@ fun SearchCategoryScreen(
                             user = allItems[index]!!.nickname,
                             thumbnail = allItems[index]!!.thumbnailUrl,
                             date = allItems[index]!!.createdAt,
-                            likes = allItems[index]!!.likes,
+                            likes = likes,
                             comments = allItems[index]!!.comments,
-                            isLikeSelected = allItems[index]!!.isLiked,
-                            isScrapSelected = allItems[index]!!.isScrapped,
+                            isLikeSelected = isLiked,
+                            isScrapSelected = isScrapped,
                             onLikeClick = {
                                 recipeMainViewModel.toggleLike(allItems[index]!!.recipeId)
                                 isLiked = !isLiked
-                                allItems[index]!!.isLiked = !allItems[index]!!.isLiked
                                 if (isLiked) {
                                     allItems[index]!!.likes += 1
                                 } else {
@@ -144,7 +143,7 @@ fun SearchCategoryScreen(
                                 likes = allItems[index]!!.likes},
                             onScrapClick = {
                                 recipeMainViewModel.toggleScrap(allItems[index]!!.recipeId)
-                                isScraped != isScraped
+                                isScrapped != isScrapped
                                 },
                             onItemClick = { onRecipeItemClick(it) }
                         )

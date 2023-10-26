@@ -9,6 +9,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.foundation.lazy.items
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -23,7 +28,7 @@ fun SearchCategoryPreview(
     previewList: List<SearchRecipe>,
     onRecipeItemClick : (Int) -> Unit,
     onClick: () -> Unit={},
-
+    recipeViewModel : RecipeMainViewModel = hiltViewModel()
 ){
    val mainViewModel = hiltViewModel<RecipeMainViewModel>()
 
@@ -41,30 +46,49 @@ fun SearchCategoryPreview(
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
 
-                    items(previewList.size) {
+                    items(previewList) {
+                            item ->
+                        var isLiked by rememberSaveable { mutableStateOf(item.isLiked) }
+                        var isScraped by rememberSaveable { mutableStateOf(item.isScrapped) }
+                        var likes by rememberSaveable { mutableStateOf(item.likes) }
                         RecipeCard(
-                            recipeId = previewList[it].recipeId,
-                            title = previewList[it].recipeName,
-                            user = previewList[it].nickname,
-                            thumbnail = previewList[it].thumbnailUrl,
-                            date = previewList[it].createdAt,
-                            likes = previewList[it].likes,
-                            comments = previewList[it].comments,
-                            isLikeSelected = previewList[it].isLiked,
-                            isScrapSelected = previewList[it].isScrapped,
-                            onLikeClick = { TODO() },
-                            onScrapClick = { TODO() },
+                            recipeId = item.recipeId,
+                            title = item.recipeName,
+                            user = item.nickname,
+                            thumbnail = item.thumbnailUrl,
+                            date = item.createdAt,
+                            likes = likes,
+                            comments = item.comments,
+                            isLikeSelected = isLiked,
+                            isScrapSelected = isScraped,
+                            onLikeClick = {
+                                recipeViewModel.toggleLike(item.recipeId)
+                                isLiked = !isLiked
+                                item.isLiked = !item.isLiked
+                                if (isLiked) {
+                                    item.likes += 1
+                                } else {
+                                    item.likes -= 1
+                                }
+                                likes = item.likes
+                            },
+                            onScrapClick = {
+                               recipeViewModel.toggleScrap(item.recipeId)
+                                isScraped = !isScraped
+                            },
                             onItemClick = {
-                                onRecipeItemClick(it)
+                                onRecipeItemClick(item.recipeId)
                             }
                         )
+
+                    }
                     }
                 }
                 }
             }
 
 
-        }
+
 
 
 
@@ -91,9 +115,9 @@ fun SearchCategoryPreviewLoading(
                 items(5) {
 
                     Box(modifier = Modifier
-                            .width(160.dp)
-                            .height(228.dp)
-                            .shimmeringEffect()
+                        .width(160.dp)
+                        .height(228.dp)
+                        .shimmeringEffect()
                         )
 
             }

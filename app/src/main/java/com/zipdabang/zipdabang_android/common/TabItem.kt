@@ -444,13 +444,15 @@ sealed class TabItem(val tabTitle: String, val screen: ComposableFun) {
 
     class RecipesForOthers(
         nickname : String,
-        onClickHeader : ()->Unit
-    ) : TabItem(
+        onClickHeader : ()->Unit,
+        onRecipeItemClick : (Int) -> Unit,
+        ) : TabItem(
         tabTitle =  "레시피",
         screen = {
             RecipeForOthers(
                 nickname = nickname,
-                onClickHeader = onClickHeader
+                onClickHeader = onClickHeader,
+                onRecipeItemClick = onRecipeItemClick
             )
         }
     )

@@ -58,6 +58,7 @@ fun MyScreenForOther(
     navController : NavController,
     userId : Int,
     onClickHeader : (String) -> Unit,
+    onRecipeItemClick : (Int) -> Unit,
     viewModel : MyForOthersViewModel = hiltViewModel()
 ) {
 
@@ -261,6 +262,9 @@ fun MyScreenForOther(
                                             nickname = commonInfoState.value.nickName,
                                             onClickHeader = {
                                                 onClickHeader(commonInfoState.value.nickName)
+                                            },
+                                            onRecipeItemClick = {
+                                                onRecipeItemClick(it)
                                             }
                                         )
                                     ),

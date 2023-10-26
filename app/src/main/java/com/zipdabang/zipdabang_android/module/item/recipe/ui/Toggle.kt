@@ -46,7 +46,7 @@ fun IconToggle(
                 if (checked) painterResource(id = iconChecked)
                 else painterResource(id = iconNotChecked),
             contentDescription = "toggle",
-            tint = if (checked) checkedColor else LocalContentColor.current,
+            tint = if (checked) checkedColor else Color.Unspecified,
             modifier = Modifier.size(20.dp)
         )
 
