@@ -166,7 +166,7 @@ class FirebaseCloudMessagingService: FirebaseMessagingService() {
         */
         val notificationBuilder =
             NotificationCompat.Builder(this@FirebaseCloudMessagingService, channelId)
-                .setSmallIcon(R.drawable.zipdabang_logo_transparent)
+                .setSmallIcon(R.drawable.notification_icon)
 /*                .setLargeIcon(
                     BitmapFactory.decodeResource(
                         resources,
