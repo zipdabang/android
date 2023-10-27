@@ -30,6 +30,16 @@ fun RecipeInfoPage(
         item {
             Spacer(modifier = Modifier.height(20.dp))
 
+            RecipeTimeExpected(time = recipeDetailState?.time ?: "알 수 없음")
+
+            Divider(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 20.dp)
+                    .height(1.dp),
+                color = Color(0x1A262D31)
+            )
+
             RecipeIngredients(
                 ingredients = recipeDetailState?.recipeIngredients ?: emptyList()
             )
