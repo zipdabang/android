@@ -50,6 +50,7 @@ fun NavGraphBuilder.DrawerNavGraph(
         composable(DrawerScreen.Notice.route){
            NoticeScreen(navController, onClickBack = {})
         }
+
         composable(DrawerScreen.Report.route){
           ErrorReportScreen(
               isReportSuccess = { navController.navigate(DrawerScreen.ReportSuccess.route) })
@@ -62,6 +63,7 @@ fun NavGraphBuilder.DrawerNavGraph(
             }
             )
         }
+
         composable(
             route = DrawerScreen.ReportDetail.route,
             arguments =  listOf(navArgument(name = "reportId")
@@ -234,17 +236,20 @@ fun NavGraphBuilder.DrawerNavGraph(
                 }
             )
         }
+
         composable(DrawerScreen.Service.route){
             ServiceInfoScreen(navController = navController) {
                 navController.navigateUp()
 
             }
         }
+
         composable(DrawerScreen.PersonalInfo.route){
            PersonalInfoScreen(navController = navController) {
                 navController.navigateUp()
             }
         }
+
         composable(DrawerScreen.Quit.route){
            QuitScreen(onQuitClick = { outerNavController.navigate(AuthScreen.SignIn.route) })
         }
