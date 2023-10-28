@@ -11,12 +11,10 @@ import com.zipdabang.zipdabang_android.common.Constants
 import com.zipdabang.zipdabang_android.common.Resource
 import com.zipdabang.zipdabang_android.core.data_store.proto.CurrentPlatform
 import com.zipdabang.zipdabang_android.core.data_store.proto.Token
-import com.zipdabang.zipdabang_android.module.drawer.data.remote.userinfodto.UserInfoBasicRequest
-import com.zipdabang.zipdabang_android.module.drawer.data.remote.userinfodto.UserInfoDetailRequest
-import com.zipdabang.zipdabang_android.module.drawer.data.remote.userinfodto.UserInfoEditResponse
-import com.zipdabang.zipdabang_android.module.drawer.data.remote.userinfodto.UserInfoEditResult
-import com.zipdabang.zipdabang_android.module.drawer.data.remote.userinfodto.UserInfoNicknameRequest
-import com.zipdabang.zipdabang_android.module.drawer.data.remote.userinfodto.UserInfoPreferencesRequest
+import com.zipdabang.zipdabang_android.module.drawer.data.remote.userinfo.UserInfoBasicRequest
+import com.zipdabang.zipdabang_android.module.drawer.data.remote.userinfo.UserInfoDetailRequest
+import com.zipdabang.zipdabang_android.module.drawer.data.remote.userinfo.UserInfoNicknameRequest
+import com.zipdabang.zipdabang_android.module.drawer.data.remote.userinfo.UserInfoPreferencesRequest
 import com.zipdabang.zipdabang_android.module.drawer.domain.usecase.GetUserInfoUseCase
 import com.zipdabang.zipdabang_android.module.drawer.domain.usecase.PatchUserInfoBasicUseCase
 import com.zipdabang.zipdabang_android.module.drawer.domain.usecase.PatchUserInfoDefaultProfileUseCase
@@ -48,27 +46,24 @@ import com.zipdabang.zipdabang_android.module.sign_up.domain.usecase.PostPhoneSm
 import com.zipdabang.zipdabang_android.module.sign_up.domain.usecase.ValidateBirthdayUseCase
 import com.zipdabang.zipdabang_android.module.sign_up.domain.usecase.ValidateNicknameUseCase
 import com.zipdabang.zipdabang_android.module.sign_up.domain.usecase.ValidatePhoneUseCase
+import com.zipdabang.zipdabang_android.module.sign_up.ui.state.NicknameFormState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.single
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.suspendCancellableCoroutine
 import okhttp3.MultipartBody
 import javax.inject.Inject
 
 @HiltViewModel
 class DrawerUserInfoViewModel @Inject constructor(
     private val getUserInfoUseCase: GetUserInfoUseCase,
-    private val getNicknameUseCase: GetNicknameUseCase,
+    private val getNicknameUseCase: com.zipdabang.zipdabang_android.module.drawer.domain.usecase.GetNicknameUseCase,
     private val getBeveragesUseCase: GetBeveragesUseCase,
-    private val postPhoneSmsUseCase: PostPhoneSmsUseCase,
-    private val postAuthUseCase: PostAuthUseCase,
+    private val postPhoneSmsUseCase: com.zipdabang.zipdabang_android.module.drawer.domain.usecase.PostPhoneSmsUseCase,
+    private val postAuthUseCase: com.zipdabang.zipdabang_android.module.drawer.domain.usecase.PostAuthUseCase,
     private val patchUserInfoBasicUseCase: PatchUserInfoBasicUseCase,
     private val patchUserInfoDetailUseCase: PatchUserInfoDetailUseCase,
     private val patchUserInfoNicknameUseCase: PatchUserInfoNicknameUseCase,
@@ -159,7 +154,7 @@ class DrawerUserInfoViewModel @Inject constructor(
 
             is UserInfoBasicEvent.AuthNumberClicked -> {
                 //전화번호 여기 주석 풀어
-                //postAuthNumber()
+                postAuthNumber()
                 stateUserInfoBasic = stateUserInfoBasic.copy(
                     phoneNumberCorrectMessage = "",
                     phoneNumberIsCorrect = false,
@@ -200,7 +195,7 @@ class DrawerUserInfoViewModel @Inject constructor(
 
         if (phonenumberResult.successful) {
             //전화번호 여기 주석 풀어
-            //postPhonenumber() //api 호출
+            postPhonenumber() //api 호출
         } else {
             stateUserInfoBasic = stateUserInfoBasic.copy(
                 phoneNumberIsTried = true,
@@ -379,7 +374,17 @@ class DrawerUserInfoViewModel @Inject constructor(
             stateUserInfoBasic = stateUserInfoBasic.copy(gender = stateUserInfo.gender)
         }
         if (stateUserInfo.phoneNumber != stateUserInfoBasic.phoneNumber) {
-            stateUserInfoBasic = stateUserInfoBasic.copy(phoneNumber = stateUserInfo.phoneNumber)
+            stateUserInfoBasic = stateUserInfoBasic.copy(
+                phoneNumber = stateUserInfo.phoneNumber,
+                phoneNumberIsTried = false,
+
+                authNumber = "",
+                authNumberIsTried = false,
+                authNumberCorrectMessage = "",
+                authNumberErrorMessage = "",
+                authNumberIsError = false,
+                authNumberIsCorrect = false,
+            )
         }
 
         if (stateUserInfo.zipcode != stateUserInfoDetail.zipCode) {
@@ -428,7 +433,7 @@ class DrawerUserInfoViewModel @Inject constructor(
 
     suspend fun getUserInfo() {
         val accessToken = "Bearer " + dataStore.data.first().accessToken ?: Constants.TOKEN_NULL
-        //Log.e("drawer-userinfo-viewmodel","${accessToken}")
+
         getUserInfoUseCase(
             accessToken
         ).onEach { result ->
@@ -664,7 +669,8 @@ class DrawerUserInfoViewModel @Inject constructor(
                             successMessage = result.data?.message ?: "",
                             btnEnabled = true
                         )
-                    } else { //닉네임 불가능, 2052:닉네임 중복, 4019:형식, 4020:욕
+                    }
+                    else if (result?.data?.code ?: 0 == 2052) { //닉네임 중복
                         stateUserInfoNickname = stateUserInfoNickname.copy(
                             nickname = stateUserInfoNickname.nickname,
                             isTried = true,
@@ -674,7 +680,17 @@ class DrawerUserInfoViewModel @Inject constructor(
                             btnEnabled = false
                         )
                     }
-                    Log.e("nickname-viewmodel", "${stateUserInfoNickname}")
+                    else { //닉네임 불가능, 4019:형식, 4020:욕
+                        stateUserInfoNickname = stateUserInfoNickname.copy(
+                            nickname = stateUserInfoNickname.nickname,
+                            isTried = true,
+                            isSuccess = false,
+                            isError = true,
+                            errorMessage = result.data?.message ?: "",
+                            btnEnabled = false
+                        )
+                    }
+                    Log.e("nickname-viewmodel", "${result.message} ${result.code} ${result.data}")
                 }
 
                 is Resource.Error -> {

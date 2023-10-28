@@ -4,12 +4,10 @@ import android.util.Log
 import com.zipdabang.zipdabang_android.common.Resource
 import com.zipdabang.zipdabang_android.common.ResponseCode
 import com.zipdabang.zipdabang_android.common.getErrorCode
-import com.zipdabang.zipdabang_android.module.drawer.data.remote.userinfodto.UserInfoEditResponse
-import com.zipdabang.zipdabang_android.module.drawer.data.remote.userinfodto.UserInfoEditResult
+import com.zipdabang.zipdabang_android.module.drawer.data.remote.userinfo.UserInfoEditResponse
 import com.zipdabang.zipdabang_android.module.drawer.domain.repository.DrawerRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import okhttp3.MultipartBody
 import retrofit2.HttpException
 import java.io.IOException
 import java.util.concurrent.CancellationException
@@ -41,8 +39,8 @@ class PatchUserInfoDefaultProfileUseCase @Inject constructor(
             }
         } catch (e: HttpException) {
             val errorBody = e.response()?.errorBody()
-            Log.e("DRAWER_PATCH_USERINFOPROFILE", errorBody?.string() ?: "error body is null")
             val errorCode = errorBody?.getErrorCode()
+
             errorCode?.let {
                 emit(Resource.Error(message = ResponseCode.getMessageByCode(errorCode)))
                 return@flow

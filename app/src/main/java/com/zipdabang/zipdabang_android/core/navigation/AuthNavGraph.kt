@@ -29,6 +29,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
+
 fun NavGraphBuilder.authNavGraph(navController: NavHostController) {
     navigation(startDestination = AuthScreen.SignIn.route, route = AUTH_ROUTE) {
         composable(route = AuthScreen.SignIn.route) { navBackStackEntry ->
@@ -122,6 +123,7 @@ fun NavGraphBuilder.authNavGraph(navController: NavHostController) {
         composable(route = AuthScreen.TermDetail.route + "/{termIndex}") { navBackStackEntry ->
             val termIndex = navBackStackEntry.arguments?.getString("termIndex")?.toIntOrNull() ?: 0
             val authSharedViewModel = navBackStackEntry.authSharedViewModel<AuthSharedViewModel>(navController = navController)
+
             TermDetailScreen(
                 navController = navController,
                 authSharedViewModel = authSharedViewModel,

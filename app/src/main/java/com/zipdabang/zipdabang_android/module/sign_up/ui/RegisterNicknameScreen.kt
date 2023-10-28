@@ -32,6 +32,7 @@ import com.zipdabang.zipdabang_android.module.sign_up.ui.state.NicknameFormEvent
 import com.zipdabang.zipdabang_android.ui.component.AppBarSignUp
 import com.zipdabang.zipdabang_android.ui.component.PrimaryButtonOutLined
 import com.zipdabang.zipdabang_android.ui.component.PrimaryButtonWithStatus
+import com.zipdabang.zipdabang_android.ui.component.PrimaryButtonWithStatusForSignup
 import com.zipdabang.zipdabang_android.ui.component.TextFieldErrorAndCorrectIcon
 import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
 
@@ -146,7 +147,7 @@ fun RegisterNicknameScreen(
                 contentAlignment = Alignment.BottomCenter,
                 modifier = Modifier.padding(16.dp,0.dp,16.dp, 12.dp)
             ){
-                PrimaryButtonWithStatus(
+                PrimaryButtonWithStatusForSignup(
                     text= stringResource(id = R.string.signup_btn_inputdone),
                     onClick={ onClickNext() },
                     isFormFilled = stateNicknameForm.btnEnabled

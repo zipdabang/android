@@ -11,6 +11,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Text
 import androidx.compose.material3.Divider
@@ -20,6 +22,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -42,6 +45,7 @@ fun TermDetailScreen(
     termIndex : Int,
 ) {
     val stateTermsForm = authSharedViewModel.stateTermsForm
+    val scrollState = rememberScrollState()
 
     Scaffold(
         modifier = Modifier
@@ -50,7 +54,7 @@ fun TermDetailScreen(
             AppBarSignUp(
                 navigationIcon = R.drawable.ic_topbar_backbtn,
                 onClickNavIcon = {
-                                 onClickBack()
+                   onClickBack()
                 },
                 centerText = stringResource(id = R.string.signup)
             )
@@ -66,18 +70,38 @@ fun TermDetailScreen(
                 modifier = Modifier
                     .padding(16.dp, 10.dp, 16.dp, 0.dp)
                     .background(Color.White)
-                    .fillMaxSize(),
+                    .fillMaxSize()
+                    .verticalScroll(scrollState),
             ){
-                MainAndSubTitle(
-                    mainValue = stringResource(id = R.string.signup_terms_maintitle),
-                    mainTextStyle = ZipdabangandroidTheme.Typography.twentytwo_700,
-                    mainTextColor = ZipdabangandroidTheme.Colors.Typo,
-                    subValue = stateTermsForm.termsList[termIndex].termsTitle,
-                    subTextStyle = ZipdabangandroidTheme.Typography.sixteen_300,
-                    subTextColor =  ZipdabangandroidTheme.Colors.Typo
+                Text(
+                    text = stringResource(id = R.string.signup_terms_requiredone_title),
+                    style = ZipdabangandroidTheme.Typography.twentytwo_700,
+                    color = ZipdabangandroidTheme.Colors.Typo,
+                    modifier = Modifier.padding(0.dp, 0.dp, 0.dp, 10.dp)
                 )
 
+                for (i in 1..23) {
+                    Box(
+                        modifier = Modifier.padding(0.dp, 0.dp, 0.dp, 10.dp)
+                    ){
+                        MainAndSubTitle(
+                            mainValue = stringResource(id = getResourceId("signup_terms_requiredone_${i}_title")),
+                            mainTextStyle = ZipdabangandroidTheme.Typography.twelve_700,
+                            mainTextColor = ZipdabangandroidTheme.Colors.Typo,
+                            subValue = stringResource(id = getResourceId("signup_terms_requiredone_${i}_sub")),
+                            subTextStyle = ZipdabangandroidTheme.Typography.twelve_300,
+                            subTextColor = ZipdabangandroidTheme.Colors.Typo
+                        )
+                    }
+                }
             }
         }
     }
+}
+
+@Composable
+fun getResourceId(resourceName: String): Int {
+    val context = LocalContext.current
+    val packageName = context.packageName
+    return context.resources.getIdentifier(resourceName, "string", packageName)
 }

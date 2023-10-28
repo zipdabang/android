@@ -41,6 +41,7 @@ import com.zipdabang.zipdabang_android.ui.component.AppBarSignUp
 import com.zipdabang.zipdabang_android.ui.component.MainAndSubTitle
 import com.zipdabang.zipdabang_android.ui.component.PrimaryButtonOutLined
 import com.zipdabang.zipdabang_android.ui.component.PrimaryButtonWithStatus
+import com.zipdabang.zipdabang_android.ui.component.PrimaryButtonWithStatusForSignup
 import com.zipdabang.zipdabang_android.ui.component.TextFieldError
 import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
 
@@ -217,7 +218,7 @@ fun RegisterUserAddressScreen(
                 contentAlignment = Alignment.BottomCenter,
                 modifier = Modifier.padding(16.dp,0.dp,16.dp, 12.dp)
             ){
-                PrimaryButtonWithStatus(
+                PrimaryButtonWithStatusForSignup(
                     text= stringResource(id = R.string.signup_btn_inputdone),
                     onClick={ onClickNext() },
                     isFormFilled = stateUserAddressForm.btnEnabled
