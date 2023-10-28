@@ -28,6 +28,7 @@ import com.zipdabang.zipdabang_android.core.data_store.proto.CurrentPlatform
 import com.zipdabang.zipdabang_android.module.item.recipe.common.RecipeSort
 import com.zipdabang.zipdabang_android.module.item.recipe.common.RecipeSubtitleState
 import com.zipdabang.zipdabang_android.module.recipes.common.OwnerType
+import com.zipdabang.zipdabang_android.module.recipes.common.QueryType
 import com.zipdabang.zipdabang_android.module.recipes.ui.viewmodel.RecipeListViewModel
 import com.zipdabang.zipdabang_android.ui.component.AppBarWithFullFunction
 import com.zipdabang.zipdabang_android.ui.component.FloatingActionButton
@@ -62,6 +63,14 @@ fun RecipeListScreen(
         derivedStateOf {
             viewModel.total.value.toString()
         }
+    }
+
+    val queryType = if (categoryState.categoryId == -1 && categoryState.ownerType != null) {
+        viewModel.getOwnerItemCount(categoryState.ownerType)
+        QueryType.OWNER
+    } else {
+        viewModel.getCategoryItemCount(categoryState.categoryId!!)
+        QueryType.CATEGORY
     }
 
 
@@ -108,22 +117,24 @@ fun RecipeListScreen(
         }
     }
 
-    val recipeList =
-        if (categoryState.categoryId == -1 && categoryState.ownerType != null) {
+    val recipeList = when (queryType) {
+        QueryType.OWNER -> {
             Log.d("RecipeList", "ownerType")
-            viewModel.getOwnerItemCount(categoryState.ownerType)
             viewModel.getRecipeListByOwnerType(
-                ownerType = categoryState.ownerType,
-                orderBy = sortBy
-            ).collectAsLazyPagingItems()
-        } else {
-            Log.d("RecipeList", "category type")
-            viewModel.getCategoryItemCount(categoryState.categoryId!!)
-            viewModel.getRecipeListByCategory(
-                categoryId = categoryState.categoryId!!,
+                ownerType = categoryState.ownerType!!,
                 orderBy = sortBy
             ).collectAsLazyPagingItems()
         }
+
+        QueryType.CATEGORY -> {
+            Log.d("RecipeList", "category type")
+            viewModel.getRecipeListByCategory(
+                categoryId = categoryState.categoryId,
+                orderBy = sortBy
+            ).collectAsLazyPagingItems()
+        }
+    }
+
 
     val lazyGridState = rememberLazyGridState()
 
@@ -169,7 +180,7 @@ fun RecipeListScreen(
                                     0 -> "전체"
                                     1 -> "커피"
                                     2 -> "논카페인"
-                                    3 -> "티"
+                                    3 -> "차(Tea)"
                                     4 -> "에이드"
                                     5 -> "스무디"
                                     6 -> "과일 음료"

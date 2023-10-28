@@ -14,6 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.zipdabang.zipdabang_android.module.item.recipe.ui.RecipeCategory
 import com.zipdabang.zipdabang_android.module.item.recipe.ui.RecipeCategoryLoading
 import com.zipdabang.zipdabang_android.module.recipes.data.category.BeverageCategory
 import com.zipdabang.zipdabang_android.module.recipes.ui.state.RecipeCategoryState
@@ -46,7 +47,7 @@ fun RecipeCategoryList(
         } else {
             categoryItems?.let { categoryList ->
                 categoryList.forEach {
-                    com.zipdabang.zipdabang_android.module.item.recipe.ui.RecipeCategory(
+                    RecipeCategory(
                         categoryTitle = it.categoryName,
                         categoryId = it.id,
                         imageUrl = it.imageUrl ?: "",

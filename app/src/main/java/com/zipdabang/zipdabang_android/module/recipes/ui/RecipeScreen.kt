@@ -72,32 +72,40 @@ fun RecipeScreen(
 
     val banners = viewModel.banners.value
     val categories = viewModel.categoryList.value
-
+    Log.i("RecipeScreen", "$categories")
+/*
     val likeState = viewModel.toggleLikeResult.collectAsState().value
     val scrapState = viewModel.toggleScrapResult.collectAsState().value
+*/
 
     val deviceSize = viewModel.getDeviceSize()
     val pagerState = rememberPagerState()
 
-    val checkLoggedIn = {
-        if (currentPlatform == CurrentPlatform.TEMP
-            || currentPlatform == CurrentPlatform.NONE) {
-            setShowLoginRequestDialog(true)
-            false
-        } else {
-            true
+    val checkLoggedIn = remember {
+        {
+            if (currentPlatform == CurrentPlatform.TEMP
+                || currentPlatform == CurrentPlatform.NONE) {
+                setShowLoginRequestDialog(true)
+                false
+            } else {
+                true
+            }
         }
     }
 
-    val onLikeClick = { recipeId: Int ->
-        scope.async {
-            viewModel.toggleItemLike(recipeId)
+    val onLikeClick = remember {
+        { recipeId: Int ->
+            scope.async {
+                viewModel.toggleItemLike(recipeId)
+            }
         }
     }
 
-    val onScrapClick = { recipeId: Int ->
-        scope.async {
-            viewModel.toggleItemScrap(recipeId)
+    val onScrapClick = remember {
+        { recipeId: Int ->
+            scope.async {
+                viewModel.toggleItemScrap(recipeId)
+            }
         }
     }
 
@@ -173,10 +181,6 @@ fun RecipeScreen(
             checkLoggedIn = checkLoggedIn,
             onScrapClick = onScrapClick,
             onLikeClick = onLikeClick,
-            likeState = likeState,
-            scrapState = scrapState,
-            setShowLoginRequestDialog = onLoginRequest,
-            currentPlatform = currentPlatform,
             showSnackbar = showSnackbar
         ),
         TabItem.CaffeineFree(
@@ -186,10 +190,6 @@ fun RecipeScreen(
             checkLoggedIn = checkLoggedIn,
             onScrapClick = onScrapClick,
             onLikeClick = onLikeClick,
-            likeState = likeState,
-            scrapState = scrapState,
-            currentPlatform = currentPlatform,
-            onLoginRequest = onLoginRequest,
             showSnackbar = showSnackbar
         ),
         TabItem.Tea(
@@ -199,10 +199,6 @@ fun RecipeScreen(
             onBlockedRecipeClick = onBlockedRecipeClick,
             onScrapClick = onScrapClick,
             onLikeClick = onLikeClick,
-            likeState = likeState,
-            scrapState = scrapState,
-            currentPlatform = currentPlatform,
-            onLoginRequest = onLoginRequest,
             showSnackbar = showSnackbar
         ),
         TabItem.Ade(
@@ -212,10 +208,6 @@ fun RecipeScreen(
             onBlockedRecipeClick = onBlockedRecipeClick,
             onScrapClick = onScrapClick,
             onLikeClick = onLikeClick,
-            likeState = likeState,
-            scrapState = scrapState,
-            currentPlatform = currentPlatform,
-            onLoginRequest = onLoginRequest,
             showSnackbar = showSnackbar
         ),
         TabItem.Smoothie(
@@ -225,10 +217,6 @@ fun RecipeScreen(
             onBlockedRecipeClick = onBlockedRecipeClick,
             onScrapClick = onScrapClick,
             onLikeClick = onLikeClick,
-            likeState = likeState,
-            scrapState = scrapState,
-            currentPlatform = currentPlatform,
-            onLoginRequest = onLoginRequest,
             showSnackbar = showSnackbar
         ),
         TabItem.Fruit(
@@ -238,10 +226,6 @@ fun RecipeScreen(
             onBlockedRecipeClick = onBlockedRecipeClick,
             onScrapClick = onScrapClick,
             onLikeClick = onLikeClick,
-            likeState = likeState,
-            scrapState = scrapState,
-            currentPlatform = currentPlatform,
-            onLoginRequest = onLoginRequest,
             showSnackbar = showSnackbar
         ),
         TabItem.WellBeing(
@@ -251,10 +235,6 @@ fun RecipeScreen(
             onBlockedRecipeClick = onBlockedRecipeClick,
             onScrapClick = onScrapClick,
             onLikeClick = onLikeClick,
-            likeState = likeState,
-            scrapState = scrapState,
-            currentPlatform = currentPlatform,
-            onLoginRequest = onLoginRequest,
             showSnackbar = showSnackbar
         ),
         TabItem.All(
@@ -264,22 +244,18 @@ fun RecipeScreen(
             onBlockedRecipeClick = onBlockedRecipeClick,
             onScrapClick = onScrapClick,
             onLikeClick = onLikeClick,
-            likeState = likeState,
-            scrapState = scrapState,
-            currentPlatform = currentPlatform,
-            onLoginRequest = onLoginRequest,
             showSnackbar = showSnackbar
         )
     )
 
-    if (likeState.errorMessage != null) {
+/*    if (likeState.errorMessage != null) {
         Log.d("RecipeScreen", likeState.errorMessage!!)
         showSnackbar(likeState.errorMessage!!)
     }
 
     if (scrapState.errorMessage != null) {
         showSnackbar(scrapState.errorMessage)
-    }
+    }*/
 
     ModalDrawer(
         scaffold = {

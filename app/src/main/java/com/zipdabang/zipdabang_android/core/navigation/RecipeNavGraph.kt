@@ -24,6 +24,8 @@ fun NavGraphBuilder.RecipeNavGraph(
     navigation(startDestination = RecipeScreen.Home.route, route = RECIPES_ROUTE) {
         composable(RecipeScreen.Home.route) {
 
+            // val searchViewModel = hiltViewModel<SearchViewModel>()
+
             var showLoginRequestDialog by remember {
                 mutableStateOf(false)
             }
@@ -61,7 +63,12 @@ fun NavGraphBuilder.RecipeNavGraph(
                     }
                 },
                 onBannerClick = { keyword ->
-
+                    // TODO keyword(검색 키워드) 활용하여 검색 화면으로 이동
+                    navController.navigate(
+                        route = SharedScreen.Search.route
+                    ) {
+                        launchSingleTop = true
+                    }
                 },
                 onLoginRequest = {
                     outerNavController.navigate(AUTH_ROUTE){

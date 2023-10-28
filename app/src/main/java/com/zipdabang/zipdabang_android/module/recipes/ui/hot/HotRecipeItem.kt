@@ -74,10 +74,6 @@ fun HotRecipeItem(
     checkLoggedIn: () -> Boolean,
     onScrapClick: (Int) -> Deferred<Boolean>,
     onLikeClick: (Int) -> Deferred<Boolean>,
-    likeState: PreferenceToggleState,
-    scrapState: PreferenceToggleState,
-    setShowLoginRequestDialog: () -> Unit,
-    currentPlatform: CurrentPlatform,
     showSnackbar: (String) -> Unit
 ) {
 
@@ -86,15 +82,6 @@ fun HotRecipeItem(
     var likes by remember { mutableStateOf(item.likes) }
 
     val scope = rememberCoroutineScope()
-
-    if (likeState.errorMessage != null
-        || scrapState.errorMessage != null) {
-        throw TogglePreferenceException
-    }
-
-    if (likeState.isLoading || likeState.isLoading) {
-        CircularProgressIndicator(color = ZipdabangandroidTheme.Colors.Strawberry)
-    }
 
     val scrapChecked = R.drawable.recipe_bookmark_checked
     val scrapNotChecked = R.drawable.recipe_bookmark_normal
@@ -416,11 +403,7 @@ fun HotRecipeItemPreview() {
         onBlockedRecipeClick = { int, a -> },
         onScrapClick = { int -> scope.async { true } },
         onLikeClick = { int -> scope.async { true } },
-        likeState = PreferenceToggleState(),
-        scrapState = PreferenceToggleState(),
-        setShowLoginRequestDialog = {  },
         showSnackbar = { k -> },
-        currentPlatform = CurrentPlatform.NONE,
         checkLoggedIn = { true }
     )
 }
