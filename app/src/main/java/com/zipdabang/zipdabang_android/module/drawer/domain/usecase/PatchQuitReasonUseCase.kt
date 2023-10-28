@@ -7,10 +7,6 @@ import com.zipdabang.zipdabang_android.common.Resource
 import com.zipdabang.zipdabang_android.common.getErrorCode
 import com.zipdabang.zipdabang_android.core.data_store.proto.Token
 import com.zipdabang.zipdabang_android.module.drawer.data.remote.quitdto.QuitDto
-import com.zipdabang.zipdabang_android.module.drawer.data.remote.quitdto.QuitRequest
-import com.zipdabang.zipdabang_android.module.drawer.data.remote.quitdto.QuitResult
-import com.zipdabang.zipdabang_android.module.drawer.data.remote.userinfodto.UserInfoBasicRequest
-import com.zipdabang.zipdabang_android.module.drawer.data.remote.userinfodto.UserInfoEditResult
 import com.zipdabang.zipdabang_android.module.drawer.domain.repository.DrawerRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first

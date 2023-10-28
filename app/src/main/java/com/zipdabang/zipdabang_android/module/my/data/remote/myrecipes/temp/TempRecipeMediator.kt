@@ -100,7 +100,7 @@ class TempRecipeMediator @Inject constructor(
 
                 errorCode?.let{
                     if(errorCode==4055){
-                        Log.e("my_temprecipes_api 실패2", errorBody.toString())
+                        Log.e("my_temprecipes_api 실패2", "")
                         myTempRecipesDao.deleteItems()
                         RemoteKeyDao.deleteRemoteKeys()
                         MediatorResult.Success(endOfPaginationReached = true)
@@ -121,7 +121,7 @@ class TempRecipeMediator @Inject constructor(
             val prevPage = if (currentPage == 1) null else currentPage -1
             val nextPage = if (endOfPaginationReached) null else currentPage + 1
 
-            paging3Database.withTransaction {
+            /*paging3Database.withTransaction {
                 if (loadType == LoadType.REFRESH) {
                     myTempRecipesDao.deleteItems()
                     RemoteKeyDao.deleteRemoteKeys()
@@ -135,7 +135,7 @@ class TempRecipeMediator @Inject constructor(
                 }
                 myTempRecipesDao.addItems(responseMapList)
                 RemoteKeyDao.addAllRemoteKeys(keys)
-            }
+            }*/
 
 
             MediatorResult.Success(endOfPaginationReached = endOfPaginationReached!!)

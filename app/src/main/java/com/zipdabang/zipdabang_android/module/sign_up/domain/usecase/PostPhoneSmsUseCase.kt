@@ -17,62 +17,34 @@ import javax.inject.Inject
 
 class PostPhoneSmsUseCase @Inject constructor(
     private val repository : SignUpRepository,
-    private val repositoryDrawer : DrawerRepository
 ) {
     operator fun invoke(phoneNumber : PhoneRequest) : Flow<Resource<AuthResponse>> = flow{
         try{
             emit(Resource.Loading())
-            val resultSignup = repository.postPhoneSms(phoneRequest = phoneNumber)
-            val resultDrawer = repositoryDrawer.postPhoneSms(phoneRequest = phoneNumber)
+            val result = repository.postPhoneSms(phoneRequest = phoneNumber)
 
-            when(resultSignup.code) {
+            when(result.code) {
                 ResponseCode.RESPONSE_DEFAULT.code ->{
                     emit(
                         Resource.Success(
-                            data = resultSignup,
-                            code = resultSignup.code,
-                            message = resultSignup.message
+                            data = result,
+                            code = result.code,
+                            message = result.message
                         )
                     )
                 }
                 ResponseCode.OAUTH_SIGN_UP_PHONE_EXISTS.code ->{
                     emit(
                         Resource.Success(
-                            data = resultSignup,
-                            code = resultSignup.code,
-                            message = resultSignup.message
+                            data = result,
+                            code = result.code,
+                            message = result.message
                         )
                     )
                 }
                 else -> {
                     emit(Resource.Error(
-                        message = resultSignup.message
-                    ))
-                }
-            }
-
-            when(resultDrawer.code) {
-                ResponseCode.RESPONSE_DEFAULT.code ->{
-                    emit(
-                        Resource.Success(
-                            data = resultDrawer,
-                            code = resultDrawer.code,
-                            message = resultDrawer.message
-                        )
-                    )
-                }
-                ResponseCode.OAUTH_SIGN_UP_PHONE_EXISTS.code ->{
-                    emit(
-                        Resource.Success(
-                            data = resultDrawer,
-                            code = resultDrawer.code,
-                            message = resultDrawer.message
-                        )
-                    )
-                }
-                else -> {
-                    emit(Resource.Error(
-                        message = resultDrawer.message
+                        message = result.message
                     ))
                 }
             }
@@ -80,7 +52,6 @@ class PostPhoneSmsUseCase @Inject constructor(
 
         } catch (e: HttpException) {
             val errorBody = e.response()?.errorBody()
-            Log.e("SIGNUP_POST_SMS", errorBody?.string() ?: "error body is null")
             val errorCode = errorBody?.getErrorCode()
             errorCode?.let {
                 emit(Resource.Error(message = ResponseCode.getMessageByCode(errorCode)))

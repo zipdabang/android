@@ -16,87 +16,50 @@ import javax.inject.Inject
 
 class GetNicknameUseCase @Inject constructor(
     private val repository : SignUpRepository,
-    private val repositoryDrawer : DrawerRepository
 ) {
     operator fun invoke(nickname : String) : Flow<Resource<NicknameResponse>> = flow{
         try{
             emit(Resource.Loading())
-            val resultSignup = repository.getNickname(nickname = nickname)
-            val resultDrawer = repositoryDrawer.getNickname(nickname = nickname)
+            val result = repository.getNickname(nickname = nickname)
 
 
-            when(resultSignup.code){
+            when(result.code){
                 ResponseCode.RESPONSE_DEFAULT.code ->{
                     emit(
                         Resource.Success(
-                            data = resultSignup,
-                            code = resultSignup.code,
-                            message = resultSignup.message
+                            data = result,
+                            code = result.code,
+                            message = result.message
                         )
                     )
                 }
                 ResponseCode.OAUTH_SIGN_UP_NICKNAME_EXISTS.code ->{
                     emit(
                         Resource.Success(
-                            data = resultSignup,
-                            code = resultSignup.code,
-                            message = resultSignup.message
+                            data = result,
+                            code = result.code,
+                            message = result.message
                         )
                     )
                 }
                 ResponseCode.OAUTH_SIGN_UP_NICKNAME_AVAILABLE.code ->{
                     emit(
                         Resource.Success(
-                            data = resultSignup,
-                            code = resultSignup.code,
-                            message = resultSignup.message
+                            data = result,
+                            code = result.code,
+                            message = result.message
                         )
                     )
                 }
                 else ->{
                     emit(Resource.Error(
-                        message = resultSignup.message
-                    ))
-                }
-            }
-            when(resultDrawer.code){
-                ResponseCode.RESPONSE_DEFAULT.code ->{
-                    emit(
-                        Resource.Success(
-                            data = resultDrawer,
-                            code = resultDrawer.code,
-                            message = resultDrawer.message
-                        )
-                    )
-                }
-                ResponseCode.OAUTH_SIGN_UP_NICKNAME_EXISTS.code ->{
-                    emit(
-                        Resource.Success(
-                            data = resultDrawer,
-                            code = resultDrawer.code,
-                            message = resultDrawer.message
-                        )
-                    )
-                }
-                ResponseCode.OAUTH_SIGN_UP_NICKNAME_AVAILABLE.code ->{
-                    emit(
-                        Resource.Success(
-                            data = resultDrawer,
-                            code = resultDrawer.code,
-                            message = resultDrawer.message
-                        )
-                    )
-                }
-                else ->{
-                    emit(Resource.Error(
-                        message = resultDrawer.message
+                        message = result.message
                     ))
                 }
             }
 
         } catch (e: HttpException) {
             val errorBody = e.response()?.errorBody()
-            Log.e("SIGNUP_GET_NICKNAME", errorBody?.string() ?: "error body is null")
             val errorCode = errorBody?.getErrorCode()
             errorCode?.let {
                 emit(Resource.Error(message = ResponseCode.getMessageByCode(errorCode)))

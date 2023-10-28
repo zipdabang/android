@@ -329,6 +329,7 @@ fun UserInfoBasicScreen(
                             if(drawerUserInfoViewModel.updateValidateUserInfoBasic()){
                                 CoroutineScope(Dispatchers.Main).launch{
                                     drawerUserInfoViewModel.patchUserInfoBasic()
+                                    drawerUserInfoViewModel.onUserInfoBasicEvent(UserInfoBasicEvent.AuthNumberChanged(""))
                                     onClickEdit()
                                 }
                             } else {

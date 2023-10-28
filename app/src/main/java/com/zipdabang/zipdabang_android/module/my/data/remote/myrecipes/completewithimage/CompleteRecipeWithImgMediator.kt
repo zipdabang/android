@@ -130,7 +130,7 @@ class CompleteRecipeWithImgMediator @Inject constructor(
             val prevPage = if (currentPage == 1) null else currentPage -1
             val nextPage = if (endOfPaginationReached) null else currentPage + 1
 
-            paging3Database.withTransaction {
+            /*paging3Database.withTransaction {
                 if (loadType == LoadType.REFRESH) {
                     completeRecipesWithImgDao.deleteItems()
                     RemoteKeyDao.deleteRemoteKeys()
@@ -144,7 +144,7 @@ class CompleteRecipeWithImgMediator @Inject constructor(
                 }
                 completeRecipesWithImgDao.addItems(responseMapList)
                 RemoteKeyDao.addAllRemoteKeys(keys)
-            }
+            }*/
 
 
             MediatorResult.Success(endOfPaginationReached = endOfPaginationReached!!)

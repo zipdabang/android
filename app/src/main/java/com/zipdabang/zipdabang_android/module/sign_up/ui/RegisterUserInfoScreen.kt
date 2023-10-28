@@ -1,5 +1,6 @@
 package com.zipdabang.zipdabang_android.module.sign_up.ui
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -37,6 +38,7 @@ import com.zipdabang.zipdabang_android.ui.component.AppBarSignUp
 import com.zipdabang.zipdabang_android.ui.component.MainAndSubTitle
 import com.zipdabang.zipdabang_android.ui.component.PrimaryButtonOutLined
 import com.zipdabang.zipdabang_android.ui.component.PrimaryButtonWithStatus
+import com.zipdabang.zipdabang_android.ui.component.PrimaryButtonWithStatusForSignup
 import com.zipdabang.zipdabang_android.ui.component.RadioGroupHorizontal
 import com.zipdabang.zipdabang_android.ui.component.TextFieldError
 import com.zipdabang.zipdabang_android.ui.component.TextFieldErrorAndCorrect
@@ -54,6 +56,7 @@ fun RegisterUserInfoScreen(
 ) {
     val stateUserInfoForm = authSharedViewModel.stateUserInfoForm
     val genderList = authSharedViewModel.genderList
+    Log.e("phonenumber-viewmodel", "recompose")
 
     LaunchedEffect(authSharedViewModel.remainingTime) {
         val timer = (authSharedViewModel.remainingTime downTo 0).asFlow()
@@ -188,7 +191,7 @@ fun RegisterUserInfoScreen(
                             modifier = Modifier.weight(3.4f)
                         ) {
                             RadioGroupHorizontal(
-                                selectedIndex = 0,
+                                selectedIndex = if(stateUserInfoForm.gender == "여") 1 else 0,
                                 optionList = genderList,
                                 onOptionChange = {
                                     authSharedViewModel.onUserInfoEvent(
@@ -323,7 +326,7 @@ fun RegisterUserInfoScreen(
                 contentAlignment = Alignment.BottomCenter,
                 modifier = Modifier.padding(16.dp, 0.dp, 16.dp, 12.dp)
             ) {
-                PrimaryButtonWithStatus(
+                PrimaryButtonWithStatusForSignup(
                     text = stringResource(id = R.string.signup_btn_inputdone),
                     onClick = {
                         authSharedViewModel.updateValidateBirthday()

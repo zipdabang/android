@@ -1,5 +1,8 @@
 package com.zipdabang.zipdabang_android.module.drawer.ui
 
+import android.content.Context
+import android.util.Log
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -9,8 +12,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.Text
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
@@ -18,14 +19,16 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.zipdabang.zipdabang_android.R
-import com.zipdabang.zipdabang_android.module.drawer.ui.viewmodel.DrawerUserInfoViewModel
 import com.zipdabang.zipdabang_android.module.drawer.ui.state.userinfo.UserInfoPreferencesEvent
+import com.zipdabang.zipdabang_android.module.drawer.ui.viewmodel.DrawerUserInfoViewModel
 import com.zipdabang.zipdabang_android.ui.component.AppBarSignUp
 import com.zipdabang.zipdabang_android.ui.component.MainAndSubTitle
 import com.zipdabang.zipdabang_android.ui.component.PrimaryButtonOutLined
@@ -44,6 +47,7 @@ fun UserInfoPreferencesScreen(
     onClickEdit : ()->Unit
 ) {
     val stateUserInfoPreferences = drawerUserInfoViewModel.stateUserInfoPreferences
+    val stateUserInfo = drawerUserInfoViewModel.stateUserInfo
 
     LaunchedEffect(key1 = stateUserInfoPreferences.preferBeverageCheckList){
         drawerUserInfoViewModel.onUserInfoPreferencesEvent(UserInfoPreferencesEvent.BtnEnabled(true))
@@ -58,7 +62,7 @@ fun UserInfoPreferencesScreen(
                 onClickNavIcon = { onClickBack() },
                 centerText = stringResource(id = R.string.drawer_edit_preferbeverage)
             )
-        }
+        },
     ) {
         Surface(
             modifier = Modifier
@@ -66,22 +70,28 @@ fun UserInfoPreferencesScreen(
                 .fillMaxSize(),
             color = ZipdabangandroidTheme.Colors.SubBackground
         ){
+            Image(
+                painter = painterResource(id = R.drawable.img_preferbeverages),
+                contentDescription = null, // Accessibility에 필요하지 않은 경우
+                contentScale = ContentScale.FillBounds, // 이미지를 화면에 맞게 확대/축소
+            )
+
             Column(
                 modifier = Modifier.fillMaxSize(),
                 verticalArrangement = Arrangement.Top,
-                horizontalAlignment = Alignment.CenterHorizontally
+                horizontalAlignment = Alignment.CenterHorizontally,
             ){
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
                         .wrapContentHeight()
-                        .background(Color.White),
+                        .background(Color.Transparent),
                     contentAlignment = Alignment.TopCenter
                 ){
                     Column(
                         modifier = Modifier
                             .padding(16.dp, 10.dp, 16.dp, 20.dp)
-                            .background(Color.White)
+                            .background(Color.Transparent)
                             .fillMaxWidth(),
                         verticalArrangement = Arrangement.Center
                     ){
@@ -98,7 +108,8 @@ fun UserInfoPreferencesScreen(
                         Column(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(0.dp, 20.dp, 0.dp, 0.dp),
+                                .padding(0.dp, 20.dp, 0.dp, 0.dp)
+                                .background(color = Color.Transparent),
                             verticalArrangement = Arrangement.Center,
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
@@ -132,6 +143,7 @@ fun UserInfoPreferencesScreen(
                 }
             }
 
+            // 하단 버튼
             Row(
                 modifier = Modifier.padding(16.dp,0.dp,16.dp, 12.dp),
                 verticalAlignment = Alignment.Bottom,
@@ -153,7 +165,7 @@ fun UserInfoPreferencesScreen(
                 ){
                     PrimaryButtonWithStatus(
                         isFormFilled = stateUserInfoPreferences.btnEnabled,
-                        text= stringResource(if(stateUserInfoPreferences.preferBeverageCheckList.size == 0) R.string.drawer_choosedone else R.string.drawer_editdone),
+                        text= stringResource(if(stateUserInfo.preferBeverageList.size == 0) R.string.drawer_choosedone else R.string.drawer_editdone),
                         onClick={
                             if(stateUserInfoPreferences.btnEnabled){
                                 CoroutineScope(Dispatchers.Main).launch{

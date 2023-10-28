@@ -2,16 +2,15 @@ package com.zipdabang.zipdabang_android.module.drawer.data.remote
 
 import com.zipdabang.zipdabang_android.module.drawer.data.remote.noticedto.NoticeListDto
 import com.zipdabang.zipdabang_android.module.drawer.data.remote.quitdto.QuitDto
-import com.zipdabang.zipdabang_android.module.drawer.data.remote.quitdto.QuitRequest
 import com.zipdabang.zipdabang_android.module.drawer.data.remote.reporterror.ReportListDto
 import com.zipdabang.zipdabang_android.module.drawer.data.remote.reporterror.detail.ReportDetailDto
 import com.zipdabang.zipdabang_android.module.drawer.data.remote.reporterror.reportDto
-import com.zipdabang.zipdabang_android.module.drawer.data.remote.userinfodto.UserInfoBasicRequest
-import com.zipdabang.zipdabang_android.module.drawer.data.remote.userinfodto.UserInfoDetailRequest
-import com.zipdabang.zipdabang_android.module.drawer.data.remote.userinfodto.UserInfoEditResponse
-import com.zipdabang.zipdabang_android.module.drawer.data.remote.userinfodto.UserInfoNicknameRequest
-import com.zipdabang.zipdabang_android.module.drawer.data.remote.userinfodto.UserInfoPreferencesRequest
-import com.zipdabang.zipdabang_android.module.drawer.data.remote.userinfodto.UserInfoResponse
+import com.zipdabang.zipdabang_android.module.drawer.data.remote.userinfo.UserInfoBasicRequest
+import com.zipdabang.zipdabang_android.module.drawer.data.remote.userinfo.UserInfoDetailRequest
+import com.zipdabang.zipdabang_android.module.drawer.data.remote.userinfo.UserInfoEditResponse
+import com.zipdabang.zipdabang_android.module.drawer.data.remote.userinfo.UserInfoNicknameRequest
+import com.zipdabang.zipdabang_android.module.drawer.data.remote.userinfo.UserInfoPreferencesRequest
+import com.zipdabang.zipdabang_android.module.drawer.data.remote.userinfo.UserInfoResponse
 import com.zipdabang.zipdabang_android.module.sign_up.data.remote.AuthRequest
 import com.zipdabang.zipdabang_android.module.sign_up.data.remote.AuthResponse
 import com.zipdabang.zipdabang_android.module.sign_up.data.remote.NicknameResponse

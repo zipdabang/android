@@ -4,7 +4,7 @@ import android.util.Log
 import com.zipdabang.zipdabang_android.common.Resource
 import com.zipdabang.zipdabang_android.common.ResponseCode
 import com.zipdabang.zipdabang_android.common.getErrorCode
-import com.zipdabang.zipdabang_android.module.drawer.data.remote.userinfodto.UserInfoResult
+import com.zipdabang.zipdabang_android.module.drawer.data.remote.userinfo.UserInfoResult
 import com.zipdabang.zipdabang_android.module.drawer.domain.repository.DrawerRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -37,8 +37,8 @@ class GetUserInfoUseCase @Inject constructor(
             }
         } catch (e: HttpException) {
             val errorBody = e.response()?.errorBody()
-            Log.e("DRAWER_GET_USERINFO", errorBody?.string() ?: "error body is null")
             val errorCode = errorBody?.getErrorCode()
+
             errorCode?.let {
                 emit(Resource.Error(message = ResponseCode.getMessageByCode(errorCode)))
                 return@flow
