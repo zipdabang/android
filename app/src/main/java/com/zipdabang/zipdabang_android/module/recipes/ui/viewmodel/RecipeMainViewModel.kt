@@ -64,12 +64,14 @@ class RecipeMainViewModel @Inject constructor(
 
     // mutableStateOf<List<RecipeResult>>(mutableListOf())
     private val _banners = mutableStateOf(
-        savedStateHandle["banners"] ?: RecipeBannerState()
+//        savedStateHandle["banners"] ?:
+        RecipeBannerState()
     )
     val banners: State<RecipeBannerState> = _banners
 
     private val _categoryList = mutableStateOf(
-        savedStateHandle["categories"] ?: RecipeCategoryState()
+//        savedStateHandle["categories"] ?:
+        RecipeCategoryState()
     )
     val categoryList: State<RecipeCategoryState> = _categoryList
     

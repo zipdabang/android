@@ -8,16 +8,25 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import coil.annotation.ExperimentalCoilApi
 import coil.compose.AsyncImage
+import coil.imageLoader
 import com.zipdabang.zipdabang_android.R
 
+@OptIn(ExperimentalCoilApi::class)
 @Composable
 fun CircleImage(
     imageUrl: Any,
     contentDescription : String?
 ) {
+
+    val context = LocalContext.current
+    context.imageLoader.diskCache?.clear()
+    context.imageLoader.memoryCache?.clear()
+
     AsyncImage(
         model = imageUrl,
         contentDescription = contentDescription,

@@ -191,10 +191,6 @@ sealed class TabItem(val tabTitle: String, val screen: ComposableFun) {
         checkLoggedIn: () -> Boolean,
         onScrapClick:  (Int) -> Deferred<Boolean>,
         onLikeClick:  (Int) -> Deferred<Boolean>,
-        likeState: PreferenceToggleState,
-        scrapState: PreferenceToggleState,
-        setShowLoginRequestDialog: () -> Unit,
-        currentPlatform: CurrentPlatform,
         showSnackbar: (String) -> Unit
     ): TabItem(
         tabTitle = "커피",
@@ -206,10 +202,6 @@ sealed class TabItem(val tabTitle: String, val screen: ComposableFun) {
                 checkLoggedIn = checkLoggedIn,
                 onScrapClick = onScrapClick,
                 onLikeClick = onLikeClick,
-                likeState = likeState,
-                scrapState = scrapState,
-                setShowLoginRequestDialog = setShowLoginRequestDialog,
-                currentPlatform = currentPlatform,
                 showSnackbar = showSnackbar
             )
         }
@@ -222,10 +214,6 @@ sealed class TabItem(val tabTitle: String, val screen: ComposableFun) {
         checkLoggedIn: () -> Boolean,
         onScrapClick:  (Int) -> Deferred<Boolean>,
         onLikeClick:  (Int) -> Deferred<Boolean>,
-        likeState: PreferenceToggleState,
-        scrapState: PreferenceToggleState,
-        onLoginRequest: () -> Unit,
-        currentPlatform: CurrentPlatform,
         showSnackbar: (String) -> Unit
     ): TabItem(
         tabTitle = "논카페인",
@@ -237,10 +225,6 @@ sealed class TabItem(val tabTitle: String, val screen: ComposableFun) {
                 checkLoggedIn = checkLoggedIn,
                 onScrapClick = onScrapClick,
                 onLikeClick = onLikeClick,
-                likeState = likeState,
-                scrapState = scrapState,
-                setShowLoginRequestDialog = onLoginRequest,
-                currentPlatform = currentPlatform,
                 showSnackbar = showSnackbar
             )
         }
@@ -253,10 +237,6 @@ sealed class TabItem(val tabTitle: String, val screen: ComposableFun) {
         checkLoggedIn: () -> Boolean,
         onScrapClick:  (Int) -> Deferred<Boolean>,
         onLikeClick:  (Int) -> Deferred<Boolean>,
-        likeState: PreferenceToggleState,
-        scrapState: PreferenceToggleState,
-        onLoginRequest: () -> Unit,
-        currentPlatform: CurrentPlatform,
         showSnackbar: (String) -> Unit
     ): TabItem(
         tabTitle = "차",
@@ -268,10 +248,6 @@ sealed class TabItem(val tabTitle: String, val screen: ComposableFun) {
                 checkLoggedIn = checkLoggedIn,
                 onScrapClick = onScrapClick,
                 onLikeClick = onLikeClick,
-                likeState = likeState,
-                scrapState = scrapState,
-                setShowLoginRequestDialog = onLoginRequest,
-                currentPlatform = currentPlatform,
                 showSnackbar = showSnackbar
             )
         }
@@ -284,10 +260,6 @@ sealed class TabItem(val tabTitle: String, val screen: ComposableFun) {
         checkLoggedIn: () -> Boolean,
         onScrapClick:  (Int) -> Deferred<Boolean>,
         onLikeClick:  (Int) -> Deferred<Boolean>,
-        likeState: PreferenceToggleState,
-        scrapState: PreferenceToggleState,
-        onLoginRequest: () -> Unit,
-        currentPlatform: CurrentPlatform,
         showSnackbar: (String) -> Unit
     ): TabItem(
         tabTitle = "에이드",
@@ -299,10 +271,6 @@ sealed class TabItem(val tabTitle: String, val screen: ComposableFun) {
                 checkLoggedIn = checkLoggedIn,
                 onScrapClick = onScrapClick,
                 onLikeClick = onLikeClick,
-                likeState = likeState,
-                scrapState = scrapState,
-                setShowLoginRequestDialog = onLoginRequest,
-                currentPlatform = currentPlatform,
                 showSnackbar = showSnackbar
             )
         }
@@ -315,10 +283,6 @@ sealed class TabItem(val tabTitle: String, val screen: ComposableFun) {
         checkLoggedIn: () -> Boolean,
         onScrapClick:  (Int) -> Deferred<Boolean>,
         onLikeClick:  (Int) -> Deferred<Boolean>,
-        likeState: PreferenceToggleState,
-        scrapState: PreferenceToggleState,
-        onLoginRequest: () -> Unit,
-        currentPlatform: CurrentPlatform,
         showSnackbar: (String) -> Unit
     ): TabItem(
         tabTitle = "스무디",
@@ -330,10 +294,6 @@ sealed class TabItem(val tabTitle: String, val screen: ComposableFun) {
                 checkLoggedIn = checkLoggedIn,
                 onScrapClick = onScrapClick,
                 onLikeClick = onLikeClick,
-                likeState = likeState,
-                scrapState = scrapState,
-                setShowLoginRequestDialog = onLoginRequest,
-                currentPlatform = currentPlatform,
                 showSnackbar = showSnackbar
             )
         }
@@ -346,10 +306,6 @@ sealed class TabItem(val tabTitle: String, val screen: ComposableFun) {
         checkLoggedIn: () -> Boolean,
         onScrapClick:  (Int) -> Deferred<Boolean>,
         onLikeClick:  (Int) -> Deferred<Boolean>,
-        likeState: PreferenceToggleState,
-        scrapState: PreferenceToggleState,
-        onLoginRequest: () -> Unit,
-        currentPlatform: CurrentPlatform,
         showSnackbar: (String) -> Unit
     ): TabItem(
         tabTitle = "과일음료",
@@ -361,10 +317,6 @@ sealed class TabItem(val tabTitle: String, val screen: ComposableFun) {
                 checkLoggedIn = checkLoggedIn,
                 onScrapClick = onScrapClick,
                 onLikeClick = onLikeClick,
-                likeState = likeState,
-                scrapState = scrapState,
-                setShowLoginRequestDialog = onLoginRequest,
-                currentPlatform = currentPlatform,
                 showSnackbar = showSnackbar
             )
         }
@@ -377,10 +329,6 @@ sealed class TabItem(val tabTitle: String, val screen: ComposableFun) {
         checkLoggedIn: () -> Boolean,
         onScrapClick:  (Int) -> Deferred<Boolean>,
         onLikeClick:  (Int) -> Deferred<Boolean>,
-        likeState: PreferenceToggleState,
-        scrapState: PreferenceToggleState,
-        onLoginRequest: () -> Unit,
-        currentPlatform: CurrentPlatform,
         showSnackbar: (String) -> Unit
     ): TabItem(
         tabTitle = "건강음료",
@@ -392,10 +340,6 @@ sealed class TabItem(val tabTitle: String, val screen: ComposableFun) {
                 checkLoggedIn = checkLoggedIn,
                 onScrapClick = onScrapClick,
                 onLikeClick = onLikeClick,
-                likeState = likeState,
-                scrapState = scrapState,
-                setShowLoginRequestDialog = onLoginRequest,
-                currentPlatform = currentPlatform,
                 showSnackbar = showSnackbar
             )
         }
@@ -408,10 +352,6 @@ sealed class TabItem(val tabTitle: String, val screen: ComposableFun) {
         checkLoggedIn: () -> Boolean,
         onScrapClick:  (Int) -> Deferred<Boolean>,
         onLikeClick:  (Int) -> Deferred<Boolean>,
-        likeState: PreferenceToggleState,
-        scrapState: PreferenceToggleState,
-        onLoginRequest: () -> Unit,
-        currentPlatform: CurrentPlatform,
         showSnackbar: (String) -> Unit
     ): TabItem(
         tabTitle = "전체",
@@ -423,10 +363,6 @@ sealed class TabItem(val tabTitle: String, val screen: ComposableFun) {
                 checkLoggedIn = checkLoggedIn,
                 onScrapClick = onScrapClick,
                 onLikeClick = onLikeClick,
-                likeState = likeState,
-                scrapState = scrapState,
-                setShowLoginRequestDialog = onLoginRequest,
-                currentPlatform = currentPlatform,
                 showSnackbar = showSnackbar
             )
         }

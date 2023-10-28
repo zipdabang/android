@@ -20,10 +20,6 @@ fun HotRecipeList(
     checkLoggedIn: () -> Boolean,
     onScrapClick: (Int) -> Deferred<Boolean>,
     onLikeClick: (Int) -> Deferred<Boolean>,
-    likeState: PreferenceToggleState,
-    scrapState: PreferenceToggleState,
-    setShowLoginRequestDialog: () -> Unit,
-    currentPlatform: CurrentPlatform,
     showSnackbar: (String) -> Unit
 
 ) {
@@ -47,10 +43,6 @@ fun HotRecipeList(
                     checkLoggedIn = checkLoggedIn,
                     onLikeClick = onLikeClick,
                     onScrapClick = onScrapClick,
-                    likeState = likeState,
-                    scrapState = scrapState,
-                    setShowLoginRequestDialog = setShowLoginRequestDialog,
-                    currentPlatform = currentPlatform,
                     showSnackbar = showSnackbar
                 )
             }
