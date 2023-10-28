@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material3.CircularProgressIndicator
@@ -62,7 +63,7 @@ fun RecipeListContent(
 
     val scope = rememberCoroutineScope()
 
-/*    LaunchedEffect(key1 = items.loadState) {
+    /*    LaunchedEffect(key1 = items.loadState) {
         if (items.loadState.refresh is LoadState.Loading) {
 
             Log.d("RecipeList - content", "loading...")
@@ -77,47 +78,56 @@ fun RecipeListContent(
 
     Column(modifier = Modifier.fillMaxSize()) {
         // Log.d("Error", items.loadState.toString())
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp)
-        ) {
-            content()
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 8.dp)
-                    .height(56.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Text(
-                    modifier = Modifier.weight(6f),
-                    text = "${total}개의 레시피",
-                    style = ZipdabangandroidTheme.Typography.fourteen_300
-                        .copy(
-                            color = Color(0x88262D31)
-                        )
-                )
-
-                SortSpinner(
-                    modifier = Modifier.weight(4f),
-                    optionList = optionList,
-                    onItemChange = onSortChange
-                )
-            }
-        }
 
         LazyVerticalGrid(
             modifier = Modifier.fillMaxSize(),
             columns = GridCells.Fixed(2),
             contentPadding = PaddingValues(
-                all = 12.dp
+                all = 16.dp
             ),
             state = lazyGridState,
             verticalArrangement = Arrangement.spacedBy(10.dp),
             horizontalArrangement = Arrangement.spacedBy(10.dp)
         ) {
+            item(
+                span = {
+                    GridItemSpan(2)
+                }
+            ) {
+                content()
+            }
+
+            item(
+                span = {
+                    GridItemSpan(2)
+                }
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 8.dp)
+                        .height(56.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text(
+                        modifier = Modifier.weight(6f),
+                        text = "${total}개의 레시피",
+                        style = ZipdabangandroidTheme.Typography.fourteen_300
+                            .copy(
+                                color = Color(0x88262D31)
+                            )
+                    )
+
+                    SortSpinner(
+                        modifier = Modifier.weight(4f),
+                        optionList = optionList,
+                        onItemChange = onSortChange
+                    )
+                }
+            }
+
+
             items(
                 count = items.itemCount,
                 key = items.itemKey { recipe ->
@@ -134,7 +144,8 @@ fun RecipeListContent(
                     var likes by rememberSaveable { mutableStateOf(recipeItem.likes) }
 
                     if (likeState.errorMessage != null
-                        || scrapState.errorMessage != null) {
+                        || scrapState.errorMessage != null
+                    ) {
                         throw TogglePreferenceException
                     }
 
