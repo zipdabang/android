@@ -33,6 +33,7 @@ import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.rememberPagerState
 import com.zipdabang.zipdabang_android.R
 import com.zipdabang.zipdabang_android.common.CommentMgtFailureException
+import com.zipdabang.zipdabang_android.common.ResponseCode
 import com.zipdabang.zipdabang_android.common.TogglePreferenceException
 import com.zipdabang.zipdabang_android.core.data_store.proto.CurrentPlatform
 import com.zipdabang.zipdabang_android.module.comment.ui.RecipeCommentViewModel
@@ -177,9 +178,9 @@ fun NavGraphBuilder.SharedNavGraph(
 
             val recipeDeleteState = recipeDetailViewModel.recipeDeleteState.value
 
-            if (recipeDeleteState.isLoading == false && recipeDeleteState.data == true) {
+/*            if (recipeDetailState.errorMessage == ResponseCode.getMessageByCode(4101)) {
                 navController.popBackStack()
-            }
+            }*/
 
             LoginRequestDialog(
                 showDialog = showLoginRequestDialog,
@@ -199,10 +200,16 @@ fun NavGraphBuilder.SharedNavGraph(
                 showDialog = showDeleteDialog,
                 setShowDialog = { changedValue ->
                     showDeleteDialog = changedValue
+                },
+                onDeleteClick = {
+                    recipeDetailViewModel.deleteRecipe(
+                        recipeId = recipeId,
+                        onSuccessful = {
+                            navController.popBackStack()
+                        }
+                    )
                 }
-            ) {
-                recipeDetailViewModel.deleteRecipe(recipeId = recipeId)
-            }
+            )
 
             if (recipeDetailState.isLoading) {
                 Log.d("SharedNavGraph", "recipe loading")
@@ -267,11 +274,13 @@ fun NavGraphBuilder.SharedNavGraph(
                         }
                     },
                     onClickRecipeBlock = {
-                        recipeDetailViewModel.blockUser(ownerId)
+                        recipeDetailViewModel.blockUser(
+                            ownerId = ownerId,
+                            onSuccessful = { navController.popBackStack() }
+                        )
                         scope.launch {
                             showSnackBar("해당 이용자를 차단했어요")
                         }
-                        navController.popBackStack()
                     },
                     onClickCommentReport = { commentId, reportId ->
 

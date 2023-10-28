@@ -286,7 +286,8 @@ class RecipeDetailViewModel @Inject constructor(
     }
 
     fun blockUser(
-        ownerId: Int
+        ownerId: Int,
+        onSuccessful: () -> Unit
     ) {
         blockUserUseCase(ownerId).onEach { result ->
             when (result) {
@@ -299,6 +300,7 @@ class RecipeDetailViewModel @Inject constructor(
                             isBlockSuccessful = true
                         )
                     )
+                    onSuccessful()
                 }
                 is Resource.Error -> {
                     _blockResult.emit(
@@ -321,7 +323,10 @@ class RecipeDetailViewModel @Inject constructor(
         }.launchIn(viewModelScope)
     }
 
-    fun deleteRecipe(recipeId: Int) {
+    fun deleteRecipe(
+        recipeId: Int,
+        onSuccessful: () -> Unit
+    ) {
         deleteRecipeUseCase(recipeId).onEach { result ->
             when (result) {
                 is Resource.Loading -> {
@@ -335,6 +340,7 @@ class RecipeDetailViewModel @Inject constructor(
                         isSuccessful = true,
                         data = true
                     )
+                    onSuccessful()
                 }
                 is Resource.Error -> {
                     _recipeDeleteState.value = UiState(

@@ -86,6 +86,7 @@ fun RecipeListContent(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
+                    .padding(bottom = 8.dp)
                     .height(56.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
