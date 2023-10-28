@@ -1,12 +1,19 @@
 package com.zipdabang.zipdabang_android.module.my.ui
 
+import android.Manifest
 import android.annotation.SuppressLint
+import android.content.Context
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
+import android.os.Build
+import android.provider.MediaStore
 import android.util.Log
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.result.launch
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -38,8 +45,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.content.FileProvider
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.zipdabang.zipdabang_android.R
+import com.zipdabang.zipdabang_android.common.checkAndRequestPermissions
 import com.zipdabang.zipdabang_android.module.my.ui.component.recipewrite.ButtonAddForIngredient
 import com.zipdabang.zipdabang_android.module.my.ui.component.recipewrite.IngredientAndUnit
 import com.zipdabang.zipdabang_android.module.my.ui.component.recipewrite.Step
@@ -70,28 +82,69 @@ import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.ByteArrayOutputStream
 import java.io.File
+import java.io.FileOutputStream
+import java.io.IOException
 import java.io.InputStream
+import java.io.OutputStream
 
 
 @SuppressLint("CoroutineCreationDuringComposition")
 @Composable
 fun RecipeWriteScreen(
+    navController: NavHostController,
     tempId : Int?,
     recipeId : Int?,
     onClickBack: () -> Unit,
     recipeWriteViewModel: RecipeWriteViewModel = hiltViewModel(),
     onClickViewRecipe: (Int) -> Unit
 ) {
-    val stateRecipeWriteForm = recipeWriteViewModel.stateRecipeWriteForm
-    val stateRecipeWriteDialog = recipeWriteViewModel.stateRecipeWriteDialog
-    val stateRecipeWriteBeverages = recipeWriteViewModel.stateRecipeWriteBeverages
+    // logic 관련
     val context = LocalContext.current
-    val stateThumbnail = recipeWriteViewModel.stateRecipeWriteForm.thumbnail
-    val stateUploadRecipeId = recipeWriteViewModel.uploadRecipeId
+    val navController = rememberNavController()
     var tempRecipeApiCalled = recipeWriteViewModel.tempRecipeDetailApiCalled
     var completeRecipeApiCalled = recipeWriteViewModel.completeRecipeDetailApiCalled
 
+    // state 정의
+    val stateRecipeWriteForm = recipeWriteViewModel.stateRecipeWriteForm
+    val stateRecipeWriteDialog = recipeWriteViewModel.stateRecipeWriteDialog
+    val stateRecipeWriteBeverages = recipeWriteViewModel.stateRecipeWriteBeverages
+    val stateThumbnail = recipeWriteViewModel.stateRecipeWriteForm.thumbnail
+    val stateUploadRecipeId = recipeWriteViewModel.uploadRecipeId
     var shimmering: Boolean = true
+
+
+
+    // 뒤로가기 제어
+    BackHandler(
+        enabled = true,
+        onBack= {
+            // 임시저장을 수정할 경우
+            if(recipeWriteViewModel.tempRecipeDetailApiCalled > 0){
+                if(recipeWriteViewModel.isTempRecipeEdited()){
+                    recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.TempRecipeDeleteChanged(true))
+                } else{
+                    onClickBack()
+                }
+            }
+            // 업로드를 수정할 경우
+            else if(recipeWriteViewModel.completeRecipeDetailApiCalled >0){
+                if(recipeWriteViewModel.isCompleteRecipeEdited()){
+                    recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.CompleteRecipeDeleteChanged(true))
+                } else{
+                    onClickBack()
+                }
+            }
+            // 처음 업로드 할 경우
+            else {
+                // 하나라도 차있는 경우
+                if(!recipeWriteViewModel.isEmpty()){
+                    recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.RecipeDeleteChanged(true))
+                } else {
+                    onClickBack()
+                }
+            }
+        }
+    )
     // shimmering을 위한 조건문
     if (stateRecipeWriteForm.isLoading || stateRecipeWriteForm.error.isNotBlank()) {
         shimmering = true
@@ -164,7 +217,45 @@ fun RecipeWriteScreen(
     val stepImageAddNum = remember {
         mutableStateListOf<Int>()
     }
+    // 요청할 권한들에 대한 배열
+    val permissions = arrayOf(
+        Manifest.permission.CAMERA, // 카메라
+        Manifest.permission.READ_MEDIA_IMAGES, // 갤러리
+    )
+    // 권한이 없을 경우 실행할 launcher 정의
+    val launcherMultiplePermissions = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestMultiplePermissions()
+    ){ permissionsMap ->
+        val areGranted = permissionsMap.values.reduce { acc, next -> acc&&next }
 
+        if(areGranted) {
+            Log.d("권한","권한이 동의되었습니다.")
+        } else{
+            Log.d("권한","권한이 거부되었습니다.")
+        }
+    }
+
+
+
+    fun bitmapToUri(context: Context, bitmap: Bitmap): Uri? {
+        val imagesDir = File(context.cacheDir, "images")
+        if (!imagesDir.exists()) {
+            imagesDir.mkdirs()
+        }
+
+        val imageFile = File(imagesDir, "image_${System.currentTimeMillis()}.jpg")
+
+        try {
+            val fileOutputStream = FileOutputStream(imageFile)
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fileOutputStream)
+            fileOutputStream.flush()
+            fileOutputStream.close()
+            return FileProvider.getUriForFile(context, "zipdabang.fileprovider", imageFile)
+        } catch (e: IOException) {
+            throw e
+        }
+
+    }
 
     // thumbnail
     // 갤러리 -> Uri 형태
@@ -181,14 +272,6 @@ fun RecipeWriteScreen(
                 val byteOutputStream = ByteArrayOutputStream() // 이미지를 바이트 배열로 저장하기 위한 용도로 사용됨
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 10, byteOutputStream) //비트맵을 JPEG 형식으로 압축하고, 압축된 이미지를 byteOutPutStream에 저장함
 
-
-//                val compressedImageSize = byteOutputStream.size() // 압축된 이미지의 크기 (바이트)
-//                val compressedImageSizeInKb = compressedImageSize / 1024 // 크기를 킬로바이트로 변환
-//                val compressedImageSizeInMb = compressedImageSizeInKb / 1024.0 // 크기를 메가바이트로 변환
-//                Log.e("Compressed Image Size", "$compressedImageSizeInKb KB, $compressedImageSizeInMb MB")
-
-
-
                 thumbnailPhotoBitmap = bitmap
 
                 // 압축된 이미지를 바이트 배열로 변환
@@ -203,6 +286,35 @@ fun RecipeWriteScreen(
                 Log.e("Error in camera", "No image selected")
             }
         }
+    // 카메라->Bitmap 형태
+    val takeThumbnailFromCameraLauncher =
+        rememberLauncherForActivityResult(ActivityResultContracts.TakePicturePreview()) { takenPhoto ->
+            if (takenPhoto != null) {
+
+                // 프론트 측에서 thumbnail 변경
+                // val photoUri = bitmapToUri(context, takenPhoto)
+                recipeWriteViewModel.onRecipeWriteFormEvent(RecipeWriteFormEvent.ThumbnailChanged(takenPhoto))
+
+                val byteOutputStream = ByteArrayOutputStream() // 이미지를 바이트 배열로 저장하기 위한 용도로 사용됨
+                takenPhoto.compress(Bitmap.CompressFormat.JPEG, 10, byteOutputStream) //비트맵을 JPEG 형식으로 압축하고, 압축된 이미지를 byteOutPutStream에 저장함
+
+                thumbnailPhotoBitmap = takenPhoto
+
+                // 압축된 이미지를 바이트 배열로 변환
+                val thumbnailRequestBody: RequestBody = byteOutputStream.toByteArray().toRequestBody("image/jpeg".toMediaTypeOrNull())
+                // 이미지 데이터를 멀티파트로 변환
+                val thumbnailPart = MultipartBody.Part.createFormData("thumbnail", "thumbnail_${System.currentTimeMillis()}.jpeg", thumbnailRequestBody)
+                Log.e("recipewriteform-thumbnail","${thumbnailRequestBody}.jpeg")
+
+                // 서버 업로드를 위한 thumbnailPart 변경
+                recipeWriteViewModel.thumbnailPart = thumbnailPart
+            }
+            else {
+                Log.e("Error in camera","error")
+            }
+        }
+
+
 
     // step
     // 갤러리 -> Uri 형태
@@ -211,31 +323,13 @@ fun RecipeWriteScreen(
             if (uri != null) {
                 val file: File? = uri.path?.let { File(it) }
 
+                // 프론트 측에서 step 변경
                 recipeWriteViewModel.onRecipeWriteFormEvent(RecipeWriteFormEvent.StepImageChanged(uri, stateRecipeWriteDialog.stepNum))
 
                 val inputStream: InputStream? = context.contentResolver?.openInputStream(uri) // 이미지에 대한 입력 스트림을 염
                 val bitmap = BitmapFactory.decodeStream(inputStream) //uri -> bitmap 변환
                 val byteOutputStream = ByteArrayOutputStream() // 이미지를 바이트 배열로 저장하기 위한 용도로 사용됨
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 10, byteOutputStream) //비트맵을 JPEG 형식으로 압축하고, 압축된 이미지를 byteOutPutStream에 저장함
-
-
-
-
-//                val compressedImageSize = byteOutputStream.size() // 압축된 이미지의 크기 (바이트)
-//                val compressedImageSizeInKb = compressedImageSize / 1024 // 크기를 킬로바이트로 변환
-//                val compressedImageSizeInMb = compressedImageSizeInKb / 1024.0 // 크기를 메가바이트로 변환
-//                Log.e("Compressed Image Size", "$compressedImageSize bytes, $compressedImageSizeInKb KB, $compressedImageSizeInMb MB")
-//
-//                // 이미지 크기를 누적
-//                var totalCompressedImageSizeInBytes = 0
-//                totalCompressedImageSizeInBytes += compressedImageSize
-//                var totalCompressedImageSizeInKb = totalCompressedImageSizeInBytes / 1024 // 누적된 크기를 킬로바이트로 변환
-//                var totalCompressedImageSizeInMb = totalCompressedImageSizeInKb / 1024.0 // 누적된 크기를 메가바이트로 변환
-//                Log.e("Total Compressed Image Size", "$totalCompressedImageSizeInMb MB")
-
-
-
-
 
                 stepPhotoBitmap = bitmap
 
@@ -259,6 +353,41 @@ fun RecipeWriteScreen(
             }
         }
     // 카메라->Bitmap 형태
+    val takeStepPhotoFromCameraLauncher =
+        rememberLauncherForActivityResult(ActivityResultContracts.TakePicturePreview()) { takenPhoto ->
+            if (takenPhoto != null) {
+
+                // 프론트 측에서 step 변경
+                recipeWriteViewModel.onRecipeWriteFormEvent(RecipeWriteFormEvent.StepImageChanged(takenPhoto, stateRecipeWriteDialog.stepNum))
+
+                val byteOutputStream = ByteArrayOutputStream() // 이미지를 바이트 배열로 저장하기 위한 용도로 사용됨
+                takenPhoto.compress(Bitmap.CompressFormat.JPEG, 10, byteOutputStream) //비트맵을 JPEG 형식으로 압축하고, 압축된 이미지를 byteOutPutStream에 저장함
+
+                stepPhotoBitmap = takenPhoto
+
+                // 압축된 이미지를 바이트 배열로 변환
+                val stepRequestBody: RequestBody = byteOutputStream.toByteArray().toRequestBody("image/jpeg".toMediaTypeOrNull())
+                // 이미지 데이터를 멀티파트로 변환
+                val stepPart = MultipartBody.Part.createFormData("stepImages", "${stateRecipeWriteDialog.stepNum - 1}_${System.currentTimeMillis()}.jpeg", stepRequestBody)
+                Log.e("recipewriteform-stepImages","${stateRecipeWriteDialog.stepNum - 1}_${System.currentTimeMillis()}.jpeg")
+
+
+                // 이미 존재하는 경우, 기존 데이터를 지우고 새로운 데이터 추가
+                if (stepImageAddNum.contains(stateRecipeWriteDialog.stepNum)) {
+                    val existingIndex = stepImageAddNum.indexOf(stateRecipeWriteDialog.stepNum)
+                    stepImageParts[existingIndex] = stepPart
+                }
+                else {
+                    stepImageAddNum.add(stateRecipeWriteDialog.stepNum)
+                    stepImageParts.add(stepPart)
+                }
+            }
+            else {
+                Log.e("Error in camera","error")
+            }
+        }
+
+
     /*val takePhotoFromCameraStepLauncher =
         rememberLauncherForActivityResult(ActivityResultContracts.TakePicturePreview()) { bitmap: Bitmap? ->
             if (bitmap != null) {
@@ -1010,12 +1139,26 @@ fun RecipeWriteScreen(
                     recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.FileSelectChanged(it))
                 },
                 onCameraClick = {
-                    //takePhotoFromCameraLauncher.launch()
-                    //recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.FileSelectChanged(false))
+                    checkAndRequestPermissions(
+                        context,
+                        permissions,
+                        launcherMultiplePermissions,
+                        isPermissionExist = {
+                            takeThumbnailFromCameraLauncher.launch()
+                            recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.FileSelectChanged(false))
+                        }
+                    )
                 },
                 onFileClick = {
-                    takeThumbnailFromAlbumLauncher.launch("image/*")
-                    recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.FileSelectChanged(false))
+                    checkAndRequestPermissions(
+                        context,
+                        permissions,
+                        launcherMultiplePermissions,
+                        isPermissionExist = {
+                            takeThumbnailFromAlbumLauncher.launch("image/*")
+                            recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.FileSelectChanged(false))
+                        }
+                    )
                 }
             )
         }
@@ -1027,12 +1170,26 @@ fun RecipeWriteScreen(
                     recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.StepFileSelectChanged(it, stateRecipeWriteDialog.stepNum))
                 },
                 onCameraClick = {
-                    //takePhotoFromCameraStepLauncher.launch()
-                    //recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.StepFileSelectChanged(false, stateRecipeWriteDialog.stepNum))
+                    checkAndRequestPermissions(
+                        context,
+                        permissions,
+                        launcherMultiplePermissions,
+                        isPermissionExist = {
+                            takeStepPhotoFromCameraLauncher.launch()
+                            recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.StepFileSelectChanged(false, stateRecipeWriteDialog.stepNum))
+                        }
+                    )
                 },
                 onFileClick = {
-                    takeStepPhotoFromAlbumLauncher.launch("image/*")
-                    recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.StepFileSelectChanged(false, stateRecipeWriteDialog.stepNum))
+                    checkAndRequestPermissions(
+                        context,
+                        permissions,
+                        launcherMultiplePermissions,
+                        isPermissionExist = {
+                            takeStepPhotoFromAlbumLauncher.launch("image/*")
+                            recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.StepFileSelectChanged(false, stateRecipeWriteDialog.stepNum))
+                        }
+                    )
                 }
             )
         }
@@ -1197,14 +1354,3 @@ fun RecipeWriteScreen(
     }
 }
 
-
-@Preview
-@Composable
-fun PreviewRecipeWriteScreen() {
-    RecipeWriteScreen(
-        tempId = null,
-        recipeId = null,
-        onClickBack = {},
-        onClickViewRecipe = { recipeId -> }
-    )
-}

@@ -72,6 +72,7 @@ fun NavGraphBuilder.DrawerNavGraph(
         ){
             ReportDetailScreen()
         }
+
         composable(DrawerScreen.ReportSuccess.route){
             ReportSuccessScreen(
                 isGotoNewReport = {
