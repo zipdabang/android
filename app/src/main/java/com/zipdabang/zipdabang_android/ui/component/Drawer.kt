@@ -22,6 +22,7 @@ import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -30,9 +31,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.zipdabang.zipdabang_android.R
+import com.zipdabang.zipdabang_android.core.data_store.proto.CurrentPlatform
+import com.zipdabang.zipdabang_android.core.data_store.proto.ProtoDataViewModel
+import com.zipdabang.zipdabang_android.core.data_store.proto.Token
 import com.zipdabang.zipdabang_android.core.navigation.DrawerScreen
 import com.zipdabang.zipdabang_android.core.navigation.MyScreen
 import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
@@ -375,6 +380,18 @@ fun ModalDrawer(
     drawerState: DrawerState,
     navController: NavController = rememberNavController()
 ){
+    val tokenStoreViewModel = hiltViewModel<ProtoDataViewModel>()
+    val currentPlatform = tokenStoreViewModel.tokens.collectAsState(
+        initial = Token(
+            null,
+            null,
+            null,
+            CurrentPlatform.NONE,
+            null,
+            null
+        )
+    )
+
     //drawer가 오른쪽에서 왼쪽으로 나오게끔 하기 위함
     //ㄴ사실 이거 오른쪽에서 왼쪽으로 글을 읽는 나라들을 위한 건데, drawer 또한 오른쪽에서 왼쪽으로 나와서 설정함
     CompositionLocalProvider (
@@ -395,14 +412,26 @@ fun ModalDrawer(
                     DrawerContent(
                         infoOnClick = { Log.d("drawer", "집다방 정보")},
                         noticeOnClick = { navController.navigate(DrawerScreen.Notice.route) },
-                        ToSOnClick = {  navController.navigate(DrawerScreen.Service.route)
-                                     },
+                        ToSOnClick = {  navController.navigate(DrawerScreen.Service.route)},
                         privacyAgreeOnClick = { Log.d("drawer","개인정보 제 3자 동의")},
                         privacyOnClick = { navController.navigate(DrawerScreen.PersonalInfo.route)},
                         FAGOnClick = { Log.d("drawer","FAG")},
-                        inquiryOnClick = { navController.navigate(DrawerScreen.Report.route)},
-                        inquiryListOnClick = { navController.navigate(DrawerScreen.ReportList.route)},
-                        userOnClick = { navController.navigate(DrawerScreen.UserInfo.route) },
+                        inquiryOnClick = {
+                            if (currentPlatform.value.platformStatus == CurrentPlatform.TEMP) {
+                                navController.navigate(MyScreen.Home.route)
+                            }
+                            else navController.navigate(DrawerScreen.Report.route)},
+                        inquiryListOnClick = {
+                            if (currentPlatform.value.platformStatus == CurrentPlatform.TEMP) {
+                                navController.navigate(MyScreen.Home.route)
+                            }
+                            else navController.navigate(DrawerScreen.ReportList.route)},
+                        userOnClick = {
+                            if (currentPlatform.value.platformStatus == CurrentPlatform.TEMP) {
+                                navController.navigate(MyScreen.Home.route)
+                            }
+                            else navController.navigate(DrawerScreen.UserInfo.route)
+                        },
                         alarmOnClick = { Log.d("drawer","알림 정보")},
                         etcOnClick = { Log.d("drawer","기타 정보")},
                     )
