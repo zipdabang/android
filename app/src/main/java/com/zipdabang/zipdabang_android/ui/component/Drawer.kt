@@ -427,10 +427,11 @@ fun ModalDrawer(
                             }
                             else navController.navigate(DrawerScreen.ReportList.route)},
                         userOnClick = {
-                            if (currentPlatform.value.platformStatus == CurrentPlatform.TEMP) {
+                             navController.navigate(MyScreen.RecipeWrite.passTempId(0))
+                            /*if (currentPlatform.value.platformStatus == CurrentPlatform.TEMP) {
                                 navController.navigate(MyScreen.Home.route)
                             }
-                            else navController.navigate(DrawerScreen.UserInfo.route)
+                            else navController.navigate(DrawerScreen.UserInfo.route)*/
                         },
                         alarmOnClick = { Log.d("drawer","알림 정보")},
                         etcOnClick = { Log.d("drawer","기타 정보")},

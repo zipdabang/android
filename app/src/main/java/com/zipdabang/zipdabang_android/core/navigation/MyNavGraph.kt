@@ -218,6 +218,7 @@ fun NavGraphBuilder.MyNavGraph(
             val recipeId = navBackStackEntry.arguments?.getInt("recipeId")
 
             RecipeWriteScreen(
+                navController = navController,
                 tempId = 0,
                 recipeId = recipeId,
                 onClickBack = {
@@ -248,6 +249,7 @@ fun NavGraphBuilder.MyNavGraph(
             val tempId = navBackStackEntry.arguments?.getInt("tempId")
 
             RecipeWriteScreen(
+                navController = navController,
                 tempId = tempId,
                 recipeId = null,
                 onClickBack = {
