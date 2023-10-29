@@ -7,6 +7,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.zipdabang.zipdabang_android.common.Resource
+import com.zipdabang.zipdabang_android.module.my.domain.usecase.BlockUseCase
 import com.zipdabang.zipdabang_android.module.my.domain.usecase.ClearBlockUseCase
 import com.zipdabang.zipdabang_android.module.my.domain.usecase.GeOtherInfoUseCase
 import com.zipdabang.zipdabang_android.module.my.domain.usecase.GeOtherRecipePreviewUseCase
@@ -29,6 +30,8 @@ class MyForOthersViewModel @Inject constructor(
     val getOtherRecipePreviewUseCase: GeOtherRecipePreviewUseCase,
     val followOrCancelUseCase: PostFollowOrCancelUseCase,
     val cancelBlockUseCase: ClearBlockUseCase,
+    val blockUseCase: BlockUseCase,
+
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
@@ -47,10 +50,10 @@ class MyForOthersViewModel @Inject constructor(
     private var _followOrCancelSuccessState = mutableStateOf(FollowOrCancel())
     val followOrCancelSuccessState = _followOrCancelSuccessState
 
-    private var _cancelBlockState= mutableStateOf(CancelBlock())
+    private var _cancelBlockState = mutableStateOf(CancelBlock())
     val cancelBlockState = _cancelBlockState
 
-   private  val userId = savedStateHandle.get<Int>("userId")
+    private val userId = savedStateHandle.get<Int>("userId")
 
     init {
 
@@ -268,7 +271,40 @@ class MyForOthersViewModel @Inject constructor(
 
             }.launchIn(viewModelScope)
         }
-
     }
 
-}
+
+        fun userBlock() {
+            if (userId != null) {
+                blockUseCase(userId).onEach { result ->
+                    when (result) {
+                        is Resource.Success -> {
+                            if (result.code == 2000) {
+                                _otherInfoState.value = OtherInfo(isBlock = true)
+                            }
+
+                        }
+
+                        is Resource.Error -> {
+
+                            Log.e(
+                                "Block Api in Error",
+                                "code :${result.code} message : ${result.message.toString()}"
+                            )
+
+
+                        }
+
+                        is Resource.Loading -> {
+
+                        }
+
+                    }
+
+                }.launchIn(viewModelScope)
+            }
+
+        }
+    }
+
+

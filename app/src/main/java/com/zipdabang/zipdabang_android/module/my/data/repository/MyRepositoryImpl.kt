@@ -215,4 +215,11 @@ class MyRepositoryImpl @Inject constructor(
         return api.cancelUserBlock(accessToken,memberId)
     }
 
+    override suspend fun userBlock(
+        accessToken: String,
+        memberId: Int
+    ): ResponseBody<UserBlockDto?> {
+        return api.userBlock(accessToken,memberId)
+    }
+
 }

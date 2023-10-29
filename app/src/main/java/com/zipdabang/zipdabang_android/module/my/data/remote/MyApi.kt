@@ -263,5 +263,11 @@ interface MyApi {
         @Path("memberId") memberId : Int,
         @Query("pageIndex") page : Int,
         ) : OtherRecipeListDto
+    @POST("members/block")
+    suspend fun userBlock(
+        @Header("Authorization") accessToken: String,
+        @Query("blocked") userId: Int
+    ): ResponseBody<UserBlockDto?>
+
 
 }

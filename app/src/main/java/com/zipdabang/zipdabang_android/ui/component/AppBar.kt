@@ -366,6 +366,64 @@ fun AppBarMy( //내집다방 그라데이션을 위해 특수제작했다고 생
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun AppBarOther( //내집다방 그라데이션을 위해 특수제작했다고 생각하시면 됩니다(그렇게 수정했어요) -예은-
+    endIcon: @Composable ()-> Unit,
+    startIcon: Int?,
+    onClickEndIcon: () -> Unit,
+    onClickStartIcon: () -> Unit,
+    centerText: String
+) {
+    TopAppBar(
+        colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = Color.Transparent
+        ),
+        navigationIcon = {
+            startIcon?.let {
+                IconButton(onClick = { onClickStartIcon() }) {
+                    Icon(
+                        painter = painterResource(id = it),
+                        contentDescription = "",
+                        modifier = Modifier
+                            .padding(4.dp),
+                        tint = Color.White
+                    )
+                }
+            }
+        },
+        title = {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = centerText,
+                    fontSize = 24.sp,
+                    fontFamily = FontFamily(Font(R.font.cafe24ssurroundair)),
+                    color = Color.White,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier
+                        .padding(top = 4.dp, bottom = 2.dp),
+                    textAlign = TextAlign.Center
+                )
+            }
+        },
+        actions = {
+            endIcon.let {
+                IconButton(
+                    enabled = false,
+                    onClick = {}
+                ) {
+                    endIcon()
+                }
+            }
+
+        }
+    )
+}
 @Composable
 fun AppBarCollapsing(
     title: String,

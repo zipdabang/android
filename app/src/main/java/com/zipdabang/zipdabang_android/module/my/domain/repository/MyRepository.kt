@@ -63,4 +63,6 @@ interface MyRepository {
     suspend fun postScrap(accessToken: String, recipeId:Int) : PostScrapResponse
     suspend fun cancelUserBlock(accessToken: String, memberId:Int) : ResponseBody<UserBlockDto?>
 
+    suspend fun userBlock(accessToken: String, memberId:Int) : ResponseBody<UserBlockDto?>
+
 }
