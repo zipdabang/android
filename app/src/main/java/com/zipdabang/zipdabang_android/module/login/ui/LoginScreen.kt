@@ -9,10 +9,13 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -65,6 +68,9 @@ fun LoginScreen(
     val kakaoAuthClient by lazy {
         KakaoAuthClient()
     }
+
+    val isLoadingForLogin = viewModel.state.value.isLoading
+    val isLoadingForTempLogin = viewModel.tempLoginState.value.isLoading
 
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartIntentSenderForResult(),
@@ -207,6 +213,19 @@ fun LoginScreen(
                     fontSize = 14.sp,
                     textAlign = TextAlign.Center,
                     fontFamily = FontFamily(Font(R.font.kopubworlddotum_medium))
+                )
+            }
+        }
+
+        if (isLoadingForLogin || isLoadingForTempLogin) {
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                CircularProgressIndicator(
+                    modifier = Modifier.size(48.dp),
+                    color = ZipdabangandroidTheme.Colors.Choco
                 )
             }
         }
