@@ -1,8 +1,12 @@
 package com.zipdabang.zipdabang_android.module.my.ui
 
 import android.util.Log
+import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.indication
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -16,14 +20,19 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.DropdownMenu
 import androidx.compose.material3.DrawerValue
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -31,9 +40,12 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
@@ -44,8 +56,10 @@ import com.zipdabang.zipdabang_android.R
 import com.zipdabang.zipdabang_android.common.TabItem
 import com.zipdabang.zipdabang_android.module.my.data.remote.followorcancel.FollowState
 import com.zipdabang.zipdabang_android.module.my.ui.component.recipewrite.ButtonForFollow
+import com.zipdabang.zipdabang_android.module.my.ui.component.showDropdownForOther
 import com.zipdabang.zipdabang_android.module.my.ui.viewmodel.MyForOthersViewModel
 import com.zipdabang.zipdabang_android.ui.component.AppBarMy
+import com.zipdabang.zipdabang_android.ui.component.AppBarOther
 import com.zipdabang.zipdabang_android.ui.component.CircleImage
 import com.zipdabang.zipdabang_android.ui.component.ColumnPagersNoPadding
 import com.zipdabang.zipdabang_android.ui.component.ModalDrawer
@@ -70,7 +84,12 @@ fun MyScreenForOther(
     
     val infoState = viewModel.otherInfoState
     val commonInfoState = viewModel.commonInfoState
-    val blockSuccessState = viewModel.cancelBlockState
+
+
+    val isContextMenuVisible = remember {
+        mutableStateOf(false)
+    }
+
 
     val userId = remember{
         mutableStateOf(userId)
@@ -83,10 +102,6 @@ fun MyScreenForOther(
     }
     val buttonState = remember{
         mutableStateOf(FollowState.NotFriend)
-    }
-
-    val blockState = remember{
-        mutableStateOf(false)
     }
 
     if(infoState.value.isSuccess) {
@@ -105,8 +120,10 @@ fun MyScreenForOther(
     }
 
 
+
     if(infoState.value.isBlock) {
-        Box(modifier = Modifier.background(Color.Transparent)
+        Box(modifier = Modifier
+            .background(Color.Transparent)
             .fillMaxSize()
         ) {
             Notice(
@@ -135,13 +152,22 @@ fun MyScreenForOther(
                             shape = RectangleShape,
                         ),
                     topBar = {
-                        AppBarMy(
+                        AppBarOther(
                             startIcon = R.drawable.ic_topbar_backbtn,
-                            endIcon = R.drawable.ic_topbar_menu,
+                            endIcon = {
+                              showDropdownForOther(
+                                  isBlock = {
+                                      viewModel.userBlock()
+                                  }
+                              )
+                            },
+
                             onClickStartIcon = {
                                 //onClickBack()
                             },
-                            onClickEndIcon = { scope.launch { drawerState.open() } },
+                            onClickEndIcon = {
+                                isContextMenuVisible.value = !isContextMenuVisible.value
+                            },
                             centerText = stringResource(id = R.string.zipdabang_title)
                         )
                     },
@@ -151,12 +177,14 @@ fun MyScreenForOther(
                         val scrollState = rememberScrollState()
 
 
+
                         Column(
                             modifier = Modifier
                                 .padding(it)
                                 .fillMaxSize()
                                 .verticalScroll(scrollState)
                         ) {
+
 
 
                             if (infoState.value.isSuccess) {

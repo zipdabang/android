@@ -7,3 +7,10 @@ data class CancelBlock(
     val isFollowing : Boolean = false,
     val error : String = ""
 )
+
+data class Block(
+    val isSuccess : Boolean = false,
+    val isError : Boolean = false,
+    val isLoading : Boolean = false,
+    val error : String = ""
+)
