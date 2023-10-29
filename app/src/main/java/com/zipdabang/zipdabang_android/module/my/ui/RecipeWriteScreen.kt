@@ -69,6 +69,7 @@ import com.zipdabang.zipdabang_android.ui.component.CustomDialogUploadComplete
 import com.zipdabang.zipdabang_android.ui.component.ImageWithIconAndText
 import com.zipdabang.zipdabang_android.ui.component.PrimaryButtonOutLinedStatus
 import com.zipdabang.zipdabang_android.ui.component.PrimaryButtonWithStatus
+import com.zipdabang.zipdabang_android.ui.component.PrimaryButtonWithStatusForSignup
 import com.zipdabang.zipdabang_android.ui.component.TextFieldForRecipeWriteMultiline
 import com.zipdabang.zipdabang_android.ui.component.TextFieldForRecipeWriteSingleline
 import com.zipdabang.zipdabang_android.ui.shimmeringEffect
@@ -387,81 +388,6 @@ fun RecipeWriteScreen(
             }
         }
 
-    /*val takePhotoFromCameraStepLauncher =
-        rememberLauncherForActivityResult(ActivityResultContracts.TakePicturePreview()) { bitmap: Bitmap? ->
-            if (bitmap != null) {
-                recipeWriteViewModel.onRecipeWriteFormEvent(RecipeWriteFormEvent.StepImageChanged(bitmap, stateRecipeWriteDialog.stepNum))
-
-                val baos = ByteArrayOutputStream()
-                bitmap.compress(
-                    Bitmap.CompressFormat.PNG,
-                    100,
-                    baos
-                )
-
-                // ByteArrayOutputStream을 ByteArray로 변환
-                val byteArray = baos.toByteArray()
-
-                // ByteArray를 다시 Bitmap으로 변환
-                val compressedBitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size)
-
-                // compressedBitmap을 thumbnail 변수에 할당
-                recipeWriteViewModel.onRecipeWriteFormEvent(RecipeWriteFormEvent.StepImageChanged(compressedBitmap, stateRecipeWriteDialog.stepNum))
-
-
-
-
-                // 비트맵의 너비와 높이를 가져옵니다.
-                val width = bitmap.width
-                val height = bitmap.height
-
-                // 비트맵의 Config를 가져옵니다.
-                val config = bitmap.config ?: Bitmap.Config.ARGB_8888
-
-                // 비트맵의 비트 수를 계산합니다.
-                val bitsPerPixel = when (config) {
-                    Bitmap.Config.ALPHA_8 -> 8
-                    Bitmap.Config.RGB_565 -> 16
-                    else -> 32 // 기본적으로 ARGB_8888을 사용
-                }
-
-                val totalBits = width * height * bitsPerPixel
-
-                // 비트를 바이트로 변환하고, 메가바이트로 변환합니다.
-                val totalBytes = totalBits / 8
-                val totalMegabytes = totalBytes.toDouble() / (1024 * 1024)
-
-                // 로그로 비트맵 크기를 출력합니다.
-                Log.e("사진-카메라 압축 전", "${bitmap}, ${totalMegabytes} MB")
-
-
-                val quality = 100
-
-                // ByteArrayOutputStream을 사용하여 Bitmap을 JPEG으로 압축합니다.
-                val outputStream = ByteArrayOutputStream()
-                bitmap.compress(Bitmap.CompressFormat.JPEG, quality, outputStream)
-
-                // ByteArrayOutputStream을 ByteArray로 변환합니다.
-                val compressedImageByteArray = outputStream.toByteArray()
-                val compressedImageSizeInMB =
-                    compressedImageByteArray.size.toDouble() / (1024 * 1024)
-
-                // 이제 압축된 이미지 바이트 배열을 서버에 업로드하거나 저장할 수 있습니다.
-
-                // 예를 들어, 압축된 이미지 바이트 배열을 서버로 업로드하려면 다음과 같이 할 수 있습니다:
-                // uploadImageToServer(compressedImageByteArray)
-
-                // Bitmap을 띄울 때 사용할 수 있도록 이미지를 갱신합니다.
-                // thumbnailUri = bitmapToUri(context, bitmap)
-
-                Log.e("사진-카메라 압축 후", "${compressedImageByteArray}, ${compressedImageSizeInMB} MB")
-
-
-                // Bitmap -> jpeg로 변환해서 서버에 전송해야함
-                // 띄울때는 Bitmap 형태로 사진 띄우기
-            }
-        }*/
-
 
 
     Scaffold(
@@ -486,9 +412,9 @@ fun RecipeWriteScreen(
                         .padding(16.dp, 12.dp, 16.dp, 12.dp),
                     contentAlignment = Alignment.Center
                 ) {
-                    PrimaryButtonWithStatus(
+                    PrimaryButtonWithStatusForSignup(
                         isFormFilled = stateRecipeWriteForm.btnEnabled,
-                        text = stringResource(id = R.string.my_recipewrite_writedone),
+                        text = "수정 완료",
                         onClick = {
                             recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.UploadCategoryChanged(true))
                          },
@@ -519,7 +445,7 @@ fun RecipeWriteScreen(
                     Box(
                         modifier = Modifier.weight(1f)
                     ) {
-                        PrimaryButtonWithStatus(
+                        PrimaryButtonWithStatusForSignup(
                             isFormFilled = stateRecipeWriteForm.btnEnabled,
                             text = stringResource(id = R.string.my_recipewrite_writedone),
                             onClick = {
