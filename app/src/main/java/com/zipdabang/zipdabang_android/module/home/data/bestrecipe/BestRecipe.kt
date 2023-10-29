@@ -12,5 +12,7 @@ data class BestRecipe(
     val scraps : Int,
     var isLiked : Boolean,
     val isScrapped : Boolean,
-    val rank : Int
+    val rank : Int,
+    val isBlocked : Boolean,
+    val ownerId : Int
 )

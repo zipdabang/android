@@ -48,7 +48,10 @@ fun NavGraphBuilder.DrawerNavGraph(
 
     navigation(startDestination = DrawerScreen.Notice.route, route = DRAWER_ROUTE){
         composable(DrawerScreen.Notice.route){
-           NoticeScreen(navController, onClickBack = {})
+           NoticeScreen(
+               navController, onClickBack = {
+                   navController.navigateUp()
+               })
         }
 
         composable(DrawerScreen.Report.route){
@@ -59,8 +62,11 @@ fun NavGraphBuilder.DrawerNavGraph(
         composable(DrawerScreen.ReportList.route){
             ReportListScreen(
                 onReportClick = {
-                navController.navigate(DrawerScreen.ReportDetail.passReportId(it))
-            }
+                    navController.navigate(DrawerScreen.ReportDetail.passReportId(it))
+                },
+                onClickBack = {
+                    navController.navigateUp()
+                }
             )
         }
 
@@ -70,7 +76,11 @@ fun NavGraphBuilder.DrawerNavGraph(
             { type = NavType.IntType }
         )
         ){
-            ReportDetailScreen()
+            ReportDetailScreen(
+                onClickBack = {
+                    navController.navigateUp()
+                }
+            )
         }
 
         composable(DrawerScreen.ReportSuccess.route){
@@ -239,7 +249,8 @@ fun NavGraphBuilder.DrawerNavGraph(
         }
 
         composable(DrawerScreen.Service.route){
-            ServiceInfoScreen(navController = navController) {
+            ServiceInfoScreen(navController = navController,
+                ) {
                 navController.navigateUp()
 
             }
@@ -252,7 +263,12 @@ fun NavGraphBuilder.DrawerNavGraph(
         }
 
         composable(DrawerScreen.Quit.route){
-           QuitScreen(onQuitClick = { outerNavController.navigate(AuthScreen.SignIn.route) })
+           QuitScreen(
+               onQuitClick = { outerNavController.navigate(AuthScreen.SignIn.route) },
+               onClickBack = {
+                   navController.navigateUp()
+               }
+           )
         }
     }
 

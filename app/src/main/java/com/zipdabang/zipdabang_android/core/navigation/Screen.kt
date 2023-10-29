@@ -125,11 +125,12 @@ sealed class SharedScreen(val route : String){
             return "shared/detail/$recipeId"
         }
     }
-    object Search : SharedScreen(route = "shared/search/{searchKeyword}"){
+    object SearchForBanner : SharedScreen(route = "shared/search/{searchKeyword}"){
         fun passQuery(keyword: String): String{
             return "shared/search/$keyword"
         }
     }
+    object Search : SharedScreen(route = "shared/search")
 
     object SearchRecipeCategory : SharedScreen(route = "shared/search?categoryId={categoryId}&keyword={keyword}"){
         fun passQuery(categoryId : Int?, keyword: String?) : String{

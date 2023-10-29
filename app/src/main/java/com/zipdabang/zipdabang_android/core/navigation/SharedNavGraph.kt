@@ -432,7 +432,7 @@ fun NavGraphBuilder.SharedNavGraph(
         }
 
         composable(
-            route = SharedScreen.Search.route,
+            route = SharedScreen.SearchForBanner.route,
             arguments =  listOf(
                 navArgument(name = "searchKeyword")
                 { type = NavType.StringType }
@@ -443,11 +443,27 @@ fun NavGraphBuilder.SharedNavGraph(
                 navController= navController,
                 onRecipeItemClick = {
                     recipeid -> navController.navigate(SharedScreen.DetailRecipe.passRecipeId(recipeid))
+                },
+                onGotoBack = {
+                    navController.navigateUp()
+                }
+            )
+        }
+        composable(
+            route = SharedScreen.Search.route,
+        )
+        {
+            SearchScreen(
+                navController= navController,
+                onRecipeItemClick = {
+                        recipeid -> navController.navigate(SharedScreen.DetailRecipe.passRecipeId(recipeid))
+                },
+                onGotoBack = {
+                    navController.navigateUp()
                 }
 
             )
         }
-
         composable(SharedScreen.SearchRecipeCategory.route,
             arguments = listOf(
                 navArgument("categoryId"){ type = NavType.IntType },
@@ -460,6 +476,9 @@ fun NavGraphBuilder.SharedNavGraph(
               SearchCategoryScreen(
                   onRecipeItemClick = {
                           recipeid -> navController.navigate(SharedScreen.DetailRecipe.passRecipeId(recipeid))
+                  },
+                  onGoToBack = {
+                      navController.navigateUp()
                   }
                   )
 

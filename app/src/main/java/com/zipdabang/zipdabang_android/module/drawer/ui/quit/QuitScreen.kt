@@ -44,6 +44,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun QuitScreen(
     onQuitClick : ()-> Unit,
+    onClickBack : ()->Unit,
     quitViewModel: QuitViewModel = hiltViewModel()
 ){
 
@@ -64,7 +65,7 @@ fun QuitScreen(
         topBar = {
             AppBarSignUp(
                 navigationIcon = R.drawable.ic_topbar_backbtn,
-                onClickNavIcon = {  },
+                onClickNavIcon = { onClickBack() },
                 centerText = stringResource(id = R.string.drawer_quit)
             )
         }

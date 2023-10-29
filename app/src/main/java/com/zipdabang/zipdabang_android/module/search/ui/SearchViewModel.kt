@@ -32,8 +32,9 @@ class SearchViewModel @Inject constructor(
     var searchText= _searchText
 
     init {
-     _searchText.value = savedStateHandle.get<String>("searchKeyword").toString()
-        getSearchList()
+        _searchText.value = savedStateHandle.get<String?>("searchKeyword") ?: ""
+
+        if(_searchText.value!="")getSearchList()
     }
 
 
