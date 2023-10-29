@@ -43,9 +43,11 @@ fun Banner(
     images : List<String>,
 ){
     val pagerState = com.google.accompanist.pager.rememberPagerState()
-    Box(
-     modifier = Modifier.fillMaxSize()
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
     ){
+
     HorizontalPager(
         count = images.size,
         state= pagerState,
@@ -56,13 +58,15 @@ fun Banner(
         contentDescription = "banner image"
         )
     }
+
         HorizontalPagerIndicator(
             pagerState = pagerState,
             modifier = Modifier
-                .align(Alignment.BottomCenter)
                 .padding(10.dp),
-            inactiveColor = BannerGray,
-            activeColor = White
+            inactiveColor = Color(0x40CDC6C3),
+            activeColor = Color(0xFFCDC6C3),
+            indicatorWidth = 4.dp,
+            indicatorHeight = 4.dp
         )
     }
 }
