@@ -1,7 +1,6 @@
 package com.zipdabang.zipdabang_android.module.my.ui
 
 import android.util.Log
-import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -32,7 +31,6 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -45,13 +43,14 @@ import com.zipdabang.zipdabang_android.R
 import com.zipdabang.zipdabang_android.common.TabItem
 import com.zipdabang.zipdabang_android.module.my.data.remote.followorcancel.FollowState
 import com.zipdabang.zipdabang_android.module.my.ui.component.recipewrite.ButtonForFollow
+import com.zipdabang.zipdabang_android.module.my.ui.component.showDropdownForOther
 import com.zipdabang.zipdabang_android.module.my.ui.viewmodel.MyForOthersViewModel
-import com.zipdabang.zipdabang_android.ui.component.AppBarMy
+import com.zipdabang.zipdabang_android.ui.component.AppBarOther
 import com.zipdabang.zipdabang_android.ui.component.CircleImage
 import com.zipdabang.zipdabang_android.ui.component.ColumnPagersNoPadding
 import com.zipdabang.zipdabang_android.ui.component.ModalDrawer
+import com.zipdabang.zipdabang_android.ui.component.Notice
 import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
-import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
@@ -60,6 +59,7 @@ fun MyScreenForOther(
     userId : Int,
     onClickHeader : (String) -> Unit,
     onRecipeItemClick : (Int) -> Unit,
+    onClickBack: () -> Unit,
     viewModel : MyForOthersViewModel = hiltViewModel()
 ) {
 
@@ -68,23 +68,28 @@ fun MyScreenForOther(
     val scope = rememberCoroutineScope()
     val pagerState = rememberPagerState()
 
-    val context = LocalContext.current
-
     val infoState = viewModel.otherInfoState
     val commonInfoState = viewModel.commonInfoState
+
+
+    val isContextMenuVisible = remember {
+        mutableStateOf(false)
+    }
+
+
     val userId = remember{
         mutableStateOf(userId)
     }
-
     val followingNum = remember{
         mutableStateOf(0)
     }
     val followerNum = remember{
         mutableStateOf(0)
     }
-    var buttonState = remember{
+    val buttonState = remember{
         mutableStateOf(FollowState.NotFriend)
     }
+
     if(infoState.value.isSuccess) {
         followerNum.value = commonInfoState.value.followNum
         followingNum.value = commonInfoState.value.followingNum
@@ -101,195 +106,227 @@ fun MyScreenForOther(
     }
 
 
-    ModalDrawer(
-        scaffold = {
-            Scaffold(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(
-                        brush = Brush.linearGradient(
-                            colors = listOf(
-                                ZipdabangandroidTheme.Colors.Strawberry,
-                                ZipdabangandroidTheme.Colors.Choco,
+
+    if(infoState.value.isBlock) {
+        Box(modifier = Modifier
+            .background(Color.Transparent)
+            .fillMaxSize()
+        ) {
+            Notice(
+                contentText = "차단한 회원의 프로필입니다.\n" +
+                        "보시려면 차단을 해제해주세요.",
+                buttonText = "차단 해제하기"
+            ) {
+                viewModel.cancelBlock()
+            }
+        }
+    }else {
+        ModalDrawer(
+            scaffold = {
+                Scaffold(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(
+                            brush = Brush.linearGradient(
+                                colors = listOf(
+                                    ZipdabangandroidTheme.Colors.Strawberry,
+                                    ZipdabangandroidTheme.Colors.Choco,
+                                ),
+                                start = Offset(0f, Float.POSITIVE_INFINITY),
+                                end = Offset(Float.POSITIVE_INFINITY, 0f),
                             ),
-                            start = Offset(0f, Float.POSITIVE_INFINITY),
-                            end = Offset(Float.POSITIVE_INFINITY, 0f),
+                            shape = RectangleShape,
                         ),
-                        shape = RectangleShape,
-                    ),
-                topBar = {
-                    AppBarMy(
-                        startIcon = R.drawable.ic_topbar_backbtn,
-                        endIcon = R.drawable.ic_topbar_menu,
-                        onClickStartIcon = {
-                            //onClickBack()
-                        },
-                        onClickEndIcon = { scope.launch { drawerState.open() } },
-                        centerText = stringResource(id = R.string.zipdabang_title)
-                    )
-                },
-                containerColor = Color.Transparent,
-                contentColor = Color.Transparent,
-                content = {
-                    val scrollState = rememberScrollState()
-
-                    Column(
-                        modifier = Modifier
-                            .padding(it)
-                            .fillMaxSize()
-                            .verticalScroll(scrollState)
-                    ) {
-                        if (infoState.value.isSuccess) {
-                            // 프로필 부분
-
-                            Row(
-                                modifier = Modifier
-                                    .weight(1.4f)
-                                    .fillMaxWidth()
-                                    .padding(16.dp, 30.dp, 16.dp, 0.dp),
-                                horizontalArrangement = Arrangement.SpaceBetween
-                            ) {
-                                //닉네임 & 선호음료 & 팔로우팔로잉
-
-                                Column {
-                                    Row(
-                                        horizontalArrangement = Arrangement.spacedBy(4.dp),
-                                        verticalAlignment = Alignment.CenterVertically,
-                                    ) {
-                                        Text(
-                                            text =  commonInfoState.value.nickName,
-                                            style = ZipdabangandroidTheme.Typography.thirtytwo_700,
-                                            color = Color.White
-                                        )
+                    topBar = {
+                        AppBarOther(
+                            startIcon = R.drawable.ic_topbar_backbtn,
+                            endIcon = {
+                                showDropdownForOther(
+                                    isBlock = {
+                                        viewModel.userBlock()
                                     }
-                                    Row(
-                                        modifier = Modifier.padding(6.dp, 2.dp, 0.dp, 0.dp)
-                                    ) {
-                                        Text(
-                                            text = "팔로우 ${followingNum.value} | 팔로잉 ${followerNum.value}",
-                                            style = ZipdabangandroidTheme.Typography.fourteen_300,
-                                            color = Color.White
-                                        )
-                                    }
-                                    Box(
-                                        contentAlignment = Alignment.Center,
-                                        modifier = Modifier
-                                            .clickable(onClick = { })
-                                            .padding(0.dp, 16.dp, 0.dp, 0.dp)
-                                            .width(200.dp)
-                                            .height(35.dp)
-                                            .background(
-                                                color = Color.Transparent,
-                                                shape = ZipdabangandroidTheme.Shapes.medium
-                                            ),
-                                    ) {
-
-                                        Log.e("friendlist test",buttonState.toString())
-                                       if(!commonInfoState.value.isCheckSelf) ButtonForFollow(
-                                            onClick = {
-                                                //내가 상대방 팔로우
-
-                                              if(buttonState.value==FollowState.FollowEach) {
-
-                                                  viewModel.followOrCancel(
-                                                      userId.value
-                                                  )
-                                                  buttonState.value = FollowState.OtherOnlyFollow
-                                                  followerNum.value -= 1
-                                              }
-                                              else if(buttonState.value==FollowState.UserOnlyFollow) {
-
-                                                    viewModel.followOrCancel(
-                                                        userId.value
-                                                    )
-                                                    buttonState.value = FollowState.NotFriend
-                                                    followerNum.value -= 1
-                                                }
-
-
-                                                //상대방이 나를 팔로우, 나는 상대 팔로우 x
-                                             else  if (buttonState.value == FollowState.OtherOnlyFollow) {
-                                                    viewModel.followOrCancel(
-                                                        userId.value
-                                                    )
-                                                    Log.e("userid",userId.value.toString())
-                                                    //맞팔 취소하면 ->
-                                                  buttonState.value = FollowState.FollowEach
-                                                  followerNum.value += 1
-
-
-                                              } else {
-                                                    //친구 아님
-                                                    viewModel.followOrCancel(
-                                                        userId.value
-                                                    )
-                                                    buttonState.value = FollowState.UserOnlyFollow
-                                                  followerNum.value += 1
-
-                                              }
-
-                                            },
-                                            followState = buttonState.value
-                                        )
-                                    }
-
-                                }
-                                //프로필
-                                Box(
-                                    contentAlignment = Alignment.CenterEnd
-                                ) {
-                                    Box(
-                                        modifier = Modifier
-                                            .size(104.dp, 104.dp)
-                                            .clip(CircleShape),
-                                    ) {
-
-                                        CircleImage(
-                                            imageUrl = commonInfoState.value.profileUrl,
-                                            contentDescription = ""
-                                        ) //stateMyUserInfo.profileUrl
-                                    }
-
-                                }
-                            }
-
-                            Box(
-                                modifier = Modifier
-                                    .background(color = Color.White)
-                                    .weight(3f)
-                            ) {
-                                ColumnPagersNoPadding(
-                                    tabsList = listOf(
-                                        TabItem.ProfileForOthers(),
-                                        TabItem.RecipesForOthers(
-                                            nickname = commonInfoState.value.nickName,
-                                            onClickHeader = {
-                                                onClickHeader(commonInfoState.value.nickName)
-                                            },
-                                            onRecipeItemClick = {
-                                                onRecipeItemClick(it)
-                                            }
-                                        )
-                                    ),
-                                    pagerState = pagerState
                                 )
+                            },
+
+                            onClickStartIcon = {
+                                onClickBack()
+                            },
+                            onClickEndIcon = {
+                                isContextMenuVisible.value = !isContextMenuVisible.value
+                            },
+                            centerText = stringResource(id = R.string.zipdabang_title)
+                        )
+                    },
+                    containerColor = Color.Transparent,
+                    contentColor = Color.Transparent,
+                    content = {
+                        val scrollState = rememberScrollState()
+
+
+
+                        Column(
+                            modifier = Modifier
+                                .padding(it)
+                                .fillMaxSize()
+                                .verticalScroll(scrollState)
+                        ) {
+
+
+
+                            if (infoState.value.isSuccess) {
+                                // 프로필 부분
+                                Log.e("success in otherScreen", "")
+                                Row(
+                                    modifier = Modifier
+                                        .weight(1.4f)
+                                        .fillMaxWidth()
+                                        .padding(16.dp, 30.dp, 16.dp, 0.dp),
+                                    horizontalArrangement = Arrangement.SpaceBetween
+                                ) {
+                                    //닉네임 & 선호음료 & 팔로우팔로잉
+
+                                    Column {
+                                        Row(
+                                            horizontalArrangement = Arrangement.spacedBy(4.dp),
+                                            verticalAlignment = Alignment.CenterVertically,
+                                        ) {
+                                            Text(
+                                                text = commonInfoState.value.nickName,
+                                                style = ZipdabangandroidTheme.Typography.thirtytwo_700,
+                                                color = Color.White
+                                            )
+                                        }
+                                        Row(
+                                            modifier = Modifier.padding(6.dp, 2.dp, 0.dp, 0.dp)
+                                        ) {
+                                            Text(
+                                                text = "팔로우 ${followingNum.value} | 팔로잉 ${followerNum.value}",
+                                                style = ZipdabangandroidTheme.Typography.fourteen_300,
+                                                color = Color.White
+                                            )
+                                        }
+                                        Box(
+                                            contentAlignment = Alignment.Center,
+                                            modifier = Modifier
+                                                .clickable(onClick = { })
+                                                .padding(0.dp, 16.dp, 0.dp, 0.dp)
+                                                .width(200.dp)
+                                                .height(35.dp)
+                                                .background(
+                                                    color = Color.Transparent,
+                                                    shape = ZipdabangandroidTheme.Shapes.medium
+                                                ),
+                                        ) {
+
+                                            Log.e("friendlist test", buttonState.toString())
+                                            if (!commonInfoState.value.isCheckSelf) ButtonForFollow(
+                                                onClick = {
+                                                    //내가 상대방 팔로우
+
+                                                    if (buttonState.value == FollowState.FollowEach) {
+
+                                                        viewModel.followOrCancel(
+                                                            userId.value
+                                                        )
+                                                        buttonState.value =
+                                                            FollowState.OtherOnlyFollow
+                                                        followerNum.value -= 1
+                                                    } else if (buttonState.value == FollowState.UserOnlyFollow) {
+
+                                                        viewModel.followOrCancel(
+                                                            userId.value
+                                                        )
+                                                        buttonState.value = FollowState.NotFriend
+                                                        followerNum.value -= 1
+                                                    }
+
+
+                                                    //상대방이 나를 팔로우, 나는 상대 팔로우 x
+                                                    else if (buttonState.value == FollowState.OtherOnlyFollow) {
+                                                        viewModel.followOrCancel(
+                                                            userId.value
+                                                        )
+                                                        Log.e("userid", userId.value.toString())
+                                                        //맞팔 취소하면 ->
+                                                        buttonState.value = FollowState.FollowEach
+                                                        followerNum.value += 1
+
+
+                                                    } else {
+                                                        //친구 아님
+                                                        viewModel.followOrCancel(
+                                                            userId.value
+                                                        )
+                                                        buttonState.value =
+                                                            FollowState.UserOnlyFollow
+                                                        followerNum.value += 1
+
+                                                    }
+
+                                                },
+                                                followState = buttonState.value
+                                            )
+                                        }
+
+                                    }
+                                    //프로필
+                                    Box(
+                                        contentAlignment = Alignment.CenterEnd
+                                    ) {
+                                        Box(
+                                            modifier = Modifier
+                                                .size(104.dp, 104.dp)
+                                                .clip(CircleShape),
+                                        ) {
+
+                                            CircleImage(
+                                                imageUrl = commonInfoState.value.profileUrl,
+                                                contentDescription = ""
+                                            ) //stateMyUserInfo.profileUrl
+                                        }
+
+                                    }
+                                }
+
+                                Box(
+                                    modifier = Modifier
+                                        .background(color = Color.White)
+                                        .weight(3f)
+                                ) {
+                                    ColumnPagersNoPadding(
+                                        tabsList = listOf(
+                                            TabItem.ProfileForOthers(),
+                                            TabItem.RecipesForOthers(
+                                                nickname = commonInfoState.value.nickName,
+                                                onClickHeader = {
+                                                    onClickHeader(commonInfoState.value.nickName)
+                                                },
+                                                onRecipeItemClick = {
+                                                    onRecipeItemClick(it)
+                                                }
+                                            )
+                                        ),
+                                        pagerState = pagerState
+                                    )
+                                }
+
+
+                            } else if (infoState.value.isLoading) {
+                                Log.e("loading in otherScreen", "")
+
+                            } else {
+                                Log.e("error in Myscreen", "")
                             }
-
-
-                        }else if(infoState.value.isLoading){
-
-                        }else {
-                            Log.e("error in Myscreen","")
                         }
-                    }
-                },
+                    },
 
-                )
+                    )
 
-        },
-        drawerState = drawerState,
-        navController = navController,
-    )
+            },
+            drawerState = drawerState,
+            navController = navController,
+        )
+    }
 }
 
 
@@ -297,5 +334,5 @@ fun MyScreenForOther(
 @Preview
 fun MyscreenForOthers(){
     val navController = rememberNavController()
-   // MyScreenForOther(navController =navController )
+    // MyScreenForOther(navController =navController )
 }

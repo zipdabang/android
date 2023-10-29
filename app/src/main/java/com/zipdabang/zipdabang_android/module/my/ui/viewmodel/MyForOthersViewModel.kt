@@ -7,9 +7,12 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.zipdabang.zipdabang_android.common.Resource
+import com.zipdabang.zipdabang_android.module.my.domain.usecase.BlockUseCase
+import com.zipdabang.zipdabang_android.module.my.domain.usecase.ClearBlockUseCase
 import com.zipdabang.zipdabang_android.module.my.domain.usecase.GeOtherInfoUseCase
 import com.zipdabang.zipdabang_android.module.my.domain.usecase.GeOtherRecipePreviewUseCase
 import com.zipdabang.zipdabang_android.module.my.domain.usecase.PostFollowOrCancelUseCase
+import com.zipdabang.zipdabang_android.module.my.ui.state.CancelBlock
 import com.zipdabang.zipdabang_android.module.my.ui.state.CommonInfoState
 import com.zipdabang.zipdabang_android.module.my.ui.state.FollowOrCancel
 import com.zipdabang.zipdabang_android.module.my.ui.state.OtherInfo
@@ -26,6 +29,9 @@ class MyForOthersViewModel @Inject constructor(
     val getOtherInfoUseCase: GeOtherInfoUseCase,
     val getOtherRecipePreviewUseCase: GeOtherRecipePreviewUseCase,
     val followOrCancelUseCase: PostFollowOrCancelUseCase,
+    val cancelBlockUseCase: ClearBlockUseCase,
+    val blockUseCase: BlockUseCase,
+
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
@@ -44,101 +50,128 @@ class MyForOthersViewModel @Inject constructor(
     private var _followOrCancelSuccessState = mutableStateOf(FollowOrCancel())
     val followOrCancelSuccessState = _followOrCancelSuccessState
 
+    private var _cancelBlockState = mutableStateOf(CancelBlock())
+    val cancelBlockState = _cancelBlockState
+
+    private val userId = savedStateHandle.get<Int>("userId")
 
     init {
-        val userId = savedStateHandle.get<Int>("userId")
 
-          userId?.let {
-              getOtherInfo(userId)
-              getOtherPreviewRecipe(userId)
-          }
-        Log.e("OhterInfoViewModel",userId.toString())
+        userId?.let {
+            getOtherInfo()
+            getOtherPreviewRecipe()
+        }
+        Log.e("OhterInfoViewModel", userId.toString())
     }
 
 
-    fun getOtherInfo(targetId: Int) {
-        getOtherInfoUseCase(targetId).onEach { result ->
-            when (result) {
-                is Resource.Success -> {
-                    _commonInfoState.value = CommonInfoState(
-                        nickName = result.data!!.result.nickname,
-                        followingNum = result.data.result.followingCount,
-                        followNum = result.data.result.followerCount,
-                        profileUrl = result.data.result.imageUrl,
-                        isFollowing = result.data.result.checkFollowing,
-                        isFollower = result.data.result.checkFollower,
-                        isCheckSelf = result.data.result.checkSelf
-                    )
-                    _profileState.value = ProfileState(
-                        caption = result.data.result.caption,
-                        preferCategory = result.data.result.memberPreferCategoryDto.categories
-                    )
-                    _otherInfoState.value = OtherInfo(
-                        isSuccess = true,
-                        isLoading = false
-                    )
+    fun getOtherInfo() {
+        if (userId != null) {
+            getOtherInfoUseCase(userId).onEach { result ->
+                when (result) {
+                    is Resource.Success -> {
+                        Log.e("otherSuccess", result.code.toString())
 
+                        _commonInfoState.value = CommonInfoState(
+                            nickName = result.data!!.result.nickname,
+                            followingNum = result.data.result.followingCount,
+                            followNum = result.data.result.followerCount,
+                            profileUrl = result.data.result.imageUrl,
+                            isFollowing = result.data.result.checkFollowing,
+                            isFollower = result.data.result.checkFollower,
+                            isCheckSelf = result.data.result.checkSelf
+                        )
+                        _profileState.value = ProfileState(
+                            caption = result.data.result.caption,
+                            preferCategory = result.data.result.memberPreferCategoryDto.categories
+                        )
+                        _otherInfoState.value = OtherInfo(
+                            isSuccess = true,
+                            isLoading = false,
+                            isError = false,
+                            isBlock = false
+                        )
+
+                    }
+
+                    is Resource.Loading -> {
+                        _otherInfoState.value = OtherInfo(
+                            isLoading = true,
+                            isError = false,
+                            isSuccess = false
+                        )
+                    }
+
+                    is Resource.Error -> {
+                        Log.e("otherError", result.code.toString())
+                        if (result.code == 4066) _otherInfoState.value = OtherInfo(
+                            isError = true,
+                            isBlock = true,
+                            isSuccess = false
+                        )
+                        else {
+                            _otherInfoState.value = OtherInfo(
+                                isError = true,
+                                isBlock = false,
+                                isSuccess = false
+                            )
+                        }
+                        result.message?.let { Log.e("error in other page Api", it) }
+                    }
                 }
 
-                is Resource.Loading -> {
-                    _otherInfoState.value = OtherInfo(
-                        isLoading = true
-                    )
-                }
 
-                is Resource.Error -> {
-                    _otherInfoState.value = OtherInfo(
-                        isError = true
-                    )
-                    result.message?.let { Log.e("error in other page Api", it) }
-                }
-            }
-
-
-        }.launchIn(viewModelScope)
+            }.launchIn(viewModelScope)
+        }
 
 
     }
 
-    fun getOtherPreviewRecipe(memberId: Int) {
-        getOtherRecipePreviewUseCase(memberId).onEach { result ->
-            when (result) {
-                is Resource.Success -> {
-                    if (result.data?.result != null) {
+    fun getOtherPreviewRecipe() {
+        if (userId != null) {
+            getOtherRecipePreviewUseCase(userId).onEach { result ->
+                when (result) {
+                    is Resource.Success -> {
+                        if (result.data?.result != null) {
+                            _otherRecipePreviewState.value = OtherRecipePreviewState(
+                                recipeList = result.data.result.recipeList,
+                                isSuccess = true,
+                                isLoading = false,
+                                isError = false
+                            )
+                        }
+                        //           Log.e("otherPreviewList", result.data.result.totalElements.toString())
+                        else {
+                            _otherRecipePreviewState.value = OtherRecipePreviewState(
+                                recipeList = emptyList(),
+                                isSuccess = true,
+                                isLoading = false,
+                                isError = false
+                            )
+                        }
+                    }
+
+                    is Resource.Loading -> {
                         _otherRecipePreviewState.value = OtherRecipePreviewState(
-                            recipeList = result.data.result.recipeList,
-                            isSuccess = true,
-                            isLoading = false
+                            isLoading = true,
+                            isError = false,
+                            isSuccess = false
                         )
                     }
-                    //           Log.e("otherPreviewList", result.data.result.totalElements.toString())
-                    else {
+
+                    is Resource.Error -> {
                         _otherRecipePreviewState.value = OtherRecipePreviewState(
-                            recipeList = emptyList(),
-                            isSuccess = true,
-                            isLoading = false
+                            isError = true,
+                            isLoading = false,
+                            isSuccess = false
                         )
+                        result.message?.let { Log.e("error in other page Api", it) }
                     }
                 }
 
-                is Resource.Loading -> {
-                    _otherRecipePreviewState.value = OtherRecipePreviewState(
-                        isLoading = true,
-                        isError = false,
-                    )
-                }
 
-                is Resource.Error -> {
-                    _otherRecipePreviewState.value = OtherRecipePreviewState(
-                        isError = true,
-                        isLoading = false
-                    )
-                    result.message?.let { Log.e("error in other page Api", it) }
-                }
-            }
-
-
-        }.launchIn(viewModelScope)
+            }.launchIn(viewModelScope)
+        }
     }
 
 
@@ -195,4 +228,83 @@ class MyForOthersViewModel @Inject constructor(
         }.launchIn(viewModelScope)
 
     }
-}
+
+    fun cancelBlock() {
+        if (userId != null) {
+            cancelBlockUseCase(userId).onEach { result ->
+                when (result) {
+                    is Resource.Success -> {
+                        if (result.code == 2000) {
+                            _cancelBlockState.value = CancelBlock(
+                                isSuccess = true,
+                                isLoading = false
+                            )
+                            getOtherInfo()
+                            getOtherPreviewRecipe()
+                        }
+
+                    }
+
+                    is Resource.Error -> {
+                        _cancelBlockState.value = CancelBlock(
+                            isError = true,
+                            isLoading = false,
+                            error = result.message.toString()
+                        )
+                        Log.e(
+                            "cancelBlock Api in Error",
+                            "code :${result.code} message : ${result.message.toString()}"
+                        )
+
+
+                    }
+
+                    is Resource.Loading -> {
+                        _cancelBlockState.value = CancelBlock(
+                            isError = false,
+                            isLoading = true,
+                        )
+
+                    }
+
+                }
+
+            }.launchIn(viewModelScope)
+        }
+    }
+
+
+        fun userBlock() {
+            if (userId != null) {
+                blockUseCase(userId).onEach { result ->
+                    when (result) {
+                        is Resource.Success -> {
+                            if (result.code == 2000) {
+                                _otherInfoState.value = OtherInfo(isBlock = true)
+                            }
+
+                        }
+
+                        is Resource.Error -> {
+
+                            Log.e(
+                                "Block Api in Error",
+                                "code :${result.code} message : ${result.message.toString()}"
+                            )
+
+
+                        }
+
+                        is Resource.Loading -> {
+
+                        }
+
+                    }
+
+                }.launchIn(viewModelScope)
+            }
+
+        }
+    }
+
+

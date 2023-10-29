@@ -1,5 +1,7 @@
 package com.zipdabang.zipdabang_android.module.my.data.repository
 
+import com.zipdabang.zipdabang_android.common.ResponseBody
+import com.zipdabang.zipdabang_android.module.comment.data.remote.UserBlockDto
 import com.zipdabang.zipdabang_android.module.my.data.remote.MyApi
 import com.zipdabang.zipdabang_android.module.my.data.remote.followorcancel.FollowOrCancelDto
 import com.zipdabang.zipdabang_android.module.my.data.remote.friendlist.follow.FollowDto
@@ -204,6 +206,20 @@ class MyRepositoryImpl @Inject constructor(
 
     override suspend fun postScrap(accessToken: String, recipeId: Int): PostScrapResponse {
         return api.postScrap(accessToken, recipeId)
+    }
+
+    override suspend fun cancelUserBlock(
+        accessToken: String,
+        memberId: Int
+    ): ResponseBody<UserBlockDto?> {
+        return api.cancelUserBlock(accessToken,memberId)
+    }
+
+    override suspend fun userBlock(
+        accessToken: String,
+        memberId: Int
+    ): ResponseBody<UserBlockDto?> {
+        return api.userBlock(accessToken,memberId)
     }
 
 }

@@ -1,5 +1,7 @@
 package com.zipdabang.zipdabang_android.module.my.domain.repository
 
+import com.zipdabang.zipdabang_android.common.ResponseBody
+import com.zipdabang.zipdabang_android.module.comment.data.remote.UserBlockDto
 import com.zipdabang.zipdabang_android.module.my.data.remote.followorcancel.FollowOrCancelDto
 import com.zipdabang.zipdabang_android.module.my.data.remote.friendlist.follow.FollowDto
 import com.zipdabang.zipdabang_android.module.my.data.remote.friendlist.follow.search.SearchFollowingDto
@@ -59,5 +61,8 @@ interface MyRepository {
 
     suspend fun postLike(accessToken: String, recipeId:Int) : PostLikeResponse
     suspend fun postScrap(accessToken: String, recipeId:Int) : PostScrapResponse
+    suspend fun cancelUserBlock(accessToken: String, memberId:Int) : ResponseBody<UserBlockDto?>
+
+    suspend fun userBlock(accessToken: String, memberId:Int) : ResponseBody<UserBlockDto?>
 
 }

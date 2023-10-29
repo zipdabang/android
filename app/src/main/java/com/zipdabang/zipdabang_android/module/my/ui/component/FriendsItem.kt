@@ -61,9 +61,6 @@ fun FollowItem(
     var pressOffset by remember {
         mutableStateOf(DpOffset.Zero)
     }
-    var itemWidth by remember {
-        mutableStateOf(0.dp)
-    }
     val interactionSource = remember {
         MutableInteractionSource()
     }
@@ -108,10 +105,6 @@ fun FollowItem(
                 tint = ZipdabangandroidTheme.Colors.Typo,
                 modifier = Modifier
                     .indication(interactionSource, LocalIndication.current)
-                    .pointerInteropFilter {
-                        pressOffset = DpOffset(it.x.dp, it.y.dp)
-                        false
-                    }
                     .pointerInput(true) {
                         detectTapGestures(
                             onPress = {
@@ -122,8 +115,8 @@ fun FollowItem(
                     }
             )
             DropdownMenu(
-                    expanded = isContextMenuVisible,
-            onDismissRequest = {
+                expanded = isContextMenuVisible,
+                onDismissRequest = {
                 isContextMenuVisible = false
                                },
             modifier = Modifier.align(Alignment.CenterEnd),
