@@ -14,12 +14,12 @@ import com.zipdabang.zipdabang_android.module.my.data.remote.myrecipes.complete.
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-@ExperimentalPagingApi
 class PagingCompleteRecipesRepository @Inject constructor(
     private val myApi: MyApi,
     private val paging3Database: Paging3Database,
     private val tokenDataStore : DataStore<Token>
 ) {
+    @OptIn(ExperimentalPagingApi::class)
     fun getCompleteRecipeItems() : Flow<PagingData<CompleteRecipe>> {
         val pagingSourceFactory = {
             paging3Database.completeRecipesDao().getAllItem()

@@ -106,7 +106,7 @@ class CompleteRecipeMediator @Inject constructor(
 
                 errorCode?.let{
                     if(errorCode==4055){
-                        Log.e("my_completerecipes_api 실패2", errorBody.toString())
+                        Log.e("my_completerecipes_api 실패2", "")
                         myCompleteRecipesDao.deleteItems()
                         RemoteKeyDao.deleteRemoteKeys()
                         MediatorResult.Success(endOfPaginationReached = true)
@@ -128,7 +128,7 @@ class CompleteRecipeMediator @Inject constructor(
             val prevPage = if (currentPage == 1) null else currentPage -1
             val nextPage = if (endOfPaginationReached) null else currentPage + 1
 
-            paging3Database.withTransaction {
+            /*paging3Database.withTransaction {
                 if (loadType == LoadType.REFRESH) {
                     myCompleteRecipesDao.deleteItems()
                     RemoteKeyDao.deleteRemoteKeys()
@@ -142,7 +142,7 @@ class CompleteRecipeMediator @Inject constructor(
                 }
                 myCompleteRecipesDao.addItems(responseMapList)
                 RemoteKeyDao.addAllRemoteKeys(keys)
-            }
+            }*/
 
             MediatorResult.Success(endOfPaginationReached = endOfPaginationReached!!)
         }

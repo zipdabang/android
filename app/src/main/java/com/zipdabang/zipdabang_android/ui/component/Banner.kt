@@ -8,6 +8,8 @@ import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -19,6 +21,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -29,6 +32,7 @@ import androidx.compose.ui.unit.dp
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPagerIndicator
 import com.google.accompanist.pager.*
+import com.zipdabang.zipdabang_android.module.recipes.data.banner.BannerImageItem
 import com.zipdabang.zipdabang_android.ui.theme.BannerGray
 import com.zipdabang.zipdabang_android.ui.theme.White
 import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
@@ -52,6 +56,49 @@ fun Banner(
         contentDescription = "banner image"
         )
     }
+        HorizontalPagerIndicator(
+            pagerState = pagerState,
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .padding(10.dp),
+            inactiveColor = BannerGray,
+            activeColor = White
+        )
+    }
+}
+
+@OptIn(ExperimentalFoundationApi::class, ExperimentalPagerApi::class)
+@Composable
+fun BannerForRecipe(
+    banners: List<BannerImageItem>,
+    onClick: (String) -> Unit
+){
+    val pagerState = com.google.accompanist.pager.rememberPagerState()
+    Box(
+        modifier = Modifier.fillMaxSize()
+    ){
+        HorizontalPager(
+            modifier = Modifier,
+            count = banners.size,
+            state= pagerState,
+            verticalAlignment = Alignment.CenterVertically,
+        ) { position ->
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .clickable(
+                        interactionSource = remember { MutableInteractionSource() },
+                        indication = null
+                    ) {
+                        onClick(banners[position].searchKeyword)
+                    }
+            ) {
+                RectangleImage(
+                    imageUrl = banners[position].imageUrl,
+                    contentDescription = "banner image"
+                )
+            }
+        }
         HorizontalPagerIndicator(
             pagerState = pagerState,
             modifier = Modifier

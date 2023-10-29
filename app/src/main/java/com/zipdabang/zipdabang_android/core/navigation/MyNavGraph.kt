@@ -84,7 +84,7 @@ fun NavGraphBuilder.MyNavGraph(
                         navController.navigate(MyScreen.Myrecipe.route)
                     },
                     onClickShopping = {
-                        navController.navigate(MyScreen.FriendList.route)
+                        navController.navigate(MyScreen.Shopping.route)
                     },
                     onClickNotice ={
                         navController.navigate(MyScreen.NoticeList.route)
@@ -132,6 +132,7 @@ fun NavGraphBuilder.MyNavGraph(
                 }
             )
         }
+
         composable(MyScreen.Scrap.route) {
             ScrapScreen(
                 onClickBack = {
@@ -142,6 +143,7 @@ fun NavGraphBuilder.MyNavGraph(
                 }
             )
         }
+
         composable(
             route = MyScreen.MyRecipeList.route,
             arguments = listOf(navArgument(name = "nickname") { type = NavType.StringType})
@@ -162,6 +164,7 @@ fun NavGraphBuilder.MyNavGraph(
                 showSnackBar= showSnackBar
             )
         }
+
         composable(MyScreen.Myrecipe.route) {
             MyRecipesScreen(
                 navController = navController,
@@ -185,6 +188,7 @@ fun NavGraphBuilder.MyNavGraph(
                 }
             )
         }
+
         composable(MyScreen.Shopping.route) {
             ShoppingScreen(
                 navController = navController,
@@ -193,6 +197,7 @@ fun NavGraphBuilder.MyNavGraph(
                 }
             )
         }
+
         composable(MyScreen.FriendList.route) {
             FriendListScreen(
                 navController =navController,
@@ -204,6 +209,8 @@ fun NavGraphBuilder.MyNavGraph(
                 }
             )
         }
+
+        // 레시피 수정할때 레시피 수정 페이지
         composable(
             route = MyScreen.RecipeEdit.route,
             arguments = listOf(navArgument(name = "recipeId") { type = NavType.IntType})
@@ -211,6 +218,7 @@ fun NavGraphBuilder.MyNavGraph(
             val recipeId = navBackStackEntry.arguments?.getInt("recipeId")
 
             RecipeWriteScreen(
+                navController = navController,
                 tempId = 0,
                 recipeId = recipeId,
                 onClickBack = {
@@ -228,6 +236,8 @@ fun NavGraphBuilder.MyNavGraph(
                 }
             )
         }
+
+        // 처음 업로드나 임시저장 수정할때 페이지
         composable(
             route = MyScreen.RecipeWrite.route,
             arguments = listOf(
@@ -239,6 +249,7 @@ fun NavGraphBuilder.MyNavGraph(
             val tempId = navBackStackEntry.arguments?.getInt("tempId")
 
             RecipeWriteScreen(
+                navController = navController,
                 tempId = tempId,
                 recipeId = null,
                 onClickBack = {
@@ -256,6 +267,7 @@ fun NavGraphBuilder.MyNavGraph(
                 }
             )
         }
+
         composable(MyScreen.NoticeList.route) {
             NoticeScreen(
                 navController = navController,

@@ -14,6 +14,7 @@ import com.zipdabang.zipdabang_android.module.main.MainScreen
 import com.zipdabang.zipdabang_android.module.main.NotificationViewModel
 import com.zipdabang.zipdabang_android.module.main.common.NotificationTarget
 import com.zipdabang.zipdabang_android.module.splash.ui.SplashScreen
+import kotlinx.coroutines.launch
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -55,7 +56,9 @@ fun RootNavGraph(
             )
         }
 
-        authNavGraph(navController = outerNavController)
+        authNavGraph(
+            navController = outerNavController
+        )
 
         composable(route = MAIN_ROUTE) {
            MainScreen(

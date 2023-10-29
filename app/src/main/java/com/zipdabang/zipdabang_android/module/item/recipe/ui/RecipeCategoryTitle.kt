@@ -314,7 +314,7 @@ fun EveryoneSubtitle() {
     ) {
         Text(
             text = AnnotatedString(
-                text = "모든 사람들",
+                text = "집다방",
                 spanStyle = SpanStyle(
                     color = ZipdabangandroidTheme.Colors.Strawberry,
                     fontFamily = FontFamily(Font(R.font.kopubworlddotum_bold)),

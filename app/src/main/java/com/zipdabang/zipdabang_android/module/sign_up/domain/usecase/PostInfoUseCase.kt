@@ -41,8 +41,9 @@ class PostInfoUseCase @Inject constructor(
 
         } catch (e: HttpException) {
             val errorBody = e.response()?.errorBody()
-            Log.e("SIGNUP_POST_INFO", errorBody?.string() ?: "error body is null")
             val errorCode = errorBody?.getErrorCode()
+            Log.e("signup-tokens-usecase", errorCode.toString())
+
             errorCode?.let {
                 emit(Resource.Error(message = ResponseCode.getMessageByCode(errorCode)))
                 return@flow

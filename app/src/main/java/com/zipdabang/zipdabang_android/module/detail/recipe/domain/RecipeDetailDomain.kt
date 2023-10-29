@@ -11,6 +11,7 @@ data class RecipeDetailDomain(
     val ownerId: Int?,
     val isOwner: Boolean?,
     val profileUrl: String?,
+    val time: String?,
     val recipeInfo: RecipeInfo?,
     val recipeSteps: List<RecipeStep>?,
     val recipeIngredients: List<Ingredient>?

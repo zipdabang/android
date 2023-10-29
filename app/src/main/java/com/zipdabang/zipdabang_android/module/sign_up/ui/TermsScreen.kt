@@ -43,6 +43,7 @@ import com.zipdabang.zipdabang_android.ui.component.AppBarSignUp
 import com.zipdabang.zipdabang_android.ui.component.CustomSignupPermission
 import com.zipdabang.zipdabang_android.ui.component.MainAndSubTitle
 import com.zipdabang.zipdabang_android.ui.component.PrimaryButtonWithStatus
+import com.zipdabang.zipdabang_android.ui.component.PrimaryButtonWithStatusForSignup
 import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -191,7 +192,50 @@ fun TermsScreen(
                         }
                     )
 
-                    CheckBoxWithTextAndButton(
+                    CheckBoxWithText(
+                            isCheckBox = true,
+                        isChecked = stateTermsForm.requiredThree,
+                        isCheckedChange = {
+                            authSharedViewModel.onTermsEvent(TermsFormEvent.RequiredThreeChanged(it))
+                        },
+                        shimmering = if (stateTermsForm.isLoading || stateTermsForm.error.isNotBlank()) true else false,
+                        mainValue = stateTermsForm.requiredThreeTitle,
+                        mainTextStyle =  ZipdabangandroidTheme.Typography.fourteen_500,
+                        isDetailValue = false,
+                        detailValue = null,
+                        detailTextStyle = null
+                    )
+
+                    CheckBoxWithText(
+                        isCheckBox = true,
+                        isChecked = stateTermsForm.requiredFour,
+                        isCheckedChange = {
+                            authSharedViewModel.onTermsEvent(TermsFormEvent.RequiredFourChanged(it))
+                        },
+                        shimmering = if (stateTermsForm.isLoading || stateTermsForm.error.isNotBlank()) true else false,
+                        mainValue = stateTermsForm.requiredFourTitle,
+                        mainTextStyle =  ZipdabangandroidTheme.Typography.fourteen_500,
+                        isDetailValue = false,
+                        detailValue = null,
+                        detailTextStyle = null
+                    )
+
+                    CheckBoxWithText(
+                        isCheckBox = true,
+                        isChecked = stateTermsForm.choice,
+                        isCheckedChange = {
+                            authSharedViewModel.onTermsEvent(TermsFormEvent.ChoiceChanged(it))
+                        },
+                        shimmering = if (stateTermsForm.isLoading || stateTermsForm.error.isNotBlank()) true else false,
+                        mainValue = stateTermsForm.choiceTitle,
+                        mainTextStyle =  ZipdabangandroidTheme.Typography.fourteen_500,
+                        isDetailValue = false,
+                        detailValue = null,
+                        detailTextStyle = null
+                    )
+
+                    // 약관 추가되면 주석 풀기
+                    /*CheckBoxWithTextAndButton(
                         isChecked = stateTermsForm.requiredThree,
                         isCheckedChange = {
                             authSharedViewModel.onTermsEvent(TermsFormEvent.RequiredThreeChanged(it))
@@ -240,7 +284,7 @@ fun TermsScreen(
                         onClick = {
                             onClickDetailNext(4)
                         }
-                    )
+                    )*/
                 }
             }
 
@@ -249,7 +293,7 @@ fun TermsScreen(
                 contentAlignment = Alignment.BottomCenter,
                 modifier = Modifier.padding(16.dp, 0.dp, 16.dp, 12.dp)
             ) {
-                PrimaryButtonWithStatus(
+                PrimaryButtonWithStatusForSignup(
                     text = stringResource(id = R.string.signup_btn_termsagree),
                     onClick = {
                         authSharedViewModel.showPermissionDialog = true

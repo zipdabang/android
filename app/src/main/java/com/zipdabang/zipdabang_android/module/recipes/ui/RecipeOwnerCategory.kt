@@ -23,6 +23,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.zipdabang.zipdabang_android.R
+import com.zipdabang.zipdabang_android.ui.component.bounceClick
 import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
 
 @Composable
@@ -40,16 +41,12 @@ fun RecipeOwnerCategory(
     Box(
         modifier = modifier
             .fillMaxWidth()
+            .bounceClick()
             .border(
                 width = 1.dp,
                 shape = ZipdabangandroidTheme.Shapes.medium,
                 color = borderColor
             )
-            /*            .border(
-                width = 2.dp,
-                shape = ZipdabangandroidTheme.Shapes.medium,
-                color = backgroundColor
-            )*/
             .background(
                 color = backgroundColor,
                 shape = ZipdabangandroidTheme.Shapes.medium,
@@ -58,7 +55,7 @@ fun RecipeOwnerCategory(
                 interactionSource = remember {
                     MutableInteractionSource()
                 },
-                indication = rememberRipple()
+                indication = null
             ) {
                 onClick(groupName)
             }

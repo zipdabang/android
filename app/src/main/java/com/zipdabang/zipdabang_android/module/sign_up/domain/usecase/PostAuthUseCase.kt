@@ -17,52 +17,31 @@ import javax.inject.Inject
 
 class PostAuthUseCase @Inject constructor(
     private val repository: SignUpRepository,
-    private val repositoryDrawer : DrawerRepository,
 ) {
     operator fun invoke(authRequest : AuthRequest) : Flow<Resource<AuthResponse>> = flow {
         try {
             emit(Resource.Loading())
-            val resultSignup = repository.postPhoneAuth(authRequest = authRequest)
-            val resultDrawer = repositoryDrawer.postPhoneAuth(authRequest = authRequest)
+            val result = repository.postPhoneAuth(authRequest = authRequest)
 
-            when(resultSignup.code) {
+            when(result.code) {
                 ResponseCode.RESPONSE_DEFAULT.code ->{
                     emit(
                         Resource.Success(
-                            data = resultSignup,
-                            code = resultSignup.code,
-                            message = resultSignup.message,
+                            data = result,
+                            code = result.code,
+                            message = result.message,
                         )
                     )
                 }
                 else ->{
                     emit(Resource.Error(
-                        message = resultSignup.message
+                        message = result.message
                     ))
                 }
             }
-
-            when(resultDrawer.code) {
-                ResponseCode.RESPONSE_DEFAULT.code ->{
-                    emit(
-                        Resource.Success(
-                            data = resultDrawer,
-                            code = resultDrawer.code,
-                            message = resultDrawer.message,
-                        )
-                    )
-                }
-                else ->{
-                    emit(Resource.Error(
-                        message = resultDrawer.message
-                    ))
-                }
-            }
-
 
         } catch (e: HttpException) {
             val errorBody = e.response()?.errorBody()
-            Log.e("SIGNUP_POST_AUTH", errorBody?.string() ?: "error body is null")
             val errorCode = errorBody?.getErrorCode()
             errorCode?.let {
                 emit(Resource.Error(message = ResponseCode.getMessageByCode(errorCode)))
