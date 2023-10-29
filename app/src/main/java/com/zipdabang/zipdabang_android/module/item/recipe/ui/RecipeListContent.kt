@@ -48,9 +48,6 @@ fun RecipeListContent(
     total: String,
     sortList: List<RecipeSort>,
     onSortChange: (String) -> Unit,
-    category: RecipeSubtitleState,
-    likeState: PreferenceToggleState,
-    scrapState: PreferenceToggleState,
     checkLoggedIn: () -> Boolean,
     onToggleLike: (Int) -> Deferred<Boolean>,
     onToggleScrap: (Int) -> Deferred<Boolean>,
@@ -142,16 +139,6 @@ fun RecipeListContent(
                     var isLiked by rememberSaveable { mutableStateOf(recipeItem.isLiked) }
                     var isScraped by rememberSaveable { mutableStateOf(recipeItem.isScrapped) }
                     var likes by rememberSaveable { mutableStateOf(recipeItem.likes) }
-
-                    if (likeState.errorMessage != null
-                        || scrapState.errorMessage != null
-                    ) {
-                        throw TogglePreferenceException
-                    }
-
-                    if (likeState.isLoading || likeState.isLoading) {
-                        CircularProgressIndicator(color = ZipdabangandroidTheme.Colors.Strawberry)
-                    }
 
                     RecipeCard(
                         recipeId = recipeItem.recipeId,
