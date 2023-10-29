@@ -191,11 +191,6 @@ interface MyApi {
     ) : PostScrapResponse
 
 
-
-
-
-
-
     @GET("members/followings")
     suspend fun getFollowings(
         @Header("Authorization") accessToken: String,
