@@ -1,6 +1,7 @@
 package com.zipdabang.zipdabang_android.module.market.ui
 
 import android.os.Build
+import androidx.activity.compose.BackHandler
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
@@ -230,6 +231,7 @@ fun MarketScreen_Test(){
     var inBasket by remember {
         mutableStateOf(false)
     }
+
     ModalDrawer(
         scaffold = {
             Scaffold(

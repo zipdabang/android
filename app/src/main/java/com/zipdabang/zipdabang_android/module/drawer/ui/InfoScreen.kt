@@ -1,5 +1,6 @@
 package com.zipdabang.zipdabang_android.module.drawer.ui
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Text
@@ -15,12 +16,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.zipdabang.zipdabang_android.R
 import com.zipdabang.zipdabang_android.ui.component.AppBarSignUp
 import com.zipdabang.zipdabang_android.ui.component.ModalDrawer
+import kotlinx.coroutines.launch
 
 @Composable
 fun InfoScreen(){
     //drawer에 필요한 drawerState랑 scope
     val drawerState = rememberDrawerState(DrawerValue.Closed)
-    val scope = rememberCoroutineScope()
 
     ModalDrawer(
         scaffold = {

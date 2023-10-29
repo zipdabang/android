@@ -26,6 +26,8 @@ enum class ResponseCode(val responseResult: ResponseResult, val code: Int, val m
     BAD_REQUEST_MY_HAVE_TO_LOGIN(ResponseResult.ERROR, 4059, "로그인 후 조회 가능합니다."),
     BAD_REQUEST_USER_ALREADY_BLOCKED(ResponseResult.ERROR, 4062, "이미 차단된 사용자입니다."),
     BAD_REQUEST_BLOCKED_ME(ResponseResult.ERROR, 4063, "자신을 차단할 수 없습니다."),
+    BAD_REQUEST_NICKNAME_HAS_BADWORDS(ResponseResult.ERROR, 4069, "닉네임에 비속어가 포함되어 있습니다."),
+    BAD_REQUEST_CANT_HAVE_THIS_NICKNAME(ResponseResult.ERROR, 4070, "사용할 수 없는 닉네임입니다."),
     BAD_REQUEST_WITHDRAWED_EMAIL_LESS_THAN_A_WEEK(ResponseResult.ERROR, 4071, "탈퇴한 지 일주일이 지나지 않은 이메일과 socialType입니다."),
     BAD_REQUEST_WITHDRAWED_PHONENUMBER_LESS_THAN_A_WEEK(ResponseResult.ERROR, 4072, "탈퇴한 지 일주일이 지나지 않은 전화번호입니다."),
     BAD_REQUEST_EMAIL_AND_SOCIALTYPE_EXISTS(ResponseResult.ERROR, 4073, "이미 존재하는 이메일과 소셜타입입니다."),

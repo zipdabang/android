@@ -387,7 +387,6 @@ fun RecipeWriteScreen(
             }
         }
 
-
     /*val takePhotoFromCameraStepLauncher =
         rememberLauncherForActivityResult(ActivityResultContracts.TakePicturePreview()) { bitmap: Bitmap? ->
             if (bitmap != null) {

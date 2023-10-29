@@ -1,5 +1,6 @@
 package com.zipdabang.zipdabang_android.module.drawer.ui
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -30,6 +31,7 @@ import com.zipdabang.zipdabang_android.module.drawer.ui.viewmodel.NoticeViewMode
 import com.zipdabang.zipdabang_android.ui.component.AppBarSignUp
 import com.zipdabang.zipdabang_android.ui.component.ModalDrawer
 import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
+import kotlinx.coroutines.launch
 
 @Composable
 fun NoticeScreen(

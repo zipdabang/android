@@ -1,6 +1,7 @@
 package com.zipdabang.zipdabang_android.ui.component
 
 import android.util.Log
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -41,6 +42,7 @@ import com.zipdabang.zipdabang_android.core.data_store.proto.Token
 import com.zipdabang.zipdabang_android.core.navigation.DrawerScreen
 import com.zipdabang.zipdabang_android.core.navigation.MyScreen
 import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
+import kotlinx.coroutines.launch
 
 @Composable
 fun DrawerContent(
@@ -427,11 +429,10 @@ fun ModalDrawer(
                             }
                             else navController.navigate(DrawerScreen.ReportList.route)},
                         userOnClick = {
-                             navController.navigate(MyScreen.RecipeWrite.passTempId(0))
-                            /*if (currentPlatform.value.platformStatus == CurrentPlatform.TEMP) {
+                            if (currentPlatform.value.platformStatus == CurrentPlatform.TEMP) {
                                 navController.navigate(MyScreen.Home.route)
                             }
-                            else navController.navigate(DrawerScreen.UserInfo.route)*/
+                            else navController.navigate(DrawerScreen.UserInfo.route)
                         },
                         alarmOnClick = { Log.d("drawer","알림 정보")},
                         etcOnClick = { Log.d("drawer","기타 정보")},

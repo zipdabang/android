@@ -1,5 +1,6 @@
 package com.zipdabang.zipdabang_android.module.drawer.ui
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -13,6 +14,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
@@ -23,6 +25,7 @@ import com.zipdabang.zipdabang_android.module.drawer.data.Long_Term
 import com.zipdabang.zipdabang_android.ui.component.AppBarSignUp
 import com.zipdabang.zipdabang_android.ui.component.ModalDrawer
 import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
+import kotlinx.coroutines.launch
 
 @Composable
 fun PersonalInfoScreen(
@@ -32,6 +35,7 @@ fun PersonalInfoScreen(
 
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scrollState = rememberScrollState()
+
  ModalDrawer(
     scaffold = {
     Scaffold(

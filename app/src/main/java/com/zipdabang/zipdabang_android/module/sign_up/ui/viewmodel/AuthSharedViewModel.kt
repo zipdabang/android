@@ -537,7 +537,8 @@ class AuthSharedViewModel @Inject constructor(
                             errorMessage = "중복되는 닉네임입니다.",
                             btnEnabled = false
                         )
-                    } else { //닉네임 불가능
+                    }
+                    else { //닉네임 불가능
                         stateNicknameForm = NicknameFormState(
                             nickname = stateNicknameForm.nickname,
                             isTried = true,
@@ -550,10 +551,34 @@ class AuthSharedViewModel @Inject constructor(
                 }
 
                 is Resource.Error -> {
-                    stateNicknameForm = NicknameFormState(
-                        nickname = stateNicknameForm.nickname,
-                        error = result.message ?: "An unexpeted error occured"
-                    )
+                    if (result?.data?.code ?: 0 == 4069) { //닉네임 비속어
+                        stateNicknameForm = NicknameFormState(
+                            nickname = stateNicknameForm.nickname,
+                            isTried = true,
+                            isSuccess = false,
+                            isError = true,
+                            errorMessage = "닉네임에 비속어가 포함되어 있습니다.",
+                            btnEnabled = false,
+                            error = result.message ?: "An unexpeted error occured"
+                        )
+                    }
+                    else if (result?.data?.code ?: 0 == 4070){ //닉네임 불가능
+                        stateNicknameForm = NicknameFormState(
+                            nickname = stateNicknameForm.nickname,
+                            isTried = true,
+                            isSuccess = false,
+                            isError = true,
+                            errorMessage = "사용할 수 없는 닉네임입니다.",
+                            btnEnabled = false,
+                            error = result.message ?: "An unexpeted error occured"
+                        )
+                    }
+                    else{
+                        stateNicknameForm = NicknameFormState(
+                            nickname = stateNicknameForm.nickname,
+                            error = result.message ?: "An unexpeted error occured"
+                        )
+                    }
                 }
 
                 is Resource.Loading -> {
