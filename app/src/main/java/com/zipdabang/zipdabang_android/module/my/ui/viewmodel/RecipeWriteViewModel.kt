@@ -1230,18 +1230,6 @@ class RecipeWriteViewModel @Inject constructor(
         return isSuccess
     }
 
-    fun decodeBitmapFromInputStream(inputStream: InputStream): ByteArray {
-        val buffer = ByteArray(1024)
-        val output = ByteArrayOutputStream()
-
-        var bytesRead: Int
-        while (inputStream.read(buffer).also { bytesRead = it } != -1) {
-            output.write(buffer, 0, bytesRead)
-        }
-
-        return output.toByteArray()
-    }
-
     // complete recipe를 get하고 patch하는 api
     suspend fun getCompleteRecipeDetail(recipeId: Int) {
         var accessToken = "Bearer " + dataStore.data.first().accessToken.toString()
@@ -1254,116 +1242,101 @@ class RecipeWriteViewModel @Inject constructor(
                     is Resource.Success -> {
                         Log.e("recipewrite-get-save", "성공 : ${result.code}")
 
-                         /*val url = URL(result.data?.recipeInfo?.thumbnailUrl)
-                         Log.e("recipewrite-get-save", "url : ${url}")
-                         val connection = url.openConnection()
-                         connection.connect()
+                        val maxIndex = 8 // categoryId에 따라 조절할 수 있음
+                        val beverageCheckList = (1..maxIndex).map { it in result?.data?.recipeInfo?.categoryId ?: emptyList() }
+                        stateRecipeWriteBeverages = stateRecipeWriteBeverages.copy(beverageCheckList = beverageCheckList)
 
-                         val inputStream = connection.getInputStream()
-                         //val bitmap = BitmapFactory.decodeStream(inputStream)
-                         val compressedImageData = decodeBitmapFromInputStream(inputStream) // 이미지를 바이트 배열로 읽어옴
-
-                         val options = BitmapFactory.Options()
-                         options.inPreferredConfig = Bitmap.Config.ARGB_8888 // 원본 이미지 설정
-                         val bitmap = BitmapFactory.decodeByteArray(compressedImageData, 0, compressedImageData.size, options)
-                         Log.e("recipewrite-get-save", "bitmap : ${bitmap}")
-
-                         withContext(Dispatchers.Main) {
-                             Log.e("recipewrite-get-save", "bitmap 반영 후 : ${bitmap}")*/
-
-                             stateRecipeWriteForm = stateRecipeWriteForm.copy(
-                                 isLoading = false,
-                                 thumbnail = result.data?.recipeInfo?.thumbnailUrl,
-                                 title = result.data?.recipeInfo?.recipeName ?: "",
-                                 titleWordCount = result.data?.recipeInfo?.recipeName?.length
-                                     ?: 0,
-                                 time = result.data?.recipeInfo?.time ?: "",
-                                 timeWordCount = result.data?.recipeInfo?.time?.length ?: 0,
-                                 intro = result.data?.recipeInfo?.intro ?: "",
-                                 introWordCount = result.data?.recipeInfo?.intro?.length ?: 0,
-                                 recipeTip = result?.data?.recipeInfo?.recipeTip ?: "",
-                                 recipeTipWordCount = result.data?.recipeInfo?.recipeTip?.length
-                                     ?: 0,
-                                 btnEnabledSave = false,
-                                 btnEnabled = false,
-                                 stepsNum =
-                                 if (result?.data?.steps?.size == 0) 1
-                                 else result?.data?.steps?.size ?: 1,
-                                 steps = result?.data?.steps?.mapIndexed { index, step ->
-                                     val completeBtnVisible =
-                                         step.image == null || step.description == null
-                                     val isLastStep = index == result.data.steps.size - 1
-                                     val addBtnVisible = when {
-                                         result.data.steps.size == 1 && completeBtnVisible -> false // Case 1
-                                         !isLastStep -> false // Case 2
-                                         isLastStep && completeBtnVisible -> false // Case 3
-                                         else -> true
-                                     }
-                                     Step(
-                                         stepImage = step.image,
-                                         description = step.description ?: "",
-                                         stepWordCount = step.description.length ?: 0,
-                                         completeBtnEnabled = false, // Set to an appropriate value
-                                         completeBtnVisible = completeBtnVisible,
-                                         addBtnVisible = addBtnVisible
-                                     )
-                                 } ?: listOf(Step()),
-                                 ingredients = result?.data?.ingredients?.map { ingredient ->
-                                     Ingredient(
-                                         ingredientName = ingredient.ingredientName,
-                                         quantity = ingredient.quantity
-                                     )
-                                 } ?: emptyList(),
-                                 ingredientsNum = result?.data?.ingredients?.size ?: 1,
-                                 ingredientBtnEnabled = true
-                             )
-                             stateCompleteRecipeWriteForm = stateCompleteRecipeWriteForm.copy(
-                                 isLoading = false,
-                                 thumbnail = result.data?.recipeInfo?.thumbnailUrl,
-                                 title = result.data?.recipeInfo?.recipeName ?: "",
-                                 titleWordCount = result.data?.recipeInfo?.recipeName?.length
-                                     ?: 0,
-                                 time = result.data?.recipeInfo?.time ?: "",
-                                 timeWordCount = result.data?.recipeInfo?.time?.length ?: 0,
-                                 intro = result.data?.recipeInfo?.intro ?: "",
-                                 introWordCount = result.data?.recipeInfo?.intro?.length ?: 0,
-                                 recipeTip = result?.data?.recipeInfo?.recipeTip ?: "",
-                                 recipeTipWordCount = result.data?.recipeInfo?.recipeTip?.length
-                                     ?: 0,
-                                 btnEnabledSave = false,
-                                 btnEnabled = false,
-                                 stepsNum =
-                                 if (result?.data?.steps?.size == 0) 1
-                                 else result?.data?.steps?.size ?: 1,
-                                 steps = result?.data?.steps?.mapIndexed { index, step ->
-                                     val completeBtnVisible =
-                                         step.image == null || step.description == null
-                                     val isLastStep = index == result.data.steps.size - 1
-                                     val addBtnVisible = when {
-                                         result.data.steps.size == 1 && completeBtnVisible -> false // Case 1
-                                         !isLastStep -> false // Case 2
-                                         isLastStep && completeBtnVisible -> false // Case 3
-                                         else -> true
-                                     }
-                                     Step(
-                                         stepImage = step.image,
-                                         description = step.description ?: "",
-                                         stepWordCount = step.description.length ?: 0,
-                                         completeBtnEnabled = false, // Set to an appropriate value
-                                         completeBtnVisible = completeBtnVisible,
-                                         addBtnVisible = addBtnVisible
-                                     )
-                                 } ?: listOf(Step()),
-                                 ingredients = result?.data?.ingredients?.map { ingredient ->
-                                     Ingredient(
-                                         ingredientName = ingredient.ingredientName,
-                                         quantity = ingredient.quantity
-                                     )
-                                 } ?: emptyList(),
-                                 ingredientsNum = result?.data?.ingredients?.size ?: 1,
-                                 ingredientBtnEnabled = true
-                             )
-                             completeRecipeDetailApiCalled++
+                        stateRecipeWriteForm = stateRecipeWriteForm.copy(
+                            isLoading = false,
+                            thumbnail = result.data?.recipeInfo?.thumbnailUrl,
+                            title = result.data?.recipeInfo?.recipeName ?: "",
+                            titleWordCount = result.data?.recipeInfo?.recipeName?.length?: 0,
+                            time = result.data?.recipeInfo?.time ?: "",
+                            timeWordCount = result.data?.recipeInfo?.time?.length ?: 0,
+                            intro = result.data?.recipeInfo?.intro ?: "",
+                            introWordCount = result.data?.recipeInfo?.intro?.length ?: 0,
+                            recipeTip = result?.data?.recipeInfo?.recipeTip ?: "",
+                            recipeTipWordCount = result.data?.recipeInfo?.recipeTip?.length?: 0,
+                            btnEnabledSave = false,
+                            btnEnabled = false,
+                            stepsNum =
+                                if (result?.data?.steps?.size == 0) 1
+                                else result?.data?.steps?.size ?: 1,
+                            steps = result?.data?.steps?.mapIndexed { index, step ->
+                                val completeBtnVisible =
+                                    step.image == null || step.description == null
+                                val isLastStep = index == result.data.steps.size - 1
+                                val addBtnVisible = when {
+                                    result.data.steps.size == 1 && completeBtnVisible -> false // Case 1
+                                    !isLastStep -> false // Case 2
+                                    isLastStep && completeBtnVisible -> false // Case 3
+                                    else -> true
+                                }
+                                Step(
+                                    stepImage = step.image,
+                                    description = step.description ?: "",
+                                    stepWordCount = step.description.length ?: 0,
+                                    completeBtnEnabled = false, // Set to an appropriate value
+                                    completeBtnVisible = completeBtnVisible,
+                                    addBtnVisible = addBtnVisible
+                                )
+                            } ?: listOf(Step()),
+                            ingredients = result?.data?.ingredients?.map { ingredient ->
+                                Ingredient(
+                                    ingredientName = ingredient.ingredientName,
+                                    quantity = ingredient.quantity
+                                )
+                            } ?: emptyList(),
+                            ingredientsNum = result?.data?.ingredients?.size ?: 1,
+                            ingredientBtnEnabled = true,
+                        )
+                        stateCompleteRecipeWriteForm = stateCompleteRecipeWriteForm.copy(
+                            isLoading = false,
+                            thumbnail = result.data?.recipeInfo?.thumbnailUrl,
+                            title = result.data?.recipeInfo?.recipeName ?: "",
+                            titleWordCount = result.data?.recipeInfo?.recipeName?.length
+                                ?: 0,
+                            time = result.data?.recipeInfo?.time ?: "",
+                            timeWordCount = result.data?.recipeInfo?.time?.length ?: 0,
+                            intro = result.data?.recipeInfo?.intro ?: "",
+                            introWordCount = result.data?.recipeInfo?.intro?.length ?: 0,
+                            recipeTip = result?.data?.recipeInfo?.recipeTip ?: "",
+                            recipeTipWordCount = result.data?.recipeInfo?.recipeTip?.length
+                                ?: 0,
+                            btnEnabledSave = false,
+                            btnEnabled = false,
+                            stepsNum =
+                            if (result?.data?.steps?.size == 0) 1
+                            else result?.data?.steps?.size ?: 1,
+                            steps = result?.data?.steps?.mapIndexed { index, step ->
+                                val completeBtnVisible =
+                                    step.image == null || step.description == null
+                                val isLastStep = index == result.data.steps.size - 1
+                                val addBtnVisible = when {
+                                    result.data.steps.size == 1 && completeBtnVisible -> false // Case 1
+                                    !isLastStep -> false // Case 2
+                                    isLastStep && completeBtnVisible -> false // Case 3
+                                    else -> true
+                                }
+                                Step(
+                                    stepImage = step.image,
+                                    description = step.description ?: "",
+                                    stepWordCount = step.description.length ?: 0,
+                                    completeBtnEnabled = false, // Set to an appropriate value
+                                    completeBtnVisible = completeBtnVisible,
+                                    addBtnVisible = addBtnVisible
+                                )
+                            } ?: listOf(Step()),
+                            ingredients = result?.data?.ingredients?.map { ingredient ->
+                                Ingredient(
+                                    ingredientName = ingredient.ingredientName,
+                                    quantity = ingredient.quantity
+                                )
+                            } ?: emptyList(),
+                            ingredientsNum = result?.data?.ingredients?.size ?: 1,
+                            ingredientBtnEnabled = true,
+                        )
+                        completeRecipeDetailApiCalled++
 
 
                     }
@@ -1446,7 +1419,8 @@ class RecipeWriteViewModel @Inject constructor(
             // content 안에 stepUrl
             content = content.copy(steps = updatedSteps)
             Log.e("recipewrite-post-temp-step", "첫번째 if문 ${stepImages}")
-        } else { //스텝 사진 추가함
+        }
+        else { //스텝 사진 추가함
             // content 밖에 stepImages
             stepImages = stepImageParts
 

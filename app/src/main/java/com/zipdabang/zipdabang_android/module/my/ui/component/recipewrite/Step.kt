@@ -199,8 +199,25 @@ fun Step(
             ) {
                 if(completeBtnVisible){
                     Box(
-                        modifier = Modifier.width(96.dp)
-                    )
+                        modifier = Modifier
+                            .width(48.dp)
+                            .wrapContentHeight()
+                            .padding(0.dp)
+                            .clickable(onClick={
+                                onClickDeleteStep()
+                            })
+                            .background(
+                                color = ZipdabangandroidTheme.Colors.Strawberry,
+                                shape = ZipdabangandroidTheme.Shapes.large,
+                            ),
+                        contentAlignment = Alignment.Center
+                    ){
+                        Text(
+                            text = stringResource(R.string.my_recipewrite_delete),
+                            color = Color.White,
+                            style = ZipdabangandroidTheme.Typography.fourteen_300,
+                        )
+                    }
                 }
                 else {
                     Box(
@@ -273,35 +290,3 @@ fun Step(
     }
 }
 
-
-@Preview
-@Composable
-fun PreviewStep() {
-    var textStateStep by remember { mutableStateOf("") }
-    Box(modifier = Modifier.background(Color.White)) {
-        Step(
-            stepNum = 1,
-            stepImage = null,
-            value = textStateStep,
-            valueLength = "10",
-            onValueChanged = { newText, maxLength ->
-                if (newText.length <= maxLength) {
-                    textStateStep = newText
-                }
-            },
-            placeholderValue = stringResource(id = R.string.my_recipewrite_step_hint),
-            completeBtnEnabled = true,
-            completeBtnVisible = true,
-            addBtnVisible = true,
-            height = 100.dp,
-            maxLines = 7,
-            maxLength = 200,
-            imeAction = ImeAction.None,
-            onClickImageAddBtn = { },
-            onClickDeleteStep = {},
-            onClickEditStep = {},
-            onClickComplete = {},
-            onClickAdd = {}
-        )
-    }
-}
