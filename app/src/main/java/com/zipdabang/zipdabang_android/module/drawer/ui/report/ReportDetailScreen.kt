@@ -37,6 +37,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 
 @Composable
 fun ReportDetailScreen(
+    onClickBack : () -> Unit,
     viewModel : ReportDetailViewModel = hiltViewModel()
 ){
 
@@ -64,7 +65,7 @@ fun ReportDetailScreen(
         topBar = {
             AppBarSignUp(
                 navigationIcon = R.drawable.ic_topbar_backbtn,
-                onClickNavIcon = {  },
+                onClickNavIcon = { onClickBack()  },
                 centerText = "오류문의 및 신고"
             )
         }
@@ -194,5 +195,5 @@ fun ReportDetailScreen(
 @Preview
 @Composable
 fun ErrorDetailScreen(){
-    ReportDetailScreen()
+    ReportDetailScreen({})
 }

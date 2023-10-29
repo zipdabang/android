@@ -7,6 +7,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
+import com.google.android.gms.auth.api.identity.BeginSignInRequest.GoogleIdTokenRequestOptions
 import com.zipdabang.zipdabang_android.module.guide.ui.GuideScreen1
 import com.zipdabang.zipdabang_android.module.home.ui.HomeScreen
 import com.zipdabang.zipdabang_android.module.main.NotificationViewModel
@@ -20,8 +21,6 @@ fun NavGraphBuilder.HomeNavGraph(
     navigation(startDestination = HomeScreen.Home.route,route = HOME_ROUTE){
         composable(HomeScreen.Home.route){
 
-
-
             HomeScreen(
                 navController = navController,
                 onGuide1Click = {
@@ -29,11 +28,23 @@ fun NavGraphBuilder.HomeNavGraph(
                 },
                 onRecipeItemClick = {
                         recipeid -> navController.navigate(SharedScreen.DetailRecipe.passRecipeId(recipeid))
+                },
+                onBlockedRecipeClick = {
+                        recipeId, ownerId ->
+                    navController.navigate(
+                        route = SharedScreen.BlockedRecipe.passRecipeId(recipeId, ownerId)
+                    ) {
+                        launchSingleTop = true
+                    }
                 }
             )
         }
         composable(HomeScreen.Guide1.route){
-            GuideScreen1()
+            GuideScreen1(
+                GoToRecipe ={
+                    navController.navigate(RecipeScreen.RecipeList.passQuery(0,null))
+                }
+            )
         }
     }
 
