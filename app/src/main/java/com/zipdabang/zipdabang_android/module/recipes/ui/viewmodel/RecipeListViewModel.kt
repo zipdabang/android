@@ -107,7 +107,6 @@ class RecipeListViewModel @Inject constructor(
                         it.toRecipeItem()
                     }
                 }.cachedIn(viewModelScope)
-
             }
             1 -> {
                 val pager = recipeListRepository.getRecipeCoffeeList(sortBy)
@@ -225,7 +224,7 @@ class RecipeListViewModel @Inject constructor(
 
 
 
-    private val _total = mutableStateOf(0)
+    private val _total = mutableStateOf(-1)
     val total: State<Int>
         get() = _total
 
