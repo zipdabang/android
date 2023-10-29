@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -48,9 +49,6 @@ fun RecipeListContent(
     total: String,
     sortList: List<RecipeSort>,
     onSortChange: (String) -> Unit,
-    category: RecipeSubtitleState,
-    likeState: PreferenceToggleState,
-    scrapState: PreferenceToggleState,
     checkLoggedIn: () -> Boolean,
     onToggleLike: (Int) -> Deferred<Boolean>,
     onToggleScrap: (Int) -> Deferred<Boolean>,
@@ -63,14 +61,13 @@ fun RecipeListContent(
 
     val scope = rememberCoroutineScope()
 
-    /*    LaunchedEffect(key1 = items.loadState) {
+    LaunchedEffect(key1 = items.loadState.refresh) {
         if (items.loadState.refresh is LoadState.Loading) {
-
             Log.d("RecipeList - content", "loading...")
         } else if (items.loadState.refresh is LoadState.Error) {
             Log.d("RecipeList - content", (items.loadState.refresh as LoadState.Error).error.message ?: "unexpected error")
         }
-    }*/
+    }
 
     val optionList = sortList.map {
         it.text
@@ -112,7 +109,7 @@ fun RecipeListContent(
                 ) {
                     Text(
                         modifier = Modifier.weight(6f),
-                        text = "${total}개의 레시피",
+                        text = if (total == "-1") "레시피 불러오는 중..." else "${total}개의 레시피",
                         style = ZipdabangandroidTheme.Typography.fourteen_300
                             .copy(
                                 color = Color(0x88262D31)
@@ -127,102 +124,96 @@ fun RecipeListContent(
                 }
             }
 
-
-            items(
-                count = items.itemCount,
-                key = items.itemKey { recipe ->
-                    recipe.recipeId
-                },
-                contentType = items.itemContentType { "images" }
-            ) { index: Int ->
-                val recipeItem = items[index]
-
-                if (recipeItem != null) {
-
-                    var isLiked by rememberSaveable { mutableStateOf(recipeItem.isLiked) }
-                    var isScraped by rememberSaveable { mutableStateOf(recipeItem.isScrapped) }
-                    var likes by rememberSaveable { mutableStateOf(recipeItem.likes) }
-
-                    if (likeState.errorMessage != null
-                        || scrapState.errorMessage != null
-                    ) {
-                        throw TogglePreferenceException
-                    }
-
-                    if (likeState.isLoading || likeState.isLoading) {
-                        CircularProgressIndicator(color = ZipdabangandroidTheme.Colors.Strawberry)
-                    }
-
-                    RecipeCard(
-                        recipeId = recipeItem.recipeId,
-                        title = recipeItem.recipeName,
-                        user = recipeItem.nickname,
-                        thumbnail = recipeItem.thumbnailUrl,
-                        date = recipeItem.createdAt,
-                        likes = likes,
-                        comments = recipeItem.comments ?: 0,
-                        isLikeSelected = isLiked,
-                        isScrapSelected = isScraped,
-                        onLikeClick = { recipeId ->
-                            Log.d("RecipeCard Status-before", "$isLiked")
-                            try {
-                                val isLoggedIn = checkLoggedIn()
-                                if (isLoggedIn) {
-                                    scope.launch {
-                                        val isSuccessful = onToggleLike(recipeId).await()
-                                        if (isSuccessful) {
-                                            recipeItem.isLiked = !recipeItem.isLiked
-                                            isLiked = recipeItem.isLiked
-                                            if (isLiked) {
-                                                recipeItem.likes += 1
-                                            } else {
-                                                recipeItem.likes -= 1
-                                            }
-                                            likes = recipeItem.likes
-                                        } else {
-                                            showSnackbar("레시피에 좋아요를 누를 수 없습니다.")
-                                        }
-                                    }
-
-                                }
-
-                            } catch (e: TogglePreferenceException) {
-                                Log.e(TAG, "like toggle failure ${e.message}")
-                            } catch (e: Exception) {
-                                Log.e(TAG, "like toggle failure ${e.message}")
-                            }
-                        },
-                        onScrapClick = { recipeId ->
-                            try {
-                                val isLoggedIn = checkLoggedIn()
-                                if (isLoggedIn) {
-                                    scope.launch {
-                                        val isSuccessful = onToggleScrap(recipeId).await()
-                                        if (isSuccessful) {
-                                            recipeItem.isScrapped = !recipeItem.isScrapped
-                                            isScraped = recipeItem.isScrapped
-                                        } else {
-                                            showSnackbar("레시피를 스크랩 할 수 없습니다.")
-                                        }
-
-                                    }
-                                }
-
-                            } catch (e: TogglePreferenceException) {
-                                Log.e(TAG, "scrap toggle failure ${e.message}")
-                            } catch (e: Exception) {
-                                Log.e(TAG, "scrap toggle failure ${e.message}")
-                            }
-                        },
-                        onItemClick = onItemClick
-                    )
-                }
-            }
-
-            if (items.loadState.refresh is LoadState.Loading && items.itemCount == 0) {
+            if (items.loadState.refresh is LoadState.Loading) {
                 items(count = 10) {
                     RecipeCardLoading()
                 }
+            } else {
+                items(
+                    count = items.itemCount,
+                    key = items.itemKey { recipe ->
+                        recipe.recipeId
+                    },
+                    contentType = items.itemContentType { "images" }
+                ) { index: Int ->
+                    val recipeItem = items[index]
+
+                    if (recipeItem != null) {
+
+                        var isLiked by rememberSaveable { mutableStateOf(recipeItem.isLiked) }
+                        var isScraped by rememberSaveable { mutableStateOf(recipeItem.isScrapped) }
+                        var likes by rememberSaveable { mutableStateOf(recipeItem.likes) }
+
+                        RecipeCard(
+                            recipeId = recipeItem.recipeId,
+                            title = recipeItem.recipeName,
+                            user = recipeItem.nickname,
+                            thumbnail = recipeItem.thumbnailUrl,
+                            date = recipeItem.createdAt,
+                            likes = likes,
+                            comments = recipeItem.comments ?: 0,
+                            isLikeSelected = isLiked,
+                            isScrapSelected = isScraped,
+                            onLikeClick = { recipeId ->
+                                Log.d("RecipeCard Status-before", "$isLiked")
+                                try {
+                                    val isLoggedIn = checkLoggedIn()
+                                    if (isLoggedIn) {
+                                        scope.launch {
+                                            val isSuccessful = onToggleLike(recipeId).await()
+                                            if (isSuccessful) {
+                                                recipeItem.isLiked = !recipeItem.isLiked
+                                                isLiked = recipeItem.isLiked
+                                                if (isLiked) {
+                                                    recipeItem.likes += 1
+                                                } else {
+                                                    recipeItem.likes -= 1
+                                                }
+                                                likes = recipeItem.likes
+                                            } else {
+                                                showSnackbar("레시피에 좋아요를 누를 수 없습니다.")
+                                            }
+                                        }
+
+                                    }
+
+                                } catch (e: TogglePreferenceException) {
+                                    Log.e(TAG, "like toggle failure ${e.message}")
+                                } catch (e: Exception) {
+                                    Log.e(TAG, "like toggle failure ${e.message}")
+                                }
+                            },
+                            onScrapClick = { recipeId ->
+                                try {
+                                    val isLoggedIn = checkLoggedIn()
+                                    if (isLoggedIn) {
+                                        scope.launch {
+                                            val isSuccessful = onToggleScrap(recipeId).await()
+                                            if (isSuccessful) {
+                                                recipeItem.isScrapped = !recipeItem.isScrapped
+                                                isScraped = recipeItem.isScrapped
+                                            } else {
+                                                showSnackbar("레시피를 스크랩 할 수 없습니다.")
+                                            }
+
+                                        }
+                                    }
+
+                                } catch (e: TogglePreferenceException) {
+                                    Log.e(TAG, "scrap toggle failure ${e.message}")
+                                } catch (e: Exception) {
+                                    Log.e(TAG, "scrap toggle failure ${e.message}")
+                                }
+                            },
+                            onItemClick = onItemClick
+                        )
+                    }
+                }
+
+            }
+
+            item {
+                Spacer(modifier = Modifier.height(80.dp))
             }
         }
     }

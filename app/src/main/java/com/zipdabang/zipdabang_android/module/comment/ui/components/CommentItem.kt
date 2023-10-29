@@ -177,7 +177,12 @@ fun CommentItem(
                             onDismissRequest = { isExpandedForOwner = false },
                         ) {
                             DropdownMenuItem(
-                                text = { Text("댓글 삭제하기") },
+                                text = {
+                                    Text(
+                                        text = "댓글 삭제하기",
+                                        style = ZipdabangandroidTheme.Typography.fourteen_500
+                                    )
+                               },
                                 onClick = {
                                     try {
                                         onClickDelete(commentItem.commentId)
@@ -191,7 +196,12 @@ fun CommentItem(
                                 }
                             )
                             DropdownMenuItem(
-                                text = { Text("댓글 수정하기") },
+                                text = {
+                                    Text(
+                                        text = "댓글 수정하기",
+                                        style = ZipdabangandroidTheme.Typography.fourteen_500
+                                    )
+                                       },
                                 onClick = {
                                     onClickEdit(commentItem.commentId, commentItem.content)
                                     isExpandedForOwner = !isExpandedForOwner
@@ -205,14 +215,24 @@ fun CommentItem(
                             onDismissRequest = { isExpandedForNotOwner = false },
                         ) {
                             DropdownMenuItem(
-                                text = { Text("댓글 신고하기") },
+                                text = {
+                                    Text(
+                                        text = "댓글 신고하기",
+                                        style = ZipdabangandroidTheme.Typography.fourteen_500
+                                    )
+                               },
                                 onClick = {
                                     showCommentReport(commentItem.commentId, 1, commentItem.ownerId)
                                     isExpandedForNotOwner = !isExpandedForNotOwner
                                 }
                             )
                             DropdownMenuItem(
-                                text = { Text("이용자 차단하기") },
+                                text = {
+                                    Text(
+                                        text = "이용자 차단하기",
+                                        style = ZipdabangandroidTheme.Typography.fourteen_500
+                                    )
+                               },
                                 onClick = {
                                     showCommentBlock(commentItem.ownerId)
                                     isExpandedForNotOwner = !isExpandedForNotOwner
