@@ -73,7 +73,7 @@ fun NavGraphBuilder.RecipeNavGraph(
                 onBannerClick = { keyword ->
                     // TODO keyword(검색 키워드) 활용하여 검색 화면으로 이동
                     navController.navigate(
-                        route = SharedScreen.Search.passQuery(keyword)
+                        route = SharedScreen.SearchForBanner.passQuery(keyword)
                     ) {
                         launchSingleTop = true
                     }

@@ -74,6 +74,7 @@ fun MyScreenForOther(
     userId : Int,
     onClickHeader : (String) -> Unit,
     onRecipeItemClick : (Int) -> Unit,
+    onClickBack: () -> Unit,
     viewModel : MyForOthersViewModel = hiltViewModel()
 ) {
 
@@ -163,7 +164,7 @@ fun MyScreenForOther(
                             },
 
                             onClickStartIcon = {
-                                //onClickBack()
+                                onClickBack()
                             },
                             onClickEndIcon = {
                                 isContextMenuVisible.value = !isContextMenuVisible.value

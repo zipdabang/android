@@ -23,6 +23,7 @@ import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
 @Composable
 fun ReportListScreen(
     onReportClick : (Int) -> Unit,
+    onClickBack : () -> Unit,
     viewModel : ErrorListViewModel = hiltViewModel()
 ) {
 
@@ -34,7 +35,7 @@ fun ReportListScreen(
         topBar = {
             AppBarSignUp(
                 navigationIcon = R.drawable.ic_topbar_backbtn,
-                onClickNavIcon = {  },
+                onClickNavIcon = {  onClickBack() },
                 centerText = "오류문의 및 신고"
             )
         }

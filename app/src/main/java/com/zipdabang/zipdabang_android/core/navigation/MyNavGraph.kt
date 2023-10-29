@@ -105,6 +105,7 @@ fun NavGraphBuilder.MyNavGraph(
 
                     },
                     onClickInquiry = {
+                        navController.navigate(DrawerScreen.Report.route)
 
                     },
                     onClickFriendsList = {
@@ -295,6 +296,9 @@ fun NavGraphBuilder.MyNavGraph(
                     onRecipeItemClick = {
                         id ->
                         navController.navigate(SharedScreen.DetailRecipe.passRecipeId(id))
+                    },
+                    onClickBack = {
+                        navController.navigateUp()
                     }
                 )
             }
@@ -315,6 +319,9 @@ fun NavGraphBuilder.MyNavGraph(
                     nickName = nickName,
                     onRecipeItemClick =  {
                         navController.navigate(SharedScreen.DetailRecipe.passRecipeId(it))
+                    },
+                    onClickBack = {
+                        navController.navigateUp()
                     }
                 )
             }
