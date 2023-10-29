@@ -431,7 +431,14 @@ fun NavGraphBuilder.SharedNavGraph(
             }
         }
 
-        composable(SharedScreen.Search.route){
+        composable(
+            route = SharedScreen.Search.route,
+            arguments =  listOf(
+                navArgument(name = "searchKeyword")
+                { type = NavType.StringType }
+            )
+        )
+        {
             SearchScreen(
                 navController= navController,
                 onRecipeItemClick = {
