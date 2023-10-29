@@ -236,6 +236,8 @@ class MyForOthersViewModel @Inject constructor(
                                 isSuccess = true,
                                 isLoading = false
                             )
+                            getOtherInfo()
+                            getOtherPreviewRecipe()
                         }
 
                     }

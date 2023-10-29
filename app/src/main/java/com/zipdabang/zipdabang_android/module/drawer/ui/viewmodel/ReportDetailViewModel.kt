@@ -31,7 +31,7 @@ class ReportDetailViewModel @Inject constructor(
 
 
      fun getReportDetail(reportId : Int){
-
+         Log.e("reportId",reportId.toString())
         getReportDetailUseCase(reportId).onEach {
 
             result -> when(result) {

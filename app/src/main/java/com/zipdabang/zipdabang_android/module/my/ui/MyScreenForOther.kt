@@ -67,7 +67,7 @@ fun MyScreenForOther(
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
     val pagerState = rememberPagerState()
-
+    
     val infoState = viewModel.otherInfoState
     val commonInfoState = viewModel.commonInfoState
     val blockSuccessState = viewModel.cancelBlockState
@@ -88,6 +88,7 @@ fun MyScreenForOther(
     val blockState = remember{
         mutableStateOf(false)
     }
+
     if(infoState.value.isSuccess) {
         followerNum.value = commonInfoState.value.followNum
         followingNum.value = commonInfoState.value.followingNum
@@ -101,12 +102,6 @@ fun MyScreenForOther(
                 FollowState.OtherOnlyFollow
             else FollowState.NotFriend
 
-    }
-
-
-    if(blockSuccessState.value.isSuccess){
-        viewModel.getOtherInfo()
-        viewModel.getOtherPreviewRecipe()
     }
 
 
@@ -166,7 +161,7 @@ fun MyScreenForOther(
 
                             if (infoState.value.isSuccess) {
                                 // 프로필 부분
-                                Log.e("otherSuccessinScreen","success")
+                                Log.e("success in otherScreen", "")
                                 Row(
                                     modifier = Modifier
                                         .weight(1.4f)
@@ -303,6 +298,7 @@ fun MyScreenForOther(
 
 
                             } else if (infoState.value.isLoading) {
+                                Log.e("loading in otherScreen", "")
 
                             } else {
                                 Log.e("error in Myscreen", "")
