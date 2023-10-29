@@ -917,19 +917,3 @@ fun UserInfoScreen(
     }
 }
 
-
-@Preview
-@Composable
-fun PreviewUserInfoScrren() {
-    UserInfoScreen(
-        onClickBack = {},
-        onClickEdit = {},
-        onClickEditBasic = {},
-        onClickEditDetail = {},
-        onClickEditNickname = {},
-        onClickEditOneLine = {},
-        onClickEditPreferences = {},
-        onClickLogout = {},
-        onClickWithdraw = {}
-    )
-}

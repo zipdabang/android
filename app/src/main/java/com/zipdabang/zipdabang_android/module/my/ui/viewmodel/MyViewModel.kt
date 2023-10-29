@@ -10,6 +10,7 @@ import androidx.lifecycle.viewModelScope
 import com.zipdabang.zipdabang_android.common.Constants
 import com.zipdabang.zipdabang_android.common.Resource
 import com.zipdabang.zipdabang_android.core.DeviceSize
+import com.zipdabang.zipdabang_android.core.Paging3Database
 import com.zipdabang.zipdabang_android.core.data_store.proto.CurrentPlatform
 import com.zipdabang.zipdabang_android.core.data_store.proto.Token
 import com.zipdabang.zipdabang_android.module.detail.recipe.common.DeviceScreenSize
@@ -34,10 +35,19 @@ import javax.inject.Inject
 @HiltViewModel
 class MyViewModel @Inject constructor(
     private val dataStore: DataStore<Token>,
+    private val paging3Database: Paging3Database,
     private val signOutUseCase: SignOutUseCase,
     private val getMyInfoUseCase: GetMyInfoUseCase,
     private val getCompleteRecipesPreviewUseCase: GetCompleteRecipesPreviewUseCase
 ) : ViewModel(){
+
+    private val scrapRecipesDao = paging3Database.scrapRecipesDao()
+    private val likeRecipesDao = paging3Database.likeRecipesDao()
+    private val myCompleteRecipesDao = paging3Database.completeRecipesDao()
+    private val myTempRecipesDao = paging3Database.tempRecipesDao()
+    private val completeRecipesWithImgDao = paging3Database.completeRecipesWithImgDao()
+    private val RemoteKeyDao = paging3Database.RemoteKeyDao()
+
 
     var stateMyUserInfo by mutableStateOf(
         MyUserInfoState(
@@ -142,6 +152,8 @@ class MyViewModel @Inject constructor(
     private val _signOutState = MutableStateFlow(SignOutState())
     val signOutState: StateFlow<SignOutState> = _signOutState
 
+
+
     fun signOut(
         onSignOutSuccessful: () -> Unit
     ) {
@@ -169,6 +181,14 @@ class MyViewModel @Inject constructor(
                             platformStatus = CurrentPlatform.NONE
                         )
                     }
+
+                    // 로그아웃 시 캐싱된거 삭제하기
+                    myTempRecipesDao.deleteItems()
+                    myCompleteRecipesDao.deleteItems()
+                    scrapRecipesDao.deleteItems()
+                    likeRecipesDao.deleteItems()
+                    completeRecipesWithImgDao.deleteItems()
+                    RemoteKeyDao.deleteRemoteKeys()
 
                     onSignOutSuccessful()
                 }

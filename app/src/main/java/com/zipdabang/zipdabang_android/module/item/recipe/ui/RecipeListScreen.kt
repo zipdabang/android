@@ -1,6 +1,7 @@
 package com.zipdabang.zipdabang_android.module.item.recipe.ui
 
 import android.util.Log
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -111,6 +112,7 @@ fun RecipeListScreen(
             "레시피"
         }
     }
+
 
     ModalDrawer(
         scaffold = {

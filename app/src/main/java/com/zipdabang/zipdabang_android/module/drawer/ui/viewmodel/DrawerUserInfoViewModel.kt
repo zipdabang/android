@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.zipdabang.zipdabang_android.common.Constants
 import com.zipdabang.zipdabang_android.common.Resource
+import com.zipdabang.zipdabang_android.core.Paging3Database
 import com.zipdabang.zipdabang_android.core.data_store.proto.CurrentPlatform
 import com.zipdabang.zipdabang_android.core.data_store.proto.Token
 import com.zipdabang.zipdabang_android.module.drawer.data.remote.userinfo.UserInfoBasicRequest
@@ -75,8 +76,15 @@ class DrawerUserInfoViewModel @Inject constructor(
     private val validatePhoneUseCase: ValidatePhoneUseCase = ValidatePhoneUseCase(),
     private val validateNicknameUseCase: ValidateNicknameUseCase = ValidateNicknameUseCase(),
     private val signOutUseCase: SignOutUseCase,
-    private val dataStore: DataStore<Token>
+    private val dataStore: DataStore<Token>,
+    private val paging3Database: Paging3Database
 ) : ViewModel() {
+    private val scrapRecipesDao = paging3Database.scrapRecipesDao()
+    private val likeRecipesDao = paging3Database.likeRecipesDao()
+    private val myCompleteRecipesDao = paging3Database.completeRecipesDao()
+    private val myTempRecipesDao = paging3Database.tempRecipesDao()
+    private val completeRecipesWithImgDao = paging3Database.completeRecipesWithImgDao()
+    private val RemoteKeyDao = paging3Database.RemoteKeyDao()
 
     var stateUserInfo by mutableStateOf(UserInfoState())
     var stateUserInfoBasic by mutableStateOf(UserInfoBasicState())
@@ -680,7 +688,7 @@ class DrawerUserInfoViewModel @Inject constructor(
                             btnEnabled = false
                         )
                     }
-                    else { //닉네임 불가능, 4019:형식, 4020:욕
+                    else { //닉네임 불가능
                         stateUserInfoNickname = stateUserInfoNickname.copy(
                             nickname = stateUserInfoNickname.nickname,
                             isTried = true,
@@ -694,10 +702,34 @@ class DrawerUserInfoViewModel @Inject constructor(
                 }
 
                 is Resource.Error -> {
-                    stateUserInfoNickname = stateUserInfoNickname.copy(
-                        nickname = stateUserInfoNickname.nickname,
-                        error = result.message ?: "An unexpeted error occured"
-                    )
+                    if (result?.data?.code ?: 0 == 4069) { //닉네임 비속어
+                        stateUserInfoNickname = stateUserInfoNickname.copy(
+                            nickname = stateUserInfoNickname.nickname,
+                            isTried = true,
+                            isSuccess = false,
+                            isError = true,
+                            errorMessage = "닉네임에 비속어가 포함되어 있습니다.",
+                            btnEnabled = false,
+                            error = result.message ?: "An unexpeted error occured"
+                        )
+                    }
+                    else if (result?.data?.code ?: 0 == 4070){ //닉네임 불가능
+                        stateUserInfoNickname = stateUserInfoNickname.copy(
+                            nickname = stateUserInfoNickname.nickname,
+                            isTried = true,
+                            isSuccess = false,
+                            isError = true,
+                            errorMessage = "사용할 수 없는 닉네임입니다.",
+                            btnEnabled = false,
+                            error = result.message ?: "An unexpeted error occured"
+                        )
+                    }
+                    else{
+                        stateUserInfoNickname = stateUserInfoNickname.copy(
+                            nickname = stateUserInfoNickname.nickname,
+                            error = result.message ?: "An unexpeted error occured"
+                        )
+                    }
                 }
 
                 is Resource.Loading -> {
@@ -1017,6 +1049,14 @@ class DrawerUserInfoViewModel @Inject constructor(
                             platformStatus = CurrentPlatform.NONE
                         )
                     }
+
+                    // 로그아웃 시 캐싱된거 삭제하기
+                    myTempRecipesDao.deleteItems()
+                    myCompleteRecipesDao.deleteItems()
+                    scrapRecipesDao.deleteItems()
+                    likeRecipesDao.deleteItems()
+                    completeRecipesWithImgDao.deleteItems()
+                    RemoteKeyDao.deleteRemoteKeys()
 
                     onSignOutSuccessful()
                 }

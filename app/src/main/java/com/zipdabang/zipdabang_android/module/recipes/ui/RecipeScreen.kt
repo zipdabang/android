@@ -1,6 +1,7 @@
 package com.zipdabang.zipdabang_android.module.recipes.ui
 
 import android.util.Log
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.DrawerValue
@@ -256,6 +257,7 @@ fun RecipeScreen(
     if (scrapState.errorMessage != null) {
         showSnackbar(scrapState.errorMessage)
     }*/
+
 
     ModalDrawer(
         scaffold = {

@@ -1,5 +1,6 @@
 package com.zipdabang.zipdabang_android.module.my.ui
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -36,6 +37,21 @@ fun ShoppingScreen(
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
 
+
+    // 뒤로가기 제어
+    /*BackHandler(
+        enabled = true,
+        onBack= {
+            if(drawerState.isOpen){
+                scope.launch{
+                    drawerState.close()
+                }
+            }
+            else{
+                onClickBack()
+            }
+        }
+    )*/
     ModalDrawer(
         scaffold = {
             Scaffold(

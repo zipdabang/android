@@ -1,6 +1,7 @@
 package com.zipdabang.zipdabang_android.module.my.ui
 
 import android.util.Log
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -111,6 +112,21 @@ fun MyScreen(
     } else {
         shimmering = false
     }
+
+    // 뒤로가기 제어
+    /*BackHandler(
+        enabled = true,
+        onBack= {
+            if(drawerState.isOpen){
+                scope.launch{
+                    drawerState.close()
+                }
+            }
+            else{
+               // 홈 화면으로 이동
+            }
+        }
+    )*/
 
     ModalDrawer(
         scaffold = {

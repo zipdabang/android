@@ -1,5 +1,6 @@
 package com.zipdabang.zipdabang_android.module.detail.goods
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.DrawerValue

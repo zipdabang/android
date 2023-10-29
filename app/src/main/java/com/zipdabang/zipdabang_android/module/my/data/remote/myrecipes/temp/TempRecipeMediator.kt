@@ -99,12 +99,16 @@ class TempRecipeMediator @Inject constructor(
                 }
 
                 errorCode?.let{
-                    if(errorCode==4055){
-                        Log.e("my_temprecipes_api 실패2", "")
+                    if(errorCode == 4052){
+                        Log.e("my_temprecipes_api 실패2-사용자 없음", "${errorCode}")
                         myTempRecipesDao.deleteItems()
                         RemoteKeyDao.deleteRemoteKeys()
                         MediatorResult.Success(endOfPaginationReached = true)
                     }
+                    else if(errorCode == 4003 || errorCode == 4005 || errorCode == 4008){
+                        Log.e("my_temprecipes_api 실패2-token 관련", "${errorCode}")
+                    }
+                    else{ }
                 }
             }
             catch (e: IOException){
@@ -121,7 +125,7 @@ class TempRecipeMediator @Inject constructor(
             val prevPage = if (currentPage == 1) null else currentPage -1
             val nextPage = if (endOfPaginationReached) null else currentPage + 1
 
-            /*paging3Database.withTransaction {
+            paging3Database.withTransaction {
                 if (loadType == LoadType.REFRESH) {
                     myTempRecipesDao.deleteItems()
                     RemoteKeyDao.deleteRemoteKeys()
@@ -135,8 +139,7 @@ class TempRecipeMediator @Inject constructor(
                 }
                 myTempRecipesDao.addItems(responseMapList)
                 RemoteKeyDao.addAllRemoteKeys(keys)
-            }*/
-
+            }
 
             MediatorResult.Success(endOfPaginationReached = endOfPaginationReached!!)
         }

@@ -108,12 +108,16 @@ class ScrapRecipeMediator @Inject constructor(
                 }
 
                 errorCode?.let{
-                    if(errorCode==4055){
-                        Log.e("my_scraprecipes_api 실패2", errorBody.toString())
+                    if(errorCode == 4055 || errorCode == 4052 || errorCode ==4054){
+                        Log.e("my_scraprecipes_api 실패2-paging 관련", "${errorCode}")
                         scrapRecipesDao.deleteItems()
                         RemoteKeyDao.deleteRemoteKeys()
                         MediatorResult.Success(endOfPaginationReached = true)
                     }
+                    else if(errorCode ==4003 || errorCode ==4005 || errorCode ==4008){
+                        Log.e("my_scraprecipes_api 실패2-token 관련", "${errorCode}")
+                    }
+                    else{ }
                 }
             }
             catch (e: IOException){
