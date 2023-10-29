@@ -46,7 +46,9 @@ import com.zipdabang.zipdabang_android.ui.theme.NavBlack
 
 
 @Composable
-fun GuideScreen1(){
+fun GuideScreen1(
+    GoToRecipe : () -> Unit
+){
 
    val scrollState = rememberScrollState()
 
@@ -205,7 +207,7 @@ fun GuideScreen1(){
             )
             Spacer(modifier = Modifier.height(14.dp))
             
-            Button(onClick = { /*TODO*/ },
+            Button(onClick = { GoToRecipe() },
                 shape = RoundedCornerShape(size = 20.dp),
                 border = BorderStroke(1.dp,Color.White),
                 colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFFD4B2A7)),
@@ -241,5 +243,5 @@ fun GuideScreen1(){
 @Composable
 @Preview
 fun guidePreview(){
-    GuideScreen1()
+    //GuideScreen1()
 }

@@ -4,6 +4,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.zipdabang.zipdabang_android.common.HomeResource
@@ -20,7 +21,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SearchViewModel @Inject constructor(
-    private val repository: SearchRepository,
+    private val savedStateHandle: SavedStateHandle,
     private val getSearchUseCase : GetSearchPreviewUseCase
 ) : ViewModel() {
 
@@ -30,6 +31,11 @@ class SearchViewModel @Inject constructor(
     private var _searchText = mutableStateOf("")
     var searchText= _searchText
 
+    init {
+        _searchText.value = savedStateHandle.get<String?>("searchKeyword") ?: ""
+
+        if(_searchText.value!="")getSearchList()
+    }
 
 
     fun getSearchList() {

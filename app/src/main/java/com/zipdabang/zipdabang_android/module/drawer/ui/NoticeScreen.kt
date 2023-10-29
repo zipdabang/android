@@ -62,7 +62,7 @@ fun NoticeScreen(
                 topBar = {
                     AppBarSignUp(
                         navigationIcon = R.drawable.ic_topbar_backbtn,
-                        onClickNavIcon = { /*drawer로 돌아오기*/},
+                        onClickNavIcon = { onClickBack() },
                         centerText = stringResource(id = R.string.drawer_notice)
                     )
                 },

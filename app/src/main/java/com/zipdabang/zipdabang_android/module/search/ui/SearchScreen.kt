@@ -1,6 +1,7 @@
 package com.zipdabang.zipdabang_android.module.search.ui
 
 import android.util.Log
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -31,6 +32,7 @@ import com.zipdabang.zipdabang_android.module.search.data.dto.searchpreview.reci
 fun SearchScreen(
     navController: NavController,
     onRecipeItemClick: (Int) -> Unit,
+    onGotoBack : () -> Unit,
     searchViewModel: SearchViewModel = hiltViewModel()
 
 ) {
@@ -56,7 +58,10 @@ fun SearchScreen(
         {
             Icon(
                 painter = painterResource(id = R.drawable.search_back_small), null,
-                modifier = Modifier.weight(1f),
+                modifier = Modifier.weight(1f)
+                    .clickable {
+                               onGotoBack()
+                    },
                 tint = Color(0xFF867768)
             )
             Spacer(modifier = Modifier.width(5.dp))

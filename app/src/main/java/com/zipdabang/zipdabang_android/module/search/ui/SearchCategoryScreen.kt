@@ -41,6 +41,7 @@ import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
 @Composable
 fun SearchCategoryScreen(
     onRecipeItemClick : (Int) -> Unit,
+    onGoToBack : () -> Unit,
     searchViewModel: SearchCategoryViewModel = hiltViewModel(),
     recipeMainViewModel : RecipeMainViewModel = hiltViewModel()
 
@@ -71,7 +72,9 @@ fun SearchCategoryScreen(
         topBar = {
                 AppBarSignUp(
                     navigationIcon = com.kakao.sdk.friend.R.drawable.material_ic_keyboard_arrow_left_black_24dp,
-                    onClickNavIcon = {},
+                    onClickNavIcon = {
+                        onGoToBack()
+                    },
                     centerText = SearchCategory.values().get(categoryId.value-1).categoryName
                 )
 

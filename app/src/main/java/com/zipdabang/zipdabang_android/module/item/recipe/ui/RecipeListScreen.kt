@@ -10,7 +10,6 @@ import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -21,65 +20,46 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.LazyPagingItems
 import com.zipdabang.zipdabang_android.R
 import com.zipdabang.zipdabang_android.core.data_store.proto.CurrentPlatform
 import com.zipdabang.zipdabang_android.module.item.recipe.common.RecipeSort
 import com.zipdabang.zipdabang_android.module.item.recipe.common.RecipeSubtitleState
 import com.zipdabang.zipdabang_android.module.recipes.common.OwnerType
 import com.zipdabang.zipdabang_android.module.recipes.common.QueryType
-import com.zipdabang.zipdabang_android.module.recipes.ui.viewmodel.RecipeListViewModel
+import com.zipdabang.zipdabang_android.module.recipes.data.common.RecipeItem
 import com.zipdabang.zipdabang_android.ui.component.AppBarWithFullFunction
 import com.zipdabang.zipdabang_android.ui.component.FloatingActionButton
 import com.zipdabang.zipdabang_android.ui.component.LoginRequestDialog
 import com.zipdabang.zipdabang_android.ui.component.ModalDrawer
-import kotlinx.coroutines.async
+import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.launch
 
 @Composable
 fun RecipeListScreen(
-    modifier: Modifier = Modifier,
     navController: NavController,
+    currentPlatform: CurrentPlatform,
+    total: String,
+    sortBy: String,
+    queryType: QueryType,
     categoryState: RecipeSubtitleState,
+    recipeList: LazyPagingItems<RecipeItem>,
     onSearchIconClick: () -> Unit,
     onBackClick: () -> Unit,
     onShareClick: () -> Unit,
     onItemClick: (Int) -> Unit,
     onLoginRequest: () -> Unit,
+    onSortChange: (String) -> Unit,
+    onLikeClick: (Int) -> Deferred<Boolean>,
+    onScrapClick: (Int) -> Deferred<Boolean>,
     showSnackbar: (String) -> Unit
 ) {
-
     val TAG = "RecipeListScreen"
 
     val scope = rememberCoroutineScope()
+
     val drawerState = rememberDrawerState(DrawerValue.Closed)
-
-    val viewModel = hiltViewModel<RecipeListViewModel>()
-
-    val currentPlatformState = viewModel.currentPlatform.value
-
-    val total by remember {
-        derivedStateOf {
-            viewModel.total.value.toString()
-        }
-    }
-
-    val queryType = if (categoryState.categoryId == -1 && categoryState.ownerType != null) {
-        viewModel.getOwnerItemCount(categoryState.ownerType)
-        QueryType.OWNER
-    } else {
-        viewModel.getCategoryItemCount(categoryState.categoryId!!)
-        QueryType.CATEGORY
-    }
-
-
-    val type: RecipeSubtitleState by remember {
-        derivedStateOf {
-            categoryState
-        }
-    }
 
     val sortList = listOf(
         RecipeSort.LATEST,
@@ -87,9 +67,7 @@ fun RecipeListScreen(
         RecipeSort.LIKES
     )
 
-    val sortBy = viewModel.sortBy.value
-
-    Log.i(TAG, "ownerType : $type")
+    Log.i(TAG, "ownerType : $categoryState")
     Log.i(TAG, "sortBy : $sortBy")
 
     var showLoginRequestDialog by remember {
@@ -97,45 +75,14 @@ fun RecipeListScreen(
     }
 
     val checkLoggedIn = {
-        if (currentPlatformState == CurrentPlatform.TEMP
-            || currentPlatformState == CurrentPlatform.NONE) {
+        if (currentPlatform == CurrentPlatform.TEMP
+            || currentPlatform == CurrentPlatform.NONE) {
             showLoginRequestDialog = true
             false
         } else {
             true
         }
     }
-
-    val onLikeClick = { recipeId: Int ->
-        scope.async {
-            viewModel.toggleItemLike(recipeId)
-        }
-    }
-
-    val onScrapClick = { recipeId: Int ->
-        scope.async {
-            viewModel.toggleItemScrap(recipeId)
-        }
-    }
-
-    val recipeList = when (queryType) {
-        QueryType.OWNER -> {
-            Log.d("RecipeList", "ownerType")
-            viewModel.getRecipeListByOwnerType(
-                ownerType = categoryState.ownerType!!,
-                orderBy = sortBy
-            ).collectAsLazyPagingItems()
-        }
-
-        QueryType.CATEGORY -> {
-            Log.d("RecipeList", "category type")
-            viewModel.getRecipeListByCategory(
-                categoryId = categoryState.categoryId,
-                orderBy = sortBy
-            ).collectAsLazyPagingItems()
-        }
-    }
-
 
     val lazyGridState = rememberLazyGridState()
 
@@ -146,95 +93,64 @@ fun RecipeListScreen(
         }
     }
 
-    val likeState = viewModel.toggleLikeResult.collectAsState().value
-    val scrapState = viewModel.toggleScrapResult.collectAsState().value
-
-    if (likeState.errorMessage != null) {
-        showSnackbar(likeState.errorMessage)
+    val centerText = categoryState.let {
+        if (it.categoryId == -1 && it.ownerType != null) {
+            "레시피.zip"
+        } else if (it.categoryId != null && it.ownerType == null) {
+            when (it.categoryId) {
+                0 -> "전체"
+                1 -> "커피"
+                2 -> "논카페인"
+                3 -> "차(Tea)"
+                4 -> "에이드"
+                5 -> "스무디"
+                6 -> "과일 음료"
+                7 -> "건강 음료"
+                else -> ""
+            }
+        } else {
+            "레시피"
+        }
     }
 
-    if (scrapState.errorMessage != null) {
-        showSnackbar(scrapState.errorMessage)
-    }
 
     ModalDrawer(
         scaffold = {
             Scaffold(
-                modifier = modifier.fillMaxSize(),
+                modifier = Modifier.fillMaxSize(),
                 topBar = {
                     AppBarWithFullFunction(
                         startIcon = R.drawable.ic_topbar_backbtn,
                         endIcon1 = R.drawable.ic_topbar_search,
                         endIcon2 = R.drawable.ic_topbar_menu,
-                        onClickStartIcon = {
-                            onBackClick()
-                        },
-                        onClickEndIcon1 = { onSearchIconClick() },
+                        onClickStartIcon = onBackClick,
+                        onClickEndIcon1 = onSearchIconClick,
                         onClickEndIcon2 = { scope.launch { drawerState.open() } },
-                        centerText = categoryState.let {
-                            if (it.categoryId == -1 && it.ownerType != null) {
-                                "레시피.zip"
-                            } else if (it.categoryId != null && it.ownerType == null) {
-                                when (it.categoryId) {
-                                    0 -> "전체"
-                                    1 -> "커피"
-                                    2 -> "논카페인"
-                                    3 -> "차(Tea)"
-                                    4 -> "에이드"
-                                    5 -> "스무디"
-                                    6 -> "과일 음료"
-                                    7 -> "건강 음료"
-                                    else -> ""
-                                }
-                            } else {
-                                ""
-                            }
-                        }
+                        centerText = centerText
                     )
                 },
                 containerColor = Color.White,
-                contentColor = Color.Black,
-                floatingActionButton = {
-
-                }
+                contentColor = Color.Black
             ) { padding ->
                 Box(modifier = Modifier
                     .fillMaxSize()
                     .padding(padding)
                 ) {
-
                     LoginRequestDialog(
                         showDialog = showLoginRequestDialog,
                         setShowDialog = { changedState ->
                             showLoginRequestDialog = changedState
-                        }
-                    ) {
-                        onLoginRequest()
-                    }
+                        },
+                        onLoginRequest = onLoginRequest
+                    )
 
                     RecipeList(
                         modifier = Modifier,
                         onItemClick = onItemClick,
                         total = total,
                         sortList = sortList,
-                        onSortChange = { changedValue ->
-                            when (changedValue) {
-                                RecipeSort.LATEST.text -> {
-                                    viewModel.setSortBy(RecipeSort.LATEST.type)
-                                }
-                                RecipeSort.LIKES.text -> {
-                                    viewModel.setSortBy(RecipeSort.LIKES.type)
-                                }
-                                else -> {
-                                    viewModel.setSortBy(RecipeSort.FOLLOW.type)
-                                }
-                            }
-
-                        },
-                        category = categoryState,
+                        onSortChange = onSortChange,
                         recipeList = recipeList,
-                        likeState = likeState,
-                        scrapState = scrapState,
                         checkLoggedIn = checkLoggedIn,
                         onToggleLike = { recipeId ->
                             onLikeClick(recipeId)
@@ -276,15 +192,9 @@ fun RecipeListScreen(
                             .padding(bottom = 40.dp, end = 16.dp),
                         isScrolled = isScrolled,
                         icon = R.drawable.zipdabanglogo_transparent_normal,
-                        title = "나의 레시피 공유하기"
-                    ) {
-                        if (currentPlatformState == CurrentPlatform.TEMP
-                            || currentPlatformState == CurrentPlatform.NONE) {
-                            showSnackbar("레시피를 작성하려면 로그인이 필요합니다.")
-                        } else {
-                            onShareClick()
-                        }
-                    }
+                        title = "나의 레시피 공유하기",
+                        onClick = onShareClick
+                    )
                 }
             }
         },
