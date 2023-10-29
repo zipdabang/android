@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyGridState
@@ -209,11 +210,29 @@ fun RecipeListContent(
                         )
                     }
                 }
-
             }
 
-            item {
-                Spacer(modifier = Modifier.height(80.dp))
+            item(
+                span = {
+                    GridItemSpan(2)
+                }
+            ) {
+                if (items.loadState.append is LoadState.Loading) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(80.dp),
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        CircularProgressIndicator(
+                            modifier = Modifier.size(36.dp),
+                            color = ZipdabangandroidTheme.Colors.Choco
+                        )
+                    }
+                } else {
+                    Spacer(modifier = Modifier.height(80.dp))
+                }
             }
         }
     }
