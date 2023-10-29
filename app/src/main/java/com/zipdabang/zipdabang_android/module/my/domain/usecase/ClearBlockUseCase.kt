@@ -6,6 +6,7 @@ import com.zipdabang.zipdabang_android.common.Resource
 import com.zipdabang.zipdabang_android.common.ResponseCode
 import com.zipdabang.zipdabang_android.common.getErrorCode
 import com.zipdabang.zipdabang_android.core.data_store.proto.Token
+import com.zipdabang.zipdabang_android.module.comment.data.remote.UserBlockDto
 import com.zipdabang.zipdabang_android.module.my.data.remote.MyApi
 import com.zipdabang.zipdabang_android.module.my.data.remote.otherinfo.OtherInfoDto
 import kotlinx.coroutines.flow.Flow
@@ -15,24 +16,24 @@ import retrofit2.HttpException
 import java.io.IOException
 import javax.inject.Inject
 
-class GeOtherInfoUseCase @Inject constructor(
+class ClearBlockUseCase @Inject constructor(
     private val repository : MyApi,
     private val dataStore : DataStore<Token>
 ) {
-    operator fun invoke(targetId : Int) : Flow<Resource<OtherInfoDto>> = flow{
+    operator fun invoke(targetId : Int) : Flow<Resource<UserBlockDto?>> = flow{
         try{
             Log.e("error targetId",targetId.toString())
             emit(Resource.Loading())
             val token = "Bearer ${dataStore.data.first().accessToken}"
             Log.e("error token",token)
 
-            val followOrCancelResponse = repository.getOtherInfo(accessToken = token, targetId = targetId)
+            val cancelBlockResponse = repository.cancelUserBlock(token,targetId)
             emit(
                 Resource.Success(
-                data = followOrCancelResponse,
-                code = followOrCancelResponse.code,
-                message = followOrCancelResponse.message
-            )
+                    data = cancelBlockResponse.result,
+                    code =  cancelBlockResponse.code,
+                    message =  cancelBlockResponse.message
+                )
             )
         } catch (e: HttpException) {
             val errorCode = e.response()?.errorBody()?.getErrorCode()

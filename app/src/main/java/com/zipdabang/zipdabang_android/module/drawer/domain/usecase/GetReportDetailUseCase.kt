@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.datastore.core.DataStore
 import com.zipdabang.zipdabang_android.common.Constants
 import com.zipdabang.zipdabang_android.common.Resource
+import com.zipdabang.zipdabang_android.common.ResponseCode
 import com.zipdabang.zipdabang_android.common.getErrorCode
 import com.zipdabang.zipdabang_android.core.data_store.proto.Token
 import com.zipdabang.zipdabang_android.module.drawer.data.remote.noticedto.NoticeListDto
@@ -42,7 +43,7 @@ class GetReportDetailUseCase @Inject constructor(
             errorCode?.let {
                 emit(
                     Resource.Error(
-                        message = e.response()?.errorBody().toString(),
+                        message = ResponseCode.getMessageByCode(errorCode),
                         code = errorCode
                     )
                 )
