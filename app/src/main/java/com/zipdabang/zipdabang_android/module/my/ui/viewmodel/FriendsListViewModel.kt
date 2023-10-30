@@ -24,6 +24,7 @@ import com.zipdabang.zipdabang_android.module.my.domain.repository.PagingFollowi
 import com.zipdabang.zipdabang_android.module.my.domain.repository.PagingSearchFollowerRepository
 import com.zipdabang.zipdabang_android.module.my.domain.repository.PagingSearchFollowingRepository
 import com.zipdabang.zipdabang_android.module.my.domain.usecase.PostFollowOrCancelUseCase
+import com.zipdabang.zipdabang_android.module.my.domain.usecase.UserReportUseCase
 import com.zipdabang.zipdabang_android.module.my.ui.state.FollowOrCancel
 import com.zipdabang.zipdabang_android.module.my.ui.state.SearchState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -42,7 +43,8 @@ class FriendsListViewModel @OptIn(ExperimentalPagingApi::class)
     val searchFollowRepository : PagingSearchFollowingRepository,
     val followingRepository: PagingFollowingRepository,
     val searchFollowerRepository: PagingSearchFollowerRepository,
-    val followOrCancelUseCase: PostFollowOrCancelUseCase
+    val followOrCancelUseCase: PostFollowOrCancelUseCase,
+    val userReportUseCase: UserReportUseCase
 ) : ViewModel() {
 
     private var _followOrCancelSuccessState = mutableStateOf(FollowOrCancel())
@@ -175,6 +177,42 @@ class FriendsListViewModel @OptIn(ExperimentalPagingApi::class)
         }
 
     }
+
+    fun userReport(targetId : Int, isToast : () -> Unit, isOwner : () -> Unit){
+        userReportUseCase(targetId).onEach {
+                result ->
+            when(result) {
+                is Resource.Success -> {
+                    if (result.data!!.isSuccess) {
+                        isToast()
+
+                        Log.e("userReport api", result.data.code.toString())
+                    }
+
+                }
+
+                is Resource.Error -> {
+                    if(result.code==4075) {
+                        isOwner()
+                    }
+                    Log.e("userReport Api in Error","code :${result.code} message : ${result.message.toString()}")
+
+
+                }
+                is Resource.Loading -> {
+                    Log.e("userReport api", "Loading")
+
+                }
+
+            }
+
+
+
+
+
+        }.launchIn(viewModelScope)
+    }
+
 
 
 

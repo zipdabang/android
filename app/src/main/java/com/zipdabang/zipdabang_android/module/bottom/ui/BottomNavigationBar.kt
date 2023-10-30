@@ -20,6 +20,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavBackStackEntry
@@ -29,6 +30,7 @@ import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
+import com.zipdabang.zipdabang_android.R
 import com.zipdabang.zipdabang_android.core.navigation.MarketScreen
 import com.zipdabang.zipdabang_android.module.bottom.BottomMenuContent
 import com.zipdabang.zipdabang_android.module.main.MainScreen
@@ -113,8 +115,8 @@ fun RowScope.AddItem(
 
                         Text(
                             text = screen.title,
-                            textAlign = TextAlign.Center,
-                            fontSize = 10.sp
+                            style = ZipdabangandroidTheme.Typography.twelve_300,
+                            fontStyle = FontStyle(R.font.kopubworlddotum_medium)
                         )
 
 
@@ -127,8 +129,8 @@ fun RowScope.AddItem(
 
                         Text(
                             text = screen.title,
-                            textAlign = TextAlign.Center,
-                            fontSize = 10.sp
+                            style = ZipdabangandroidTheme.Typography.twelve_300,
+                            fontStyle = FontStyle(R.font.kopubworlddotum_medium)
                         )
                     }
                 }

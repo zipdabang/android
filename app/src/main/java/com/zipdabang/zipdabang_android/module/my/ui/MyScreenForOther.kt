@@ -1,6 +1,7 @@
 package com.zipdabang.zipdabang_android.module.my.ui
 
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -31,10 +32,12 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.viewModelFactory
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.pager.ExperimentalPagerApi
@@ -67,6 +70,7 @@ fun MyScreenForOther(
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
     val pagerState = rememberPagerState()
+    val context = LocalContext.current
 
     val infoState = viewModel.otherInfoState
     val commonInfoState = viewModel.commonInfoState
@@ -144,6 +148,17 @@ fun MyScreenForOther(
                                 showDropdownForOther(
                                     isBlock = {
                                         viewModel.userBlock()
+                                    },
+                                    isReport = {
+                                        viewModel.userReport(commonInfoState.value.memberId,
+                                            isToast = {
+                                                Toast.makeText(context, "신고를 완료했습니다.", Toast.LENGTH_SHORT).show()
+
+                                            },
+                                            isOwner = {
+                                                Toast.makeText(context, "본인은 신고할 수 없습니다.", Toast.LENGTH_SHORT).show()
+
+                                            })
                                     }
                                 )
                             },

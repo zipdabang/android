@@ -27,6 +27,7 @@ import com.zipdabang.zipdabang_android.module.my.data.remote.recipewrite.RecipeW
 import com.zipdabang.zipdabang_android.module.my.data.remote.recipewrite.RecipeWriteResponse
 import com.zipdabang.zipdabang_android.module.my.data.remote.recipewrite.RecipeWriteTempResponse
 import com.zipdabang.zipdabang_android.module.my.data.remote.signout.SignOutResponseDto
+import com.zipdabang.zipdabang_android.module.my.data.remote.userreport.UserReportDto
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 
@@ -64,5 +65,6 @@ interface MyRepository {
     suspend fun cancelUserBlock(accessToken: String, memberId:Int) : ResponseBody<UserBlockDto?>
 
     suspend fun userBlock(accessToken: String, memberId:Int) : ResponseBody<UserBlockDto?>
+    suspend fun userReport(accessToken: String, memberId:Int) : UserReportDto
 
 }

@@ -28,6 +28,8 @@ import com.zipdabang.zipdabang_android.module.my.data.remote.recipewrite.RecipeW
 import com.zipdabang.zipdabang_android.module.my.data.remote.recipewrite.RecipeWriteResponse
 import com.zipdabang.zipdabang_android.module.my.data.remote.recipewrite.RecipeWriteTempResponse
 import com.zipdabang.zipdabang_android.module.my.data.remote.signout.SignOutResponseDto
+import com.zipdabang.zipdabang_android.module.my.data.remote.userreport.UserReportDto
+import com.zipdabang.zipdabang_android.module.my.data.remote.userreport.UserReportResult
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.http.Body
@@ -268,6 +270,10 @@ interface MyApi {
         @Header("Authorization") accessToken: String,
         @Query("blocked") userId: Int
     ): ResponseBody<UserBlockDto?>
-
+    @POST("members/report/{targetId}")
+    suspend fun userReport(
+        @Header("Authorization") accessToken: String,
+        @Path(value = "targetId") targetId: Int
+    ): UserReportDto
 
 }

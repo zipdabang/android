@@ -20,7 +20,8 @@ import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
 
 @Composable
 fun showDropdownForOther(
-    isBlock : () -> Unit
+    isBlock : () -> Unit,
+    isReport : () -> Unit
 ) {
     val myDropDownList = listOf("회원 차단하기", "회원 신고하기")
 
@@ -58,7 +59,10 @@ fun showDropdownForOther(
                         if(index==0){
                             isBlock()
                         }
-                        else {}
+                        else {
+                            isReport()
+                        }
+                        isContextMenuVisible.value = false
 
                     }
                 ) {
