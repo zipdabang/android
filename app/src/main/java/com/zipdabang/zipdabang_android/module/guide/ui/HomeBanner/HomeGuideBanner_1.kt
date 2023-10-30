@@ -48,7 +48,7 @@ fun HomeGuideBanner_1(
     ){
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.padding(start=10.dp)
+            modifier = Modifier.padding(start=15.dp)
         ){
             Column(
                 modifier = Modifier
@@ -58,18 +58,9 @@ fun HomeGuideBanner_1(
             ) {
                 val color = ZipdabangandroidTheme.Colors.Typo
                 val typography = FontFamily(Font(R.font.kopubworlddotum_medium))
+
                 Text(
                     text = "홈카페는 처음이신가요?",
-                    color = color,
-                    fontFamily = typography,
-                    fontSize = 16.sp,
-                    lineHeight = 12.sp,
-                    fontWeight = FontWeight.Bold,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
-                Text(
-                    text = "집다방이 알려주는 홈카페 기초 Tip",
                     color = color,
                     fontFamily = typography,
                     fontSize = 12.sp,
@@ -78,6 +69,16 @@ fun HomeGuideBanner_1(
                     overflow = TextOverflow.Ellipsis,
                     modifier = Modifier
                         .offset(y = (-2).dp)
+                )
+                Text(
+                    text = "홈카페를 위한 A to Z!",
+                    color = color,
+                    fontFamily = typography,
+                    fontSize = 16.sp,
+                    lineHeight = 12.sp,
+                    fontWeight = FontWeight.Bold,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
                 )
             }
 

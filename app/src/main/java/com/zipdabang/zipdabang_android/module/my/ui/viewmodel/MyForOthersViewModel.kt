@@ -12,6 +12,7 @@ import com.zipdabang.zipdabang_android.module.my.domain.usecase.ClearBlockUseCas
 import com.zipdabang.zipdabang_android.module.my.domain.usecase.GeOtherInfoUseCase
 import com.zipdabang.zipdabang_android.module.my.domain.usecase.GeOtherRecipePreviewUseCase
 import com.zipdabang.zipdabang_android.module.my.domain.usecase.PostFollowOrCancelUseCase
+import com.zipdabang.zipdabang_android.module.my.domain.usecase.UserReportUseCase
 import com.zipdabang.zipdabang_android.module.my.ui.state.CancelBlock
 import com.zipdabang.zipdabang_android.module.my.ui.state.CommonInfoState
 import com.zipdabang.zipdabang_android.module.my.ui.state.FollowOrCancel
@@ -31,7 +32,7 @@ class MyForOthersViewModel @Inject constructor(
     val followOrCancelUseCase: PostFollowOrCancelUseCase,
     val cancelBlockUseCase: ClearBlockUseCase,
     val blockUseCase: BlockUseCase,
-
+    val userReportUseCase: UserReportUseCase,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
@@ -79,7 +80,8 @@ class MyForOthersViewModel @Inject constructor(
                             profileUrl = result.data.result.imageUrl,
                             isFollowing = result.data.result.checkFollowing,
                             isFollower = result.data.result.checkFollower,
-                            isCheckSelf = result.data.result.checkSelf
+                            isCheckSelf = result.data.result.checkSelf,
+                            memberId = result.data.result.memberId
                         )
                         _profileState.value = ProfileState(
                             caption = result.data.result.caption,
@@ -305,6 +307,41 @@ class MyForOthersViewModel @Inject constructor(
             }
 
         }
+    fun userReport(targetId : Int, isToast : () -> Unit, isOwner : () -> Unit){
+        Log.e("userReport targetId",targetId.toString())
+        userReportUseCase(targetId).onEach {
+                result ->
+            when(result) {
+                is Resource.Success -> {
+                    if (result.data!!.isSuccess) {
+                        isToast()
+
+                        Log.e("userReport api", result.data.code.toString())
+                    }
+
+                }
+
+                is Resource.Error -> {
+                    if(result.code==4075) {
+                        isOwner()
+                    }
+                    Log.e("userReport Api in Error","code :${result.code} message : ${result.message.toString()}")
+
+
+                }
+                is Resource.Loading -> {
+                    Log.e("userReport api", "Loading")
+
+                }
+
+            }
+
+
+
+
+
+        }.launchIn(viewModelScope)
+    }
     }
 
 

@@ -39,8 +39,6 @@ fun FollowingScreen(
         viewModel.getFollowerItems()
     }
 
-
-    val followOrCancelState = viewModel.followOrCancelSuccessState
     val context = LocalContext.current
 
     LazyColumn(
@@ -74,7 +72,17 @@ fun FollowingScreen(
 
                     },
                     userReport = {
-                        TODO()
+                        viewModel.userReport(
+                            followerItem[it]!!.id,
+                            isToast = {
+                                Toast.makeText(context, "신고를 완료했습니다.", Toast.LENGTH_SHORT).show()
+
+                            },
+                            isOwner = {
+                                Toast.makeText(context, "본인은 신고할 수 없습니다.", Toast.LENGTH_SHORT).show()
+
+                            }
+                        )
                     },
                     onClickOthers = {
                         onClickOthers(followerItem[it]!!.id)

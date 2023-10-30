@@ -57,7 +57,17 @@ fun FollowScreen(
                     //    viewModel.refresh()
                     },
                     userReport = {
-                        TODO()
+                        viewModel.userReport(
+                            followItem[it]!!.id,
+                            isToast = {
+                                Toast.makeText(context, "신고를 완료했습니다.", Toast.LENGTH_SHORT).show()
+
+                            },
+                            isOwner = {
+                                Toast.makeText(context, "본인은 신고할 수 없습니다.", Toast.LENGTH_SHORT).show()
+
+                            }
+                            )
                     },
                     onClickOthers = {
                         onClickOthers(followItem[it]!!.id)

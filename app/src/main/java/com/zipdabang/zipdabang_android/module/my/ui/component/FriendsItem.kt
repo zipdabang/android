@@ -58,13 +58,9 @@ fun FollowItem(
         mutableStateOf(false)
     }
 
-    var pressOffset by remember {
-        mutableStateOf(DpOffset.Zero)
-    }
     val interactionSource = remember {
         MutableInteractionSource()
     }
-    val density = LocalDensity.current
 
     val isFollowDropDown = listOf("팔로우 끊기", "신고하기")
     val isFollowingDropDown = listOf("맞팔로우 하기", "신고하기")
@@ -147,6 +143,7 @@ fun FollowItem(
                     DropdownMenuItem(
                         onClick = {
                             isContextMenuVisible = false
+                            userReport()
                         }
                     ) {
                         Text(
