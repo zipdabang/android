@@ -12,6 +12,7 @@ import androidx.datastore.core.DataStoreFactory
 import androidx.datastore.dataStoreFile
 import androidx.room.Room
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
+import com.zipdabang.zipdabang_android.BuildConfig
 import com.zipdabang.zipdabang_android.common.Constants
 import com.zipdabang.zipdabang_android.common.Constants.PAGING3_DATABASE
 import com.zipdabang.zipdabang_android.common.Constants.BASE_URL
@@ -132,7 +133,7 @@ object AppModule {
             coerceInputValues = true
         }
         return Retrofit.Builder()
-            .baseUrl(BASE_URL)
+            .baseUrl(BuildConfig.BASE_URL)
             .client(okHttpClient)
             // which library to use for "de"serialization(JSON -> Object)
             // kotlinx-serialization dependency

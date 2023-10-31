@@ -22,20 +22,24 @@ class GetTermsUseCase @Inject constructor(
             emit(Resource.Loading())
             val result = repository.getTerms()
 
-            when(result.code){
-                ResponseCode.RESPONSE_DEFAULT.code ->{
-                    emit(Resource.Success(
-                        data = result.result,
-                        code = result.code,
-                        message= result.message,
-                    ))
+            if (result.result?.termsList?.isNotEmpty() == true) {
+                when(result.code){
+                    ResponseCode.RESPONSE_DEFAULT.code ->{
+                        emit(Resource.Success(
+                            data = result.result,
+                            code = result.code,
+                            message= result.message,
+                        ))
+                    }
+                    else ->{
+                        emit(Resource.Error(
+                            message = result.message
+                        ))
+                    }
                 }
-                else ->{
-                    emit(Resource.Error(
-                        message = result.message
-                    ))
-                }
+
             }
+
 
         } catch (e: HttpException) {
             val errorBody = e.response()?.errorBody()

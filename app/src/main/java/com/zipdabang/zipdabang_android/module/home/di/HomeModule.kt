@@ -1,5 +1,6 @@
 package com.zipdabang.zipdabang_android.module.home.di
 
+import com.zipdabang.zipdabang_android.BuildConfig
 import com.zipdabang.zipdabang_android.common.Constants
 import com.zipdabang.zipdabang_android.module.home.data.HomeApi
 import com.zipdabang.zipdabang_android.module.home.data.HomeRepositoryImpl
@@ -24,7 +25,7 @@ object HomeModule {
     @Singleton
     fun provideHomeApi() : HomeApi {
         return Retrofit.Builder()
-            .baseUrl(Constants.BASE_URL)
+            .baseUrl(BuildConfig.BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
             .create(HomeApi::class.java)

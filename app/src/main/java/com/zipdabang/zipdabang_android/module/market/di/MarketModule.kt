@@ -1,5 +1,6 @@
 package com.zipdabang.zipdabang_android.module.market.di
 
+import com.zipdabang.zipdabang_android.BuildConfig
 import com.zipdabang.zipdabang_android.common.Constants
 import com.zipdabang.zipdabang_android.module.market.data.MarketApi
 import com.zipdabang.zipdabang_android.module.market.data.MarketRepositoryImpl
@@ -23,7 +24,7 @@ object MarketModule {
     @Singleton
     fun provideMarketApi() : MarketApi {
         return Retrofit.Builder()
-            .baseUrl(Constants.BASE_URL)
+            .baseUrl(BuildConfig.BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
             .create(MarketApi :: class.java)

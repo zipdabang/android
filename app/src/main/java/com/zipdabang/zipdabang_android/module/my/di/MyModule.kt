@@ -1,5 +1,6 @@
 package com.zipdabang.zipdabang_android.module.my.di
 
+import com.zipdabang.zipdabang_android.BuildConfig
 import com.zipdabang.zipdabang_android.common.Constants
 import com.zipdabang.zipdabang_android.module.my.data.remote.MyApi
 import com.zipdabang.zipdabang_android.module.my.data.repository.MyRepositoryImpl
@@ -21,7 +22,7 @@ object MyModule {
     @Singleton
     fun provideMyApi() : MyApi{
         return Retrofit.Builder()
-            .baseUrl(Constants.BASE_URL)
+            .baseUrl(BuildConfig.BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .client(OkHttpClient.Builder().addInterceptor(HttpLoggingInterceptor().apply {
                 level = HttpLoggingInterceptor.Level.BODY
