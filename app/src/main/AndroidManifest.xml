@@ -23,6 +23,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Zipdabangandroid"
+        tools:ignore="HardcodedDebugMode"
+        android:debuggable="true"
         tools:targetApi="31">
 
         <service

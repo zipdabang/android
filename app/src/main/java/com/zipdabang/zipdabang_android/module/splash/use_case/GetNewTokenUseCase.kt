@@ -27,7 +27,7 @@ class GetNewTokenUseCase @Inject constructor(
         try {
             emit(Resource.Loading())
 
-            val refreshToken = tokenDataStore.data.first().refreshToken
+            val refreshToken = tokenDataStore.data.first().refreshToken ?: ""
             val result = autoLoginRepository.getNewAccessToken(refreshToken = refreshToken)
 
             result?.let {
