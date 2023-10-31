@@ -105,8 +105,7 @@ fun NavGraphBuilder.MyNavGraph(
 
                     },
                     onClickInquiry = {
-                        navController.navigate(DrawerScreen.Report.route)
-
+                        navController.navigate(DrawerScreen.ReportList.route)
                     },
                     onClickFriendsList = {
                         navController.navigate(MyScreen.FriendList.route)
@@ -160,7 +159,7 @@ fun NavGraphBuilder.MyNavGraph(
                     navController.navigate(SharedScreen.DetailRecipe.passRecipeId(recipeId))
                 },
                 onClickMyrecipe = {
-                    navController.navigate(MyScreen.Myrecipe.route)
+                    navController.navigate(MyScreen.RecipeWrite.passTempId(0))
                 },
                 showSnackBar= showSnackBar
             )
@@ -254,7 +253,7 @@ fun NavGraphBuilder.MyNavGraph(
                 tempId = tempId,
                 recipeId = null,
                 onClickBack = {
-                    navController.popBackStack(MyScreen.Myrecipe.route, inclusive = false)
+                    navController.navigateUp()//popBackStack(MyScreen.Myrecipe.route, inclusive = false)
                 },
                 onClickViewRecipe = { recipeId ->
                     navController.navigate(

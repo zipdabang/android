@@ -12,5 +12,7 @@ sealed class RecipeWriteDialogEvent{
     data class SaveChanged(val isOpen : Boolean) : RecipeWriteDialogEvent()
     data class UploadCategoryChanged(val isOpen : Boolean) : RecipeWriteDialogEvent()
     data class UploadCompleteChanged(val isOpen : Boolean) : RecipeWriteDialogEvent()
+    data class EditCompleteChanged(val isOpen : Boolean) : RecipeWriteDialogEvent()
+
 }
 

@@ -87,7 +87,7 @@ fun DrawerContent(
                     .heightIn(),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                Box(
+                /*Box(
                     modifier = Modifier
                         .fillMaxWidth()
                         .weight(1f)
@@ -102,7 +102,7 @@ fun DrawerContent(
                         style = ZipdabangandroidTheme.Typography.sixteen_500,
                         color = ZipdabangandroidTheme.Colors.Typo,
                     )
-                }
+                }*/
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -135,7 +135,7 @@ fun DrawerContent(
                         color = ZipdabangandroidTheme.Colors.Typo,
                     )
                 }
-                Box(
+                /*Box(
                     modifier = Modifier
                         .fillMaxWidth()
                         .weight(1f)
@@ -150,7 +150,7 @@ fun DrawerContent(
                         style = ZipdabangandroidTheme.Typography.sixteen_500,
                         color = ZipdabangandroidTheme.Colors.Typo,
                     )
-                }
+                }*/
                 Divider(
                     modifier = Modifier.fillMaxWidth(),
                     color = ZipdabangandroidTheme.Colors.Typo.copy(0.2f),
@@ -171,7 +171,7 @@ fun DrawerContent(
                         color = ZipdabangandroidTheme.Colors.Typo,
                     )
                 }
-                Box(
+                /*Box(
                     modifier = Modifier
                         .fillMaxWidth()
                         .weight(1f)
@@ -186,7 +186,7 @@ fun DrawerContent(
                         style = ZipdabangandroidTheme.Typography.sixteen_500,
                         color = ZipdabangandroidTheme.Colors.Typo,
                     )
-                }
+                }*/
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -254,7 +254,7 @@ fun DrawerContent(
                         color = ZipdabangandroidTheme.Colors.Typo,
                     )
                 }
-                Box(
+                /*Box(
                     modifier = Modifier
                         .fillMaxWidth()
                         .weight(1f)
@@ -269,7 +269,16 @@ fun DrawerContent(
                         style = ZipdabangandroidTheme.Typography.sixteen_500,
                         color = ZipdabangandroidTheme.Colors.Typo,
                     )
-                }
+                }*/
+                Box(modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f))
+                Box(modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f))
+                Box(modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f))
                 Box(modifier = Modifier
                     .fillMaxWidth()
                     .weight(1f))

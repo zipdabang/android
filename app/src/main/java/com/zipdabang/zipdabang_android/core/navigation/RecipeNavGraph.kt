@@ -183,7 +183,7 @@ fun NavGraphBuilder.RecipeNavGraph(
                     showSnackBar("레시피를 작성하려면 로그인이 필요합니다.")
                 } else {
                     navController.navigate(
-                        route = MyScreen.RecipeWrite.route
+                        route = MyScreen.RecipeWrite.passTempId(0)
                     ) {
                         launchSingleTop = true
                     }

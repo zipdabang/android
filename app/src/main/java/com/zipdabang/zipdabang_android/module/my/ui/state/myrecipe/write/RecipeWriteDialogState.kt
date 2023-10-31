@@ -11,4 +11,5 @@ data class RecipeWriteDialogState(
     val isOpenSave : Boolean = false,
     val isOpenUploadCategory : Boolean = false,
     val isOpenUploadComplete : Boolean = false,
+    val isOpenEditComplete : Boolean = false,
 )

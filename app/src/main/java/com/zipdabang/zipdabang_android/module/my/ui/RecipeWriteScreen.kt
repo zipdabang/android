@@ -61,6 +61,7 @@ import com.zipdabang.zipdabang_android.module.my.ui.state.myrecipe.write.RecipeW
 import com.zipdabang.zipdabang_android.module.my.ui.viewmodel.RecipeWriteViewModel
 import com.zipdabang.zipdabang_android.ui.component.AppBarSignUp
 import com.zipdabang.zipdabang_android.ui.component.CustomDialogCameraFile
+import com.zipdabang.zipdabang_android.ui.component.CustomDialogEditComplete
 import com.zipdabang.zipdabang_android.ui.component.CustomDialogRecipeDelete
 import com.zipdabang.zipdabang_android.ui.component.CustomDialogSelectCategory
 import com.zipdabang.zipdabang_android.ui.component.CustomDialogType1
@@ -111,6 +112,7 @@ fun RecipeWriteScreen(
     val stateRecipeWriteBeverages = recipeWriteViewModel.stateRecipeWriteBeverages
     val stateThumbnail = recipeWriteViewModel.stateRecipeWriteForm.thumbnail
     val stateUploadRecipeId = recipeWriteViewModel.uploadRecipeId
+    val stateEditRecipeId = recipeWriteViewModel.editRecipeId
     var shimmering: Boolean = true
 
 
@@ -434,12 +436,12 @@ fun RecipeWriteScreen(
                         modifier = Modifier.weight(1f)
                     ) {
                         PrimaryButtonOutLinedStatus(
+                            enabled = stateRecipeWriteForm.btnEnabledSave,
                             borderColor = ZipdabangandroidTheme.Colors.MainBackground,
                             text = stringResource(id = R.string.my_recipewrite_save),
                             onClick = {
                                 recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.SaveChanged(true))
                             },
-                            enabled = stateRecipeWriteForm.btnEnabledSave
                         )
                     }
                     Box(
@@ -1181,8 +1183,8 @@ fun RecipeWriteScreen(
                         CoroutineScope(Dispatchers.Main).launch{
                             val isSuccess = recipeWriteViewModel.patchCompleteRecipe(recipeId!!, stepImageParts.toList(), stepImageAddNum)
 
-                            if(isSuccess){
-                                recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.UploadCompleteChanged(true))
+                            if (isSuccess){
+                                recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.EditCompleteChanged(true))
                             }
                         }
                         // 알럿 닫기
@@ -1193,8 +1195,10 @@ fun RecipeWriteScreen(
                         CoroutineScope(Dispatchers.Main).launch {
                             // post api success됐는지 확인하는 변수
                             val isSuccess = recipeWriteViewModel.postRecipeWrite(stepImageParts = stepImageParts.toList())
+                            Log.e("recipewrite-result", "레시피 api 성공 한 후 : ${isSuccess}")
                             // post api 성공하면 업로드 완료 알럿을 띄운다
                             if (isSuccess){
+                                Log.e("recipewrite-result", "알럿 띄우기")
                                 recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.UploadCompleteChanged(true))
                             }
                             // 알럿 닫기
@@ -1215,10 +1219,28 @@ fun RecipeWriteScreen(
                     recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.UploadCompleteChanged(it))
                 },
                 onAccept = {
+                    Log.e("recipewrite-result", "알럿 띄운 후 : ${stateUploadRecipeId}")
                     onClickViewRecipe(stateUploadRecipeId)
                 },
                 onLater = {
                     recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.UploadCompleteChanged(false))
+                    onClickBack()
+                }
+            )
+        }
+        // 수정 완료 알럿
+        if (stateRecipeWriteDialog.isOpenEditComplete){
+            CustomDialogEditComplete(
+                image = stateThumbnail !!,
+                setShowDialog = {
+                    recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.EditCompleteChanged(it))
+                },
+                onAccept = {
+                    Log.e("recipewrite-result", "알럿 띄운 후 : ${stateEditRecipeId}")
+                    onClickViewRecipe(stateEditRecipeId)
+                },
+                onLater = {
+                    recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.EditCompleteChanged(false))
                     onClickBack()
                 }
             )

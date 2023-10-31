@@ -1,6 +1,7 @@
 package com.zipdabang.zipdabang_android.module.drawer.ui.report
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -8,9 +9,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -36,35 +40,53 @@ fun ReportListScreen(
             AppBarSignUp(
                 navigationIcon = R.drawable.ic_topbar_backbtn,
                 onClickNavIcon = {  onClickBack() },
-                centerText = "오류문의 및 신고"
+                centerText = "나의 문의내역"
             )
         }
     ) {
-        LazyColumn(
-            modifier = Modifier
-                .background(Color.White)
-                .padding(
-                    top = it.calculateTopPadding(),
-                    start = 16.dp, end = 16.dp
+        if(reportItems.itemCount == 0){
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.White),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ){
+                Text(
+                    textAlign = TextAlign.Center,
+                    text= "문의한 내역이 없습니다.",
+                    style= ZipdabangandroidTheme.Typography.fourteen_300,
+                    color= ZipdabangandroidTheme.Colors.Typo
                 )
-                .fillMaxSize()
-
-        ) {
-            items(reportItems.itemCount){
-                Column {
-
-                    ReportItem(
-                        title = reportItems[it]!!.title,
-                        createdAt = reportItems[it]!!.createdAt,
-                        onClick = {
-                            onReportClick(reportItems[it]!!.id)
-                        }
+            }
+        }
+        else{
+            LazyColumn(
+                modifier = Modifier
+                    .background(Color.White)
+                    .padding(
+                        top = it.calculateTopPadding(),
+                        start = 16.dp, end = 16.dp
                     )
+                    .fillMaxSize()
 
-                    Divider(
-                        modifier = Modifier.fillMaxWidth(),
-                        color = ZipdabangandroidTheme.Colors.Typo.copy(0.2f),
-                    )
+            ) {
+                items(reportItems.itemCount){
+                    Column {
+
+                        ReportItem(
+                            title = reportItems[it]!!.title,
+                            createdAt = reportItems[it]!!.createdAt,
+                            onClick = {
+                                onReportClick(reportItems[it]!!.id)
+                            }
+                        )
+
+                        Divider(
+                            modifier = Modifier.fillMaxWidth(),
+                            color = ZipdabangandroidTheme.Colors.Typo.copy(0.2f),
+                        )
+                    }
                 }
             }
         }
