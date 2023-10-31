@@ -443,7 +443,7 @@ fun AppBarCollapsing(
         toolbar = {
 
             val size by remember {
-                mutableStateOf((300-10) * state.toolbarState.progress + 70)
+                mutableStateOf(360 + (state.toolbarState.progress * 1))
             }
 
             /*val display = applicationContext.resources?.displayMetrics
