@@ -623,6 +623,110 @@ fun CustomDialogUploadComplete(
     }
 }
 
+//나의 레시피 수정 완료
+@Composable
+fun CustomDialogEditComplete(
+    image: Any,
+    setShowDialog: (Boolean) -> Unit,
+    onLater : () -> Unit,
+    onAccept: () -> Unit,
+) {
+    Dialog(onDismissRequest = {}){
+        Surface(
+            shape = ZipdabangandroidTheme.Shapes.small,
+            color = DialogBackground,
+            modifier = Modifier
+                .size(width = 328.dp, height = 548.dp)
+                .fillMaxSize()
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(0.dp),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .aspectRatio(1f)
+                        .padding(0.dp)
+                ) {
+                    AsyncImage(
+                        model = image,
+                        contentDescription = "thumbnail",
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(0.dp),
+                        contentScale = ContentScale.Crop
+                    )
+                }
+                Spacer(modifier = Modifier.height(20.dp))
+                Column(
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier
+                    //.padding(start = 30.dp, end = 30.dp, top = 18.dp, bottom = 8.dp)
+                )
+                {
+                    Text(
+                        text = "레시피 수정 완료!",
+                        style = ZipdabangandroidTheme.Typography.thirtytwo_900_scdream,
+                    )
+                    Spacer(modifier = Modifier.height(10.dp))
+                    Text(
+                        text = stringResource(id = R.string.dialog_upload_detail),
+                        textAlign = TextAlign.Center,
+                        color = ZipdabangandroidTheme.Colors.Typo,
+                        style = ZipdabangandroidTheme.Typography.eighteen_300
+                    )
+                }
+                Spacer(modifier = Modifier.height(10.dp))
+                Column(
+                    //modifier = Modifier.padding(vertical = 8.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Button(
+                        onClick = { onAccept() },
+                        shape = ZipdabangandroidTheme.Shapes.thin,
+                        modifier = Modifier.width(280.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = ZipdabangandroidTheme.Colors.Strawberry
+                        ),
+                        enabled = true
+                    ) {
+                        Box(
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                text = "수정된 레시피 보러가기",
+                                textAlign = TextAlign.Center,
+                                color = Color.White,
+                                maxLines = 1,
+                                modifier = Modifier,
+                                style = ZipdabangandroidTheme.Typography.sixteen_500
+                            )
+                        }
+                    }
+                    TextButton(
+                        shape = RectangleShape,
+                        onClick = {
+                            onLater()
+                        }) {
+                        Text(
+                            text = stringResource(id = R.string.dialog_upload_seenexttime),
+                            color = ZipdabangandroidTheme.Colors.Typo,
+                            style = ZipdabangandroidTheme.Typography.fourteen_300
+                        )
+
+                    }
+                }
+            }
+        }
+
+    }
+}
+
 // 카테고리 선택
 @Composable
 fun CustomDialogSelectCategory(

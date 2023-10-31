@@ -56,7 +56,10 @@ fun NavGraphBuilder.DrawerNavGraph(
 
         composable(DrawerScreen.Report.route){
           ErrorReportScreen(
-              isReportSuccess = { navController.navigate(DrawerScreen.ReportSuccess.route) })
+              isReportSuccess = { navController.navigate(DrawerScreen.ReportSuccess.route) },
+              onClickBack = {
+                  navController.navigateUp()
+              })
         }
 
         composable(DrawerScreen.ReportList.route){
@@ -252,7 +255,6 @@ fun NavGraphBuilder.DrawerNavGraph(
             ServiceInfoScreen(navController = navController,
                 ) {
                 navController.navigateUp()
-
             }
         }
 

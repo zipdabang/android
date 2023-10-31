@@ -10,6 +10,7 @@ import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
 import com.zipdabang.zipdabang_android.common.Resource
 import com.zipdabang.zipdabang_android.core.data_store.proto.Token
+import com.zipdabang.zipdabang_android.module.bottom.BottomMenuContent
 import com.zipdabang.zipdabang_android.module.my.data.remote.recipewrite.CompleteRecipeEditContent
 import com.zipdabang.zipdabang_android.module.my.data.remote.recipewrite.CompleteRecipeEditIngredient
 import com.zipdabang.zipdabang_android.module.my.data.remote.recipewrite.CompleteRecipeEditStep
@@ -132,6 +133,8 @@ class RecipeWriteViewModel @Inject constructor(
 
     // 업로드 완료 한후 업로드 레시피로 넘어가기 위한 변수
     var uploadRecipeId by mutableStateOf(0)
+    // 수정 완료 한후 업로드 레시피로 넘어가기 위한 변수
+    var editRecipeId by mutableStateOf(0)
 
     // temp인지 complete 레시피인지 판단하는 변수
     var tempRecipeDetailApiCalled by mutableStateOf(0)
@@ -538,7 +541,12 @@ class RecipeWriteViewModel @Inject constructor(
                 }
                 // 임시저장 한 레시피 수정을 위한 조건문
                 else if (tempRecipeDetailApiCalled > 0) {
-                    if (isTempRecipeEdited()) {
+                   /* if(!isEmpty()){
+                        stateRecipeWriteForm = stateRecipeWriteForm.copy(
+                            btnEnabled = true
+                        )
+                    }
+                    else */if (isTempRecipeEdited()) {
                         isAllFieldsFilled = stateRecipeWriteForm.title.isNotBlank()
                                 && !(stateRecipeWriteForm.thumbnail == null || stateRecipeWriteForm.thumbnail == "")
                                 && stateRecipeWriteForm.time.isNotBlank()
@@ -550,7 +558,8 @@ class RecipeWriteViewModel @Inject constructor(
                         stateRecipeWriteForm = stateRecipeWriteForm.copy(
                             btnEnabled = isAllFieldsFilled
                         )
-                    } else {
+                    }
+                    else {
                         stateRecipeWriteForm = stateRecipeWriteForm.copy(
                             btnEnabled = false
                         )
@@ -648,6 +657,10 @@ class RecipeWriteViewModel @Inject constructor(
                 stateRecipeWriteDialog =
                     stateRecipeWriteDialog.copy(isOpenUploadComplete = event.isOpen)
             }
+            is RecipeWriteDialogEvent.EditCompleteChanged->{
+                stateRecipeWriteDialog =
+                    stateRecipeWriteDialog.copy(isOpenEditComplete = event.isOpen)
+            }
         }
     }
 
@@ -733,11 +746,9 @@ class RecipeWriteViewModel @Inject constructor(
             result.collect { result ->
                 when (result) {
                     is Resource.Success -> {
-                        Log.e("recipewrite", "api는 성공 : ${result.message} ${result.code}")
-                        if (result.code == 2000) {
-                            Log.e("recipewrite", "성공 : ${result.message}")
-                            uploadRecipeId = result.data?.result?.recipeId ?: 0
-                        }
+                        Log.e("recipewrite", "성공 : ${result.message}")
+                        uploadRecipeId = result.data?.result?.recipeId ?: 0
+                        Log.e("recipewrite-result", "레시피 아이디 : ${uploadRecipeId}")
                         isSuccess = true
                     }
 
@@ -980,6 +991,14 @@ class RecipeWriteViewModel @Inject constructor(
                             ingredientsNum = result?.data?.ingredients?.size ?: 1,
                             ingredientBtnEnabled = true
                         )
+
+                        /*stateRecipeWriteForm = stateRecipeWriteForm.copy(
+                            btnEnabled = !isEmpty()
+                        )
+                        stateTempRecipeWriteForm = stateTempRecipeWriteForm.copy(
+                            btnEnabled = !isEmpty()
+                        )*/
+
                         Log.e("recipewrite-get-temp", "${stateRecipeWriteForm}")
                         Log.e("recipewrite-get-temp", "${stateTempRecipeWriteForm}")
                         tempRecipeDetailApiCalled++
@@ -1209,6 +1228,7 @@ class RecipeWriteViewModel @Inject constructor(
                 when (result) {
                     is Resource.Success -> {
                         Log.e("recipewrite-post-save", "성공 : ${result.code}")
+                        uploadRecipeId = result.data?.result?.recipeId ?: 0
                         isSuccess = true
                     }
 
@@ -1470,6 +1490,8 @@ class RecipeWriteViewModel @Inject constructor(
                 when (result) {
                     is Resource.Success -> {
                         Log.e("recipewrite-patch-complete", "성공 : ${result.code}")
+                        editRecipeId = result.data?.result?.recipeId ?: 0
+                        Log.e("recipewrite-result", "수정 레시피 아이디 : ${editRecipeId}")
                         isSuccess = true
                     }
 

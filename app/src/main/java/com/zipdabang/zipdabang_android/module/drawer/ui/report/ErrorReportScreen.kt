@@ -77,6 +77,7 @@ import java.io.InputStream
 @Composable
 fun ErrorReportScreen(
      isReportSuccess : () -> Unit,
+     onClickBack : ()->Unit,
      reportViewModel: ErrorReportViewModel = hiltViewModel()
 ){
     val reportState = reportViewModel.reportState
@@ -234,7 +235,9 @@ fun ErrorReportScreen(
         topBar = {
             AppBarSignUp(
                 navigationIcon = R.drawable.ic_topbar_backbtn,
-                onClickNavIcon = {  },
+                onClickNavIcon = {
+                                 onClickBack()
+                },
                 centerText = "오류문의 및 신고"
             )
         }

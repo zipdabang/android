@@ -228,7 +228,7 @@ fun MyPagerInfoScreen(
                         color = ZipdabangandroidTheme.Colors.Typo
                     )
                     Text(
-                        text = "0",
+                        text = "",
                         style = ZipdabangandroidTheme.Typography.fourteen_500,
                         color = ZipdabangandroidTheme.Colors.Typo,
                         modifier = Modifier.padding(0.dp, 0.dp, 12.dp, 0.dp)
@@ -263,7 +263,7 @@ fun MyPagerInfoScreen(
                         modifier = Modifier.padding(0.dp, 0.dp, 12.dp, 0.dp)
                     )
                     Text(
-                        text = "0",
+                        text = "",
                         style = ZipdabangandroidTheme.Typography.fourteen_500,
                         color = ZipdabangandroidTheme.Colors.Typo,
                         modifier = Modifier.padding(0.dp, 0.dp, 12.dp, 0.dp)
@@ -297,7 +297,7 @@ fun MyPagerInfoScreen(
                         color = ZipdabangandroidTheme.Colors.Typo
                     )
                     Text(
-                        text = "0",
+                        text = "",
                         style = ZipdabangandroidTheme.Typography.fourteen_500,
                         color = ZipdabangandroidTheme.Colors.Typo,
                         modifier = Modifier.padding(0.dp, 0.dp, 12.dp, 0.dp)

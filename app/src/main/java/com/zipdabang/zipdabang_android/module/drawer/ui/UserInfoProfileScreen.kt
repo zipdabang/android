@@ -8,6 +8,7 @@ import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.result.launch
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -35,6 +36,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.zipdabang.zipdabang_android.R
 import com.zipdabang.zipdabang_android.module.drawer.ui.viewmodel.DrawerUserInfoViewModel
+import com.zipdabang.zipdabang_android.module.my.ui.state.myrecipe.write.RecipeWriteFormEvent
 import com.zipdabang.zipdabang_android.ui.component.AppBarSignUp
 import com.zipdabang.zipdabang_android.ui.component.CustomDialogCameraFile
 import com.zipdabang.zipdabang_android.ui.component.ModalDrawer
@@ -101,6 +103,39 @@ fun UserInfoProfileScreen(
                 Log.e("Error in camera", "No image selected")
             }
         }
+    // 카메라->Bitmap 형태
+    val takeThumbnailFromCameraLauncher =
+        rememberLauncherForActivityResult(ActivityResultContracts.TakePicturePreview()) { takenPhoto ->
+            if (takenPhoto != null) {
+
+                profilePhotoBitmap = takenPhoto
+
+                val byteOutputStream = ByteArrayOutputStream() // 이미지를 바이트 배열로 저장하기 위한 용도로 사용됨
+                takenPhoto.compress(Bitmap.CompressFormat.JPEG, 10, byteOutputStream) //비트맵을 JPEG 형식으로 압축하고, 압축된 이미지를 byteOutPutStream에 저장함
+
+                // 압축된 이미지를 바이트 배열로 변환
+                val profileRequestBody: RequestBody = byteOutputStream.toByteArray().toRequestBody("image/jpeg".toMediaTypeOrNull())
+                // 이미지 데이터를 멀티파트로 변환
+                val profilePart = MultipartBody.Part.createFormData("newProfile", "${profilePhotoBitmap}.jpeg", profileRequestBody)
+
+                // 서버 업로드를 위한 thumbnailPart 변경
+                profile = profilePart
+                Log.e("drawer-profile", "${profile} 들어갔담")
+
+                CoroutineScope(Dispatchers.IO).launch {
+                    drawerUserInfoViewModel.patchUserInfoProfile(profile!!)
+                    withContext(Dispatchers.Main){
+                        onClickUserInfo()
+                    }
+                }
+            }
+            else {
+                Log.e("Error in camera","error")
+            }
+        }
+
+
+
 
     ModalDrawer(
         scaffold = {
@@ -177,11 +212,12 @@ fun UserInfoProfileScreen(
                                     profileDialog.value = it
                                 },
                                 onCameraClick = {
-                                    //takePhotoFromCameraLauncher.launch()
-                                    //recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.FileSelectChanged(false))
+                                    takeThumbnailFromCameraLauncher.launch()
+                                    profileDialog.value = false
                                 },
                                 onFileClick = {
                                     takeThumbnailFromAlbumLauncher.launch("image/*")
+                                    profileDialog.value = false
                                 }
                             )
                         }
