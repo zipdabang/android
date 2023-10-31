@@ -113,7 +113,6 @@ fun UserInfoPreferencesScreen(
                             verticalArrangement = Arrangement.Center,
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
-                            var index = 0
                             for (chunk in chunkedBeverageList) {
                                 Row(
                                     modifier = Modifier
@@ -128,13 +127,12 @@ fun UserInfoPreferencesScreen(
                                             buttonText = preference.categoryName,
                                             shimmering = if(stateUserInfoPreferences.isLoading || stateUserInfoPreferences.error.isNotBlank()) true
                                                         else false,
-                                            isClicked = stateUserInfoPreferences.preferBeverageCheckList[index],
+                                            isClicked = stateUserInfoPreferences.preferBeverageCheckList[preference.id-1],
                                             isClickedChange = { selectedClicked ->
                                                 drawerUserInfoViewModel.onUserInfoPreferencesEvent(
                                                     UserInfoPreferencesEvent.BeverageCheckListChanged(preference.id-1 ,selectedClicked))
                                             }
                                         )
-                                        index ++
                                     }
                                 }
                             }

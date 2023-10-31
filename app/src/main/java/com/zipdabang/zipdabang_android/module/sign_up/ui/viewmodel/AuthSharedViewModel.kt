@@ -279,9 +279,9 @@ class AuthSharedViewModel @Inject constructor(
 
             is UserInfoFormEvent.AuthNumberClicked -> {
                 //전화번호 여기 주석 풀어
-                CoroutineScope(Dispatchers.IO).launch {
+                /*CoroutineScope(Dispatchers.IO).launch {
                     postAuthNumber()
-                }
+                }*/
                 stateUserInfoForm = stateUserInfoForm.copy(
                     phoneNumberCorrectMessage = "",
                     phoneNumberIsCorrect = false,
@@ -326,9 +326,9 @@ class AuthSharedViewModel @Inject constructor(
         if (phonenumberResult.successful) {
             Log.e("phonenumber-viewmodel", "api 호출 직전")
             //전화번호 여기 주석 풀어
-            CoroutineScope(Dispatchers.IO).launch {
+            /*CoroutineScope(Dispatchers.IO).launch {
                 postPhonenumber() //api 호출
-            }
+            }*/
         } else {
             stateUserInfoForm = stateUserInfoForm.copy(
                 phoneNumberIsTried = true,
@@ -351,9 +351,9 @@ class AuthSharedViewModel @Inject constructor(
         val isError = stateUserInfoForm.birthdayIsError
 
         //전화번호 여기 주석 풀어
-        val isValidateAtPhone = stateUserInfoForm.authNumberIsCorrect
+        //val isValidateAtPhone = stateUserInfoForm.authNumberIsCorrect
 
-        if (isFull && isValidateAtPhone && !isError) { // 전화번호 여기 주석 풀어: isFull && isValidateAtPhone && !isError
+        if (isFull &&  !isError) { // 전화번호 여기 주석 풀어: isFull && isValidateAtPhone && !isError
             stateUserInfoForm = stateUserInfoForm.copy(btnEnabled = true)
         } else {
             stateUserInfoForm = stateUserInfoForm.copy(btnEnabled = false)
@@ -364,7 +364,7 @@ class AuthSharedViewModel @Inject constructor(
         var isCorrect = listOf(
             !stateUserInfoForm.birthdayIsError,
             //전화번호 여기 주석 풀어
-            stateUserInfoForm.authNumberIsCorrect
+            //stateUserInfoForm.authNumberIsCorrect
         ).all { it == true }
 
         Log.e(
@@ -600,6 +600,9 @@ class AuthSharedViewModel @Inject constructor(
                         size = result.data?.size ?: 0,
                         beverageCheckList = List(result.data?.size ?: 0) { false },
                     )
+                    Log.e("preferences-viewmodel", "beverageCheckList : ${List(result.data?.size ?: 0) { false }}")
+                    Log.e("preferences-viewmodel", "beverageList : ${result.data?.beverageCategoryList ?: emptyList()}")
+                    Log.e("preferences-viewmodel", "size : ${result.data?.size ?: 0}")
                     Log.e("preferences-viewmodel", "성공 ${result.data?.beverageCategoryList}")
                 }
 

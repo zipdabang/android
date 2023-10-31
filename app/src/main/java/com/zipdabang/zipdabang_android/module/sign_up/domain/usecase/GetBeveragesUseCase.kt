@@ -21,18 +21,26 @@ class GetBeveragesUseCase @Inject constructor(
         try {
             emit(Resource.Loading())
             val result = repositoy.getBeverages()
-            when(result.code){
-                ResponseCode.RESPONSE_DEFAULT.code ->{
-                    emit(Resource.Success(
-                        data = result.result,
-                        code = result.code,
-                        message = result.message,
-                    ))
-                }
-                else ->{
-                    emit(Resource.Error(
-                        message = result.message
-                    ))
+
+            if (result.result?.beverageCategoryList?.isNotEmpty() == true) {
+                when (result.code) {
+                    ResponseCode.RESPONSE_DEFAULT.code -> {
+                        emit(
+                            Resource.Success(
+                                data = result.result,
+                                code = result.code,
+                                message = result.message,
+                            )
+                        )
+                    }
+
+                    else -> {
+                        emit(
+                            Resource.Error(
+                                message = result.message
+                            )
+                        )
+                    }
                 }
             }
         } catch (e: HttpException) {

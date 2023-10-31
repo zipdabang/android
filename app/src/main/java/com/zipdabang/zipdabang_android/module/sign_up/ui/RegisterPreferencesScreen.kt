@@ -121,36 +121,35 @@ fun RegisterPreferencesScreen(
                             subTextColor =  ZipdabangandroidTheme.Colors.Typo
                         )
 
-                        val chunkedBeverageList = stateBeverageForm.beverageList.chunked(3)
-                        Column(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(0.dp, 20.dp, 0.dp, 0.dp)
-                                .background(color = Color.Transparent),
-                            verticalArrangement = Arrangement.Center,
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            var index = 0
-                            for (chunk in chunkedBeverageList) {
-                                Row(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .wrapContentHeight(),
-                                    horizontalArrangement = Arrangement.Center,
-                                    verticalAlignment = Alignment.CenterVertically
-                                ) {
-                                    for (preference in chunk) {
-                                        RoundedButton(
-                                            imageUrl = preference.imageUrl,
-                                            buttonText = preference.categoryName,
-                                            shimmering = if(stateBeverageForm.isLoading || stateBeverageForm.error.isNotBlank()){true} else{false},
-                                            isClicked = stateBeverageForm.beverageCheckList[index],
-                                            isClickedChange = { selectedClicked ->
-                                                authSharedViewModel.onBeverageEvent(
-                                                    BeverageFormEvent.BeverageCheckListChanged(preference.id-1 ,selectedClicked))
-                                            }
-                                        )
-                                        index ++
+                        if (stateBeverageForm.beverageList.isNotEmpty()) {
+                            val chunkedBeverageList = stateBeverageForm.beverageList.chunked(3)
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(0.dp, 20.dp, 0.dp, 0.dp)
+                                    .background(color = Color.Transparent),
+                                verticalArrangement = Arrangement.Center,
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+                                for (chunk in chunkedBeverageList) {
+                                    Row(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .wrapContentHeight(),
+                                        horizontalArrangement = Arrangement.Center,
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        for (preference in chunk) {
+                                            RoundedButton(
+                                                imageUrl = preference.imageUrl,
+                                                buttonText = preference.categoryName,
+                                                shimmering = if(stateBeverageForm.isLoading || stateBeverageForm.error.isNotBlank()){true} else{false},
+                                                isClicked = stateBeverageForm.beverageCheckList[preference.id - 1],
+                                                isClickedChange = { selectedClicked ->
+                                                    authSharedViewModel.onBeverageEvent(BeverageFormEvent.BeverageCheckListChanged(preference.id - 1 ,selectedClicked))
+                                                }
+                                            )
+                                        }
                                     }
                                 }
                             }
