@@ -51,7 +51,12 @@ android {
     }
 
     buildTypes {
+        debug {
+            buildConfigField("String", "BASE_URL", "\"https://dev.zipdabang.shop/\"")
+        }
+
         release {
+            buildConfigField("String", "BASE_URL", "\"https://api.zipdabang.shop/\"")
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),

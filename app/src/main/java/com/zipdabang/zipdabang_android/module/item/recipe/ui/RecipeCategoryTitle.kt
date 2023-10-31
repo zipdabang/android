@@ -1,19 +1,13 @@
 package com.zipdabang.zipdabang_android.module.item.recipe.ui
 
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.ripple.rememberRipple
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.font.Font
@@ -333,7 +327,7 @@ fun EveryoneSubtitle() {
 }
 
 @Composable
-fun InfluencerSubtitle() {
+fun BaristaSubtitle() {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -346,7 +340,7 @@ fun InfluencerSubtitle() {
     ) {
         Text(
             text = AnnotatedString(
-                text = "인플루언서",
+                text = "집다방 바리스타",
                 spanStyle = SpanStyle(
                     color = ZipdabangandroidTheme.Colors.Strawberry,
                     fontFamily = FontFamily(Font(R.font.kopubworlddotum_bold)),

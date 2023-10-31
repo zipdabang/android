@@ -1,5 +1,6 @@
 package com.zipdabang.zipdabang_android.module.drawer.di
 
+import com.zipdabang.zipdabang_android.BuildConfig
 import com.zipdabang.zipdabang_android.common.Constants
 import com.zipdabang.zipdabang_android.module.drawer.data.remote.DrawerApi
 import com.zipdabang.zipdabang_android.module.drawer.data.repository.DrawerRepositoryImpl
@@ -20,7 +21,7 @@ object DrawerModule {
     @Singleton
     fun provideDrawerApi() : DrawerApi {
         return Retrofit.Builder()
-            .baseUrl(Constants.BASE_URL)
+            .baseUrl(BuildConfig.BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
             .create(DrawerApi::class.java)

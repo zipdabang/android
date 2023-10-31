@@ -1,5 +1,6 @@
 package com.zipdabang.zipdabang_android.module.sign_up.di
 
+import com.zipdabang.zipdabang_android.BuildConfig
 import com.zipdabang.zipdabang_android.common.Constants
 import com.zipdabang.zipdabang_android.module.sign_up.data.remote.SignUpApi
 import com.zipdabang.zipdabang_android.module.sign_up.data.repository.SignUpRepositoryImpl
@@ -20,7 +21,7 @@ object SignUpModule {
     @Singleton
     fun provideSignupApi() : SignUpApi{
         return Retrofit.Builder()
-            .baseUrl(Constants.BASE_URL)
+            .baseUrl(BuildConfig.BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
             .create(SignUpApi::class.java)

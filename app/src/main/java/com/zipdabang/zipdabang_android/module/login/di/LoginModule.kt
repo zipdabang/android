@@ -1,5 +1,6 @@
 package com.zipdabang.zipdabang_android.module.login.di
 
+import com.zipdabang.zipdabang_android.BuildConfig
 import com.zipdabang.zipdabang_android.common.Constants
 import com.zipdabang.zipdabang_android.module.login.data.AuthApi
 import com.zipdabang.zipdabang_android.module.login.data.AuthRepositoryImpl
@@ -39,7 +40,7 @@ object LoginModule {
         }.build()
 
         return Retrofit.Builder()
-            .baseUrl(Constants.BASE_URL)
+            .baseUrl(BuildConfig.BASE_URL)
             .client(client)
             .addConverterFactory(GsonConverterFactory.create())
             .build()

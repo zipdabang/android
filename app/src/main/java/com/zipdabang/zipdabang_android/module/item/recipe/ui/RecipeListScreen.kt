@@ -1,7 +1,6 @@
 package com.zipdabang.zipdabang_android.module.item.recipe.ui
 
 import android.util.Log
-import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -165,7 +164,7 @@ fun RecipeListScreen(
                             if (it.categoryId == -1 && it.ownerType != null) {
                                 when (it.ownerType) {
                                     OwnerType.OFFICIAL.type -> EveryoneSubtitle()
-                                    OwnerType.BARISTA.type -> InfluencerSubtitle()
+                                    OwnerType.BARISTA.type -> BaristaSubtitle()
                                     OwnerType.USER.type -> OurSubtitle()
                                 }
                             } else if (it.categoryId != null && it.ownerType == null) {
