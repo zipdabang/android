@@ -786,13 +786,13 @@ class AuthSharedViewModel @Inject constructor(
 
         try {
             val result = postInfoUseCase(
-                social = dataStore.data.first().platformStatus.toString(), //social,
+                social = dataStore.data.first().platformStatus.toString(),
                 infoRequest = InfoRequest(
                     email = _email.value,
                     agreeTermsIdList = listOf(stateTermsForm.choiceId),
                     name = stateUserInfoForm.name,
                     birth = stateUserInfoForm.birthday,
-                    phoneNum = stateUserInfoForm.phoneNumber, // 전화번호 여기 주석 풀어
+                    phoneNum = "01012345678", //stateUserInfoForm.phoneNumber, // 전화번호 여기 주석 풀어
                     gender = if (stateUserInfoForm.gender == "남") "1" else "2",
                     //zipCode = stateUserAddressForm.zipCode,
                     //address = stateUserAddressForm.address,
@@ -805,6 +805,25 @@ class AuthSharedViewModel @Inject constructor(
                     serialNumber = dataStore.data.first().deviceNumber.toString()
                 )
             )
+            val social = dataStore.data.first().platformStatus.toString()
+            val infoRequest = InfoRequest(
+                email = _email.value,
+                agreeTermsIdList = listOf(stateTermsForm.choiceId),
+                name = stateUserInfoForm.name,
+                birth = stateUserInfoForm.birthday,
+                phoneNum = "01098764321", //stateUserInfoForm.phoneNumber, // 전화번호 여기 주석 풀어
+                gender = if (stateUserInfoForm.gender == "남") "1" else "2",
+                nickname = stateNicknameForm.nickname,
+                preferBeverages = stateBeverageForm.beverageCheckList.mapIndexedNotNull { index, isSelected ->
+                    if (isSelected) index + 1 else null
+                },
+                fcmToken = dataStore.data.first().fcmToken.toString(),
+                serialNumber = dataStore.data.first().deviceNumber.toString()
+            )
+            val gson = Gson()
+            val json = gson.toJson(infoRequest)
+            Log.e("signup-post", "infoRequest : ${json}")
+            Log.e("signup-post", "social : ${social}")
 
             result.collect { result ->
                 when (result) {
