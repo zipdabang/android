@@ -61,12 +61,16 @@ class SplashViewModel @Inject constructor(
                                 return@apply
                             }
 
-                            getNewToken(
-                                onTokenValid = onTokenValid,
-                                onTokenInvalid = onTokenInvalid,
-                                fcmData = fcmData,
-                                onNotificationClick = onNotificationClick
-                            )
+                            if (result.code == ResponseCode.UNAUTHORIZED_ACCESS_EXPIRED.code) {
+                                getNewToken(
+                                    onTokenValid = onTokenValid,
+                                    onTokenInvalid = onTokenInvalid,
+                                    fcmData = fcmData,
+                                    onNotificationClick = onNotificationClick
+                                )
+                            } else {
+                                onTokenInvalid()
+                            }
                         } else {
                             onTokenInvalid()
                         }
