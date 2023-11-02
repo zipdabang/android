@@ -1,4 +1,5 @@
 /build
 google-services.json
 /.idea/deploymentTargetDropDown.xml
-
+zipdabang_release_key.jks
+../gradle.properties
