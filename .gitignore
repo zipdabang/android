@@ -15,4 +15,5 @@
 local.properties
 app/google-services.json
 /.idea/deploymentTargetDropDown.xml
-
+app/zipdabang_release_key.jks
+gradle.properties

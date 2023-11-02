@@ -1,3 +1,4 @@
+import io.grpc.internal.SharedResourceHolder.release
 import java.util.Properties
 
 plugins {
@@ -50,6 +51,18 @@ android {
         buildConfigField("String", "GOOGLE_WEB_CLIENT_ID", googleWebClientId)*/
     }
 
+    signingConfigs {
+        val storePwd = project.properties["KEYSTORE_PASSWORD"]
+        val keyPwd = project.properties["KEY_PASSWORD"]
+
+        create("release") {
+            storeFile = file("zipdabang_release_key.jks")
+            storePassword = storePwd as String
+            keyAlias = "zipdabang"
+            keyPassword = keyPwd as String
+        }
+    }
+
     buildTypes {
         debug {
             val kakaoNativeAppKey = properties.getProperty("kakao_native_app_key")
@@ -74,6 +87,7 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            signingConfig = signingConfigs.getByName("release")
         }
     }
     compileOptions {
