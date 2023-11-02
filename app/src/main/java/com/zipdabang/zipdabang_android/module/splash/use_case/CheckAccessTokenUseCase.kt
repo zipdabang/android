@@ -31,10 +31,13 @@ class CheckAccessTokenUseCase @Inject constructor(
 
             Log.d("logout tokens", "${tokenDataStore.data.first()}")
 
-            val accessToken = tokenDataStore.data.first().accessToken ?: ""
-            val bearerAccessToken = "Bearer $accessToken"
+            val accessToken = if (tokenDataStore.data.first().accessToken != null) {
+                "Bearer ${tokenDataStore.data.first().accessToken}"
+            } else {
+                null
+            }
 
-            val result = autoLoginRepository.checkAccessToken(accessToken = bearerAccessToken)
+            val result = autoLoginRepository.checkAccessToken(accessToken = accessToken)
             result?.let {
                 emit(Resource.Success(
                     data = it,
