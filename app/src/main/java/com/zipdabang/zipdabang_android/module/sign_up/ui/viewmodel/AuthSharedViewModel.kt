@@ -10,7 +10,11 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
+import com.zipdabang.zipdabang_android.common.Constants.PLATFORM_GOOGLE
+import com.zipdabang.zipdabang_android.common.Constants.PLATFORM_KAKAO
+import com.zipdabang.zipdabang_android.common.Constants.PLATFORM_NONE
 import com.zipdabang.zipdabang_android.common.Resource
+import com.zipdabang.zipdabang_android.core.data_store.proto.CurrentPlatform
 import com.zipdabang.zipdabang_android.core.data_store.proto.ProtoDataViewModel
 import com.zipdabang.zipdabang_android.core.data_store.proto.Token
 import com.zipdabang.zipdabang_android.module.sign_up.data.remote.AuthRequest
@@ -785,8 +789,14 @@ class AuthSharedViewModel @Inject constructor(
         var message = ""
 
         try {
+            val social = when (dataStore.data.first().platformStatus) {
+                CurrentPlatform.KAKAO -> PLATFORM_KAKAO
+                CurrentPlatform.GOOGLE -> PLATFORM_GOOGLE
+                else -> PLATFORM_NONE
+            }
+
             val result = postInfoUseCase(
-                social = dataStore.data.first().platformStatus.toString(),
+                social = social,
                 infoRequest = InfoRequest(
                     email = _email.value,
                     agreeTermsIdList = listOf(stateTermsForm.choiceId),
@@ -805,7 +815,7 @@ class AuthSharedViewModel @Inject constructor(
                     serialNumber = dataStore.data.first().deviceNumber.toString()
                 )
             )
-            val social = dataStore.data.first().platformStatus.toString()
+            // val social = dataStore.data.first().platformStatus.toString()
             val infoRequest = InfoRequest(
                 email = _email.value,
                 agreeTermsIdList = listOf(stateTermsForm.choiceId),
