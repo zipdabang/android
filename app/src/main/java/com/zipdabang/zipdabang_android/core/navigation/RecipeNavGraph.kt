@@ -9,6 +9,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
@@ -16,6 +17,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import androidx.navigation.navigation
 import androidx.paging.compose.collectAsLazyPagingItems
+import com.zipdabang.zipdabang_android.common.rememberLifecycleEvent
 import com.zipdabang.zipdabang_android.core.data_store.proto.CurrentPlatform
 import com.zipdabang.zipdabang_android.module.item.recipe.common.RecipeSort
 import com.zipdabang.zipdabang_android.module.item.recipe.common.RecipeSubtitleState
@@ -113,6 +115,8 @@ fun NavGraphBuilder.RecipeNavGraph(
             val viewModel = hiltViewModel<RecipeListViewModel>()
             val scope = rememberCoroutineScope()
 
+            val lifecycleEvent = rememberLifecycleEvent()
+
             val currentPlatform = viewModel.currentPlatform.value
             val total = viewModel.total.value.toString()
             val sortBy = viewModel.sortBy.collectAsState().value
@@ -122,13 +126,17 @@ fun NavGraphBuilder.RecipeNavGraph(
                 ownerType =  backStackEntry.arguments?.getString("ownerType")
             )
 
-            LaunchedEffect(key1 = true) {
+            LaunchedEffect(key1 = lifecycleEvent) {
                 viewModel.setSortBy("latest")
 
-                if (categoryState.categoryId == -1 && categoryState.ownerType != null) {
-                    viewModel.getOwnerItemCount(categoryState.ownerType)
-                } else {
-                    viewModel.getCategoryItemCount(categoryState.categoryId!!)
+                if (lifecycleEvent == Lifecycle.Event.ON_RESUME) {
+                    if (categoryState.categoryId == -1 && categoryState.ownerType != null) {
+                        viewModel.getOwnerItemCount(categoryState.ownerType)
+                        viewModel.refreshOwnerItems()
+                    } else {
+                        viewModel.getCategoryItemCount(categoryState.categoryId!!)
+                        viewModel.refreshCategoryItems()
+                    }
                 }
             }
 
