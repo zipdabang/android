@@ -37,6 +37,10 @@ class AllRecipeListMediator(
     private val recipeListDao = database.recipeAllDao()
     private val remoteKeyDao = database.recipeRemoteKeyDao()
 
+    override suspend fun initialize(): InitializeAction {
+        return InitializeAction.LAUNCH_INITIAL_REFRESH
+    }
+
     override suspend fun load(
         loadType: LoadType,
         state: PagingState<Int, RecipeAllEntity>

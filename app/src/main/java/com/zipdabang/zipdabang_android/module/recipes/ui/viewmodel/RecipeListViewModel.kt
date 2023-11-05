@@ -83,6 +83,8 @@ class RecipeListViewModel @Inject constructor(
 
     lateinit var categoryItems: Flow<PagingData<RecipeItem>>
     lateinit var ownerItems: Flow<PagingData<RecipeItem>>
+/*    fun isCategoryItemsInitialized() = ::categoryItems.isInitialized
+    fun isOwnerItemsInitialized() = ::ownerItems.isInitialized*/
 
     fun refreshCategoryItems() {
         categoryItems = combine(categoryId, sortBy) { categoryId, sortBy ->
@@ -226,6 +228,7 @@ class RecipeListViewModel @Inject constructor(
      */
 
     init {
+        Log.i("RecipeListScreen", "viewmodel initialized")
         getStatus()
         refreshCategoryItems()
         refreshOwnerItems()
