@@ -9,6 +9,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
@@ -16,6 +17,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import androidx.navigation.navigation
 import androidx.paging.compose.collectAsLazyPagingItems
+import com.zipdabang.zipdabang_android.common.rememberLifecycleEvent
 import com.zipdabang.zipdabang_android.core.data_store.proto.CurrentPlatform
 import com.zipdabang.zipdabang_android.module.item.recipe.common.RecipeSort
 import com.zipdabang.zipdabang_android.module.item.recipe.common.RecipeSubtitleState
@@ -23,7 +25,9 @@ import com.zipdabang.zipdabang_android.module.item.recipe.ui.RecipeListScreen
 import com.zipdabang.zipdabang_android.module.recipes.common.QueryType
 import com.zipdabang.zipdabang_android.module.recipes.ui.RecipeScreen
 import com.zipdabang.zipdabang_android.module.recipes.ui.viewmodel.RecipeListViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 
 
 fun NavGraphBuilder.RecipeNavGraph(
@@ -113,6 +117,8 @@ fun NavGraphBuilder.RecipeNavGraph(
             val viewModel = hiltViewModel<RecipeListViewModel>()
             val scope = rememberCoroutineScope()
 
+            val lifecycleEvent = rememberLifecycleEvent()
+
             val currentPlatform = viewModel.currentPlatform.value
             val total = viewModel.total.value.toString()
             val sortBy = viewModel.sortBy.collectAsState().value
@@ -122,6 +128,13 @@ fun NavGraphBuilder.RecipeNavGraph(
                 ownerType =  backStackEntry.arguments?.getString("ownerType")
             )
 
+            val recipeList = if (categoryState.categoryId == -1 && categoryState.ownerType != null) {
+                viewModel.ownerItems.collectAsLazyPagingItems()
+            } else {
+                viewModel.categoryItems.collectAsLazyPagingItems()
+            }
+
+
             LaunchedEffect(key1 = true) {
                 viewModel.setSortBy("latest")
 
@@ -129,6 +142,18 @@ fun NavGraphBuilder.RecipeNavGraph(
                     viewModel.getOwnerItemCount(categoryState.ownerType)
                 } else {
                     viewModel.getCategoryItemCount(categoryState.categoryId!!)
+                }
+            }
+
+            LaunchedEffect(key1 = lifecycleEvent) {
+                if (lifecycleEvent == Lifecycle.Event.ON_RESUME) {
+                    launch(Dispatchers.Main) {
+                        if (categoryState.categoryId == -1 && categoryState.ownerType != null) {
+                            viewModel.refreshOwnerItems()
+                        } else {
+                            viewModel.refreshCategoryItems()
+                        }
+                    }
                 }
             }
 
@@ -156,11 +181,6 @@ fun NavGraphBuilder.RecipeNavGraph(
                 }
             }
 
-            val recipeList = if (categoryState.categoryId == -1 && categoryState.ownerType != null) {
-                viewModel.ownerItems.collectAsLazyPagingItems()
-            } else {
-                viewModel.categoryItems.collectAsLazyPagingItems()
-            }
 
             val onSortChange = { changedValue: String ->
                 when (changedValue) {

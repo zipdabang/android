@@ -1,51 +1,37 @@
 package com.zipdabang.zipdabang_android.module.recipes.ui.viewmodel
 
 import android.util.Log
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.paging.Pager
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.map
-import androidx.room.withTransaction
-import com.zipdabang.zipdabang_android.common.Resource
-import com.zipdabang.zipdabang_android.common.ResponseCode
 import com.zipdabang.zipdabang_android.core.NetworkConnection
-import com.zipdabang.zipdabang_android.core.Paging3Database
 import com.zipdabang.zipdabang_android.core.data_store.proto.CurrentPlatform
 import com.zipdabang.zipdabang_android.core.data_store.proto.ProtoRepository
 import com.zipdabang.zipdabang_android.module.recipes.common.OwnerType
 import com.zipdabang.zipdabang_android.module.recipes.data.common.RecipeItem
-import com.zipdabang.zipdabang_android.module.recipes.domain.PreferenceToggle
 import com.zipdabang.zipdabang_android.module.recipes.domain.RecipeListRepository
 import com.zipdabang.zipdabang_android.module.recipes.mapper.toRecipeItem
-import com.zipdabang.zipdabang_android.module.recipes.ui.state.PreferenceToggleState
 import com.zipdabang.zipdabang_android.module.recipes.use_case.GetCategoryItemCountUseCase
 import com.zipdabang.zipdabang_android.module.recipes.use_case.GetOwnerItemCountUseCase
 import com.zipdabang.zipdabang_android.module.recipes.use_case.ToggleLikeItemUseCase
-import com.zipdabang.zipdabang_android.module.recipes.use_case.ToggleLikeListUseCase
 import com.zipdabang.zipdabang_android.module.recipes.use_case.ToggleScrapItemUseCase
-import com.zipdabang.zipdabang_android.module.recipes.use_case.ToggleScrapListUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.count
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -95,7 +81,7 @@ class RecipeListViewModel @Inject constructor(
         ownerType.value = owner
     }
 
-    val categoryItems: Flow<PagingData<RecipeItem>> = combine(categoryId, sortBy) { categoryId, sortBy ->
+    var categoryItems: Flow<PagingData<RecipeItem>> = combine(categoryId, sortBy) { categoryId, sortBy ->
         Pair(categoryId, sortBy)
     }.distinctUntilChanged().flatMapLatest { (categoryId, sortBy) ->
         when (categoryId) {
@@ -174,8 +160,89 @@ class RecipeListViewModel @Inject constructor(
         }
     }.cachedIn(viewModelScope)
 
+    fun refreshCategoryItems() {
+        categoryItems = combine(categoryId, sortBy) { categoryId, sortBy ->
+            Pair(categoryId, sortBy)
+        }.distinctUntilChanged().flatMapLatest { (categoryId, sortBy) ->
+            when (categoryId) {
+                0 -> {
+                    val pager = recipeListRepository.getRecipeAllList(sortBy)
+                    pager.flow.map { pagingData ->
+                        pagingData.map {
+                            Log.d(TAG, "$it")
+                            it.toRecipeItem()
+                        }
+                    }.cachedIn(viewModelScope)
+                }
+                1 -> {
+                    val pager = recipeListRepository.getRecipeCoffeeList(sortBy)
+                    pager.flow.map { pagingData ->
+                        pagingData.map {
+                            Log.d(TAG, "$it")
+                            it.toRecipeItem()
+                        }
+                    }.cachedIn(viewModelScope)
+                }
+                2 -> {
+                    val pager = recipeListRepository.getRecipeNonCaffeineList(sortBy)
+                    pager.flow.map { pagingData ->
+                        pagingData.map {
+                            Log.d(TAG, "$it")
+                            it.toRecipeItem()
+                        }
+                    }.cachedIn(viewModelScope)
+                }
+                3 -> {
+                    val pager = recipeListRepository.getRecipeTeaList(sortBy)
+                    pager.flow.map { pagingData ->
+                        pagingData.map {
+                            Log.d(TAG, "$it")
+                            it.toRecipeItem()
+                        }
+                    }.cachedIn(viewModelScope)
+                }
+                4 -> {
+                    val pager = recipeListRepository.getRecipeAdeList(sortBy)
+                    pager.flow.map { pagingData ->
+                        pagingData.map {
+                            Log.d(TAG, "$it")
+                            it.toRecipeItem()
+                        }
+                    }.cachedIn(viewModelScope)
+                }
+                5 -> {
+                    val pager = recipeListRepository.getRecipeSmoothieList(sortBy)
+                    pager.flow.map { pagingData ->
+                        pagingData.map {
+                            Log.d(TAG, "$it")
+                            it.toRecipeItem()
+                        }
+                    }.cachedIn(viewModelScope)
+                }
+                6 -> {
+                    val pager = recipeListRepository.getRecipeFruitList(sortBy)
+                    pager.flow.map { pagingData ->
+                        pagingData.map {
+                            Log.d(TAG, "$it")
+                            it.toRecipeItem()
+                        }
+                    }.cachedIn(viewModelScope)
+                }
+                else -> {
+                    val pager = recipeListRepository.getRecipeWellBeingList(sortBy)
+                    pager.flow.map { pagingData ->
+                        pagingData.map {
+                            Log.d(TAG, "$it")
+                            it.toRecipeItem()
+                        }
+                    }.cachedIn(viewModelScope)
+                }
+            }
+        }
+    }
 
-    val ownerItems : Flow<PagingData<RecipeItem>> = combine(ownerType, sortBy) { ownerType, sortBy ->
+
+    var ownerItems : Flow<PagingData<RecipeItem>> = combine(ownerType, sortBy) { ownerType, sortBy ->
         Pair(ownerType, sortBy)
     }.distinctUntilChanged().flatMapLatest { (ownerType, sortBy) ->
         when (ownerType) {
@@ -208,6 +275,42 @@ class RecipeListViewModel @Inject constructor(
             }
         }
     }.cachedIn(viewModelScope)
+
+    fun refreshOwnerItems() {
+        ownerItems = combine(ownerType, sortBy) { ownerType, sortBy ->
+            Pair(ownerType, sortBy)
+        }.distinctUntilChanged().flatMapLatest { (ownerType, sortBy) ->
+            when (ownerType) {
+                OwnerType.OFFICIAL.type -> {
+                    val pager = recipeListRepository.getZipdabangRecipeList(sortBy)
+                    pager.flow.map { pagingData ->
+                        pagingData.map {
+                            Log.d(TAG, "$it")
+                            it.toRecipeItem()
+                        }
+                    }.cachedIn(viewModelScope)
+                }
+                OwnerType.BARISTA.type -> {
+                    val pager = recipeListRepository.getBaristaRecipeList(sortBy)
+                    pager.flow.map { pagingData ->
+                        pagingData.map {
+                            Log.d(TAG, "$it")
+                            it.toRecipeItem()
+                        }
+                    }.cachedIn(viewModelScope)
+                }
+                else -> {
+                    val pager = recipeListRepository.getUserRecipeList(sortBy)
+                    pager.flow.map { pagingData ->
+                        pagingData.map {
+                            Log.d(TAG, "$it")
+                            it.toRecipeItem()
+                        }
+                    }.cachedIn(viewModelScope)
+                }
+            }
+        }
+    }
 
 
 
