@@ -7,6 +7,8 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Matrix
+import android.media.ExifInterface
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
@@ -70,6 +72,7 @@ import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.ByteArrayOutputStream
 import java.io.File
+import java.io.IOException
 import java.io.InputStream
 
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
@@ -126,7 +129,40 @@ fun ErrorReportScreen(
             } else {
                 Log.e("Error in camera","error")
             }
+
         }
+    //사진 회전 정보 알아내는 함수
+    @RequiresApi(Build.VERSION_CODES.N)
+    fun getOrientationOfImage(uri: Uri): Int {
+        // uri -> inputStream
+        val inputStream = context.contentResolver.openInputStream(uri)
+        val exif: ExifInterface? = try {
+            ExifInterface(inputStream!!)
+        } catch (e: IOException) {
+            e.printStackTrace()
+            return -1
+        }
+        inputStream.close()
+
+        // 회전된 각도 알아내기
+        val orientation = exif?.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL)
+        if (orientation != -1) {
+            when (orientation) {
+                ExifInterface.ORIENTATION_ROTATE_90 -> return 90
+                ExifInterface.ORIENTATION_ROTATE_180 -> return 180
+                ExifInterface.ORIENTATION_ROTATE_270 -> return 270
+            }
+        }
+        return 0
+    }
+
+    fun getRotatedBitmap(bitmap: Bitmap?, degrees: Float): Bitmap? {
+        if (bitmap == null) return null
+        if (degrees == 0F) return bitmap
+        val m = Matrix()
+        m.setRotate(degrees, bitmap.width.toFloat() / 2, bitmap.height.toFloat() / 2)
+        return Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, m, true)
+    }
 
     val takePhotoFromAlbumIntent =
         Intent(Intent.ACTION_GET_CONTENT, MediaStore.Images.Media.EXTERNAL_CONTENT_URI).apply {
@@ -151,10 +187,13 @@ fun ErrorReportScreen(
                         it
                     )
                 }
+                val rotateInfo = getOrientationOfImage(gallaryUri!!).toFloat()
                 val  bitmap = BitmapFactory.decodeStream(inputSteam)
+                val rotateBitmap = getRotatedBitmap(bitmap,rotateInfo)
                 val byteOutputStream = ByteArrayOutputStream()
-                bitmap.compress(Bitmap.CompressFormat.JPEG,10,byteOutputStream)
-                photoBitmap.add(bitmap)
+
+                rotateBitmap?.compress(Bitmap.CompressFormat.JPEG,10,byteOutputStream)
+                photoBitmap.add(rotateBitmap)
                 val requestBody : RequestBody = byteOutputStream.toByteArray()
                     .toRequestBody(
                         "image/jpeg".toMediaTypeOrNull()
@@ -173,6 +212,8 @@ fun ErrorReportScreen(
 
         }
     }
+
+
 
     // 권한이 없을 경우 실행할 launcher 정의
     val launcherMultiplePermissions = rememberLauncherForActivityResult(
