@@ -42,6 +42,13 @@ android {
                 arg("room.schemaLocation", "$projectDir/schemas")
             }
         }
+
+/*        val kakaoNativeAppKey = properties.getProperty("kakao_native_app_key")
+        val kakaoOauthHost = properties.getProperty("kakao_oauth_host")
+        val googleWebClientId = properties.getProperty("google_web_client_id")
+        buildConfigField("String", "KAKAO_NATIVE_APP_KEY", kakaoNativeAppKey)
+        resValue("string", "kakao_oauth_host", kakaoOauthHost)
+        buildConfigField("String", "GOOGLE_WEB_CLIENT_ID", googleWebClientId)*/
     }
 
     signingConfigs {

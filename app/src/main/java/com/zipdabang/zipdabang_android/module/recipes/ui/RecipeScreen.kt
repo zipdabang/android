@@ -8,7 +8,6 @@ import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -19,13 +18,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.Lifecycle
 import androidx.navigation.NavController
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.rememberPagerState
 import com.zipdabang.zipdabang_android.R
 import com.zipdabang.zipdabang_android.common.TabItem
-import com.zipdabang.zipdabang_android.common.rememberLifecycleEvent
 import com.zipdabang.zipdabang_android.core.data_store.proto.CurrentPlatform
 import com.zipdabang.zipdabang_android.core.navigation.AUTH_ROUTE
 import com.zipdabang.zipdabang_android.core.navigation.SharedScreen
@@ -60,16 +57,6 @@ fun RecipeScreen(
 
     val viewModel = hiltViewModel<RecipeMainViewModel>()
     val hotRecipeViewModel = hiltViewModel<HotRecipeViewModel>()
-
-    val lifecycleEvent = rememberLifecycleEvent()
-
-    LaunchedEffect(key1 = lifecycleEvent) {
-        if (lifecycleEvent == Lifecycle.Event.ON_RESUME) {
-            (0..7).forEach {
-                hotRecipeViewModel.getHotRecipesByCategory(it)
-            }
-        }
-    }
 
     val hotAllRecipes = hotRecipeViewModel.hotAllRecipeState.value
     val hotCoffeeRecipes = hotRecipeViewModel.hotCoffeeRecipeState.value

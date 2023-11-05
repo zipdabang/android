@@ -42,11 +42,11 @@ class HotRecipeViewModel @Inject constructor(
     private val _hotAllRecipeState = mutableStateOf(UiState<List<HotRecipeItem>>())
     val hotAllRecipeState: State<UiState<List<HotRecipeItem>>> = _hotAllRecipeState
 
-    /*init {
+    init {
         (0..7).forEach {
             getHotRecipesByCategory(it)
         }
-    }*/
+    }
 
     fun getHotRecipesByCategory(categoryId: Int) {
         getHotRecipesByCategoryUseCase(categoryId).onEach { result ->
