@@ -281,11 +281,11 @@ fun RecipeWriteScreen(
         return 0
     }
     // 이미지를 회전시키는 함수
-    fun rotateBitmap(bitmap: Bitmap, degrees : Int) : Bitmap{
-//        val matrix = Matrix()
-//        matrix.postRotate(degrees.toFloat())
-//        return Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
-    }
+    /*fun rotateBitmap(bitmap: Bitmap, degrees : Int) : Bitmap{
+        val matrix = Matrix()
+        matrix.postRotate(degrees.toFloat())
+        return Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
+    }*/
 
     // thumbnail
     // 갤러리 -> Uri 형태
