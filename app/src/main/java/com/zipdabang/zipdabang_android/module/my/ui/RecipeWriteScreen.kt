@@ -89,6 +89,8 @@ import java.io.FileOutputStream
 import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
+import android.graphics.Matrix
+import com.zipdabang.zipdabang_android.module.my.ui.viewmodel.MyRecipesViewModel
 
 
 @SuppressLint("CoroutineCreationDuringComposition")
@@ -100,6 +102,7 @@ fun RecipeWriteScreen(
     onClickBack: () -> Unit,
     onClickNextTimeInEdit : ()->Unit,
     recipeWriteViewModel: RecipeWriteViewModel = hiltViewModel(),
+    myRecipesViewModel : MyRecipesViewModel = hiltViewModel(),
     onClickViewRecipe: (Int) -> Unit
 ) {
     // logic 관련
@@ -223,9 +226,6 @@ fun RecipeWriteScreen(
         mutableStateListOf<Int>()
     }
 
-
-
-
     /* fun bitmapToUri(context: Context, bitmap: Bitmap): Uri? {
         val imagesDir = File(context.cacheDir, "images")
         if (!imagesDir.exists()) {
@@ -281,11 +281,11 @@ fun RecipeWriteScreen(
         return 0
     }
     // 이미지를 회전시키는 함수
-    /*fun rotateBitmap(bitmap: Bitmap, degrees : Int) : Bitmap{
+    fun rotateBitmap(bitmap: Bitmap, degrees : Int) : Bitmap{
         val matrix = Matrix()
         matrix.postRotate(degrees.toFloat())
         return Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
-    }*/
+    }
 
     // thumbnail
     // 갤러리 -> Uri 형태
@@ -297,13 +297,19 @@ fun RecipeWriteScreen(
                 // 프론트 측에서 thumbnail 변경
                 recipeWriteViewModel.onRecipeWriteFormEvent(RecipeWriteFormEvent.ThumbnailChanged(uri))
 
+                val orientation = getExifOrientation(uri.path!!)
                 val inputStream: InputStream? = context.contentResolver?.openInputStream(uri) // 이미지에 대한 입력 스트림을 염
                 val bitmap = BitmapFactory.decodeStream(inputStream) //uri -> bitmap 변환
-
+                val rotatedBitmap = if (orientation != 0) {
+                    rotateBitmap(bitmap, orientation)
+                } else {
+                    bitmap
+                }
                 val byteOutputStream = ByteArrayOutputStream() // 이미지를 바이트 배열로 저장하기 위한 용도로 사용됨
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 10, byteOutputStream) //비트맵을 JPEG 형식으로 압축하고, 압축된 이미지를 byteOutPutStream에 저장함
+                // bitmap.compress(Bitmap.CompressFormat.JPEG, 10, byteOutputStream)
+                rotatedBitmap.compress(Bitmap.CompressFormat.JPEG, 10, byteOutputStream) //비트맵을 JPEG 형식으로 압축하고, 압축된 이미지를 byteOutPutStream에 저장함
 
-                thumbnailPhotoBitmap = bitmap
+                thumbnailPhotoBitmap = rotatedBitmap
 
                 // 압축된 이미지를 바이트 배열로 변환
                 val thumbnailRequestBody: RequestBody = byteOutputStream.toByteArray().toRequestBody("image/jpeg".toMediaTypeOrNull())
@@ -1161,15 +1167,24 @@ fun RecipeWriteScreen(
                     // 임시저장한 레시피일 경우
                     if(tempRecipeApiCalled > 0){
                         CoroutineScope(Dispatchers.Main).launch {
-                            recipeWriteViewModel.postTempRecipeToTemp(tempId!!, stepImageParts.toList(), stepImageAddNum)
+                            val success = recipeWriteViewModel.postTempRecipeToTemp(tempId!!, stepImageParts.toList(), stepImageAddNum)
+                            if(success) {
+                                val successGetTemp = myRecipesViewModel.getTempRecipeItems()
+                                if(successGetTemp){
+                                    onClickBack()
+                                }
+                            }
                         }
                     }
                     else{
                         CoroutineScope(Dispatchers.Main).launch {
                             recipeWriteViewModel.postRecipeWriteTemp(stepImageParts = stepImageParts.toList())
+                            val successGetTemp = myRecipesViewModel.getTempRecipeItems()
+                            if (successGetTemp){
+                                onClickBack()
+                            }
                         }
                     }
-                    onClickBack()
                     recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.SaveChanged(false))
                 }
             )
@@ -1250,7 +1265,8 @@ fun RecipeWriteScreen(
                 },
                 onLater = {
                     recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.UploadCompleteChanged(false))
-                    onClickBack()
+                    val success = myRecipesViewModel.getTempRecipeItems()
+                    if (success) onClickBack()
                 }
             )
         }

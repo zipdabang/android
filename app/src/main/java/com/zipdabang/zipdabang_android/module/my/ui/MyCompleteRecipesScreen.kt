@@ -43,7 +43,7 @@ fun MyCompleteRecipesScreen(
     val showDialogSave = remember { mutableStateOf(false) }
     var recipeId = remember { mutableStateOf(0) }
 
-    LaunchedEffect(key1 = true ){
+    LaunchedEffect(key1 = true){
         viewModel.getCompleteRecipeItems()
     }
     //Log.e("my_completerecipes_itemCount", completeRecipeItems.itemCount.toString())
