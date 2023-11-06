@@ -31,8 +31,10 @@ import com.zipdabang.zipdabang_android.module.drawer.ui.state.userinfo.UserInfoP
 import com.zipdabang.zipdabang_android.module.drawer.ui.viewmodel.DrawerUserInfoViewModel
 import com.zipdabang.zipdabang_android.ui.component.AppBarSignUp
 import com.zipdabang.zipdabang_android.ui.component.MainAndSubTitle
+import com.zipdabang.zipdabang_android.ui.component.PrimaryButtonForSignup
 import com.zipdabang.zipdabang_android.ui.component.PrimaryButtonOutLined
 import com.zipdabang.zipdabang_android.ui.component.PrimaryButtonWithStatus
+import com.zipdabang.zipdabang_android.ui.component.PrimaryButtonWithStatusForSignup
 import com.zipdabang.zipdabang_android.ui.component.RoundedButton
 import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
 import kotlinx.coroutines.CoroutineScope
@@ -150,8 +152,7 @@ fun UserInfoPreferencesScreen(
                 Box(
                     modifier = Modifier.weight(1f)
                 ){
-                    PrimaryButtonOutLined(
-                        borderColor = ZipdabangandroidTheme.Colors.Strawberry,
+                    PrimaryButtonForSignup(
                         text= stringResource(id = R.string.drawer_cancel),
                         onClick={
                             onClickCancel()
@@ -161,7 +162,7 @@ fun UserInfoPreferencesScreen(
                 Box(
                     modifier = Modifier.weight(1f)
                 ){
-                    PrimaryButtonWithStatus(
+                    PrimaryButtonWithStatusForSignup(
                         isFormFilled = stateUserInfoPreferences.btnEnabled,
                         text= stringResource(if(stateUserInfo.preferBeverageList.size == 0) R.string.drawer_choosedone else R.string.drawer_editdone),
                         onClick={

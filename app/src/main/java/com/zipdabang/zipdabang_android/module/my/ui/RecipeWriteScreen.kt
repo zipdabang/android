@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.media.ExifInterface
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
@@ -97,6 +98,7 @@ fun RecipeWriteScreen(
     tempId : Int?,
     recipeId : Int?,
     onClickBack: () -> Unit,
+    onClickNextTimeInEdit : ()->Unit,
     recipeWriteViewModel: RecipeWriteViewModel = hiltViewModel(),
     onClickViewRecipe: (Int) -> Unit
 ) {
@@ -220,27 +222,11 @@ fun RecipeWriteScreen(
     val stepImageAddNum = remember {
         mutableStateListOf<Int>()
     }
-    // 요청할 권한들에 대한 배열
-    val permissions = arrayOf(
-        Manifest.permission.CAMERA, // 카메라
-        Manifest.permission.READ_MEDIA_IMAGES, // 갤러리
-    )
-    // 권한이 없을 경우 실행할 launcher 정의
-    val launcherMultiplePermissions = rememberLauncherForActivityResult(
-        ActivityResultContracts.RequestMultiplePermissions()
-    ){ permissionsMap ->
-        val areGranted = permissionsMap.values.reduce { acc, next -> acc&&next }
-
-        if(areGranted) {
-            Log.d("권한","권한이 동의되었습니다.")
-        } else{
-            Log.d("권한","권한이 거부되었습니다.")
-        }
-    }
 
 
 
-    fun bitmapToUri(context: Context, bitmap: Bitmap): Uri? {
+
+    /* fun bitmapToUri(context: Context, bitmap: Bitmap): Uri? {
         val imagesDir = File(context.cacheDir, "images")
         if (!imagesDir.exists()) {
             imagesDir.mkdirs()
@@ -258,6 +244,47 @@ fun RecipeWriteScreen(
             throw e
         }
 
+    }*/
+
+    // 요청할 권한들에 대한 배열
+    val permissions = arrayOf(
+        Manifest.permission.CAMERA, // 카메라
+        Manifest.permission.READ_MEDIA_IMAGES, // 갤러리
+    )
+    // 권한이 없을 경우 실행할 launcher 정의
+    val launcherMultiplePermissions = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestMultiplePermissions()
+    ){ permissionsMap ->
+        val areGranted = permissionsMap.values.reduce { acc, next -> acc&&next }
+
+        if(areGranted) {
+            Log.d("권한","권한이 동의되었습니다.")
+        } else{
+            Log.d("권한","권한이 거부되었습니다.")
+        }
+    }
+    // 이미지의 Exif 정보를 확인하고 회전 각도를 반환하는 함수
+    fun getExifOrientation(filePath : String) : Int{
+        try{
+            val exif = ExifInterface(filePath)
+            val orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL)
+
+            return when(orientation){
+                ExifInterface.ORIENTATION_ROTATE_90 -> 90
+                ExifInterface.ORIENTATION_ROTATE_180 -> 180
+                ExifInterface.ORIENTATION_ROTATE_270 -> 270
+                else -> 0
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        return 0
+    }
+    // 이미지를 회전시키는 함수
+    fun rotateBitmap(bitmap: Bitmap, degrees : Int) : Bitmap{
+//        val matrix = Matrix()
+//        matrix.postRotate(degrees.toFloat())
+//        return Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
     }
 
     // thumbnail
@@ -272,6 +299,7 @@ fun RecipeWriteScreen(
 
                 val inputStream: InputStream? = context.contentResolver?.openInputStream(uri) // 이미지에 대한 입력 스트림을 염
                 val bitmap = BitmapFactory.decodeStream(inputStream) //uri -> bitmap 변환
+
                 val byteOutputStream = ByteArrayOutputStream() // 이미지를 바이트 배열로 저장하기 위한 용도로 사용됨
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 10, byteOutputStream) //비트맵을 JPEG 형식으로 압축하고, 압축된 이미지를 byteOutPutStream에 저장함
 
@@ -316,8 +344,6 @@ fun RecipeWriteScreen(
                 Log.e("Error in camera","error")
             }
         }
-
-
 
     // step
     // 갤러리 -> Uri 형태
@@ -1241,7 +1267,7 @@ fun RecipeWriteScreen(
                 },
                 onLater = {
                     recipeWriteViewModel.onRecipeWriteDialogEvent(RecipeWriteDialogEvent.EditCompleteChanged(false))
-                    onClickBack()
+                    onClickNextTimeInEdit()
                 }
             )
         }

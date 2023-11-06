@@ -2,6 +2,7 @@ package com.zipdabang.zipdabang_android.module.drawer.ui
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -16,9 +17,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -69,26 +72,41 @@ fun NoticeScreen(
                 containerColor = Color.White,
                 contentColor = Color.Black,
                 content = {
-                    LazyColumn(
-                        modifier = Modifier
-                            .background(Color.White)
-                            .padding(
-                                top = it.calculateTopPadding(),
+                    if(noticeList.size == 0){
+                        Column(
+                            modifier = Modifier.fillMaxSize(),
+                            verticalArrangement = Arrangement.Center,
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ){
+                            androidx.compose.material3.Text(
+                                textAlign = TextAlign.Center,
+                                text = "공지사항 및 이벤트가 없습니다.",
+                                style = ZipdabangandroidTheme.Typography.fourteen_300,
+                                color = ZipdabangandroidTheme.Colors.Typo
                             )
-                            .fillMaxSize()
-
-                    ) {
-                        if (noticeState.value.isSuccess) {
-                            items(noticeList.size) {
-                                Column {
-                                    NoticeItem(
-                                        title = noticeList[it].title,
-                                        createdAt = noticeList[it].createdAt,
-                                        isNotice = true)
-                                    Divider(
-                                        modifier = Modifier.fillMaxWidth(),
-                                        color = ZipdabangandroidTheme.Colors.Typo.copy(0.2f),
-                                    )
+                        }
+                    }
+                    else{
+                        LazyColumn(
+                            modifier = Modifier
+                                .background(Color.White)
+                                .padding(
+                                    top = it.calculateTopPadding(),
+                                )
+                                .fillMaxSize()
+                        ) {
+                            if (noticeState.value.isSuccess) {
+                                items(noticeList.size) {
+                                    Column {
+                                        NoticeItem(
+                                            title = noticeList[it].title,
+                                            createdAt = noticeList[it].createdAt,
+                                            isNotice = true)
+                                        Divider(
+                                            modifier = Modifier.fillMaxWidth(),
+                                            color = ZipdabangandroidTheme.Colors.Typo.copy(0.2f),
+                                        )
+                                    }
                                 }
                             }
                         }

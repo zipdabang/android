@@ -34,8 +34,10 @@ import com.zipdabang.zipdabang_android.module.drawer.ui.state.userinfo.UserInfoB
 import com.zipdabang.zipdabang_android.module.sign_up.ui.state.UserInfoFormEvent
 import com.zipdabang.zipdabang_android.ui.component.AppBarSignUp
 import com.zipdabang.zipdabang_android.ui.component.MainAndSubTitle
+import com.zipdabang.zipdabang_android.ui.component.PrimaryButtonForSignup
 import com.zipdabang.zipdabang_android.ui.component.PrimaryButtonOutLined
 import com.zipdabang.zipdabang_android.ui.component.PrimaryButtonWithStatus
+import com.zipdabang.zipdabang_android.ui.component.PrimaryButtonWithStatusForSignup
 import com.zipdabang.zipdabang_android.ui.component.RadioGroupHorizontal
 import com.zipdabang.zipdabang_android.ui.component.TextFieldError
 import com.zipdabang.zipdabang_android.ui.component.TextFieldErrorAndCorrect
@@ -309,8 +311,7 @@ fun UserInfoBasicScreen(
                 Box(
                     modifier = Modifier.weight(1f)
                 ){
-                    PrimaryButtonOutLined(
-                        borderColor = ZipdabangandroidTheme.Colors.Strawberry,
+                    PrimaryButtonForSignup(
                         text= stringResource(id = R.string.drawer_cancel),
                         onClick={
                             onClickCancel()
@@ -320,7 +321,7 @@ fun UserInfoBasicScreen(
                 Box(
                     modifier = Modifier.weight(1f)
                 ){
-                    PrimaryButtonWithStatus(
+                    PrimaryButtonWithStatusForSignup(
                         isFormFilled = stateUserInfoBasic.btnEnabled,
                         text= stringResource(id = R.string.drawer_editdone),
                         onClick={

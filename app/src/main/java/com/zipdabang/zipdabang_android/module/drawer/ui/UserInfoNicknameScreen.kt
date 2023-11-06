@@ -27,8 +27,10 @@ import com.zipdabang.zipdabang_android.R
 import com.zipdabang.zipdabang_android.module.drawer.ui.viewmodel.DrawerUserInfoViewModel
 import com.zipdabang.zipdabang_android.module.drawer.ui.state.userinfo.UserInfoNicknameEvent
 import com.zipdabang.zipdabang_android.ui.component.AppBarSignUp
+import com.zipdabang.zipdabang_android.ui.component.PrimaryButtonForSignup
 import com.zipdabang.zipdabang_android.ui.component.PrimaryButtonOutLined
 import com.zipdabang.zipdabang_android.ui.component.PrimaryButtonWithStatus
+import com.zipdabang.zipdabang_android.ui.component.PrimaryButtonWithStatusForSignup
 import com.zipdabang.zipdabang_android.ui.component.TextFieldErrorAndCorrectIcon
 import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
 import kotlinx.coroutines.CoroutineScope
@@ -125,8 +127,7 @@ fun UserInfoNicknameScreen(
                 Box(
                     modifier = Modifier.weight(1f)
                 ){
-                    PrimaryButtonOutLined(
-                        borderColor = ZipdabangandroidTheme.Colors.Strawberry,
+                    PrimaryButtonForSignup(
                         text= stringResource(id = R.string.drawer_cancel),
                         onClick={
                             onClickCancel()
@@ -136,7 +137,7 @@ fun UserInfoNicknameScreen(
                 Box(
                     modifier = Modifier.weight(1f)
                 ){
-                    PrimaryButtonWithStatus(
+                    PrimaryButtonWithStatusForSignup(
                         isFormFilled = stateUserInfoNickname.btnEnabled,
                         text= stringResource(id = R.string.drawer_editdone),
                         onClick={

@@ -297,6 +297,40 @@ fun PrimaryButtonWithStatusForSignup(
 }
 
 @Composable
+fun PrimaryButtonForSignup(
+    text: String,
+    onClick: () -> Unit,
+) {
+    val colors = ZipdabangandroidTheme.Colors
+
+    Button(
+        onClick = onClick,
+        shape = ZipdabangandroidTheme.Shapes.thin,
+        modifier = Modifier
+            .fillMaxWidth(),
+        border = BorderStroke(1.dp, colors.Strawberry.copy(alpha = 1f)),
+        colors = ButtonDefaults.buttonColors(
+            containerColor = Color.White,
+            disabledContainerColor = Color.White
+        ),
+    ) {
+        Box(
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = text,
+                textAlign = TextAlign.Center,
+                color = colors.Typo,
+                maxLines = 1,
+                modifier = Modifier,
+                fontFamily = FontFamily(Font(R.font.kopubworlddotum_medium))
+            )
+        }
+
+    }
+}
+
+@Composable
 fun LoginButton(
     icon: Int,
     text: String,
