@@ -70,9 +70,6 @@ class MyRecipesViewModel @OptIn(ExperimentalPagingApi::class)
     val completeRecipeWithImgItems = _completeRecipeWithImgItems
 
 
-
-
-    @OptIn(ExperimentalPagingApi::class)
     fun getCompleteRecipeItems(){
         viewModelScope.launch {
             completeRecipesRepository.getCompleteRecipeItems().cachedIn(viewModelScope).collect{
@@ -81,12 +78,13 @@ class MyRecipesViewModel @OptIn(ExperimentalPagingApi::class)
         }
     }
 
-    fun getTempRecipeItems(){
+    fun getTempRecipeItems() : Boolean {
         viewModelScope.launch {
             tempRecipesRepository.getTempRecipeItems().cachedIn(viewModelScope).collect{
                 _tempRecipeItems.value = it
             }
         }
+        return true
     }
 
     @OptIn(ExperimentalPagingApi::class)
