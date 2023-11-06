@@ -698,38 +698,19 @@ class DrawerUserInfoViewModel @Inject constructor(
                             btnEnabled = false
                         )
                     }
-                    Log.e("nickname-viewmodel", "${result.message} ${result.code} ${result.data}")
                 }
 
                 is Resource.Error -> {
-                    if (result?.data?.code ?: 0 == 4069) { //닉네임 비속어
-                        stateUserInfoNickname = stateUserInfoNickname.copy(
-                            nickname = stateUserInfoNickname.nickname,
-                            isTried = true,
-                            isSuccess = false,
-                            isError = true,
-                            errorMessage = "닉네임에 비속어가 포함되어 있습니다.",
-                            btnEnabled = false,
-                            error = result.message ?: "An unexpeted error occured"
-                        )
-                    }
-                    else if (result?.data?.code ?: 0 == 4070){ //닉네임 불가능
-                        stateUserInfoNickname = stateUserInfoNickname.copy(
-                            nickname = stateUserInfoNickname.nickname,
-                            isTried = true,
-                            isSuccess = false,
-                            isError = true,
-                            errorMessage = "사용할 수 없는 닉네임입니다.",
-                            btnEnabled = false,
-                            error = result.message ?: "An unexpeted error occured"
-                        )
-                    }
-                    else{
-                        stateUserInfoNickname = stateUserInfoNickname.copy(
-                            nickname = stateUserInfoNickname.nickname,
-                            error = result.message ?: "An unexpeted error occured"
-                        )
-                    }
+                    stateUserInfoNickname = stateUserInfoNickname.copy(
+                        nickname = stateUserInfoNickname.nickname,
+                        isTried = true,
+                        isSuccess = false,
+                        isError = true,
+                        errorMessage = result.message ?: "",
+                        btnEnabled = false,
+                        error = result.message ?: "An unexpeted error occured"
+                    )
+                    Log.e("nickname-viewmodel", "${result.message} ${result.data?.code} ${result.data}")
                 }
 
                 is Resource.Loading -> {

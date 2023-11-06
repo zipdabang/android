@@ -1,5 +1,6 @@
 package com.zipdabang.zipdabang_android.module.drawer.ui
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -35,6 +36,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.zipdabang.zipdabang_android.R
+import com.zipdabang.zipdabang_android.common.checkAndRequestPermissions
 import com.zipdabang.zipdabang_android.module.drawer.ui.viewmodel.DrawerUserInfoViewModel
 import com.zipdabang.zipdabang_android.module.my.ui.state.myrecipe.write.RecipeWriteFormEvent
 import com.zipdabang.zipdabang_android.ui.component.AppBarSignUp
@@ -69,6 +71,24 @@ fun UserInfoProfileScreen(
     var profile by mutableStateOf<MultipartBody.Part?>(null)
     var profileDialog = mutableStateOf(false)
 
+
+    // 요청할 권한들에 대한 배열
+    val permissions = arrayOf(
+        Manifest.permission.CAMERA, // 카메라
+        Manifest.permission.READ_MEDIA_IMAGES, // 갤러리
+    )
+    // 권한이 없을 경우 실행할 launcher 정의
+    val launcherMultiplePermissions = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestMultiplePermissions()
+    ){ permissionsMap ->
+        val areGranted = permissionsMap.values.reduce { acc, next -> acc&&next }
+
+        if(areGranted) {
+            Log.d("권한","권한이 동의되었습니다.")
+        } else{
+            Log.d("권한","권한이 거부되었습니다.")
+        }
+    }
 
     // thumbnail
     // 갤러리 -> Uri 형태
@@ -212,12 +232,26 @@ fun UserInfoProfileScreen(
                                     profileDialog.value = it
                                 },
                                 onCameraClick = {
-                                    takeThumbnailFromCameraLauncher.launch()
-                                    profileDialog.value = false
+                                    checkAndRequestPermissions(
+                                        context,
+                                        permissions,
+                                        launcherMultiplePermissions,
+                                        isPermissionExist = {
+                                            takeThumbnailFromCameraLauncher.launch()
+                                            profileDialog.value = false
+                                        }
+                                    )
                                 },
                                 onFileClick = {
-                                    takeThumbnailFromAlbumLauncher.launch("image/*")
-                                    profileDialog.value = false
+                                    checkAndRequestPermissions(
+                                        context,
+                                        permissions,
+                                        launcherMultiplePermissions,
+                                        isPermissionExist = {
+                                            takeThumbnailFromAlbumLauncher.launch("image/*")
+                                            profileDialog.value = false
+                                        }
+                                    )
                                 }
                             )
                         }

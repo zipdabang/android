@@ -222,7 +222,7 @@ fun NavGraphBuilder.MyNavGraph(
                 tempId = 0,
                 recipeId = recipeId,
                 onClickBack = {
-                    navController.popBackStack()
+                    navController.navigateUp()
                 },
                 onClickViewRecipe = {recipeId ->
                     navController.navigate(
@@ -233,6 +233,10 @@ fun NavGraphBuilder.MyNavGraph(
                         }
                         launchSingleTop = true
                     }
+                },
+                onClickNextTimeInEdit = {
+                    navController.popBackStack()
+                    navController.popBackStack()
                 }
             )
         }
@@ -253,7 +257,7 @@ fun NavGraphBuilder.MyNavGraph(
                 tempId = tempId,
                 recipeId = null,
                 onClickBack = {
-                    navController.navigateUp()//popBackStack(MyScreen.Myrecipe.route, inclusive = false)
+                    navController.navigateUp()
                 },
                 onClickViewRecipe = { recipeId ->
                     navController.navigate(
@@ -264,7 +268,8 @@ fun NavGraphBuilder.MyNavGraph(
                         }
                         launchSingleTop = true
                     }
-                }
+                },
+                onClickNextTimeInEdit = { }
             )
         }
 

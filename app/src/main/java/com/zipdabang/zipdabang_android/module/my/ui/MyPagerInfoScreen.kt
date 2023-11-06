@@ -200,7 +200,7 @@ fun MyPagerInfoScreen(
         // 공지사항 및 이벤트/ 알림/ 나의 문의내역
         Column(
             modifier = Modifier
-                .height(160.dp)
+                .height(112.dp) //height.(160.dp)
                 .fillMaxWidth()
                 .padding(16.dp, 20.dp, 16.dp, 0.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp)
@@ -239,7 +239,7 @@ fun MyPagerInfoScreen(
                 modifier = Modifier.fillMaxWidth(),
                 color = ZipdabangandroidTheme.Colors.Typo.copy(0.2f),
             )
-            Column(
+            /*Column(
                 modifier = Modifier
                     .fillMaxWidth()
                     .weight(1f)
@@ -273,7 +273,7 @@ fun MyPagerInfoScreen(
             Divider(
                 modifier = Modifier.fillMaxWidth(),
                 color = ZipdabangandroidTheme.Colors.Typo.copy(0.2f),
-            )
+            )*/
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
