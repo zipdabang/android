@@ -15,14 +15,18 @@ import androidx.paging.cachedIn
 import com.zipdabang.zipdabang_android.common.Resource
 import com.zipdabang.zipdabang_android.core.Paging3Database
 import com.zipdabang.zipdabang_android.module.my.data.remote.otherinfo.OtherRecipe
+import com.zipdabang.zipdabang_android.module.recipes.use_case.ToggleLikeItemUseCase
+import com.zipdabang.zipdabang_android.module.recipes.use_case.ToggleScrapItemUseCase
 import com.zipdabang.zipdabang_android.module.search.data.dto.common.SearchRecipe
 import com.zipdabang.zipdabang_android.module.search.data.dto.recipecategory.PagingSearchRepository
 import com.zipdabang.zipdabang_android.module.search.domain.usecase.GetSearchCountUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
@@ -30,7 +34,9 @@ class SearchCategoryViewModel @OptIn(ExperimentalPagingApi::class)
 @Inject constructor(
     private val repository: PagingSearchRepository,
     private val savedStateHandle: SavedStateHandle,
-    private val countUseCase: GetSearchCountUseCase
+    private val countUseCase: GetSearchCountUseCase,
+    private val toggleLikeItemUseCase: ToggleLikeItemUseCase,
+    private val toggleScrapItemUseCase: ToggleScrapItemUseCase
 ): ViewModel(){
 
     private var _categoryId = mutableStateOf(0)
@@ -94,6 +100,14 @@ class SearchCategoryViewModel @OptIn(ExperimentalPagingApi::class)
                 _recipeList.value = it
             }
         }
+    }
+
+    suspend fun toggleItemLike(recipeId: Int): Boolean = withContext(Dispatchers.IO) {
+        toggleLikeItemUseCase(recipeId)
+    }
+
+    suspend fun toggleItemScrap(recipeId: Int): Boolean = withContext(Dispatchers.IO) {
+            toggleScrapItemUseCase(recipeId)
     }
 
 

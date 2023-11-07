@@ -20,6 +20,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -32,6 +33,9 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.zipdabang.zipdabang_android.R
+import com.zipdabang.zipdabang_android.core.data_store.proto.CurrentPlatform
+import com.zipdabang.zipdabang_android.core.data_store.proto.ProtoDataViewModel
+import com.zipdabang.zipdabang_android.core.data_store.proto.Token
 import com.zipdabang.zipdabang_android.core.navigation.MyScreen
 import com.zipdabang.zipdabang_android.core.navigation.SharedScreen
 import com.zipdabang.zipdabang_android.module.guide.ui.HomeBanner.GuideBannerSlider
@@ -44,9 +48,11 @@ import com.zipdabang.zipdabang_android.module.recipes.ui.viewmodel.RecipeMainVie
 import com.zipdabang.zipdabang_android.ui.component.AppBarHome
 import com.zipdabang.zipdabang_android.ui.component.Banner
 import com.zipdabang.zipdabang_android.ui.component.GroupHeaderReversedNoIcon
+import com.zipdabang.zipdabang_android.ui.component.LoginRequestDialog
 import com.zipdabang.zipdabang_android.ui.component.ModalDrawer
 import com.zipdabang.zipdabang_android.ui.component.Notice
 import com.zipdabang.zipdabang_android.ui.shimmeringEffect
+import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.launch
 
 @Composable
@@ -55,12 +61,41 @@ fun HomeScreen(
     onGuide1Click : ()-> Unit,
     onRecipeItemClick : (Int) -> Unit,
     onBlockedRecipeClick : (Int,Int) -> Unit,
+    onGotoOnBoarding : () -> Unit,
+    onLikeClick : (Int) -> Deferred<Boolean>,
+    onScrapClick : (Int)-> Deferred<Boolean>,
+    showSnackBar: (String) -> Unit,
+    protoDataViewModel: ProtoDataViewModel = hiltViewModel(),
     viewModel: HomeViewModel = hiltViewModel(),
     recipeMainViewModel : RecipeMainViewModel = hiltViewModel()
 ){
     //drawer에 필요한 drawerState랑 scope
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
+    val isLoginDialogShow = remember{
+        mutableStateOf(false)
+    }
+
+    val currentPlatform = protoDataViewModel.tokens.collectAsState(
+        initial = Token(
+            null,
+            null,
+            null,
+            CurrentPlatform.NONE,
+            null,
+            null
+        )
+    )
+
+
+    LoginRequestDialog(
+        showDialog = isLoginDialogShow.value,
+        setShowDialog ={
+            isLoginDialogShow.value = it
+        }
+    ) {
+        onGotoOnBoarding()
+    }
 
 
 
@@ -110,8 +145,9 @@ fun HomeScreen(
                                         val imageUrlList: List<String> =
                                             bannerListState.map { it.imageUrl }
                                         Box(
-                                            modifier = Modifier.fillMaxWidth()
-                                                .aspectRatio(9/5.5f)
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .aspectRatio(9 / 5.5f)
                                                 .padding(bottom = 10.dp)
                                         ) {
                                             Banner(imageUrlList)
@@ -183,32 +219,59 @@ fun HomeScreen(
                                                     isLikeSelected = isLiked,
                                                     isScrapSelected = isScraped,
                                                     onLikeClick = {
-                                                        recipeMainViewModel.toggleLike(item.recipeId)
-                                                        isLiked = !isLiked
-                                                        item.isLiked = !item.isLiked
-                                                        if (isLiked) {
-                                                            item.likes += 1
-                                                        } else {
-                                                            item.likes -= 1
-                                                        }
-                                                        likes = item.likes
+                                                        if(currentPlatform.value.platformStatus != CurrentPlatform.TEMP) {
+                                                            scope.launch {
 
+                                                                val isSuccess =
+                                                                    onLikeClick(item.recipeId).await()
+                                                                if (isSuccess) {
+                                                                    isLiked = !isLiked
+                                                                    item.isLiked = !item.isLiked
+                                                                    if (isLiked) {
+                                                                        item.likes += 1
+                                                                    } else {
+                                                                        item.likes -= 1
+                                                                    }
+                                                                    likes = item.likes
+                                                                }else{
+                                                                    showSnackBar("좋아요를 누를 수 없습니다.")
+                                                                }
+                                                            }
+                                                        }else{
+                                                            isLoginDialogShow.value = true
+                                                        }
                                                         // 예은 임시로 해둠
                                                     },
                                                     onScrapClick = {
-                                                        recipeMainViewModel.toggleScrap(item.recipeId)
-                                                        isScraped = !isScraped
+
+                                                        if(currentPlatform.value.platformStatus != CurrentPlatform.TEMP) {
+                                                            scope.launch {
+                                                                val isSuccess =
+                                                                    onScrapClick(item.recipeId).await()
+                                                                if (isSuccess) {
+                                                                    isScraped = !isScraped
+                                                                }else{
+                                                                    showSnackBar("레시피를 스크랩할 수 없습니다.")
+
+                                                                }
+                                                            }
+                                                        }else{
+                                                            isLoginDialogShow.value = true
+                                                        }
                                                         //   item.isScrapped=  !item.isScrapped
 
                                                         // 예은 임시로 해둠
                                                     },
                                                     onItemClick = {
-                                                        if(item.isBlocked){
-                                                            onBlockedRecipeClick(item.recipeId,item.ownerId)
-                                                        }
-
-                                                        else{
-                                                            onRecipeItemClick(item.recipeId)
+                                                        if(currentPlatform.value.platformStatus != CurrentPlatform.TEMP) {
+                                                            if (item.isBlocked) {
+                                                                onBlockedRecipeClick(
+                                                                    item.recipeId,
+                                                                    item.ownerId
+                                                                )
+                                                            } else {
+                                                                onRecipeItemClick(item.recipeId)
+                                                            }
                                                         }
 
                                                     }
