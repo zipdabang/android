@@ -131,7 +131,7 @@ fun SearchCategoryPreview(
 
                                         }
                                     }
-                                }else{g
+                                }else{
                                     isLoginDialogShow.value = true
                                 }
                             },
