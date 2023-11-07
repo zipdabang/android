@@ -135,23 +135,25 @@ fun NavGraphBuilder.RecipeNavGraph(
             }
 
 
-            LaunchedEffect(key1 = true) {
+/*            LaunchedEffect(key1 = true) {
                 viewModel.setSortBy("latest")
 
                 if (categoryState.categoryId == -1 && categoryState.ownerType != null) {
-                    viewModel.getOwnerItemCount(categoryState.ownerType)
+
                 } else {
-                    viewModel.getCategoryItemCount(categoryState.categoryId!!)
+
                 }
-            }
+            }*/
 
             LaunchedEffect(key1 = lifecycleEvent) {
                 if (lifecycleEvent == Lifecycle.Event.ON_RESUME) {
                     launch(Dispatchers.Main) {
                         if (categoryState.categoryId == -1 && categoryState.ownerType != null) {
                             viewModel.refreshOwnerItems()
+                            viewModel.getOwnerItemCount(categoryState.ownerType)
                         } else {
                             viewModel.refreshCategoryItems()
+                            viewModel.getCategoryItemCount(categoryState.categoryId!!)
                         }
                     }
                 }
