@@ -20,7 +20,11 @@ fun MainNavGraph(
 
 
         Log.d("auth graph", "home")
-        HomeNavGraph(navController = innerNavController)
+        HomeNavGraph(
+            innernavController = innerNavController,
+            outerNavController = outerNavController,
+            showSnackBar = showSnackBar
+            )
 
         MarketNavGraph(navController = innerNavController)
 

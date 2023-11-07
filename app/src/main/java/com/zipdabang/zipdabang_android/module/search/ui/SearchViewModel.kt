@@ -12,17 +12,25 @@ import com.zipdabang.zipdabang_android.common.Resource
 import com.zipdabang.zipdabang_android.common.SearchResource
 import com.zipdabang.zipdabang_android.module.home.ui.HomeBannerState
 import com.zipdabang.zipdabang_android.module.home.ui.HomeRecipeState
+import com.zipdabang.zipdabang_android.module.recipes.use_case.ToggleLikeItemUseCase
+import com.zipdabang.zipdabang_android.module.recipes.use_case.ToggleScrapItemUseCase
 import com.zipdabang.zipdabang_android.module.search.domain.SearchRepository
 import com.zipdabang.zipdabang_android.module.search.domain.usecase.GetSearchPreviewUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
 class SearchViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
-    private val getSearchUseCase : GetSearchPreviewUseCase
+    private val getSearchUseCase : GetSearchPreviewUseCase,
+    private val toggleLikeItemUseCase: ToggleLikeItemUseCase,
+    private val toggleScrapItemUseCase: ToggleScrapItemUseCase
+
+
 ) : ViewModel() {
 
     private var _searchState = mutableStateOf(SearchState())
@@ -34,7 +42,7 @@ class SearchViewModel @Inject constructor(
     init {
         _searchText.value = savedStateHandle.get<String?>("searchKeyword") ?: ""
 
-        if(_searchText.value!="")getSearchList()
+        if(_searchText.value!="") getSearchList()
     }
 
 
@@ -67,6 +75,14 @@ class SearchViewModel @Inject constructor(
 
         }.launchIn(viewModelScope)
 
-
     }
+    suspend fun toggleItemLike(recipeId: Int): Boolean = withContext(Dispatchers.IO) {
+        toggleLikeItemUseCase(recipeId)
+    }
+
+    suspend fun toggleItemScrap(recipeId: Int): Boolean = withContext(Dispatchers.IO) {
+        toggleScrapItemUseCase(recipeId)
+    }
+
+
 }

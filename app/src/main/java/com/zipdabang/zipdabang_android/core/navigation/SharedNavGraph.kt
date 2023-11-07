@@ -42,12 +42,16 @@ import com.zipdabang.zipdabang_android.module.detail.recipe.ui.BlockNoticeViewMo
 import com.zipdabang.zipdabang_android.module.detail.recipe.ui.RecipeDetailLoading
 import com.zipdabang.zipdabang_android.module.detail.recipe.ui.RecipeDetailScreen
 import com.zipdabang.zipdabang_android.module.detail.recipe.ui.RecipeDetailViewModel
+import com.zipdabang.zipdabang_android.module.home.ui.HomeViewModel
 import com.zipdabang.zipdabang_android.module.search.ui.SearchCategoryScreen
+import com.zipdabang.zipdabang_android.module.search.ui.SearchCategoryViewModel
 import com.zipdabang.zipdabang_android.module.search.ui.SearchScreen
+import com.zipdabang.zipdabang_android.module.search.ui.SearchViewModel
 import com.zipdabang.zipdabang_android.ui.component.LoginRequestDialog
 import com.zipdabang.zipdabang_android.ui.component.Notice
 import com.zipdabang.zipdabang_android.ui.component.RecipeDeleteDialog
 import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
@@ -439,6 +443,20 @@ fun NavGraphBuilder.SharedNavGraph(
             )
         )
         {
+            val scope = rememberCoroutineScope()
+            val searchViewModel : SearchViewModel= hiltViewModel()
+
+            val onLikeClick = { recipeId: Int ->
+                scope.async {
+                    searchViewModel.toggleItemLike(recipeId)
+                }
+            }
+
+            val onScrapClick = { recipeId: Int ->
+                scope.async {
+                    searchViewModel.toggleItemScrap(recipeId)
+                }
+            }
             SearchScreen(
                 navController= navController,
                 onRecipeItemClick = {
@@ -446,13 +464,40 @@ fun NavGraphBuilder.SharedNavGraph(
                 },
                 onGotoBack = {
                     navController.navigateUp()
+                },
+                onGotoLogin = {
+                    outerNavController.navigate(AuthScreen.SignIn.route)
+                },
+                showSnackBar = {
+                    showSnackBar(it)
+                },
+                onLikeClick = {
+                    onLikeClick(it)
+                },
+                onScrapClick = {
+                    onScrapClick(it)
                 }
+
             )
         }
         composable(
             route = SharedScreen.Search.route,
         )
         {
+            val scope = rememberCoroutineScope()
+            val searchViewModel : SearchViewModel=  hiltViewModel()
+
+            val onLikeClick = { recipeId: Int ->
+                scope.async {
+                    searchViewModel.toggleItemLike(recipeId)
+                }
+            }
+
+            val onScrapClick = { recipeId: Int ->
+                scope.async {
+                    searchViewModel.toggleItemScrap(recipeId)
+                }
+            }
             SearchScreen(
                 navController= navController,
                 onRecipeItemClick = {
@@ -460,8 +505,19 @@ fun NavGraphBuilder.SharedNavGraph(
                 },
                 onGotoBack = {
                     navController.navigateUp()
+                },
+                onGotoLogin = {
+                    outerNavController.navigate(AuthScreen.SignIn.route)
+                },
+                showSnackBar = {
+                    showSnackBar(it)
+                },
+                onLikeClick = {
+                    onLikeClick(it)
+                },
+                onScrapClick = {
+                    onScrapClick(it)
                 }
-
             )
         }
         composable(SharedScreen.SearchRecipeCategory.route,
@@ -472,15 +528,41 @@ fun NavGraphBuilder.SharedNavGraph(
         ){
                val categoryId = it.arguments?.getInt("categoryId")
                val keyword = it.arguments?.getString("keyword")
+            val scope = rememberCoroutineScope()
+            val searchViewModel : SearchCategoryViewModel= hiltViewModel()
 
+
+            val onLikeClick = { recipeId: Int ->
+                scope.async {
+                    searchViewModel.toggleItemLike(recipeId)
+                }
+            }
+
+            val onScrapClick = { recipeId: Int ->
+                scope.async {
+                    searchViewModel.toggleItemScrap(recipeId)
+                }
+            }
               SearchCategoryScreen(
                   onRecipeItemClick = {
                           recipeid -> navController.navigate(SharedScreen.DetailRecipe.passRecipeId(recipeid))
                   },
                   onGoToBack = {
                       navController.navigateUp()
+                  },
+                  onGoToLogin = {
+                      outerNavController.navigate(AuthScreen.SignIn.route)
+                  },
+                  showSnackBar = {
+                      showSnackBar(it)
+                  },
+                  onLikeClick = {
+                      onLikeClick(it)
+                  },
+                  onScrapClick = {
+                      onScrapClick(it)
                   }
-                  )
+              )
 
         }
         }

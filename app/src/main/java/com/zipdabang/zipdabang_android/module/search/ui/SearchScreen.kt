@@ -13,6 +13,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -24,15 +25,21 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.zipdabang.zipdabang_android.R
+import com.zipdabang.zipdabang_android.core.data_store.proto.ProtoDataViewModel
 import com.zipdabang.zipdabang_android.core.navigation.SharedScreen
 import com.zipdabang.zipdabang_android.module.search.data.dto.common.SearchCategory
 import com.zipdabang.zipdabang_android.module.search.data.dto.searchpreview.recipeList
+import kotlinx.coroutines.Deferred
 
 @Composable
 fun SearchScreen(
     navController: NavController,
     onRecipeItemClick: (Int) -> Unit,
     onGotoBack : () -> Unit,
+    onGotoLogin : () -> Unit,
+    onLikeClick : (Int) -> Deferred<Boolean>,
+    onScrapClick : (Int)-> Deferred<Boolean>,
+    showSnackBar : (String) -> Unit,
     searchViewModel: SearchViewModel = hiltViewModel()
 
 ) {
@@ -42,9 +49,6 @@ fun SearchScreen(
 
     val searchState= searchViewModel.searchState
 
-    val isLoading = remember{
-        mutableStateOf(searchState.value.isLoading)
-    }
 
     Column(
         modifier = Modifier
@@ -58,9 +62,10 @@ fun SearchScreen(
         {
             Icon(
                 painter = painterResource(id = R.drawable.search_back_small), null,
-                modifier = Modifier.weight(1f)
+                modifier = Modifier
+                    .weight(1f)
                     .clickable {
-                               onGotoBack()
+                        onGotoBack()
                     },
                 tint = Color(0xFF867768)
             )
@@ -108,7 +113,18 @@ fun SearchScreen(
                         ) {
                             launchSingleTop = true
                         }
-                    }
+                    },
+                    onGoToLogin = {
+                        onGotoLogin()
+                    },
+                    onLikeClick = {
+                        onLikeClick(it)
+                    },
+                    onScrapClick = {
+                        onScrapClick(it)
+                    },
+                    showSnackBar = showSnackBar
+
                 )
             }
 
