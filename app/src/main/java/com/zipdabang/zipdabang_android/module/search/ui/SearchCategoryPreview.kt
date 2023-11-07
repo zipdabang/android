@@ -131,6 +131,8 @@ fun SearchCategoryPreview(
 
                                         }
                                     }
+                                }else{
+                                    isLoginDialogShow.value = true
                                 }
                             },
                             onItemClick = {
