@@ -1,6 +1,6 @@
 # Zipdabang
 
-![Static Badge](https://img.shields.io/badge/version-2.0.0-blue)(Development In Progress)
+![Static Badge](https://img.shields.io/badge/version-2.0.5-blue)
 
 ### Application for Home Cafe Information & Market
 
@@ -19,7 +19,7 @@
 <table>
     <tr><th>이름</th><th>담당 파트</th></tr>
     <tr><td>강하현</td><td>홈, 마켓, 더보기</td></tr>
-    <tr><td>김기문</td><td>OAuth 로그인, 레시피, 마켓</td></tr>
+    <tr><td>김기문</td><td>OAuth 로그인, 레시피, 마켓, 푸쉬알림</td></tr>
     <tr><td>김예은</td><td>회원가입, 내집다방</td></tr>
 </table>
 
