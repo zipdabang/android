@@ -113,7 +113,7 @@ fun ErrorReportScreen(
             if (takenPhoto != null) {
                 val byteOutputStream = ByteArrayOutputStream()
                 takenPhoto.compress(
-                    Bitmap.CompressFormat.JPEG,
+                    Bitmap.CompressFormat.PNG,
                     10,
                     byteOutputStream
                 )
@@ -190,10 +190,11 @@ fun ErrorReportScreen(
                 val rotateInfo = getOrientationOfImage(gallaryUri!!).toFloat()
                 val  bitmap = BitmapFactory.decodeStream(inputSteam)
                 val rotateBitmap = getRotatedBitmap(bitmap,rotateInfo)
+                val resizedBitmap = Bitmap.createScaledBitmap(rotateBitmap!!, bitmap.width / 3, bitmap.height / 3, true)
                 val byteOutputStream = ByteArrayOutputStream()
 
-                rotateBitmap?.compress(Bitmap.CompressFormat.JPEG,10,byteOutputStream)
-                photoBitmap.add(rotateBitmap)
+                resizedBitmap?.compress(Bitmap.CompressFormat.JPEG,90,byteOutputStream)
+                photoBitmap.add(resizedBitmap)
                 val requestBody : RequestBody = byteOutputStream.toByteArray()
                     .toRequestBody(
                         "image/jpeg".toMediaTypeOrNull()
@@ -433,7 +434,7 @@ fun ErrorReportScreen(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(104.dp)
+                    .height(300.dp)
                     .horizontalScroll(rowScrollstate),
                 horizontalArrangement = Arrangement.spacedBy(6.dp)
             ) {
@@ -441,7 +442,7 @@ fun ErrorReportScreen(
                     Box(
                         modifier = Modifier
                             .fillMaxHeight()
-                            .width(104.dp)
+                            .width(300.dp)
                             .background(color = Color(0XFFF7F6F6), shape = RectangleShape)
                             .clickable {
 
