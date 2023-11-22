@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.runtime.Composable
@@ -56,14 +57,18 @@ fun Banner(
         contentDescription = "banner image"
         )
     }
-        HorizontalPagerIndicator(
-            pagerState = pagerState,
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .padding(10.dp),
-            inactiveColor = BannerGray,
-            activeColor = White
-        )
+        Box(modifier = Modifier
+            .align(Alignment.BottomEnd)
+            .padding(bottom = 10.dp, end = 16.dp)
+            .size(width = 43.dp, height = 22.dp)
+
+        ){
+            BannerIndicator(
+                currentPage = pagerState.currentPage + 1 ,
+                totalPage = images.size
+            )
+        }
+
     }
 }
 
@@ -164,7 +169,7 @@ fun BannerPreview(){
     Column(
     ) {
         Box(modifier = Modifier
-            .fillMaxWidth()
+            .width(500.dp)
             .height(200.dp)) {
             Banner(images)
         }
