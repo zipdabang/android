@@ -11,6 +11,7 @@ import android.graphics.Matrix
 import android.media.ExifInterface
 import android.net.Uri
 import android.os.Build
+import android.os.Environment
 import android.provider.MediaStore
 import android.provider.Settings
 import android.util.Log
@@ -55,6 +56,8 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat.startActivity
+import androidx.core.content.FileProvider
+import androidx.core.content.contentValuesOf
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.zipdabang.zipdabang_android.R
@@ -66,6 +69,7 @@ import com.zipdabang.zipdabang_android.ui.component.PrimaryButtonWithStatus
 import com.zipdabang.zipdabang_android.ui.component.TextFieldForDrawerMultiline
 import com.zipdabang.zipdabang_android.ui.component.TextFieldForDrawerSingleline
 import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
+import kotlinx.collections.immutable.persistentHashMapOf
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -74,6 +78,8 @@ import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.IOException
 import java.io.InputStream
+import java.text.SimpleDateFormat
+import java.util.Date
 
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @SuppressLint("UnrememberedMutableState")
@@ -102,35 +108,12 @@ fun ErrorReportScreen(
     var gallaryUri : Uri?  by remember{
         mutableStateOf(null)
     }
-
+    var cameraUri : Uri?  by remember{
+        mutableStateOf(null)
+    }
     var dialogShow by remember {
         mutableStateOf(false)
     }
-
-    val takePhotoFromCameraLauncher =
-        // 카메라로 사진 찍어서 가져오기
-        rememberLauncherForActivityResult(ActivityResultContracts.TakePicturePreview()) { takenPhoto ->
-            if (takenPhoto != null) {
-                val byteOutputStream = ByteArrayOutputStream()
-                takenPhoto.compress(
-                    Bitmap.CompressFormat.PNG,
-                    10,
-                    byteOutputStream
-                )
-                photoBitmap.add(takenPhoto)
-                val requestBody : RequestBody = byteOutputStream.toByteArray()
-                    .toRequestBody(
-                        "image/jpeg".toMediaTypeOrNull()
-                    )
-
-                val uploadFile = MultipartBody.Part.createFormData("imageList","bg_${photoBitmap.size}.jpg",requestBody)
-
-                requestFileList.add(uploadFile)
-            } else {
-                Log.e("Error in camera","error")
-            }
-
-        }
     //사진 회전 정보 알아내는 함수
     @RequiresApi(Build.VERSION_CODES.N)
     fun getOrientationOfImage(uri: Uri): Int {
@@ -163,6 +146,37 @@ fun ErrorReportScreen(
         m.setRotate(degrees, bitmap.width.toFloat() / 2, bitmap.height.toFloat() / 2)
         return Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, m, true)
     }
+
+
+    val takePhotoFromCameraLauncher =
+        // 카메라로 사진 찍어서 가져오기
+        rememberLauncherForActivityResult(ActivityResultContracts.TakePicture()) { granted->
+            if (granted) {
+                val inputSteam : InputStream? = cameraUri?.let {
+                    context.contentResolver?.openInputStream(
+                        it
+                    )
+                }
+                val rotateInfo = getOrientationOfImage(cameraUri!!).toFloat()
+                val  bitmap = BitmapFactory.decodeStream(inputSteam)
+                val rotateBitmap = getRotatedBitmap(bitmap,rotateInfo)
+                val resizedBitmap = Bitmap.createScaledBitmap(rotateBitmap!!, bitmap.width / 5, bitmap.height / 5, true)
+                val byteOutputStream = ByteArrayOutputStream()
+                val requestBody : RequestBody = byteOutputStream.toByteArray()
+                    .toRequestBody(
+                        "image/jpeg".toMediaTypeOrNull()
+                    )
+                resizedBitmap?.compress(Bitmap.CompressFormat.JPEG,70,byteOutputStream)
+                photoBitmap.add(resizedBitmap)
+
+                val uploadFile = MultipartBody.Part.createFormData("imageList","bg_${photoBitmap.size}.jpg",requestBody)
+
+                requestFileList.add(uploadFile)
+            } else {
+                Log.e("Error in camera","error")
+            }
+
+        }
 
     val takePhotoFromAlbumIntent =
         Intent(Intent.ACTION_GET_CONTENT, MediaStore.Images.Media.EXTERNAL_CONTENT_URI).apply {
@@ -224,13 +238,24 @@ fun ErrorReportScreen(
 
         if(areGranted) {
 
-            if(permissonRequest.value =="camera")takePhotoFromCameraLauncher.launch()
+            if(permissonRequest.value =="camera")takePhotoFromCameraLauncher.launch(cameraUri)
             else takePhotoFromAlbumLauncher.launch(takePhotoFromAlbumIntent)
 
             Log.d("권한","권한이 동의되었습니다.")
         } else{
             Log.d("권한","권한이 거부되었습니다.")
         }
+    }
+   @SuppressLint("SimpleDateFormat")
+   fun createImageFile(): File {
+        // Create an image file name
+        val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
+        val storageDir: File? = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+        return File.createTempFile(
+            "JPEG_${timeStamp}_", /* prefix */
+            ".jpg", /* suffix */
+            storageDir /* directory */
+        )
     }
     if(dialogShow){
         val cameraPermission = arrayOf(Manifest.permission.CAMERA)
@@ -247,7 +272,16 @@ fun ErrorReportScreen(
                     launcherMultiplePermissions,
                     isPermissionExist = {
                         permissonRequest.value = "camera"
-                        takePhotoFromCameraLauncher.launch()
+                        val photoFile: File? = try {
+                            createImageFile()
+                        } catch (ex: IOException) {
+                            // Error occurred while creating the File
+                            null
+                        }
+                        photoFile?.let {
+                            cameraUri = FileProvider.getUriForFile(context,"zipdabang.fileprovider",it)
+                        }
+                        takePhotoFromCameraLauncher.launch(cameraUri)
                     },
                 )
 //                takePhotoFromCameraLauncher.launch()
