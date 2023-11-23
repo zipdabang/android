@@ -67,7 +67,6 @@ fun HomeScreen(
     showSnackBar: (String) -> Unit,
     protoDataViewModel: ProtoDataViewModel = hiltViewModel(),
     viewModel: HomeViewModel = hiltViewModel(),
-    recipeMainViewModel : RecipeMainViewModel = hiltViewModel()
 ){
     //drawer에 필요한 drawerState랑 scope
     val drawerState = rememberDrawerState(DrawerValue.Closed)

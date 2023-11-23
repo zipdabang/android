@@ -11,6 +11,7 @@ import android.graphics.Matrix
 import android.media.ExifInterface
 import android.net.Uri
 import android.os.Build
+import android.os.Environment
 import android.provider.MediaStore
 import android.provider.Settings
 import android.util.Log
@@ -55,9 +56,12 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat.startActivity
+import androidx.core.content.FileProvider
+import androidx.core.content.contentValuesOf
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.zipdabang.zipdabang_android.R
+import com.zipdabang.zipdabang_android.common.FileManager
 import com.zipdabang.zipdabang_android.common.checkAndRequestPermissions
 import com.zipdabang.zipdabang_android.module.drawer.ui.viewmodel.ErrorReportViewModel
 import com.zipdabang.zipdabang_android.ui.component.AppBarSignUp
@@ -66,6 +70,7 @@ import com.zipdabang.zipdabang_android.ui.component.PrimaryButtonWithStatus
 import com.zipdabang.zipdabang_android.ui.component.TextFieldForDrawerMultiline
 import com.zipdabang.zipdabang_android.ui.component.TextFieldForDrawerSingleline
 import com.zipdabang.zipdabang_android.ui.theme.ZipdabangandroidTheme
+import kotlinx.collections.immutable.persistentHashMapOf
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -74,6 +79,8 @@ import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.IOException
 import java.io.InputStream
+import java.text.SimpleDateFormat
+import java.util.Date
 
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @SuppressLint("UnrememberedMutableState")
@@ -88,40 +95,47 @@ fun ErrorReportScreen(
     val photoBitmap  = remember {
         mutableStateListOf<Bitmap?>()
     }
-
     val requestFileList  = remember {
         mutableStateListOf<MultipartBody.Part>()
     }
-
     val context : Context =  LocalContext.current
+    val fileManager = FileManager(context)
 
-    var permissonRequest = remember{
+    val permissonRequest = remember{
         mutableStateOf("camera")
     }
 
     var gallaryUri : Uri?  by remember{
         mutableStateOf(null)
     }
-
+    var cameraUri : Uri?  by remember{
+        mutableStateOf(null)
+    }
     var dialogShow by remember {
         mutableStateOf(false)
     }
 
     val takePhotoFromCameraLauncher =
         // 카메라로 사진 찍어서 가져오기
-        rememberLauncherForActivityResult(ActivityResultContracts.TakePicturePreview()) { takenPhoto ->
-            if (takenPhoto != null) {
+        rememberLauncherForActivityResult(ActivityResultContracts.TakePicture()) { granted->
+            if (granted) {
+                val inputSteam : InputStream? = cameraUri?.let {
+                    context.contentResolver?.openInputStream(
+                        it
+                    )
+                }
+                val rotateInfo = fileManager.getOrientationOfImage(cameraUri!!).toFloat()
+                val  bitmap = BitmapFactory.decodeStream(inputSteam)
+                val rotateBitmap = fileManager.getRotatedBitmap(bitmap,rotateInfo)
+                val resizedBitmap = Bitmap.createScaledBitmap(rotateBitmap!!, bitmap.width / 5, bitmap.height / 5, true)
                 val byteOutputStream = ByteArrayOutputStream()
-                takenPhoto.compress(
-                    Bitmap.CompressFormat.JPEG,
-                    10,
-                    byteOutputStream
-                )
-                photoBitmap.add(takenPhoto)
+                resizedBitmap?.compress(Bitmap.CompressFormat.JPEG,90,byteOutputStream)
+
                 val requestBody : RequestBody = byteOutputStream.toByteArray()
                     .toRequestBody(
                         "image/jpeg".toMediaTypeOrNull()
                     )
+                photoBitmap.add(resizedBitmap)
 
                 val uploadFile = MultipartBody.Part.createFormData("imageList","bg_${photoBitmap.size}.jpg",requestBody)
 
@@ -131,38 +145,6 @@ fun ErrorReportScreen(
             }
 
         }
-    //사진 회전 정보 알아내는 함수
-    @RequiresApi(Build.VERSION_CODES.N)
-    fun getOrientationOfImage(uri: Uri): Int {
-        // uri -> inputStream
-        val inputStream = context.contentResolver.openInputStream(uri)
-        val exif: ExifInterface? = try {
-            ExifInterface(inputStream!!)
-        } catch (e: IOException) {
-            e.printStackTrace()
-            return -1
-        }
-        inputStream.close()
-
-        // 회전된 각도 알아내기
-        val orientation = exif?.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL)
-        if (orientation != -1) {
-            when (orientation) {
-                ExifInterface.ORIENTATION_ROTATE_90 -> return 90
-                ExifInterface.ORIENTATION_ROTATE_180 -> return 180
-                ExifInterface.ORIENTATION_ROTATE_270 -> return 270
-            }
-        }
-        return 0
-    }
-
-    fun getRotatedBitmap(bitmap: Bitmap?, degrees: Float): Bitmap? {
-        if (bitmap == null) return null
-        if (degrees == 0F) return bitmap
-        val m = Matrix()
-        m.setRotate(degrees, bitmap.width.toFloat() / 2, bitmap.height.toFloat() / 2)
-        return Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, m, true)
-    }
 
     val takePhotoFromAlbumIntent =
         Intent(Intent.ACTION_GET_CONTENT, MediaStore.Images.Media.EXTERNAL_CONTENT_URI).apply {
@@ -187,13 +169,14 @@ fun ErrorReportScreen(
                         it
                     )
                 }
-                val rotateInfo = getOrientationOfImage(gallaryUri!!).toFloat()
+                val rotateInfo = fileManager.getOrientationOfImage(gallaryUri!!).toFloat()
                 val  bitmap = BitmapFactory.decodeStream(inputSteam)
-                val rotateBitmap = getRotatedBitmap(bitmap,rotateInfo)
+                val rotateBitmap = fileManager.getRotatedBitmap(bitmap,rotateInfo)
+                val resizedBitmap = Bitmap.createScaledBitmap(rotateBitmap!!, bitmap.width / 3, bitmap.height / 3, true)
                 val byteOutputStream = ByteArrayOutputStream()
 
-                rotateBitmap?.compress(Bitmap.CompressFormat.JPEG,10,byteOutputStream)
-                photoBitmap.add(rotateBitmap)
+                resizedBitmap?.compress(Bitmap.CompressFormat.JPEG,90,byteOutputStream)
+                photoBitmap.add(resizedBitmap)
                 val requestBody : RequestBody = byteOutputStream.toByteArray()
                     .toRequestBody(
                         "image/jpeg".toMediaTypeOrNull()
@@ -223,7 +206,7 @@ fun ErrorReportScreen(
 
         if(areGranted) {
 
-            if(permissonRequest.value =="camera")takePhotoFromCameraLauncher.launch()
+            if(permissonRequest.value =="camera")takePhotoFromCameraLauncher.launch(cameraUri)
             else takePhotoFromAlbumLauncher.launch(takePhotoFromAlbumIntent)
 
             Log.d("권한","권한이 동의되었습니다.")
@@ -231,6 +214,7 @@ fun ErrorReportScreen(
             Log.d("권한","권한이 거부되었습니다.")
         }
     }
+
     if(dialogShow){
         val cameraPermission = arrayOf(Manifest.permission.CAMERA)
         val gallaryPermission = arrayOf(Manifest.permission.READ_MEDIA_IMAGES)
@@ -246,7 +230,16 @@ fun ErrorReportScreen(
                     launcherMultiplePermissions,
                     isPermissionExist = {
                         permissonRequest.value = "camera"
-                        takePhotoFromCameraLauncher.launch()
+                        val photoFile: File? = try {
+                            fileManager.createImageFile()
+                        } catch (ex: IOException) {
+                            // Error occurred while creating the File
+                            null
+                        }
+                        photoFile?.let {
+                            cameraUri = FileProvider.getUriForFile(context,"zipdabang.fileprovider",it)
+                        }
+                        takePhotoFromCameraLauncher.launch(cameraUri)
                     },
                 )
 //                takePhotoFromCameraLauncher.launch()
@@ -433,7 +426,7 @@ fun ErrorReportScreen(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(104.dp)
+                    .height(300.dp)
                     .horizontalScroll(rowScrollstate),
                 horizontalArrangement = Arrangement.spacedBy(6.dp)
             ) {
@@ -441,7 +434,7 @@ fun ErrorReportScreen(
                     Box(
                         modifier = Modifier
                             .fillMaxHeight()
-                            .width(104.dp)
+                            .width(300.dp)
                             .background(color = Color(0XFFF7F6F6), shape = RectangleShape)
                             .clickable {
 

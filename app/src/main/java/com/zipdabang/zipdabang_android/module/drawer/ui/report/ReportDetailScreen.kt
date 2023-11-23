@@ -153,7 +153,7 @@ fun ReportDetailScreen(
                 )
 
                 LazyRow(
-                    modifier = Modifier.height(84.dp),
+                    modifier = Modifier.height(300.dp),
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     if(isShimmering.value){
@@ -173,7 +173,7 @@ fun ReportDetailScreen(
                             Box(
                                 modifier = Modifier
                                     .fillMaxHeight()
-                                    .width(84.dp)
+                                    .width(300.dp)
                             ) {
                                 RectangleImage(
                                     imageUrl = reportDetail.imageList!![it],
