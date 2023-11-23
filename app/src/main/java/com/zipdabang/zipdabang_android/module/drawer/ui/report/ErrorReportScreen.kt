@@ -61,6 +61,7 @@ import androidx.core.content.contentValuesOf
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.zipdabang.zipdabang_android.R
+import com.zipdabang.zipdabang_android.common.FileManager
 import com.zipdabang.zipdabang_android.common.checkAndRequestPermissions
 import com.zipdabang.zipdabang_android.module.drawer.ui.viewmodel.ErrorReportViewModel
 import com.zipdabang.zipdabang_android.ui.component.AppBarSignUp
@@ -94,14 +95,13 @@ fun ErrorReportScreen(
     val photoBitmap  = remember {
         mutableStateListOf<Bitmap?>()
     }
-
     val requestFileList  = remember {
         mutableStateListOf<MultipartBody.Part>()
     }
-
     val context : Context =  LocalContext.current
+    val fileManager = FileManager(context)
 
-    var permissonRequest = remember{
+    val permissonRequest = remember{
         mutableStateOf("camera")
     }
 
@@ -114,39 +114,6 @@ fun ErrorReportScreen(
     var dialogShow by remember {
         mutableStateOf(false)
     }
-    //사진 회전 정보 알아내는 함수
-    @RequiresApi(Build.VERSION_CODES.N)
-    fun getOrientationOfImage(uri: Uri): Int {
-        // uri -> inputStream
-        val inputStream = context.contentResolver.openInputStream(uri)
-        val exif: ExifInterface? = try {
-            ExifInterface(inputStream!!)
-        } catch (e: IOException) {
-            e.printStackTrace()
-            return -1
-        }
-        inputStream.close()
-
-        // 회전된 각도 알아내기
-        val orientation = exif?.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL)
-        if (orientation != -1) {
-            when (orientation) {
-                ExifInterface.ORIENTATION_ROTATE_90 -> return 90
-                ExifInterface.ORIENTATION_ROTATE_180 -> return 180
-                ExifInterface.ORIENTATION_ROTATE_270 -> return 270
-            }
-        }
-        return 0
-    }
-
-    fun getRotatedBitmap(bitmap: Bitmap?, degrees: Float): Bitmap? {
-        if (bitmap == null) return null
-        if (degrees == 0F) return bitmap
-        val m = Matrix()
-        m.setRotate(degrees, bitmap.width.toFloat() / 2, bitmap.height.toFloat() / 2)
-        return Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, m, true)
-    }
-
 
     val takePhotoFromCameraLauncher =
         // 카메라로 사진 찍어서 가져오기
@@ -157,16 +124,17 @@ fun ErrorReportScreen(
                         it
                     )
                 }
-                val rotateInfo = getOrientationOfImage(cameraUri!!).toFloat()
+                val rotateInfo = fileManager.getOrientationOfImage(cameraUri!!).toFloat()
                 val  bitmap = BitmapFactory.decodeStream(inputSteam)
-                val rotateBitmap = getRotatedBitmap(bitmap,rotateInfo)
+                val rotateBitmap = fileManager.getRotatedBitmap(bitmap,rotateInfo)
                 val resizedBitmap = Bitmap.createScaledBitmap(rotateBitmap!!, bitmap.width / 5, bitmap.height / 5, true)
                 val byteOutputStream = ByteArrayOutputStream()
+                resizedBitmap?.compress(Bitmap.CompressFormat.JPEG,90,byteOutputStream)
+
                 val requestBody : RequestBody = byteOutputStream.toByteArray()
                     .toRequestBody(
                         "image/jpeg".toMediaTypeOrNull()
                     )
-                resizedBitmap?.compress(Bitmap.CompressFormat.JPEG,70,byteOutputStream)
                 photoBitmap.add(resizedBitmap)
 
                 val uploadFile = MultipartBody.Part.createFormData("imageList","bg_${photoBitmap.size}.jpg",requestBody)
@@ -201,9 +169,9 @@ fun ErrorReportScreen(
                         it
                     )
                 }
-                val rotateInfo = getOrientationOfImage(gallaryUri!!).toFloat()
+                val rotateInfo = fileManager.getOrientationOfImage(gallaryUri!!).toFloat()
                 val  bitmap = BitmapFactory.decodeStream(inputSteam)
-                val rotateBitmap = getRotatedBitmap(bitmap,rotateInfo)
+                val rotateBitmap = fileManager.getRotatedBitmap(bitmap,rotateInfo)
                 val resizedBitmap = Bitmap.createScaledBitmap(rotateBitmap!!, bitmap.width / 3, bitmap.height / 3, true)
                 val byteOutputStream = ByteArrayOutputStream()
 
@@ -246,17 +214,7 @@ fun ErrorReportScreen(
             Log.d("권한","권한이 거부되었습니다.")
         }
     }
-   @SuppressLint("SimpleDateFormat")
-   fun createImageFile(): File {
-        // Create an image file name
-        val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
-        val storageDir: File? = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
-        return File.createTempFile(
-            "JPEG_${timeStamp}_", /* prefix */
-            ".jpg", /* suffix */
-            storageDir /* directory */
-        )
-    }
+
     if(dialogShow){
         val cameraPermission = arrayOf(Manifest.permission.CAMERA)
         val gallaryPermission = arrayOf(Manifest.permission.READ_MEDIA_IMAGES)
@@ -273,7 +231,7 @@ fun ErrorReportScreen(
                     isPermissionExist = {
                         permissonRequest.value = "camera"
                         val photoFile: File? = try {
-                            createImageFile()
+                            fileManager.createImageFile()
                         } catch (ex: IOException) {
                             // Error occurred while creating the File
                             null
