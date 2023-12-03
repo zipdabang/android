@@ -46,6 +46,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.zipdabang.zipdabang_android.R
 import com.zipdabang.zipdabang_android.core.navigation.MarketScreen
 import com.zipdabang.zipdabang_android.module.item.goods.RankItem
@@ -63,6 +64,7 @@ import kotlinx.coroutines.launch
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun MarketScreen(
+    navController : NavController,
     viewMdoel: RecentMarketViewMdoel = hiltViewModel(),
 ){
     //drawer에 필요한 drawerState랑 scope
@@ -87,9 +89,10 @@ fun MarketScreen(
                 contentColor = Color.Black,
                 content = {
 
-                    Box(modifier = Modifier.fillMaxWidth()
+                    Box(modifier = Modifier
+                        .fillMaxWidth()
                         .wrapContentHeight()
-                        .padding(bottom= it.calculateBottomPadding(),top =200.dp)){
+                        .padding(bottom = it.calculateBottomPadding(), top = 200.dp)){
                         MarketReadyPage()
                     }
 //                    val scrollState = rememberScrollState()
@@ -205,7 +208,8 @@ fun MarketScreen(
                }
             )
         },
-        drawerState = drawerState
+        drawerState = drawerState,
+        navController = navController
     )
 
 }
@@ -460,15 +464,8 @@ fun MarketScreen_Test(){
 
             }
         },
-        drawerState = drawerState
+        drawerState = drawerState,
     )
 
 }
 
-
-@RequiresApi(Build.VERSION_CODES.O)
-@Preview
-@Composable
-fun marketPreview() {
-    MarketScreen_Test()
-}

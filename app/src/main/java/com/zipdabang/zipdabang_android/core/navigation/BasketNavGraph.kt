@@ -12,7 +12,9 @@ fun NavGraphBuilder.BasketNavGraph(navController: NavController){
 
     navigation(startDestination = BasketScreen.Home.route,route = BASKET_ROUTE){
         composable( BasketScreen.Home.route){
-            BasketScreen()
+            BasketScreen(
+                navController = navController
+            )
         }
 
     }

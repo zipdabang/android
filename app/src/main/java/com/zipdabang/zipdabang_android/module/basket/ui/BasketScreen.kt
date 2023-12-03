@@ -15,13 +15,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.zipdabang.zipdabang_android.R
 import com.zipdabang.zipdabang_android.ui.component.AppBarHome
 import com.zipdabang.zipdabang_android.ui.component.ModalDrawer
 import kotlinx.coroutines.launch
 
 @Composable
-fun BasketScreen(){
+fun BasketScreen(
+    navController : NavController
+){
     //drawer에 필요한 drawerState랑 scope
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
@@ -52,12 +55,8 @@ fun BasketScreen(){
                 }
             )
         },
-        drawerState = drawerState
+        drawerState = drawerState,
+        navController = navController
     )
 }
 
-@Preview
-@Composable
-fun PreviewBasketScreen(){
-    BasketScreen()
-}
